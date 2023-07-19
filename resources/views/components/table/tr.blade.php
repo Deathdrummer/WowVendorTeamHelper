@@ -1,0 +1,9 @@
+<div
+	{{$attributes->class([
+		'ddrtable__tr',
+	])}}
+	ddrtabletr
+	role="row"
+	>
+	{{$slot}}
+</div>

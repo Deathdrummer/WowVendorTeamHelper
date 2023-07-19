@@ -1,0 +1,1664 @@
+@import "./bootstrap/functions"
+@import "./bootstrap/variables"
+@import "@sass/common/mixins/scrollbar"
+@import "@sass/common/mixins/actives"
+@import "@sass/common/mixins/font"
+
+
+
+
+teleport
+	display: contents
+
+
+.noselect, [noselect]
+	-webkit-touch-callout: none
+	-webkit-user-select: none
+	-khtml-user-select: none
+	-moz-user-select: none
+	-ms-user-select: none
+	user-select: none
+	
+
+.select
+	&-text
+		//touch-callout: unset
+		user-select: text
+	&-all
+		touch-callout: unset
+		user-select: all
+	
+
+[replacer]:not([replacer=""])
+	font-size: 0px
+	visibility: hidden
+	position: relative
+	
+	&::before
+		content: attr(replacer)
+		position: absolute
+		visibility: visible !important
+		display: inline
+		font-size: inherit !important
+		min-width: max-content
+		
+	&[r-center]::before
+		transform: translateX(50%)
+	
+	&[r-right]::before
+		right: 0
+
+
+
+.notouch, [notouch]
+	pointer-events: none
+
+.pointer
+	cursor: pointer
+	
+.prewrap, .format
+	white-space: pre-wrap
+	
+.preline
+	white-space: pre-line
+
+.wodrbreak, .breakword
+	word-break: break-word
+
+.breakspaces
+	white-space: break-spaces
+
+.nowrap, .nobreak
+	white-space: nowrap
+
+.pre
+	white-space: pre
+
+.text-start
+	text-align: left
+	
+.text-center
+	text-align: center
+
+.text-justify
+	text-align: justify
+
+.text-end
+	text-align: end
+
+
+.contents
+	display: contents
+
+
+.highlight
+	color: #365800
+	background-color: #c5ff00
+	line-height: inherit
+	display: inline
+
+
+.showrows::-webkit-inner-spin-button,
+[showrows]::-webkit-inner-spin-button,
+[showrows]::-webkit-outer-spin-button
+	opacity: 1 !important
+	position: relative
+	z-index: 10
+	
+
+
+.hiderows::-webkit-inner-spin-button,
+[hiderows]::-webkit-inner-spin-button,
+[hiderows]::-webkit-outer-spin-button
+	opacity: 0 !important
+	display: none !important
+
+
+
+
+
+
+.scrollblock
+	&:not(.scrollblock-hidden):not(.scrollblock-light)
+		+scrollbar(#f7fafd, #bfcfdb, 4px, 1px)
+	
+	&:not(.scrollblock-auto)
+		overflow-y: scroll
+	
+	&-hidden
+		+scrollbar(transparent, transparent, 4px, 1px)
+		overflow-y: scroll
+		display: flex
+	
+	&-auto
+		overflow-y: auto
+	
+	&-light
+		+scrollbar(transparent, #e6eaed, 3px, 1px)
+		overflow-y: scroll
+
+
+
+
+.scroll-y
+	overflow-y: scroll
+	
+	&-hidden
+		overflow-y: hidden !important
+
+
+
+
+.circle
+	border-radius: 50%
+
+
+.iconed
+	display: inline-flex
+	align-items: center
+	justify-content: center
+	
+	&-noempty
+		&:empty
+			visibility: hidden
+
+
+
+
+
+
+
+
+
+
+
+
+.bg
+	&-white
+		background-color: #fff
+	
+	&-blue
+		background-color: #1bdbe0
+	
+		&-hovered:hover
+			+ddrActives((hover: (bg: #17babe !important, animate: 0.16s)))
+		
+		&-active:active
+			+ddrActives((active: (bg: #16afb2 !important)))
+	
+	
+	&-gray
+		background-color: #d8d8d8
+	
+		&-hovered:hover
+			+ddrActives((hover: (bg: #c5c5c5 !important, animate: 0.16s)))
+		
+		&-active:active
+			+ddrActives((active: (bg: #bfbfbf !important)))
+				
+				
+	&-neutral
+		background-color: #9ea8bf
+	
+		&-hovered:hover
+			+ddrActives((hover: (bg: #959fb7 !important, animate: 0.16s)))
+		
+		&-active:active
+			+ddrActives((active: (bg: #828faf !important)))
+		
+		
+	&-green
+		background-color: #38ce3c
+	
+		&-hovered:hover
+			+ddrActives((hover: (bg: #2cb430 !important, animate: 0.16s)))
+			
+		&-active:active
+			+ddrActives((active: (bg: #2aa92d !important)))
+		
+		
+	&-red
+		background-color: #ff7a90
+	
+		&-hovered:hover
+			+ddrActives((hover: (bg: #f37186 !important, animate: 0.16s)))
+	
+		&-active:active
+			+ddrActives((active: (bg: #ff1a41 !important)))
+		
+		
+	
+	&-yellow
+		background-color: #ffde73
+	
+		&-hovered:hover
+			+ddrActives((hover: (bg: #ffd54d !important, animate: 0.16s)))
+		
+		&-active:active
+			+ddrActives((active: (bg: #ffd240 !important)))
+	
+	
+	
+	&-yellow-light
+		background-color: #fbf4d7
+		
+		&-hovered:hover
+			+ddrActives((hover: (bg: #f7efcf !important, animate: 0.16s)))
+		
+		&-active:active
+			+ddrActives((active: (bg: #f1e8c6 !important)))
+	
+	
+	&-purple
+		background-color: #b08ad7
+	
+		&-hovered:hover
+			+ddrActives((hover: (bg: #a07bc5 !important, animate: 0.16s)))
+		
+		&-active:active
+			+ddrActives((active: (bg: #8d67b3 !important)))
+	
+	
+	&-light
+		background-color: #f8fafb
+	
+		&-hovered:hover
+			+ddrActives((hover: (bg: #f3f6f7 !important, animate: 0.16s)))
+			
+		&-active:active
+			+ddrActives((active: (bg: #e9eeef !important)))
+	
+	
+	&-dark
+		background-color: #3e4b5b
+	
+		&-hovered:hover
+			+ddrActives((hover: (bg: #2f3844 !important, animate: 0.16s)))
+		
+		&-active:active
+			+ddrActives((active: (bg: #29323d !important)))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.color
+	&-black
+		color: #3d3e4e
+		
+		&-hovered:hover
+			color: #3d3e4e
+			transition: color 0.16s
+		
+		&-active:active
+			color: #3d3e4e !important
+			transition: color 0s !important
+	
+	&-light
+		color: #d2d2df
+		
+		&-hovered:hover
+			color: #d2d2df
+			transition: color 0.16s
+		
+		&-active:active
+			color: #d2d2df !important
+			transition: color 0s !important
+	
+	&-white
+		color: #fff
+		
+		&-hovered:hover
+			color: #fff
+			transition: color 0.16s
+		
+		&-active:active
+			color: #fff !important
+			transition: color 0s !important
+	
+	&-blue
+		color: #03d1ff
+		
+		&-hovered:hover
+			color: #03d1ff
+			transition: color 0.16s
+		
+		&-active:active
+			color: #03d1ff !important
+			transition: color 0s !important
+		
+	&-orange
+		color: #ffb100
+		
+		&-hovered:hover
+			color: #ffb100
+			transition: color 0.16s
+		
+		&-active:active
+			color: #ffb100 !important
+			transition: color 0s !important
+		
+	&-red
+		color: #ff8585
+		
+		&-hovered:hover
+			color: #ff8585
+			transition: color 0.16s
+		
+		&-active:active
+			color: #ff8585 !important
+			transition: color 0s !important
+	
+	&-green
+		color: #1ed52c
+		
+		&-hovered:hover
+			color: #1ed52c
+			transition: color 0.16s
+		
+		&-active:active
+			color: #1ed52c !important
+			transition: color 0s !important
+	
+	&-gray
+		color: #c1c1c1
+		
+		&-hovered:hover
+			color: #c1c1c1
+			transition: color 0.16s
+		
+		&-active:active
+			color: #c1c1c1 !important
+			transition: color 0s !important
+		
+	&-gray-100
+		color: #f8f9fa
+		
+		&-hovered:hover
+			color: #f8f9fa
+			transition: color 0.16s
+		
+		&-active:active
+			color: #f8f9fa !important
+			transition: color 0s !important
+	
+	&-gray-200
+		color: #e9ecef
+		
+		&-hovered:hover
+			color: #e9ecef
+			transition: color 0.16s
+		
+		&-active:active
+			color: #e9ecef !important
+			transition: color 0s !important
+		
+	&-gray-300
+		color: #dee2e6
+		
+		&-hovered:hover
+			color: #dee2e6
+			transition: color 0.16s
+		
+		&-active:active
+			color: #dee2e6 !important
+			transition: color 0s !important
+	
+	&-gray-400
+		color: #ced4da
+		
+		&-hovered:hover
+			color: #ced4da
+			transition: color 0.16s
+		
+		&-active:active
+			color: #ced4da !important
+			transition: color 0s !important
+	
+	&-gray-500
+		color: #adb5bd
+		
+		&-hovered:hover
+			color: #adb5bd
+			transition: color 0.16s
+		
+		&-active:active
+			color: #adb5bd !important
+			transition: color 0s !important
+	
+	&-gray-600
+		color: #6c757d
+		
+		&-hovered:hover
+			color: #6c757d
+			transition: color 0.16s
+		
+		&-active:active
+			color: #6c757d !important
+			transition: color 0s !important
+		
+	&-gray-700
+		color: #495057
+		
+		&-hovered:hover
+			color: #495057
+			transition: color 0.16s
+		
+		&-active:active
+			color: #495057 !important
+			transition: color 0s !important
+		
+	&-gray-800
+		color: #343a40
+		
+		&-hovered:hover
+			color: #343a40
+			transition: color 0.16s
+		
+		&-active:active
+			color: #343a40 !important
+			transition: color 0s !important
+		
+	&-gray-900
+		color: #212529
+		
+		&-hovered:hover
+			color: #212529
+			transition: color 0.16s
+		
+		&-active:active
+			color: #212529 !important
+			transition: color 0s !important
+		
+	&-darkgray
+		color: #99acad
+		
+		&-hovered:hover
+			color: #99acad
+			transition: color 0.16s
+		
+		&-active:active
+			color: #99acad !important
+			transition: color 0s !important
+	
+	&-dark
+		color: #6a6b76
+		
+		&-hovered:hover
+			color: #6a6b76
+			transition: color 0.16s
+		
+		&-active:active
+			color: #6a6b76 !important
+			transition: color 0s !important
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.border
+	border: none
+	
+	&-left
+		border-left-width: 1px
+		border-style: solid
+	
+	&-right
+		border-right-width: 1px
+		border-style: solid
+	
+	&-top
+		border-top-width: 1px
+		border-style: solid
+	
+	&-bottom
+		border-bottom-width: 1px
+		border-style: solid
+	
+	&-all
+		border-width: 1px
+		border-style: solid
+	
+	
+	
+	
+	@for $px from 1 through 10
+		&-width-#{$px}px
+			border-width: #{$px}px
+	
+	
+	&-rounded-circle
+		border-radius: 50%
+	
+	@for $px from 1 through 10
+		&-rounded-#{$px}px, &-radius-#{$px}px
+			border-radius: #{$px}px
+	
+	
+	
+	
+	&-light
+		border-color: #f1f5f5
+		&-hovered:hover
+			border-color: #f1f5f5
+			transition: border-color 0.16s
+	
+	&-gray
+		border-color: #e0eced
+		&-hovered:hover
+			border-color: #e0eced
+			transition: border-color 0.16s
+	
+	&-gray-100
+		border-color: #f8f9fa
+		&-hovered:hover
+			border-color: #f8f9fa
+			transition: border-color 0.16s
+	
+	&-gray-200
+		border-color: #e9ecef
+		&-hovered:hover
+			border-color: #e9ecef
+			transition: border-color 0.16s
+		
+	&-gray-300
+		border-color: #dee2e6
+		&-hovered:hover
+			border-color: #dee2e6
+			transition: border-color 0.16s
+	
+	&-gray-400
+		border-color: #ced4da
+		&-hovered:hover
+			border-color: #ced4da
+			transition: border-color 0.16s
+	
+	&-gray-500
+		border-color: #adb5bd
+		&-hovered:hover
+			border-color: #adb5bd
+			transition: border-color 0.16s
+	
+	&-gray-600
+		border-color: #6c757d
+		&-hovered:hover
+			border-color: #6c757d
+			transition: border-color 0.16s
+		
+	&-gray-700
+		border-color: #495057
+		&-hovered:hover
+			border-color: #495057
+			transition: border-color 0.16s
+		
+	&-gray-800
+		border-color: #343a40
+		&-hovered:hover
+			border-color: #343a40
+			transition: border-color 0.16s
+		
+	&-gray-900
+		border-color: #212529
+		&-hovered:hover
+			border-color: #212529
+			transition: border-color 0.16s
+		
+	&-dark
+		border-color: #a5b5b5
+		&-hovered:hover
+			border-color: #a5b5b5
+			transition: border-color 0.16s
+	
+	&-white
+		border-color: #fff
+		&-hovered:hover
+			border-color: #fff 
+			transition: border-color 0.16s
+	
+	&-green
+		border-color: #00e94a
+		&-hovered:hover
+			border-color: #00e94a 
+			transition: border-color 0.16s
+	
+	&-blue
+		border-color: #00abff
+		&-hovered:hover
+			border-color: #00abff
+			transition: border-color 0.16s
+	
+
+
+
+
+
+
+
+
+
+
+
+//--------------------------------------
+
+//
+//@for $fz from 1 through 24
+//	.wem-#{$fz}, .wem#{$fz}
+//		font-size: #{$fz}px !important
+//		
+//		> *
+//			font-size: initial
+//	
+//
+//@for $em from 1 through 40
+//	.w-#{$em}em, .w#{$em}em
+//		width: #{$em}em !important
+//		max-width: #{$em}em !important
+//
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.w-0, .w0
+	width: 0 !important
+
+.h-0, .h0
+	height: 0 !important
+
+	
+@for $px from 1 through 9
+	.w-#{$px}px, .w#{$px}px
+		width: #{$px}px !important
+		max-width: #{$px}px !important
+	
+	.mimw-#{$px}px, .mimw#{$px}px
+		min-width: #{$px}px !important
+	
+	.maxw-#{$px}px, .maxw#{$px}px
+		max-width: #{$px}px !important
+	
+	.h-#{$px}px, .h#{$px}px
+		height: #{$px}px !important
+		max-height: #{$px}px !important
+	
+	.minh-#{$px}px, .minh#{$px}px
+		min-height: #{$px}px !important
+	
+	.maxh-#{$px}px, .maxh#{$px}px
+		max-height: #{$px}px !important
+
+
+$bPoints: map-remove($grid-breakpoints, xs)
+@each $breakpoint, $minWidth in $bPoints
+	@media (min-width: $minWidth)
+		@for $px from 1 through 9
+			.w-#{$breakpoint}-#{$px}px
+				width: #{$px}px !important
+				max-width: #{$px}px !important
+			
+			.minw-#{$breakpoint}-#{$px}px
+				min-width: #{$px}px !important
+			
+			.maxw-#{$breakpoint}-#{$px}px
+				max-width: #{$px}px !important
+			
+			.h-#{$breakpoint}-#{$px}px
+				height: #{$px}px !important
+				max-height: #{$px}px !important
+			
+			.minh-#{$breakpoint}-#{$px}px
+				min-height: #{$px}px !important
+			
+			.maxh-#{$breakpoint}-#{$px}px
+				max-height: #{$px}px !important
+	
+	
+	
+
+
+
+@for $percent from 1 through 20
+	.w-#{$percent*5}, .w#{$percent*5}
+		width: #{$percent*5%} !important
+		max-width: #{$percent*5%} !important
+	
+	.minw-#{$percent*5}, .minw#{$percent*5}
+		min-width: #{$percent*5%} !important
+	
+	.maxw-#{$percent*5}, .maxw#{$percent*5}
+		max-width: #{$percent*5%} !important
+	
+	.h-#{$percent*5}, .h#{$percent*5}
+		height: #{$percent*5%} !important
+		max-height: #{$percent*5%} !important
+	
+	.minh-#{$percent*5}, .minh#{$percent*5}
+		min-height: #{$percent*5%} !important
+	
+	.maxh-#{$percent*5}, .maxh#{$percent*5}
+		max-height: #{$percent*5%} !important
+
+
+$bPoints: map-remove($grid-breakpoints, xs)
+@each $breakpoint, $minWidth in $bPoints
+	@media (min-width: $minWidth)
+		@for $percent from 1 through 20
+			.w-#{$breakpoint}-#{$percent*5}
+				width: #{$percent*5%} !important
+				max-width: #{$percent*5%} !important
+			
+			.minw-#{$breakpoint}-#{$percent*5}
+				min-width: #{$percent*5%} !important
+			
+			.maxw-#{$breakpoint}-#{$percent*5}
+				max-width: #{$percent*5%} !important
+			
+			.h-#{$breakpoint}-#{$percent*5}
+				height: #{$percent*5%} !important
+				max-height: #{$percent*5%} !important
+			
+			.minh-#{$breakpoint}-#{$percent*5}
+				min-height: #{$percent*5%} !important
+			
+			.maxh-#{$breakpoint}-#{$percent*5}
+				max-height: #{$percent*5%} !important
+				
+		
+				
+	
+
+@for $rem from 1 through 49
+	.w-#{$rem}rem, .w#{$rem}rem
+		width: #{$rem}rem !important
+		
+		@for $px from 1 through 9
+			&-#{$px}px, &#{$px}px
+				width: calc(#{$rem}rem + #{$px}px) !important
+	
+	.minw-#{$rem}rem, .minw#{$rem}rem
+		min-width: #{$rem}rem !important
+		
+		@for $px from 1 through 9
+			&-#{$px}px, &#{$px}px
+				min-width: calc(#{$rem}rem + #{$px}px) !important
+
+	.maxw-#{$rem}rem, .maxw#{$rem}rem
+		max-width: #{$rem}rem !important
+		
+		@for $px from 1 through 9
+			&-#{$px}px, &#{$px}px
+				max-width: calc(#{$rem}rem + #{$px}px) !important
+	
+	
+	.h-#{$rem}rem, .h#{$rem}rem
+		height: #{$rem}rem !important
+		
+		@for $px from 1 through 9
+			&-#{$px}px, &#{$px}px
+				height: calc(#{$rem}rem + #{$px}px) !important
+
+	.minh-#{$rem}rem, .minh#{$rem}rem
+		min-height: #{$rem}rem !important
+		
+		@for $px from 1 through 9
+			&-#{$px}px, &#{$px}px
+				min-height: calc(#{$rem}rem + #{$px}px) !important
+	
+	.maxh-#{$rem}rem, .maxh#{$rem}rem
+		max-height: #{$rem}rem !important
+		
+		@for $px from 1 through 9
+			&-#{$px}px, &#{$px}px
+				max-height: calc(#{$rem}rem + #{$px}px) !important
+			
+			
+
+
+
+
+.w-50rem, .w50rem
+	width: 50rem !important
+
+.minw-50rem, .minw50rem
+	min-width: 50rem !important
+
+.maxw-50rem, .maxw50rem
+	max-width: 50rem !important
+	
+	
+.h-50rem, .h50rem
+	height: 50rem !important
+
+.minh-50rem, .minh50rem
+	min-height: 50rem !important
+
+.maxh-50rem, .maxh50rem
+	max-height: 50rem !important
+
+
+		
+		
+
+$bPoints: map-remove($grid-breakpoints, xs)
+@each $breakpoint, $minWidth in $bPoints
+	@media (min-width: $minWidth)
+		@for $rem from 1 through 49
+			.w-#{$breakpoint}-#{$rem}rem
+				width: #{$rem}rem !important
+				max-width: #{$rem}rem !important
+				
+				@for $px from 1 through 9
+					&-#{$px}px
+						width: calc(#{$rem}rem + #{$px}px) !important
+						max-width: calc(#{$rem}rem + #{$px}px) !important
+			
+			
+			.minw-#{$breakpoint}-#{$rem}rem
+				min-width: #{$rem}rem !important
+				
+				@for $px from 1 through 9
+					&-#{$px}px
+						min-width: calc(#{$rem}rem + #{$px}px) !important
+					
+					
+			.maxw-#{$breakpoint}-#{$rem}rem
+				max-width: #{$rem}rem !important
+				
+				@for $px from 1 through 9
+					&-#{$px}px
+						max-width: calc(#{$rem}rem + #{$px}px) !important
+			
+			
+			
+			
+			
+			.h-#{$breakpoint}-#{$rem}rem
+				height: #{$rem}rem !important
+				max-height: #{$rem}rem !important
+				
+				@for $px from 1 through 9
+					&-#{$px}px
+						height: calc(#{$rem}rem + #{$px}px) !important
+						max-height: calc(#{$rem}rem + #{$px}px) !important
+			
+			.minh-#{$breakpoint}-#{$rem}rem
+				min-height: #{$rem}rem !important
+				
+				@for $px from 1 through 9
+					&-#{$px}px
+						min-height: calc(#{$rem}rem + #{$px}px) !important
+			
+			.maxh-#{$breakpoint}-#{$rem}rem
+				max-height: #{$rem}rem !important
+				
+				@for $px from 1 through 9
+					&-#{$px}px
+						max-height: calc(#{$rem}rem + #{$px}px) !important
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//-------------------------------------------------------- Отступы
+
+.m0, .m-0
+	margin: 0 !important
+
+.p0, .p-0
+	padding: 0 !important
+
+
+
+
+@for $i from 0 through 100
+	.m#{$i}px, .m-#{$i}px
+		margin: #{$i}px !important
+		
+	.ml#{$i}px, .ml-#{$i}px
+		margin-left: #{$i}px !important
+	
+	.mr#{$i}px, .mr-#{$i}px
+		margin-right: #{$i}px !important
+	
+	.mt#{$i}px, .mt-#{$i}px
+		margin-top: #{$i}px !important
+	
+	.mb#{$i}px, .mb-#{$i}px
+		margin-bottom: #{$i}px !important
+	
+	.p#{$i}px, .p-#{$i}px
+		padding: #{$i}px !important
+	
+	.pl#{$i}px, .pl-#{$i}px
+		padding-left: #{$i}px !important
+	
+	.pr#{$i}px, .pr-#{$i}px
+		padding-right: #{$i}px !important
+	
+	.pt#{$i}px, .pt-#{$i}px
+		padding-top: #{$i}px !important
+	
+	.pb#{$i}px, .pb-#{$i}px
+		padding-bottom: #{$i}px !important
+		
+$bPoints: map-remove($grid-breakpoints, xs)
+@each $breakpoint, $minWidth in $bPoints
+	@media (min-width: $minWidth)
+		@for $i from 0 through 100
+			.m-#{$breakpoint}-#{$i}px
+				margin: #{$i}px !important
+			
+			.ml-#{$breakpoint}-#{$i}px
+				margin-left: #{$i}px !important
+			
+			.mr-#{$breakpoint}-#{$i}px
+				margin-right: #{$i}px !important
+			
+			.mt-#{$breakpoint}-#{$i}px
+				margin-top: #{$i}px !important
+			
+			.mb-#{$breakpoint}-#{$i}px
+				margin-bottom: #{$i}px !important
+			
+			.p-#{$breakpoint}-#{$i}px
+				padding: #{$i}px !important
+			
+			.pl-#{$breakpoint}-#{$i}px
+				padding-left: #{$i}px !important
+			
+			.pr-#{$breakpoint}-#{$i}px
+				padding-right: #{$i}px !important
+			
+			.pt-#{$breakpoint}-#{$i}px
+				padding-top: #{$i}px !important
+			
+			.pb-#{$breakpoint}-#{$i}px
+				padding-bottom: #{$i}px !important
+
+
+
+
+
+@for $i from 1 through 20
+	.m#{$i}rem, .m-#{$i}rem
+		margin: #{$i}rem !important
+		
+	.ml#{$i}rem, .ml-#{$i}rem
+		margin-left: #{$i}rem !important
+	
+	.mr#{$i}rem, .mr-#{$i}rem
+		margin-right: #{$i}rem !important
+	
+	.mt#{$i}rem, .mt-#{$i}rem
+		margin-top: #{$i}rem !important
+	
+	.mb#{$i}rem, .mb-#{$i}rem
+		margin-bottom: #{$i}rem !important
+	
+	.p#{$i}rem, .p-#{$i}rem
+		padding: #{$i}rem !important
+	
+	.pl#{$i}rem, .pl-#{$i}rem
+		padding-left: #{$i}rem !important
+	
+	.pr#{$i}rem, .pr-#{$i}rem
+		padding-right: #{$i}rem !important
+	
+	.pt#{$i}rem, .pt-#{$i}rem
+		padding-top: #{$i}rem !important
+	
+	.pb#{$i}rem, .pb-#{$i}rem
+		padding-bottom: #{$i}rem !important
+		
+$bPoints: map-remove($grid-breakpoints, xs)
+@each $breakpoint, $minWidth in $bPoints
+	@media (min-width: $minWidth)
+		@for $i from 0 through 20
+			.m-#{$breakpoint}-#{$i}rem
+				margin: #{$i}rem !important
+			
+			.ml-#{$breakpoint}-#{$i}rem
+				margin-left: #{$i}rem !important
+			
+			.mr-#{$breakpoint}-#{$i}rem
+				margin-right: #{$i}rem !important
+			
+			.mt-#{$breakpoint}-#{$i}rem
+				margin-top: #{$i}rem !important
+			
+			.mb-#{$breakpoint}-#{$i}rem
+				margin-bottom: #{$i}rem !important
+			
+			.p-#{$breakpoint}-#{$i}rem
+				padding: #{$i}rem !important
+			
+			.pl-#{$breakpoint}-#{$i}rem
+				padding-left: #{$i}rem !important
+			
+			.pr-#{$breakpoint}-#{$i}rem
+				padding-right: #{$i}rem !important
+			
+			.pt-#{$breakpoint}-#{$i}rem
+				padding-top: #{$i}rem !important
+			
+			.pb-#{$breakpoint}-#{$i}rem
+				padding-bottom: #{$i}rem !important
+
+
+
+
+
+
+
+
+
+
+
+
+//-------------------------------------------------------- Размер шрифтов и высота строки
+@for $i from 0 through 100
+	.fz#{$i}px, .fz-#{$i}px
+		font-size: #{$i}px !important
+		line-height: 1em
+
+$bPoints: map-remove($grid-breakpoints, xs)
+@each $breakpoint, $minWidth in $bPoints
+	@media (min-width: $minWidth)
+		@for $i from 0 through 100
+			.fz-#{$breakpoint}-#{$i}px
+				font-size: #{$i}px !important
+				line-height: 1em
+
+
+
+@for $i from 1 through 20
+	.lh#{$i * 10}, .lh-#{$i * 10}
+		line-height: calc($i / 10)+em !important
+
+$bPoints: map-remove($grid-breakpoints, xs)
+@each $breakpoint, $minWidth in $bPoints
+	@media (min-width: $minWidth)
+		@for $i from 1 through 20
+			.lh-#{$breakpoint}-#{$i * 10}
+				line-height: calc($i / 10)+em !important
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.tippy-box
+	background-color: #fff !important
+	box-shadow: 0 0 11px -2px #00000036
+	border: 1px solid #d3d3d3
+
+.tippy-box > .tippy-svg-arrow
+	fill: #fff !important
+
+.tippy-box[data-placement^='top'] 
+	& > .tippy-arrow
+		color: #fff !important
+		
+		&::before
+			border-top-color: #fff !important
+
+.tippy-box[data-placement^='bottom'] 
+	& > .tippy-arrow
+		color: #fff !important
+		
+		&::before
+			border-bottom-color: #fff !important
+
+.tippy-box[data-placement^='left'] 
+	& > .tippy-arrow
+		color: #fff !important
+		
+		&::before
+			border-left-color: #fff !important
+
+.tippy-box[data-placement^='right'] 
+	& > .tippy-arrow
+		color: #fff !important
+		
+		&::before
+			border-right-color: #fff !important
+
+
+.tippy-content
+	text-align: initial
+
+
+
+
+
+
+
+.ddrlist
+	&__item
+		&:last-of-type
+			margin-bottom: 0 !important
+		
+		&:first-of-type
+			margin-top: 0 !important
+			
+
+
+
+
+
+
+
+
+
+
+
+
+.horisontal
+	overflow-x: scroll
+	padding-bottom: 10px
+	
+	&:not(.horisontal_hidescroll)
+		+scrollbar(#f9fbfd, #d6dbe0, 6px, 2px, 2px)
+	
+	&_hidescroll
+		+scrollbar(transparent, transparent, 0px)
+	
+	&__track
+		display: inline-flex
+		justify-content: flex-start
+		flex-wrap: nowrap
+	
+	&__item
+		flex: 0 0 auto
+		display: inline-block
+		
+		&:first-of-type
+			margin-left: 0 !important
+
+
+
+
+
+
+
+
+
+
+
+
+$tableColor: #efefef
+
+.ddrtable
+	display: inline-block
+	
+	&:not(.noborder):not([noborder])
+		border: 1px solid $tableColor
+	
+	.ddrtable__head ~ .ddrtable__body, .ddrtable__body ~ .ddrtable__foot
+		border-top: 1px solid $tableColor
+	
+	
+	&[scrolled] [ddrtablehead]
+		padding-right: 6px
+	
+	
+	&__head
+		.ddrtable__tr
+			&.showrows
+				.ddrtable__td
+					&.sort, [ddrtabletdmain].sort
+						position: relative
+						cursor: pointer
+						
+						&-asc, &-desc
+							> *
+								color: #00c4ff
+								
+						&::after
+							position: absolute
+							left: calc(50% - 6px)
+							font-size: 20px
+							line-height: 20px
+							cursor: pointer
+							z-index: 10
+							
+						
+						&:not(.sort-asc):not(.sort-desc)
+							//+fontAwesome('\f0dc')
+							
+							//&::after
+							//	bottom: -11px	
+							//	color: #f5f3f3
+						
+						
+						&-asc
+							+fontAwesome('\f0d8')
+							
+							&::after
+								bottom: -12px
+								color: #6b84bd
+							
+						
+						&-desc
+							+fontAwesome('\f0d7')
+							
+							&::after
+								bottom: -9px
+								color: #6b84bd
+						
+			
+				
+		
+	
+	&__body
+		position: relative
+		//visibility: hidden
+		
+		> .ddrtable__tr
+			visibility: hidden
+			
+			&_visible
+				visibility: visible
+			
+			&:nth-child(odd):not(.clear):not(.ddrtable__tr-selected)
+				background-color: #fff
+			
+			&:nth-child(even):not(.clear):not(.ddrtable__tr-selected)
+				background-color: #fdfdfd
+		
+			&-selected
+				background-color: #e5ddf3!important
+		
+		&:not([error]):empty
+			height: 100%
+			display: flex
+			align-items: center
+			justify-content: center
+		
+			&::before
+				content: ''
+				//border-bottom: 1px solid $tableColor
+				width: 100%
+				height: 100%
+				position: absolute
+			
+			&::after
+				content: attr(emptytext)
+				color: #eee
+				font-size: inherit
+			
+			
+		
+		&[error]
+			height: 100%
+			display: flex
+			align-items: center
+			justify-content: center
+		
+			&::before
+				content: ''
+				//background-color: #ffe0e0
+				//border-bottom: 1px solid $tableColor
+				width: 100%
+				height: 100%
+				position: absolute
+			
+			&::after
+				content: attr(error)
+				color: #ff8a8a
+				font-size: inherit
+				position: relative
+				z-index: 1
+				
+			
+		
+		//&_visible
+			//visibility: visible
+		
+		&_scrolled
+			overflow-y: scroll
+			
+			&:not(.ddrtable__body_hidescroll)
+				+scrollbar(#f9fbfd, #d6dbe0, 6px)
+			
+			//padding-right: 6px
+		
+		&_hidescroll
+			+scrollbar(transparent, transparent, 0px)
+			
+		
+	&__tr
+		display: flex
+		flex-wrap: nowrap
+		width: 100%
+		position: relative
+		
+		+ .ddrtable__tr:not(.noborder):not([noborder])
+			border-top: 1px solid $tableColor
+		
+		&.waiting
+			position: relative
+		
+			&::after
+				content: ''
+				position: absolute
+				left: 0
+				top: 0
+				width: 100%
+				height: 100%
+				background-color: #ffffffcf
+		
+		
+		.icon
+			position: absolute
+			
+			&-left
+				left: 4px
+				
+			&-right
+				right: 4px
+			
+			&-center
+				text-align: center
+				
+			&-top
+				top: 4px
+			
+			&-bottom
+				bottom: 4px
+		
+			&-hidden
+				opacity: 0
+				transition: opacity 0.16s
+		
+		
+		
+		
+		
+		
+	&__td
+		height: auto
+		//min-width: min-content
+		position: relative
+		display: grid
+		align-items: center
+		justify-content: initial
+		min-height: 20px
+		font-size: 14px
+		overflow-y: auto
+		+scrollbar(#f7fafd, #bfcfdb, 4px)
+		//+font('Fira Sans', 400)
+		
+		&:not(.nopadding)
+			padding-left: 5px
+			padding-right: 5px
+			padding-top: 4px
+			padding-bottom: 4px
+		
+		+ .ddrtable__td:not(.noborder):not([noborder])
+			border-left: 1px solid $tableColor
+		
+		&:not([style])
+			width: 50px
+			//max-width: max-content
+			word-break: break-word
+		
+		&.w-auto
+			//min-width: max-content
+			flex: 1 1 auto
+			word-break: break-word
+		
+		&.h-start
+			justify-content: start
+			
+		&.h-center
+			justify-content: center
+			
+			&.breakword
+				*
+					text-align: center
+			
+		&.h-end
+			justify-content: end
+			
+		
+		&.v-start
+			align-items: start
+			
+		&.v-end
+			align-items: end
+		
+		
+		
+		&.selected
+			background-color: #e5ddf3 !important
+			
+			*
+				//color: #fff
+			
+		
+			
+		
+		&.sort, [ddrtabletdmain].sort
+			position: relative
+			cursor: pointer
+			
+			&-asc, &-desc
+				> *
+					color: #00c4ff
+			
+		
+		&.editted
+			outline: 1px dashed #91cddb !important
+			background-color: #fffefb !important
+			z-index: 1
+		
+		
+		&:hover
+			.icon-hidden
+				opacity: 1
+				transition: opacity 0.16s
+		
+		.icon
+			position: absolute
+			
+			&-left
+				left: 4px
+				
+			&-right
+				right: 4px
+			
+			&-center
+				text-align: center
+				
+			&-top
+				top: 4px
+			
+			&-bottom
+				bottom: 4px
+		
+			&-hidden
+				opacity: 0
+				transition: opacity 0.16s
+		
+		
+		.placer
+			position: absolute
+			display: flex
+			width: 100%
+			left: 0
+			pointer-events: none
+			z-index: 9
+			
+			> *
+				pointer-events: auto
+			
+			&-center
+				justify-content: center
+			
+			&-right
+				justify-content: end
+			
+			
+			&-top
+				top: 0
+			
+			&-bottom
+				bottom: 0
+				> *
+					justify-content: center
+		
+			&-hidden
+				opacity: 0
+				transition: opacity 0.16s
+		
+		
+		.saveicon
+			color: #2fa2e5
+			opacity: 0.3
+			transition: opacity 0.16s
+			
+			&:hover
+				opacity: 1
+			
+		
+		
+		
+		.trangled
+			position: absolute
+			pointer-events: none
+			border-color: transparent transparent #ced4da transparent
+			border-style: solid
+			border-width: 0px 5px 5px 5px
+			height: 0px
+			width: 0px
+			
+			&-top-left
+				top: -1px
+				left: -3px
+				transform: rotate(-45deg)
+			
+			&-top-right
+				top: -1px
+				right: -3px
+				transform: rotate(45deg)
+			
+			&-bottom-left
+				bottom: -1px
+				left: -3px
+				transform: rotate(-140deg)
+			
+			&-bottom-right
+				bottom: -1px
+				right: -3px
+				transform: rotate(140deg)
+		
+		
+		.editted
+			position: absolute
+			top: 0
+			left: 0
+			width: 100%
+			height: 100%
+			background-color: #fffefb
+			outline: 1px dashed #91cddb !important
+			z-index: 8
+			padding: 4px 5px 4px 5px
+			font-size: inherit
+			line-height: inherit
+			
+			&_centred
+				display: flex
+				align-items: center
+				justify-content: center
+			
+			textarea
+				background-color: #fffefb
+				border: none
+				font-size: inherit
+				line-height: inherit
+				width: 100%
+				height: 100%
+				+scrollbar(transparent, transparent, 4px, 2px)
+				overflow-y: auto
+			
+			input
+				background-color: #fffefb
+				border: none
+				font-size: inherit
+				line-height: inherit
+				width: 100%
+				
+			
+		
+		
+		
+	
+	
+	// настройки для sortable
+	.ui-sortable
+		&-helper
+			cursor: move
+			box-shadow: 0 1px 0 0 #efefef
+			//border-bottom: 1px solid #efefef
+		
+		&-placeholder
+			visibility: visible !important
+			
+			&.ddrtable__tr:not(:first-of-type)
+				border-top: 1px solid #efefef !important

@@ -1,0 +1,1379 @@
+@import "@sass/common/mixins/common"
+@import "@sass/common/mixins/scrollAdapt"
+@import "@sass/common/mixins/scrollbar"
+@import "@sass/common/mixins/placeholder"
+@import "@sass/common/mixins/resp"
+@import "@sass/common/mixins/addict"
+@import "@sass/common/mixins/font"
+@import "@sass/common/mixins/hr"
+@import "@sass/common/mixins/actives"
+@import "@sass/common/vars"
+@import "@sass/common/ui/admin"
+//@import url('https://fonts.googleapis.com/css2?family=Fira+Sans:wght@100;200;300;400;500;600;700;800;900&display=swap')
+//@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@100;200;300;400;500;600;700;800;900&display=swap')
+@import url('https://fonts.googleapis.com/css2?family=Mulish:wght@200;300;400;500;600;700;800;900&display=swap')
+
+body
+	+scrollbar($sbBg, $sbSliderBg, $sbWidth, $sbBorderRadius, $sbSliderBorderRadius)
+	background-color: #ecf0f4
+
+
+*
+	+font('Mulish')
+
+
+
+
+.notifyjs-corner
+	right: calc(-100vw + 100% + var(--ddr-notifyXOffset)) !important
+	bottom: var(--ddr-notifyYOffset) !important
+	text-shadow: none !important
+	
+	[data-notify-text]
+		+fontWeight(400)
+		text-shadow: none !important
+
+
+	
+	
+
+
+teleport
+	display: contents
+
+
+input, textarea, [contenteditable]
+	+placeholder(#ccc)
+
+
+.app
+	min-height: 100%
+	display: flex
+	flex-direction: column
+	width: 100vw
+	position: relative
+	margin-left: calc(-100vw + 100%)
+	right: calc(-100vw + 100% + $sbWidth)
+	padding-left: $sbWidth
+
+
+
+
+
+.header
+	background-color: #fff
+	position: fixed
+	top: 0
+	left: 0
+	width: 100vw
+	box-shadow: 18px 1px 20px rgb(0 0 0 / 10%)
+	z-index: 12
+	
+	&__container
+		padding-right: 25px
+		padding-left: 25px
+	
+	&__block
+		+resp(height, $headerHeight)
+		display: flex
+		align-items: center
+	
+	
+	&__line
+		position: relative
+		width: 1px
+		height: calc(100% - 16px)
+		top: 8px
+		background-color: #e2e8ed
+	
+	
+	&__logo
+		display: flex
+		align-items: center
+		justify-content: center
+		margin-right: 5px
+		
+		> div
+			margin-right: 10px
+			margin-left: 10px
+			
+			img
+				+resp(height, (xs: 42px, sm: 48px, md: 50px, lg: 52px, xl: 54px, xxl: 56px))
+				width: auto
+				object-fit: contain
+				
+		> p
+			font-size: 16px
+			line-height: 18px
+			+fontWeight(400)
+			color: #181824
+	
+	
+	
+	//---------------------------------------------------------------- Меню
+	&__nav
+		//margin-right: 20px
+			
+		.headernav
+			display: flex
+			opacity: 0
+			pointer-events: none
+			position: absolute
+			background-color: #fff
+			box-shadow: 0 0 20px -1px #00000080
+			+resp(top, $headerHeight)
+			margin-top: -6px
+			right: 20px
+			z-index: 200
+			border-radius: 17px
+			transition: opacity 0.16s
+			
+			
+			&__handler
+				display: flex
+				align-items: center
+				cursor: pointer
+				height: 36px
+				padding-left: 6px
+				padding-right: 6px
+				border: 1px solid transparent
+				border-radius: $borderRadius
+				transition: background-color 0.1s
+				
+				i
+					font-size: 20px
+					color: #babac5
+					transition: color 0.16s
+					
+				
+				p
+					font-size: 20px
+					text-transform: uppercase
+					margin-left: 5px
+					transition: color 0.16s
+					
+				&:hover
+					background-color: #e8e8e6
+					
+					i, p
+						color: #9595a9
+				
+				&:active
+					//box-shadow: 0 0 0 0.2rem rgb(28 192 197 / 50%)
+					background-color: #dbdbda
+					
+					i, p
+						color: #9595a9
+			
+			&__item
+				min-width: 240px
+				padding: 10px
+				
+				p
+					font-size: 14px
+					margin-bottom: 10px
+					color: #394e5f
+			
+			
+				ul
+					width: 100%
+					margin-bottom: 0
+					//margin: $grid-gutter-width / 2
+					
+					li
+						&:not(.line)
+							display: flex
+							align-items: center
+							cursor: pointer
+							padding-left: 10px
+							padding-right: 10px
+							height: 48px
+							font-size: 14px
+							line-height: 16px
+							list-style: none
+							color: #d8d8e5
+							border-radius: 10px
+							// background-color: lighten(#c7ccd0, 2%)
+							transition: background-color 0.16s
+							
+							+ li:not(.line)
+								margin-top: 4px
+						
+						&.line
+							height: 1px
+							background-color: #efefef
+							margin-top: 15px
+							margin-bottom: 15px
+							margin-left: 5px
+							margin-right: 5px
+						
+						span
+							color: #555
+							font-weight: 700
+							font-size: 16px
+							
+							
+						&:hover
+							background-color: #dedfe4
+							
+							span
+								color: #fff
+						
+						&:active
+							background-color: #c2c4d0
+							transition: background-color 0s
+							
+							span
+								color: #fff
+							
+							
+						&.active
+							background-color: #dedfe4
+							cursor: default
+							
+							span
+								color: #fff
+		
+		
+		&_opened
+			.headernav
+				opacity: 1
+				pointer-events: auto
+			
+			.headernav__handler
+				background-color: #dbdbda !important
+				
+				i, p
+					color: #555 !important
+		
+		
+
+	
+	&__pagetitle
+		font-size: 18px
+		+fontWeight(300)
+		color: #181824
+		opacity: 0
+		pointer-events: none
+		transition: opacity 0.16s
+		
+		&_visible
+			opacity: 1
+			pointer-events: auto
+			transition: opacity 0.3s
+	
+	
+	
+	
+	&__logout
+		display: flex
+		align-items: center
+		border: 1px solid transparent
+		border-radius: $borderRadius
+		cursor: pointer
+		height: 36px
+		padding-left: 6px
+		padding-right: 6px
+		//+resp(padding-left, $inputPaddingX, (padding-right: 0))
+		transition: background-color 0.16s, border-color 0.16s, box-shadow 0.16s
+		
+		span
+			+fontWeight(400)
+			font-size: 14px
+			line-height: 14px
+			//margin-top: 2px
+			color: $colorBlack
+		
+		i
+			font-size: 20px
+			color: #babac5
+		
+		
+		&:hover
+			background-color: #e8e8e6
+			
+			i
+				color: #9595a9
+		
+		&:active
+			//box-shadow: 0 0 0 0.2rem rgb(28 192 197 / 50%)
+			background-color: #dbdbda
+			//border-color: #93e3e5
+			
+			i
+				color: #9595a9
+		
+		
+	
+	
+	
+	
+
+	
+	
+
+.content
+	flex: 1 1 100%
+	min-height: 500px
+	+resp(padding-top, $headerHeight)
+	display: grid
+	grid-template-columns: 100%
+	grid-template-rows: 1fr
+	gap: 0px
+	grid-auto-flow: row
+	grid-template-areas: ". ."
+	grid-area: content
+	background-color: #f8f9fb
+
+
+	
+.main
+	display: flex
+	flex-direction: row
+	
+	&__nav
+		flex: 0 0 292px
+		margin: 15px 5px
+		border: 1px solid #f1f3f7
+		background-color: #fff
+		border-radius: 5px
+		
+		ul
+			padding: 15px
+			
+			li
+				padding-left: 6px
+				height: 50px
+				display: flex
+				align-items: center
+				
+				&:not(.active)
+					cursor: pointer
+				
+				span
+					color: #aeb3bd
+				
+				&:hover
+					background-color: #fafcfd
+					box-shadow: -4px 0 0 0 #f7f9fb
+					transition: background-color 0.16s, box-shadow 0.16s
+					
+					span
+						color: #505b72
+						transition: color 0.16s
+				
+				&.active
+					box-shadow: -4px 0 0 0 #67a1e9
+					background-color: #fafcfd
+					
+					span
+						color: #505b72
+				
+				
+				+ li
+					border-top: 1px solid #f1f4f7
+						
+				
+				
+	
+	&__content
+		flex: 1 1 100%
+		margin: 15px 5px
+		
+		> *
+			pointer-events: none
+			opacity: 0
+			transition: opacity 0.3s
+		
+		&_visible
+			> *
+				pointer-events: auto
+				opacity: 1
+
+
+
+
+section
+	height: 100%
+	
+.section
+	&_center
+		display: flex
+		align-items: center
+		justify-content: center
+		text-align: center
+	
+	
+	&_error
+		h1
+			color: #d8dee3
+			font-size: 56px
+			+fontWeight(300)
+		
+		span
+			display: inline-block
+			margin-top: 20px
+			color: #b9bfc5
+			font-size: 20px
+			+fontWeight(300)
+		
+
+
+
+
+
+.footer
+	flex: 0 1 auto
+	//grid-area: footer
+	background-color: #e9ecef
+	padding-left: 1rem
+	padding-right: 25px
+	
+	&__block
+		+resp(height, $footerHeight)
+		display: flex
+		align-items: center
+	
+
+
+
+
+	
+
+.auth
+	height: 100%
+	display: flex
+	align-items: center
+	justify-content: center
+	background-color: #ecf0f4
+	+scrollAdapt()
+	
+	
+	&__form
+		padding: 30px
+		background-color: #fff
+		border-radius: 4px
+		
+		&_auth
+			width: 500px
+			
+			
+		&_reg
+			width: 500px
+		
+	
+	//&__row
+	
+	&__logo
+		display: flex
+		align-items: center
+		justify-content: center
+		
+		> div
+			padding-right: 10px
+			
+			img
+				width: 100px
+		> p
+			font-size: 26px
+			+fontWeight(400)
+			
+				
+	&__greetengs
+		font-size: 20px
+	
+	&__subgreetengs
+		font-size: 16px
+	
+	
+	//&__formblock
+	
+	
+	&__field
+		margin-bottom: 30px
+		width: 100%
+	
+	&__greetengs
+		margin-bottom: 5px
+	
+	//&__subgreetengs
+	
+	
+	&__textlink
+		cursor: pointer
+		display: inline-block
+		border-bottom: 1px solid transparent
+		+fontWeight(400)
+		
+		
+	&__forgot
+		color: #343a40
+		
+		&:hover
+			color: #343a40
+			border-color: #343a40
+		
+		
+	&__reg
+		color: #27bbbf
+		
+		&:hover
+			color: #008f93
+			border-color: #008f93
+	
+	
+	&__agreement
+		color: #27bbbf
+		
+		&:hover
+			color: #008f93
+			border-color: #008f93
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.ddrpopup
+	+scrollbar($sbBg, $sbSliderBg, $sbWidth, $sbBorderRadius, $sbSliderBorderRadius)
+	
+	&__win
+		&.commoninfo
+			background-color: #fff
+			
+			.ddrpopup__footer
+				display: none
+	
+.commoninfo // окно с общей информацией
+	border-radius: 34px
+	padding: 40px 26px 0px
+	
+	
+	h3, p, span, small, strong
+		+font(Roboto, sans-serif)
+	
+	&__scrollblock
+		+scrollbar(transparent, transparent, 1px)
+		overflow-y: scroll 
+		height: calc(100vh - 180px)
+		min-height: 400px
+		padding-right: 1rem
+	
+	&__line
+		height: 1px
+		background-color: #ddd
+	
+	&__tableblock
+		position: relative
+		
+	&__label
+		position: absolute
+		top: 27px
+		left: 10px
+		
+		p
+			font-size: 22px
+			width: min-content
+			
+	
+	&__table
+		border-spacing: 0 30px
+		border-collapse: separate
+		
+		tr
+			td
+				&:first-of-type
+					width: 40%
+					text-align: right
+					padding-right: 40px
+					vertical-align: top
+					
+				&:last-of-type
+					width: 60%
+				
+				p
+					font-size: 18px
+				
+				input, textarea
+					font-size: 18px
+				
+				
+				
+				
+				
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.card
+	position: relative
+	background-color: #fff
+	border: 1px solid #f1f3f7
+	border-radius: 5px
+	padding: 10px
+	//border-radius: 4px
+	//border: 1px solid #eee
+	//opacity: 0
+	//pointer-events: none
+	//transition: opacity 0.16s
+	
+	//&_visible
+	//	opacity: 1
+	//	pointer-events: auto
+	
+	
+	&__wait
+		position: absolute
+		top: 0
+		left: 0,
+		display: flex
+		align-items: center
+		justify-content: center
+		width: 100%
+		height: 100%
+		background-color: #fffffff2
+		border-radius: inherit
+		z-index: 10
+		
+		&_closing
+			opacity: 0
+			transition: opacity 0.3s ease 0.2s
+		
+		&_opening
+			opacity: 1
+			transition: opacity 0.3s ease 0.2s
+	
+	
+	.cardwait
+		text-align: center
+		
+		&__icon
+			filter: hue-rotate(170deg)
+			width: 50px
+			height: 50px
+		
+		&__text
+			margin-top: 5px
+			color: #a6a6b3
+			font-size: 14px
+	
+	
+	&__header
+		display: flex
+		justify-content: space-between
+		align-items: flex-start
+		margin-bottom: 2rem
+	
+	&__scroll
+		height: fit-content
+		min-height: inherit
+	
+	&__title
+		font-size: 16px
+		
+	&__desc
+		font-size: 12px
+	
+	&.scrolled
+		padding-right: 5px
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.paginator
+	display: inline-flex
+	border: 1px solid #e3e3eb
+	border-radius: 5px
+	overflow: hidden
+	background-color: #ebebf1
+	
+	&[disabled]
+		&::after
+			content: ''
+			position: absolute
+			top: 0
+			left: 0
+			display: block
+			width: 100%
+			height: 100%
+			background-color: rgba(#fff, 0.6)
+	
+	&__list
+		display: flex
+		
+		&_start
+			border-right: 1px solid #e3e3eb
+			
+		&_end
+			border-left: 1px solid #e3e3eb
+		
+	&__item
+		display: flex
+		align-items: center
+		justify-content: center
+		width: 40px
+		height: 40px
+		cursor: pointer
+		transition: background-color 0.16s
+		color: #707091
+		
+		i
+			color: #707091
+		
+		&:hover:not(.paginator__item_active):not([disabled])
+			background-color: darken(#ebebf1, 5%)
+			
+			
+		&_active
+			cursor: default
+			background-color: #9f9fb9
+			color: #fff
+			font-weight: bold
+		
+		&_hidden
+			display: none
+		
+		&:not(:last-of-type)
+			border-right: 1px solid #e3e3eb
+		
+		&[disabled]
+			background-color: #f7f7f7
+			cursor: default
+			
+			i
+				color: #d9d9df
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.ddrtabs
+	width: 100%
+	display: flex
+	
+	&__nav
+		flex: 1 0 250px
+		
+		li
+			word-break: break-all
+	
+	&__content
+		flex: 0 1 100%
+		word-break: break-all
+
+
+
+.ddrtabsnav
+	
+	&__item
+		min-height: 40px
+		padding: 5px	
+		display: flex
+		align-items: center
+		border: 1px solid transparent
+		border-right: none
+		position: relative
+		+fontWeight(300)
+		transition: color 0.16s
+		
+		
+		
+		&:not(.ddrtabsnav__item_active)
+			cursor: pointer
+			border-right: 1px solid #d4dedf
+			color: #afbdc3
+			
+			&:hover
+				color: #486264
+			
+
+		&_active
+			//box-shadow: 2px 0 0 -1px #fff
+			border-color: #d4dedf
+			border-radius: 5px 0 0 5px
+			color: #486264
+			
+			
+			
+		
+
+
+.ddrtabscontent
+	padding-left: 2rem
+	
+	&__item
+		display: none
+		
+		&_visible
+			display: block
+	
+	
+
+
+
+
+
+
+
+
+.form
+	&__item
+		padding-bottom: 2rem
+		
+	&__label
+		display: block
+		margin-bottom: 2px
+		font-size: 13px
+	
+	&__line
+		+hr(10%, 90%, #d4dbe0)
+
+
+
+
+
+
+
+.hovered
+	border: 1px solid
+	+ddrActives((normal: (bg: #fff, border: #eaecf1, color: #647f8b, animate: 0.3s), hover: (bg: #f2f6f9, border: #ecf0f3, color: #2d5364, animate: 0.16s), active: (bg: #e9eff3, border: #d9e4eb, color: #005a83)))
+	display: flex
+	
+	
+	
+
+
+
+
+
+
+
+
+.chat
+	display: flex
+	flex-direction: column
+	align-items: stretch
+	min-height: 400px
+	height: 70vh
+	overflow-y: scroll
+	+scrollbar(#e6eaed, #bfcfdb, 6px, 2px, 2px)
+	
+	&__item
+		display: flex
+		align-items: flex-end
+		
+		&:first-of-type
+			margin-top: auto
+		
+		&:not(:first-of-type)
+			margin-top: 2rem
+		
+		
+		&-left
+			justify-content: flex-start
+			
+			.chat__post
+				position: relative
+				background-color: #f0f5f7
+				border-radius: 10px 10px 10px 0px !important
+				transform: translateX(10px)
+				
+				&::after
+					content: ''
+					position: absolute
+					left: -10px
+					bottom: -1px
+					width: 0
+					height: 0
+					border-bottom: 14px solid #f0f5f7
+					border-left: 14px solid transparent
+				
+				
+			
+		&-right
+			justify-content: flex-start
+			flex-direction: row-reverse
+			//transform: translateX(-10px)
+			
+			.chat__post
+				position: relative
+				background-color: #f1f7d7
+				border-radius: 10px 10px 0px 10px !important
+				transform: translateX(-10px)
+				
+				&::after
+					content: ''
+					position: absolute
+					right: -10px
+					bottom: -1px
+					width: 0
+					height: 0
+					border-bottom: 14px solid #f0f5f7
+					border-right: 14px solid transparent
+		
+	
+	
+	&__post
+		max-width: 70%
+		
+		> *
+			white-space: pre-line
+			
+	&__avatar
+		
+		width: 40px
+		height: 40px
+		//display: flex
+		display: none
+		align-items: center
+		justify-content: center
+		background-color: #f3f5e5
+		border-radius: 50%
+	
+	&__author
+		font-size: 13px
+		display: block
+		margin-bottom: 5px
+		color: #44938b
+	
+	//&__message
+		
+	
+	&__date
+		display: block
+		text-align: right
+
+
+
+
+
+
+
+
+
+.waitnotify
+	position: fixed
+	display: flex
+	flex-direction: column
+	align-items: flex-end
+	bottom: 20px
+	right: 20px
+	z-index: 120
+	
+	
+	&__item
+		display: flex
+		align-items: center
+		box-shadow: 0px 4px 8px -2px rgb(0 0 0 / 47%)
+		border-radius: 5px
+		padding: 10px 15px
+		max-width: 500px
+		
+		
+		&:not(:last-of-type)
+			margin-bottom: 15px
+		
+		
+		&:not(.waitnotify__item_done):not(.waitnotify__item_error):not(.waitnotify__item_cancelled)
+			background-color: #d9d9d9
+			border: 1px solid darken(#d9d9d9, 5%)
+			
+		
+		
+		
+		&_done
+			background-color: #89d16f
+			border: 1px solid darken(#89d16f, 5%)
+			
+			.waitnotify__message
+				color: #1b6600
+			
+			i
+				color: #238500
+		
+		&_cancelled
+			background-color: #ede48c
+			border: 1px solid darken(#ede48c, 5%)
+			
+			.waitnotify__message
+				color: #876e08
+			
+			i
+				color: #a99900
+				
+		
+		&_error
+			background-color: #df7a7a
+			border: 1px solid darken(#df7a7a, 5%)
+			
+			.waitnotify__message
+				color: #500000
+			
+			i
+				color: #a90000
+			
+	
+	&__iconcontainer
+		margin-right: 20px
+		flex: 0 1 auto
+	
+	
+	&__icon
+		width: 30px
+		height: 30px
+		display: flex
+		align-items: center
+		justify-content: center
+		
+		img
+			width: 100%
+			height: auto
+			filter: hue-rotate(30deg) brightness(0.8)
+			
+		i
+			font-size: 30px
+			
+		
+	&__message
+		word-break: break-word
+		line-height: 18px
+		text-align: left
+		flex: 0 1 auto
+		display: inline
+		font-size: 16px
+		color: #727272
+	
+
+
+
+
+
+
+
+
+
+
+
+
+.currentselection
+	position: relative
+	top: -20px
+	height: 0
+	
+	&__block
+		display: inline-flex
+		align-items: center
+		transform: translateY(-50%)
+	
+	&__label
+		display: flex
+		align-items: center
+		padding-left: 10px
+		padding-right: 10px
+		background-color: #ededed
+		border-radius: 5px
+		height: 26px
+		
+		p
+			color: #454545
+			+font('Helvetica, sans-serif', bold)
+
+
+
+
+
+
+
+
+
+
+.totalcount
+	position: absolute
+	top: 0
+	left: 0
+	display: flex
+	align-items: center
+	justify-content: center
+	width: 100%
+	max-width: calc(100vw - 52px)
+	height: 100%
+	
+	
+	&__value
+		font-size: 16px
+		color: #dedfe5
+		+font('Helvetica, sans-serif', bold)
+
+
+
+
+
+
+
+
+// ------------------------------- sortable
+	
+//	.ui-sortable-helper
+//		display: table-row !important
+//		//display: flex !important
+//		//align-items: center
+//		//justify-content: space-between
+//		cursor: move
+//		height: 4rem
+//		
+//		td
+//			height: inherit
+//			display: table-cell
+//		
+//		td:nth-child(1)
+//			//background-color: #f77
+//			vertical-align: middle
+//		
+//		td:nth-child(2)
+//			width: 100% !important
+//			//background-color: #f77
+//			vertical-align: middle
+//		
+//		td:nth-child(3)
+//			width: 4rem !important
+//			//background-color: #f77
+//			vertical-align: middle
+//			
+//			
+//	.sortable-placeholder
+//		background-color: #f00
+//		
+
+
+
+
+
+
+
+.timesheetitem
+	+ddrActives((hover: (bg: #f0f5f9 !important, animate: 0.16s), active: (bg: #cae7fd !important)))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@keyframes newOrder
+	from
+		background-color: #eeffc5
+		border-color: #dbf3a1
+	
+	70%
+		background-color: #eeffc5
+		border-color: #dbf3a1
+
+	to
+		background-color: #fcfdfd
+		border-color: #e9ecef
+
+
+
+.order
+	background-color: #fcfdfd
+	margin-bottom: 8px
+	display: flex
+	align-items: center
+	justify-content: space-between
+	
+	&__block
+		display: flex
+		align-items: center
+		height: 5rem
+		position: relative
+		padding-left: 8px
+		padding-right: 8px
+		
+		&:not(.order__block-noborder)
+			&::after
+				content: ''
+				position: absolute
+				top: 10%
+				right: 0
+				width: 1px
+				height: 80%
+				background-color: #ddd
+		
+	
+	
+	
+	&__id
+		width: 50px
+		justify-content: center
+		
+		strong
+			font-size: 14px
+			+fontWeight(bold)
+		
+		
+			
+	&__datetime
+		width: 170px
+		
+		p
+			font-size: 12px
+			line-height: 18px
+	
+	
+	&__price
+		width: 60px
+		
+		p
+			font-size: 14px
+
+
+	&__ordernumber
+		width: 70px
+		
+		p
+			font-size: 13px
+			+fontWeight(bold)
+	
+	
+	&_new
+		background-color: #f00
+		animation: newOrder 600s 1 ease-in-out
+		animation-fill-mode: forwards
+	
+	
+	//&__content
+	//	display: flex
+	//	height: 100%
+	//	flex-direction: column
+	//	justify-content: space-between
+	//	
+	//	&_top
+	//		border-bottom: 1px solid #e8ecef
+	//		padding-bottom: 4px
+	//
+	//
+	//&__link
+	//	display: flex
+	//	align-items: center
+	//	justify-content: center
+	//	width: 60px
+	//	height: 100%
+	//	border-left: 1px solid #e8ecef
+	//
+	//&__right
+	//	display: flex
+	//	align-items: center
+	//	justify-content: center
+	//	width: 80px
+	//	height: 100%
+	//	border-left: 1px solid #e8ecef
+	//	
+	//
+	
+
+
+
+
+
+
+

@@ -1,0 +1,9 @@
+<div
+	{{$attributes->class([
+		'ddrtable__foot',
+	])}}
+	ddrtablefoot
+	role="rowgroup"
+	>
+	{{$slot}}
+</div>

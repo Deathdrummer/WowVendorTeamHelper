@@ -1,0 +1,138 @@
+@import "@sass/common/mixins/common"
+
+// кнопки
+// - normal: (фон, граница, цвет текста и иконок, тень, длительность анимации)
+// - hover: (фон, граница, цвет текста и иконок, тень, длительность анимации)
+// - focus: (фон, граница, цвет текста и иконок, тень, длительность анимации)
+// - active: (фон, граница, цвет текста и иконок, тень)
+// - disabled: (фон, граница, цвет текста и иконок, тень)
+
+// (normal: (bg: ..., border: ..., color: ..., boxShadow: ..., animate: ...), hover: (...), focus: (...), active: (...[без анимации]), disabled: (...[без анимации]))
+=ddrActives($args)
+	//display: revert
+	//vertical-align: middle
+	//word-spacing: normal
+	//cursor: pointer
+	//padding: all
+	//line-height: all
+	//border-radius: all
+	
+	$normal: map-get($args, 'normal')
+	$hover: map-get($args, 'hover')
+	$focus: map-get($args, 'focus')
+	$active: map-get($args, 'active')
+	$disabled: map-get($args, 'disabled')
+	
+	@if _is('map', $normal)
+		@if map-get($normal, 'bg')
+			background-color: map-get($normal, 'bg')
+		
+		@if map-get($normal, 'border')
+			border-color: map-get($normal, 'border')
+		
+		@if map-get($normal, 'color')
+			color: map-get($normal, 'color')
+			fill: map-get($normal, 'color')
+			
+			i, svg, p, span, strong, small
+				color: map-get($normal, 'color')
+				fill: map-get($normal, 'color')
+			
+		
+		@if map-get($normal, 'boxShadow')
+			box-shadow: map-get($normal, 'boxShadow')
+		
+		@if map-get($normal, 'animate')
+			transition: background-color #{map-get($normal, 'animate')}, border-color #{map-get($normal, 'animate')}, color #{map-get($normal, 'animate')}, box-shadow #{map-get($normal, 'animate')}, fill #{map-get($normal, 'animate')}
+			
+	
+	@if _is('map', $hover)
+		&:hover
+			@if map-get($hover, 'bg')
+				background-color: map-get($hover, 'bg')
+			
+			@if map-get($hover, 'border')
+				border-color: map-get($hover, 'border')
+			
+			@if map-get($hover, 'color')
+				color: map-get($hover, 'color')
+				fill: map-get($hover, 'color')
+				
+				i, svg, p, span, strong, small
+					color: map-get($hover, 'color')
+					fill: map-get($hover, 'color')
+			
+			@if map-get($hover, 'boxShadow')
+				box-shadow: map-get($hover, 'boxShadow')
+			
+			@if map-get($hover, 'animate')
+				transition: background-color #{map-get($hover, 'animate')}, border-color #{map-get($hover, 'animate')}, color #{map-get($hover, 'animate')}, box-shadow #{map-get($hover, 'animate')}, fill #{map-get($hover, 'animate')}
+	
+	
+	@if _is('map', $focus)
+		&:focus
+			@if map-get($focus, 'bg')
+				background-color: map-get($focus, 'bg')
+			
+			@if map-get($focus, 'border')
+				border-color: map-get($focus, 'border')
+			
+			@if map-get($focus, 'color')
+				color: map-get($focus, 'color')
+				fill: map-get($focus, 'color')
+				
+				i, svg, p, span, strong, small
+					color: map-get($focus, 'color')
+					fill: map-get($focus, 'color')
+			
+			@if map-get($focus, 'boxShadow')
+				box-shadow: map-get($focus, 'boxShadow')
+			
+			@if map-get($focus, 'animate')
+				transition: background-color #{map-get($focus, 'animate')}, border-color #{map-get($focus, 'animate')}, color #{map-get($focus, 'animate')}, box-shadow #{map-get($focus, 'animate')}, fill #{map-get($focus, 'animate')}
+	
+	
+	@if _is('map', $active)
+		&:active, &.active
+			@if map-get($active, 'bg')
+				background-color: map-get($active, 'bg')
+			
+			@if map-get($active, 'border')
+				border-color: map-get($active, 'border')
+			
+			@if map-get($active, 'color')
+				color: map-get($active, 'color')
+				fill: map-get($active, 'color')
+				
+				i, svg, p, span, strong, small
+					color: map-get($active, 'color')
+					fill: map-get($active, 'color')
+			
+			@if map-get($active, 'boxShadow')
+				box-shadow: map-get($active, 'boxShadow')
+			
+			transition: background-color 0s, border-color 0s, color 0s, box-shadow 0s, fill 0s
+		
+	
+	@if _is('map', $disabled)
+		&:disabled, &.disabled, &[disabled]
+			@if map-get($disabled, 'bg')
+				background-color: map-get($disabled, 'bg')
+			
+			@if map-get($disabled, 'border')
+				border-color: map-get($disabled, 'border')
+			
+			@if map-get($disabled, 'color')
+				color: map-get($disabled, 'color')
+				fill: map-get($disabled, 'color')
+				
+				i, svg, p, span, strong, small
+					color: map-get($disabled, 'color')
+					fill: map-get($disabled, 'color')
+				
+			
+			@if map-get($disabled, 'boxShadow')
+				box-shadow: map-get($disabled, 'boxShadow')
+			
+			cursor: default !important
+			transition: background-color 0s !important, border-color 0s !important, color 0s !important, box-shadow 0s !important, fill 0s !important

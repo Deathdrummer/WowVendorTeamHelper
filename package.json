@@ -1,0 +1,32 @@
+{
+    "private": true,
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build"
+    },
+    "devDependencies": {
+        "axios": "^1.1.2",
+        "laravel-echo": "^1.15.0",
+        "laravel-vite-plugin": "^0.7.2",
+        "pusher-js": "^8.0.2",
+        "vite": "^4.0.0",
+        "vite-plugin-dynamic-import": "^1.2.7"
+    },
+    "dependencies": {
+        "@fortawesome/fontawesome-free": "^6.4.0",
+        "@rollup/plugin-inject": "^5.0.3",
+        "compressorjs": "^1.2.1",
+        "cors": "^2.8.5",
+        "fortawesome": "^0.0.1-security",
+        "jquery": "^3.6.4",
+        "js-datepicker": "^5.18.2",
+        "locutus": "^2.0.16",
+        "lodash": "^4.17.21",
+        "sass": "^1.61.0",
+        "sass-loader": "^13.2.2",
+        "style-loader": "^3.3.2",
+        "style-module": "^1.0.0",
+        "tapjs": "^1.0.9",
+        "tippy.js": "^6.3.7"
+    }
+}

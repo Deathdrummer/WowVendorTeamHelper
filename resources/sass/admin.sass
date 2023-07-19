@@ -1,0 +1,913 @@
+@import "@sass/common/mixins/common"
+@import "@sass/common/mixins/scrollAdapt"
+@import "@sass/common/mixins/scrollbar"
+@import "@sass/common/mixins/placeholder"
+@import "@sass/common/mixins/resp"
+@import "@sass/common/mixins/addict"
+@import "@sass/common/mixins/font"
+@import "@sass/common/mixins/hr"
+@import "@sass/common/mixins/actives"
+@import "@sass/common/vars"
+@import "@sass/common/ui/admin"
+//@import url('https://fonts.googleapis.com/css2?family=Fira+Sans:wght@100;200;300;400;500;600;700;800;900&display=swap')
+//@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@100;200;300;400;500;600;700;800;900&display=swap')
+@import url('https://fonts.googleapis.com/css2?family=Mulish:wght@200;300;400;500;600;700;800;900&display=swap')
+
+body
+	+scrollbar($sbBg, $sbSliderBg, $sbWidth, $sbBorderRadius, $sbSliderBorderRadius)
+	background-color: #ecf0f4
+
+
+*
+	+font('Mulish')
+	
+
+
+
+
+
+.notifyjs-corner
+	//right: calc(-100vw + 100% + var(--ddr-notifyXOffset)) !important
+	bottom: var(--ddr-notifyYOffset) !important
+	text-shadow: none !important
+	
+	[data-notify-text]
+		+fontWeight(400)
+		text-shadow: none !important
+	
+
+
+.ddrpopup
+	+scrollbar($sbBg, $sbSliderBg, $sbWidth, $sbBorderRadius, $sbSliderBorderRadius)
+	
+
+input, textarea, [contenteditable]
+	+placeholder(#ccc)
+
+
+.app
+	min-height: 100%
+	display: flex
+	flex-direction: column
+	width: 100vw
+	position: relative
+	margin-left: calc(-100vw + 100%)
+	right: calc(-100vw + 100% + $sbWidth)
+	padding-left: $sbWidth
+
+
+
+
+
+.header
+	flex: 0 1 auto
+	background-color: #fff
+	position: fixed
+	top: 0
+	left: 0
+	//transform: translateX(-10px)
+	width: 100vw
+	box-shadow: 18px 1px 20px rgb(0 0 0 / 10%)
+	z-index: 11
+	
+	&__container
+		display: flex
+	
+	
+	&__left
+		background-color: #181824
+		flex: 0 0 250px
+		padding-left: 1rem
+		padding-right: 1rem
+		//transform: translateX(10px)
+	
+	&__logo
+		width: 100%
+		margin-top: 8px
+		margin-right: 18px
+		display: flex
+		align-items: center
+		justify-content: center
+		
+		
+		> div
+			padding-right: 10px
+			
+		> p
+			font-size: 16px
+			line-height: 18px
+			+fontWeight(400)
+			color: #e6e6ed
+			word-break: break-word
+	
+	
+	
+	&__right
+		flex: 0 1 100%
+		padding-left: 2rem
+		padding-right: 15px
+	
+	&__block
+		+resp(height, $headerHeight)
+		display: flex
+		align-items: center
+	
+		&_center
+			justify-content: center
+		
+	
+	&__pagetitle
+		font-size: 18px
+		+fontWeight(300)
+		color: #181824
+		opacity: 0
+		pointer-events: none
+		transition: opacity 0.16s
+		
+		&_visible
+			opacity: 1
+			pointer-events: auto
+			transition: opacity 0.3s
+	
+	
+	
+	
+	&__logout
+		display: flex
+		align-items: center
+		background-color: #fff
+		border: 1px solid transparent
+		border-radius: $borderRadius
+		cursor: pointer
+		+resp(height, $inputHeight)
+		+resp(padding-left, $inputPaddingX, (padding-right: 0))
+		transition: background-color 0.16s, border-color 0.16s, box-shadow 0.16s
+		
+		span
+			+fontWeight(400)
+			font-size: 14px
+			line-height: 14px
+			//margin-top: 2px
+			color: $colorBlack
+		
+		i
+			margin-right: 5px
+			font-size: 16px
+			color: #9f9fa9
+		
+		
+		&:hover
+			border-color: #d6eeef
+			
+			i
+				color: #181824
+		
+		&:active
+			box-shadow: 0 0 0 0.2rem rgb(28 192 197 / 50%)
+			//background-color: #16afb2
+			border-color: #93e3e5
+		
+		
+	
+	
+	
+	
+
+.content
+	flex: 1 1 100%
+	min-height: 500px
+	+resp(padding-top, $headerHeight)
+	display: grid
+	grid-template-columns: 250px calc(100% - 250px) 
+	grid-template-rows: 1fr
+	gap: 0px
+	grid-auto-flow: row
+	grid-template-areas: ". ."
+	grid-area: content
+
+
+
+
+
+.aside
+	background-color: #181824
+	height: 100%
+	
+	
+	&__nav
+		position: sticky
+		+resp(top, $headerHeight)
+		transform: translateY(1rem)
+		z-index: 1
+		padding-bottom: 20px
+		
+		ul
+			li
+			
+				&:not(.opened)
+					.aside__navitem
+						.navitemhandler
+							&:hover
+								background-color: #51516a
+				
+				span
+					word-break: break-word
+				
+				&.opened
+					background-color: #2f2f44
+					
+					.aside__navitem
+						.navitemhandler
+							cursor: default
+							
+							&:hover, &:active
+								background-color: none!important
+							
+							i
+								transform: rotate(-90deg)
+								color: #d8d8e5
+								//&::after
+									//content: '\f107' !important
+					
+					ul
+						display: block !important
+						
+						
+				&.opened:not(.active)
+					.aside__navitem
+						&:hover
+							background-color: #3a3a4e !important
+					
+				&:not(.active)
+					cursor: pointer
+				
+				+ li
+					border-top: 1px solid #2f2f44
+					
+					
+				
+				&.active
+					> .aside__navitem	
+						border-right-color: #ff6969
+						background-color: #404058
+						
+						span
+							color: #fff
+				
+				
+				> ul
+					padding-left: 14px
+					display: none
+					//margin-bottom: 15px
+					
+					> li
+						border-left: 1px solid #4d4d64
+						
+						.aside__navitem
+							min-height: 40px
+							padding-top: 4px
+							padding-bottom: 4px
+							padding-right: 4px
+						
+						&:hover
+							.aside__navitem
+								background-color: #3a3a4e !important
+								
+						&.active
+							.aside__navitem
+								background-color: #404058 !important
+							
+						
+						> .aside__navitem
+							span
+								font-size: 0.8em
+	
+	
+	
+	&__navitem
+		display: flex
+		align-items: center
+		justify-content: space-between
+		min-height: 50px
+		border-right: 3px solid transparent
+		padding-left: 1rem
+		padding-right: 5px
+		padding-top: 4px
+		padding-bottom: 4px
+		transition: background-color 0.16s
+		
+		&:hover
+			background-color: #2f2f44
+		
+		&:active
+			background-color: #3e3e56
+			transition: background-color 0s
+	
+		span
+			color: #bebec7
+		
+		.navitemhandler
+			flex: 0 0 auto
+			cursor: pointer
+			display: flex
+			align-items: center
+			justify-content: center
+			width: 36px
+			height: 42px
+			border-radius: 5px
+			background-color: #7e7e9d26
+			transition: background-color 0.16s
+			
+			i
+				display: inline-block
+				+fontAwesome()
+				font-style: normal
+				color: #9999ad
+				//margin-right: 15px
+				transition: transform 0.16s
+				
+				&::after
+					content: '\f104'	
+			
+			&:active
+				background-color: #7e7e9d66 !important
+	
+	
+	
+	
+	
+	
+	
+	
+.main
+	display: flex
+	flex-direction: column
+	
+	&__content
+		flex: 1 1 100%
+		padding: 1rem
+		padding-top: 15px
+		
+		> *
+			pointer-events: none
+			opacity: 0
+			transition: opacity 0.3s
+		
+		&_visible
+			> *
+				pointer-events: auto
+				opacity: 1
+
+
+
+
+section
+	height: 100%
+	
+.section
+	&_center
+		display: flex
+		align-items: center
+		justify-content: center
+		text-align: center
+	
+	
+	&_error
+		h1
+			color: #d8dee3
+			font-size: 56px
+			+fontWeight(300)
+		
+		span
+			display: inline-block
+			margin-top: 20px
+			color: #b9bfc5
+			font-size: 20px
+			+fontWeight(300)
+		
+
+
+
+
+
+.footer
+	flex: 0 1 auto
+	//grid-area: footer
+	background-color: #e9ecef
+	padding-left: 1rem
+	padding-right: 25px
+	
+	&__block
+		+resp(height, $footerHeight)
+		display: flex
+		align-items: center
+	
+
+
+
+
+	
+
+.auth
+	height: 100%
+	display: flex
+	align-items: center
+	justify-content: center
+	background-color: #ecf0f4
+	+scrollAdapt()
+	
+	
+	&__form
+		padding: 30px
+		background-color: #fff
+		border-radius: 4px
+		
+		&_auth
+			width: 500px
+			
+			
+		&_reg
+			width: 500px
+		
+	
+	//&__row
+	
+	&__logo
+		display: flex
+		align-items: center
+		justify-content: center
+		
+		> div
+			padding-right: 10px
+			
+		> p
+			font-size: 26px
+			+fontWeight(400)
+			
+				
+	&__greetengs
+		font-size: 20px
+	
+	&__subgreetengs
+		font-size: 16px
+	
+	
+	//&__formblock
+	
+	
+	&__field
+		margin-bottom: 30px
+		width: 100%
+	
+	&__greetengs
+		margin-bottom: 5px
+	
+	//&__subgreetengs
+	
+	
+	&__textlink
+		cursor: pointer
+		display: inline-block
+		border-bottom: 1px solid transparent
+		+fontWeight(400)
+		
+		
+	&__forgot
+		color: #343a40
+		
+		&:hover
+			color: #343a40
+			border-color: #343a40
+		
+		
+	&__reg
+		color: #27bbbf
+		
+		&:hover
+			color: #008f93
+			border-color: #008f93
+	
+	
+	&__agreement
+		color: #27bbbf
+		
+		&:hover
+			color: #008f93
+			border-color: #008f93
+	
+
+
+
+
+
+
+
+
+
+.form
+	&__item
+		padding-bottom: 2rem
+		
+	&__label
+		display: block
+		margin-bottom: 2px
+		font-size: 13px
+	
+	&__line
+		+hr(10%, 90%, #d4dbe0)
+		
+
+
+
+
+
+
+
+
+
+
+
+.card
+	position: relative
+	background-color: #fff
+	padding: 15px
+	border-radius: 4px
+	//opacity: 0
+	//pointer-events: none
+	//transition: opacity 0.16s
+	
+	//&_visible
+	//	opacity: 1
+	//	pointer-events: auto
+	
+	
+	&__wait
+		position: absolute
+		top: 0
+		left: 0,
+		display: flex
+		align-items: center
+		justify-content: center
+		width: 100%
+		height: 100%
+		background-color: #fffffff2
+		border-radius: inherit
+		z-index: 10
+		
+		&_closing
+			opacity: 0
+			transition: opacity 0.3s ease 0.2s
+	
+	
+	.cardwait
+		text-align: center
+		
+		&__icon
+			filter: hue-rotate(170deg)
+			width: 50px
+			height: 50px
+		
+		&__text
+			margin-top: 5px
+			color: #a6a6b3
+			font-size: 14px
+	
+	
+	&__header
+		display: flex
+		justify-content: space-between
+		align-items: flex-start
+		margin-bottom: 2rem
+		
+	
+	&__title
+		font-size: 16px
+		
+	&__desc
+		font-size: 12px
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.ddrtabs
+	width: 100%
+	display: flex
+	
+	&__nav
+		flex: 1 0 250px
+		
+		&-auto
+			flex-basis: auto
+		
+		li
+			
+			word-break: break-word
+	
+	&__content
+		flex: 0 1 100%
+		word-break: break-all
+
+
+
+.ddrtabsnav
+	height: 100%
+	position: relative
+	overflow-y: hidden
+	touch-callout: none
+	user-select: none
+	
+	&::after
+		content: ''
+		position: absolute
+		right: 0
+		//top: 0
+		background-color: #d4dedf
+		width: 1px
+		height: 100%
+	
+	
+	&__item
+		min-height: 40px
+		padding: 5px	
+		display: flex
+		align-items: center
+		border: 1px solid transparent
+		border-right: none
+		position: relative
+		+fontWeight(300)
+		transition: color 0.16s
+		
+		
+		
+		&:not(.ddrtabsnav__item_active)
+			cursor: pointer
+			border-right: 1px solid #d4dedf
+			color: #afbdc3
+			
+			&:hover
+				color: #486264
+			
+
+		&_active
+			//box-shadow: 2px 0 0 -1px #fff
+			border-color: #d4dedf
+			border-radius: 5px 0 0 5px
+			color: #486264
+			
+			
+			
+		
+
+
+.ddrtabscontent
+	padding-left: 2rem
+	
+	&__item
+		display: none
+		
+		&_visible
+			display: block
+	
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//-------------------------------------------------------------------------------------------------- Свои стили
+
+
+.timesheetperiods
+	li
+		position: relative
+		+ddrActives((normal: (border: #28cbcf, color: #9ba6bf), hover: (bg: #f4fdfd, border: #28cbcf, color: #364c7c, animate: 0.16s), active: (bg: #a1e3e5, border: #a1e3e5)))
+		//overflow: hidden
+		
+		&.active
+			cursor: default
+			pointer-events: none
+			background: #28cbcf
+			border-color: #28cbcf
+			
+			p
+				color: #fff !important
+		
+		.counter
+			position: absolute
+			top: -10px
+			right: -10px 
+			display: flex
+			align-items: center
+			justify-content: center
+			width: 20px
+			height: 16px
+			font-size: 10px
+			border-radius: 30%
+			background-color: #fff
+			border: 1px solid #dbdbdb
+			color: #444 !important
+			
+
+
+
+.timesheetcontainer
+	width: 100%
+	height: 100%
+
+
+
+
+
+.timesheetorders
+	border-top: 1px solid #efefef
+	border-bottom: 1px solid #efefef
+	background-color: #ecf3f5
+	padding: 5px
+	
+	[ddrtablehead]
+		background-color: #d8e2e5 !important
+	
+
+
+
+#timesheetList [ddrtabletr][opened]
+	background-color: #ecf3f5 !important
+
+
+
+
+
+
+
+
+
+
+.chat
+	display: flex
+	flex-direction: column
+	align-items: stretch
+	min-height: 400px
+	height: 70vh
+	overflow-y: scroll
+	+scrollbar(#e6eaed, #bfcfdb, 6px, 2px, 2px)
+	
+	&__item
+		display: flex
+		align-items: flex-end
+		
+		&:first-of-type
+			margin-top: auto
+		
+		&:not(:first-of-type)
+			margin-top: 2rem
+		
+		
+		&-left
+			justify-content: flex-start
+			
+			.chat__post
+				position: relative
+				background-color: #f0f5f7
+				border-radius: 10px 10px 10px 0px !important
+				transform: translateX(10px)
+				
+				&::after
+					content: ''
+					position: absolute
+					left: -10px
+					bottom: -1px
+					width: 0
+					height: 0
+					border-bottom: 14px solid #f0f5f7
+					border-left: 14px solid transparent
+				
+				
+			
+		&-right
+			justify-content: flex-start
+			flex-direction: row-reverse
+			//transform: translateX(-10px)
+			
+			.chat__post
+				position: relative
+				background-color: #f1f7d7
+				border-radius: 10px 10px 0px 10px !important
+				transform: translateX(-10px)
+				
+				&::after
+					content: ''
+					position: absolute
+					right: -10px
+					bottom: -1px
+					width: 0
+					height: 0
+					border-bottom: 14px solid #f0f5f7
+					border-right: 14px solid transparent
+		
+	
+	
+	&__post
+		max-width: 70%
+		
+		> *
+			white-space: pre-line
+			
+	&__avatar
+		
+		width: 40px
+		height: 40px
+		//display: flex
+		display: none
+		align-items: center
+		justify-content: center
+		background-color: #f3f5e5
+		border-radius: 50%
+	
+	&__author
+		font-size: 13px
+		display: block
+		margin-bottom: 5px
+		color: #44938b
+	
+	&__message
+		
+	
+	&__date
+		display: block
+		text-align: right
+
+
+
+
+
+
+
+
+.statusitem
+	display: flex
+	align-items: center
+	cursor: pointer 
+	padding: 5px
+	margin-top: 2px
+	+ddrActives((normal: (border: #28cbcf), hover: (bg: #f9f9f9, animate: 0.16s), active: (bg: #e8edf1)))
+	border-radius: 3px
+	
+	&-active
+		cursor: default !important
+		background-color: #e8edf1 !important
+		pointer-events: none
+		
+	
+	&__color
+		width: 2rem
+		height: 2rem
+		border-radius: 50%
+	
+	&__icon
+		font-size: 16px
+		
+	&__name
+		font-size: 12px
+		margin-left: 4px
+
+
+
+
+
+.timesheetitem
+	+ddrActives((hover: (bg: #f0f5f9 !important, animate: 0.16s), active: (bg: #cae7fd !important)))
