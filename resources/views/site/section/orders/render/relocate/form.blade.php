@@ -29,8 +29,7 @@
 	</div>
 	
 			
-	<input type="hidden" name="timesheet_id" value="">
-	
+	<input type="hidden" name="timesheet_id" value=""> 
 	
 	{{-- @if($type == 'move')
 		<input type="hidden" name="timezone_id" value="{{$timezone['id'] ?? null}}">
