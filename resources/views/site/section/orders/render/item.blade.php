@@ -10,7 +10,6 @@
 	])
 	order="{{$id ?? null}}"
 	>
-	
 	<div class="col-auto">
 		<div class="order__block order__id">
 			<strong>{{$id ?? null}}</strong>
