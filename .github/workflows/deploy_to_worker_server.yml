@@ -1,4 +1,4 @@
-name: Deploy
+name: Публикация на events.vendorteam.ru
 
 on:
   push
