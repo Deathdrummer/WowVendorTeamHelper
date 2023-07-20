@@ -4,9 +4,9 @@ on:
   push
 
 env:
-  SERVER_HOST: 159.253.18.128
-  SERVER_USER: wow_vendor_team_usr
-  SERVER_PATH: /var/www/wow_vendor_team_usr/data/www/events.vendorteam.ru
+  SERVER_HOST: 46.36.220.119
+  SERVER_USER: events_usr
+  SERVER_PATH: /var/www/events_usr/data/www/events.vendorteam.ru
 
 jobs:
 
