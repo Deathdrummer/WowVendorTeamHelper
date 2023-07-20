@@ -12,7 +12,7 @@ jobs:
 
   deploy:
     runs-on: ubuntu-latest
-    if: "contains(github.event.head_commit.message, '--UPLOAD')"
+    if: "contains(github.event.head_commit.message, '--D')"
     steps:
       - uses: actions/checkout@v3
 
@@ -27,4 +27,4 @@ jobs:
         run: ssh-keyscan -H ${{ env.SERVER_HOST }} >> ~/.ssh/known_hosts
       
       # Deploy
-      - run: rsync --exclude=/test/test.js -rc --delete . ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }}:${{ env.SERVER_PATH }}
+      - run: rsync --exclude=/node_modules/ --exclude=/vendor/ --exclude=/.env -rc --delete . ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }}:${{ env.SERVER_PATH }}
