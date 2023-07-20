@@ -3,7 +3,7 @@ name: Публикация на events.vendorteam.ru
 on:
   push:
     paths-ignore:
-      - '/node_modules/, /vendor/, /.env, /test/**'
+      - 'node_modules/, vendor/, .env, test/**'
 
 env:
   SERVER_HOST: 159.253.18.128
