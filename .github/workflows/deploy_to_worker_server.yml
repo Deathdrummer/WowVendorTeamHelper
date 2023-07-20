@@ -1,32 +1,22 @@
-name: Публикация на events.vendorteam.ru
-
-on:
-  push:
-    paths-ignore:
-      - 'node_modules/, vendor/, .env, test/**'
-
-env:
-  SERVER_HOST: 159.253.18.128
-  SERVER_USER: wow_vendor_team_usr
-  SERVER_PATH: /var/www/wow_vendor_team_usr/data/www/events.vendorteam.ru
-
+on: push
+name: Публикация на empin-pro.ru
 jobs:
-
-  deploy:
+  FTP-Deploy-Action:
+    name: SSH-Deploy
     runs-on: ubuntu-latest
     if: "contains(github.event.head_commit.message, '--UPLOAD')"
     steps:
       - uses: actions/checkout@v3
-
-      # Install ssh key
-      - name: Install SSH Key
-        uses: shimataro/ssh-key-action@v2.3.1
-        with:
-          key: "${{ secrets.EV_VEN_KEY }}"
-          known_hosts: "just-a-placeholder-so-we-dont-get-errors"
-          
-      - name: Generate auth hosts
-        run: ssh-keyscan -H ${{ env.SERVER_HOST }} >> ~/.ssh/known_hosts
-
-      # Deploy
-      - run: rsync -rc --delete . ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }}:${{ env.SERVER_PATH }}
+         with:
+          fetch-depth: 2
+    
+    - name: Deploy to Server
+      uses: easingthemes/ssh-deploy@main
+      env:
+          SSH_PRIVATE_KEY: ${{ secrets.key }} # key - по-моему, так доолжен называться ключ в панели хостинга, где он добавляется
+          ARGS: "-rc --delete"
+          SOURCE: "/"
+          REMOTE_HOST: 185.4.75.200
+          REMOTE_USER: empin_pro_usr
+          TARGET: /var/www/empin_pro_usr/data/www/empin-pro.ru
+          EXCLUDE: "/node_modules/, /vendor/, /.env" # через запятую
