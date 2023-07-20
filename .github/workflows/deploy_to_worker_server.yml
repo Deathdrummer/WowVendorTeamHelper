@@ -27,4 +27,4 @@ jobs:
         run: ssh-keyscan -H ${{ env.SERVER_HOST }} >> ~/.ssh/known_hosts
       
       # Deploy
-      - run: rsync --exclude=/test/ -rc --delete . ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }}:${{ env.SERVER_PATH }}
+      - run: rsync --exclude=/test/test.js -rc --delete . ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }}:${{ env.SERVER_PATH }}
