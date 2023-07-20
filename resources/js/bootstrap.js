@@ -66,7 +66,7 @@ window.axios.defaults.headers.common['X-CSRF-TOKEN'] = csrfToken;
 import axiosQuery from '@plugins/axiosQuery';
 window.axiosQuery = axiosQuery;
 
-console.log(window.axios.defaults.baseURL);	 	
+console.log(window.axios.defaults.baseURL);
 
 
 
