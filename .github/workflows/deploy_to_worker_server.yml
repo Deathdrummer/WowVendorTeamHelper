@@ -1,22 +1,30 @@
-on: push
-name: Публикация на empin-pro.ru
+name: Публикация на events.vendorteam.ru
+
+on:
+  push
+
+env:
+  SERVER_HOST: 159.253.18.128
+  SERVER_USER: wow_vendor_team_usr
+  SERVER_PATH: /var/www/wow_vendor_team_usr/data/www/events.vendorteam.ru
+
 jobs:
-  FTP-Deploy-Action:
-    name: SSH-Deploy
+
+  deploy:
     runs-on: ubuntu-latest
     if: "contains(github.event.head_commit.message, '--UPLOAD')"
     steps:
-    - uses: actions/checkout@v3
-      with:
-        fetch-depth: 2
-    
-    - name: Deploy to Server
-      uses: easingthemes/ssh-deploy@main
-      env:
-          SSH_PRIVATE_KEY: ${{ secrets.EV_VEN_KEY }} # key - по-моему, так доолжен называться ключ в панели хостинга, где он добавляется
-          ARGS: "-rc --delete"
-          SOURCE: "/"
-          REMOTE_HOST: 159.253.18.128
-          REMOTE_USER: wow_vendor_team_usr
-          TARGET: /var/www/wow_vendor_team_usr/data/www/events.vendorteam.ru
-          EXCLUDE: "/node_modules/, /vendor/, /.env" # через запятую
+      - uses: actions/checkout@v3
+
+      # Install ssh key
+      - name: Install SSH Key
+        uses: shimataro/ssh-key-action@v2.3.1
+        with:
+          key: "${{ secrets.EV_VEN_KEY }}"
+          known_hosts: "just-a-placeholder-so-we-dont-get-errors"
+          
+      - name: Generate auth hosts
+        run: ssh-keyscan -H ${{ env.SERVER_HOST }} >> ~/.ssh/known_hosts
+      
+      # Deploy
+      - run: rsync -rc --delete --exclude={'test/*'} . ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }}:${{ env.SERVER_PATH }}
