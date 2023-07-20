@@ -15,7 +15,7 @@ export default defineConfig({
 				'resources/js/site.js',
 				'resources/js/admin.js',
 			],
-            refresh: true,
+            refresh: ['resources/views/**'],
         }),
         inject({
 			$: 'jquery',
