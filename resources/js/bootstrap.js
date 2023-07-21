@@ -70,6 +70,7 @@ console.log(window.axios.defaults.baseURL);
 
 
 
+
 import Echo from 'laravel-echo';
 import Pusher from 'pusher-js';
 window.Pusher = Pusher;
