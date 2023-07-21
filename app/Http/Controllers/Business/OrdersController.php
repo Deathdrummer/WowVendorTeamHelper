@@ -59,6 +59,10 @@ class OrdersController extends Controller {
 	 * @return 
 	 */
 	public function incoming_orders(Request $request) {
+		
+		logger($request->all());
+		
+		
 		['orders' => $orders, 'count_rows_in_list' => $cuntRowsInList, 'current_page' => $currentPage] = $request->all();
 		
 		$allNewOrdersCount = count($orders) ?? 0;

@@ -82,7 +82,6 @@
 	<div class="col-auto">
 		<div class="order__block order__block-noborder">
 			<x-buttons-group class="order__right" size="small">
-				<p>{{$status}}</p>
 				@if(!isset($status) || $status == App\Enums\OrderStatus::new)
 					<x-button w="50px" action="toCancelListBtn:{{$id ?? null}}" variant="red"><i class="fa-solid fa-fw fa-ban"></i></x-button>
 					<x-button w="50px" action="toWaitListBtn:{{$id ?? null}}" variant="blue"><i class="fa-solid fa-fw fa-hourglass-half"></i></x-button>
