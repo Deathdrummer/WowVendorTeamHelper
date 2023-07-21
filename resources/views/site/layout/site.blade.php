@@ -54,7 +54,7 @@
 						'ms-auto' => !isset($show_locale) || !$show_locale
 					])>
 					<div class="header__block">
-						<p class="fz16px "><strong>{{$user->name ?? $user->pseudoname}}</strong></p>
+						<p class="fz16px "><strong>{{$user->name ?? __('custom.anon')}}</strong></p>
 					</div>
 				</div>
 				
