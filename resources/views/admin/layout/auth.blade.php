@@ -168,7 +168,7 @@
 						$('[name="'+item+'"]').ddrInputs('error', text[0]);
 					});
 				} else if (message) {
-					$.notify(message, 'error');
+					$.notify(message);
 				}
 				waiting.destroy();
 			},

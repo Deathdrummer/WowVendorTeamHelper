@@ -4,7 +4,8 @@
 			<table class="w100">
 				<thead>
 					<tr>
-						<td class="w30rem"><strong>Имя</strong></td>
+						<td class="w30rem"><strong>Имя сотрудника</strong></td>
+						<td class="w30rem"><strong>Имя сотрудника (только для админа)</strong></td>
 						<td class="w30rem"><strong>E-mail</strong></td>
 						<td class="w28rem"><strong>Роль</strong></td>
 						<td></td>

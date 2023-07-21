@@ -1,6 +1,9 @@
 <x-input-group group="normal">
 <tr class="h6rem">
 	<td>
+		<strong class="color-black">{{isset($name) ? $name : __('custom.anon')}}</strong>
+	</td>
+	<td>
 		<strong class="color-black">{{isset($pseudoname) ? $pseudoname : __('custom.anon')}}</strong>
 	</td>
 	<td>

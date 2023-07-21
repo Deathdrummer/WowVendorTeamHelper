@@ -1,7 +1,10 @@
 <x-input-group group="normal">
 	<tr class="h6rem" index="{{$index}}">
 		<td>
-			<x-input name="pseudoname" value="{{isset($pseudoname) ? $pseudoname : ''}}" class="w100" placeholder="Имя сотрудника (только для Вас)" />
+			<x-input name="name" value="{{isset($name) ? $name : ''}}" class="w100" placeholder="Имя" />
+		</td>
+		<td>
+			<x-input name="pseudoname" value="{{isset($pseudoname) ? $pseudoname : ''}}" class="w100" placeholder="Псевдоним сотрудника" />
 		</td>
 		<td>
 			<x-input name="email" value="{{isset($email) ? $email : ''}}" class="w100"  placeholder="E-mail сотрудника" />
