@@ -105,9 +105,9 @@ class User extends Authenticatable implements MustVerifyEmail {
 	
 	/**
 	 * @param 
-	 * @return Carbon
+	 * @return Carbon|null
 	 */
-	public function getEmailVerifiedAtAttribute($timestamp):Carbon {
+	public function getEmailVerifiedAtAttribute($timestamp):Carbon|null {
 		return $timestamp ? DdrDateTime::shift($timestamp, 'TZ') : null;
 	}
 	
