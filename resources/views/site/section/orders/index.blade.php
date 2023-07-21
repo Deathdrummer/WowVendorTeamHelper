@@ -435,7 +435,7 @@
 	//----------------------------------------------------------------------------------------- Прослушка
 	Echo.channel('send_message_channel').listen('.incoming_orders', async ({orders}) => {
 		
-		console.log('send_message_channel listen .incoming_orders', orders);
+		console.log('send_message_channel listen .incoming_orders', orders); 
 		
 		
 		if (!orders.length || status.value != 1) return;
