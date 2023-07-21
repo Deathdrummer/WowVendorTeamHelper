@@ -433,6 +433,7 @@
 	
 	//----------------------------------------------------------------------------------------- Прослушка
 	Echo.channel('send_message_channel').listen('.incoming_orders', async ({orders}) => {
+		console.log('.incoming_orders', orders);
 		if (!orders.length || status.value != 1) return;
 		
 		if (currentPage.value != 1) {
@@ -443,6 +444,8 @@
 			
 			return;
 		}
+		
+		console.log('234234');
 		
 		orders = orders.reverse(); // реверс строк, в зависимости от текущей сортировки
 		
