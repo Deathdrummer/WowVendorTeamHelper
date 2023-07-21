@@ -36,6 +36,8 @@ jobs:
           --exclude=/.editorconfig \
           --exclude=/.git \
           --exclude=/.github \
+          --exclude=/public/build \
+          --exclude=/public/hot \
           -rc \
           --delete \
           . ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }}:${{ env.SERVER_PATH }}
