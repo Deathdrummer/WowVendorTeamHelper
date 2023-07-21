@@ -66,9 +66,6 @@ window.axios.defaults.headers.common['X-CSRF-TOKEN'] = csrfToken;
 import axiosQuery from '@plugins/axiosQuery';
 window.axiosQuery = axiosQuery;
 
-console.log(window.axios.defaults.baseURL);
-// rool
-
 
 import Echo from 'laravel-echo';
 import Pusher from 'pusher-js';
