@@ -433,14 +433,7 @@
 	
 	//----------------------------------------------------------------------------------------- Прослушка
 	Echo.channel('send_message_channel').listen('.incoming_orders', async ({orders}) => {
-		console.log('.incoming_orders', orders);
-		
-		console.log(status.value);
-		console.log(currentPage.value);
-		
-		if (!orders.length || status.value != 1) return;
-		
-		
+		if (!orders.length || status.value != 'new') return;
 		
 		if (currentPage.value != 1) {
 			hasNewOrdersNoFirstPage = true;
@@ -450,8 +443,6 @@
 			
 			return;
 		}
-		
-		console.log('234234');
 		
 		orders = orders.reverse(); // реверс строк, в зависимости от текущей сортировки
 		
