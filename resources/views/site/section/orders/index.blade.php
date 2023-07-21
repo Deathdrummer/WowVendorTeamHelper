@@ -288,7 +288,6 @@
 				const countOrders = $(rowBtn).closest('[order]').siblings('[order]').length;
 				$(rowBtn).closest('[order]').remove();
 				
-				console.log(countOrders);
 				if (countOrders == 0) $('#ordersList').html('<p class="color-gray-300 text-center mt15px fz16px" noorders>Нет заказов</p>');
 				
 				$.notify(`Заказ «${orderNumber}» успешно перенесен в выбранное событие!`);
@@ -434,10 +433,6 @@
 	
 	//----------------------------------------------------------------------------------------- Прослушка
 	Echo.channel('send_message_channel').listen('.incoming_orders', async ({orders}) => {
-		
-		console.log('send_message_channel listen .incoming_orders', orders);
-		
-		
 		if (!orders.length || status.value != 1) return;
 		
 		if (currentPage.value != 1) {
