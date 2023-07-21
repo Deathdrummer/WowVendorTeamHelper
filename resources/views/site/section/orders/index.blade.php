@@ -434,9 +434,13 @@
 	//----------------------------------------------------------------------------------------- Прослушка
 	Echo.channel('send_message_channel').listen('.incoming_orders', async ({orders}) => {
 		console.log('.incoming_orders', orders);
+		
+		console.log(status.value);
+		console.log(currentPage.value);
+		
 		if (!orders.length || status.value != 1) return;
 		
-		console.log(currentPage.value);
+		
 		
 		if (currentPage.value != 1) {
 			hasNewOrdersNoFirstPage = true;
