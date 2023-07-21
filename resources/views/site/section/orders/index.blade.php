@@ -436,6 +436,8 @@
 		console.log('.incoming_orders', orders);
 		if (!orders.length || status.value != 1) return;
 		
+		console.log(currentPage.value);
+		
 		if (currentPage.value != 1) {
 			hasNewOrdersNoFirstPage = true;
 			
