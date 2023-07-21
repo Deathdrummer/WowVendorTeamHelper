@@ -9,7 +9,6 @@ use App\Models\Order;
 use App\Models\OrderComment;
 use App\Models\Timesheet;
 use App\Services\Business\OrderService;
-use App\Services\Settings;
 use App\Traits\HasPaginator;
 use App\Traits\Renderable;
 use App\Traits\Settingable;
