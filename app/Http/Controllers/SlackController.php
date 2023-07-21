@@ -17,8 +17,8 @@ class SlackController extends Controller {
 	public function incomingOrder(Request $request, OrderService $orderService) {
 		$event = $request->input('event'); // содержит в себе всю информацию
 		
-		$message = isset($event['subtype']) ? ($event['message'][0]['text'] ?? null) : $event['text'] ?? null; //----- для ручного теста
-		//$message = isset($event['blocks']) ? ($event['blocks'][2]['text']['text'] ?? null) : null; // Новая версия
+		//$message = isset($event['subtype']) ? ($event['message'][0]['text'] ?? null) : $event['text'] ?? null; //----- для ручного теста
+		$message = isset($event['blocks']) ? ($event['blocks'][2]['text']['text'] ?? null) : null; // Новая версия
 		
 		$data = $orderService->parse($message);
 		
