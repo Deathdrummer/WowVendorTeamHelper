@@ -20,7 +20,7 @@ jobs:
       - name: Install SSH Key
         uses: shimataro/ssh-key-action@v2.3.1
         with:
-          key: "${{ secrets.EVENTS_KEY }}" # так должен называться секретный ключ в настройках гитхаб
+          key: "${{ secrets.WOW_EVENTS_KEY }}" # так должен называться секретный ключ в настройках гитхаб
           known_hosts: "just-a-placeholder-so-we-dont-get-errors"
           
       - name: Generate auth hosts
