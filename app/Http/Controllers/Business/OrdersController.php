@@ -78,6 +78,8 @@ class OrdersController extends Controller {
 		$timezones = $this->getSettings('timezones', 'id');
 		$status = OrderStatus::fromKey($request->input('status', 'new'));
 		
+		logger($status);
+		
 		$new = true;
 		$itemView = $this->renderPath.'.item';
 		$hasMoreOrders = !!($allNewOrdersCount - count($orders) > 0);
