@@ -139,4 +139,23 @@ class Order extends Model {
 		return $query->where('status', $status);
 	}
 	
+	
+	
+	
+	/**
+     * Вывести не привязанные к событию заказы
+     * @param $stat - new wait cancel ready doprun
+     * @return Carbon|null
+     */
+	public function scopeNotTied($query) {
+		return $query->whereIn('orders.id', function ($builder) {
+            $builder->select('timesheet_order.order_id')->from('timesheet_order');
+        }, not: true);
+	}
+	
+	
+	
+	
+	
+	
 }

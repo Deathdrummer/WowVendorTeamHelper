@@ -29,9 +29,7 @@ class OrderService {
 		
 		$orderFilter = app()->make(OrderFilter::class, compact('queryParams'));
 		
-		$query = Order::filter($orderFilter)->whereIn('orders.id', function ($builder) {
-            $builder->select('timesheet_order.order_id')->from('timesheet_order');
-        }, not: true)->orderBy('id', 'desc');
+		$query = Order::filter($orderFilter)->notTied()->orderBy('id', 'desc');
 		 
 		
 		$paginate = $this->paginate($query, $currentPage, $perPage)->toArray();
