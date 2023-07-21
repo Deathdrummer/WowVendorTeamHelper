@@ -169,7 +169,7 @@
 						$('[name="'+item+'"]').ddrInputs('error', text[0]);
 					});
 				} else if (message) {
-					$.notify(message);
+					$.notify(message, status == 500 ? 'error' : 'success');
 				}
 				waiting.destroy();
 			},

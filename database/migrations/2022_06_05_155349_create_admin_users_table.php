@@ -20,11 +20,11 @@ return new class extends Migration {
             $table->string('pseudoname')->nullable();
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-			$table->string('locale', 3)->nullable();
+            $table->string('password')->nullable()->default(null);;
+			$table->string('locale', 3)->nullable()->default(null);
 			$table->boolean('is_main_admin')->default(false);
-			$table->unsignedInteger('_sort')->default(0);
-            $table->rememberToken();
+			$table->unsignedInteger('_sort')->nullable()->default(0);
+			$table->rememberToken();
             $table->timestamps();
         });
     }
