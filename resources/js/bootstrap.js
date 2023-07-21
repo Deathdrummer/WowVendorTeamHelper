@@ -67,7 +67,7 @@ import axiosQuery from '@plugins/axiosQuery';
 window.axiosQuery = axiosQuery;
 
 console.log(window.axios.defaults.baseURL);
-
+// rool
 
 
 import Echo from 'laravel-echo';
