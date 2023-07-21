@@ -76,9 +76,7 @@ class OrdersController extends Controller {
 		$pagInfo = $this->orderService->get($request, 'pagination');
 		
 		$timezones = $this->getSettings('timezones', 'id');
-		$status = OrderStatus::fromKey($request->input('status', 'new'));
-		
-		logger($status);
+		$status = OrderStatus::fromKey($request->input('status', 'new'))->value;
 		
 		$new = true;
 		$itemView = $this->renderPath.'.item';

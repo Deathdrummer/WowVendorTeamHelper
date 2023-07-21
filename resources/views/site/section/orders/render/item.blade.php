@@ -82,15 +82,14 @@
 	<div class="col-auto">
 		<div class="order__block order__block-noborder">
 			<x-buttons-group class="order__right" size="small">
-				<p>{{$status}} {{App\Enums\OrderStatus::new}}</p>
-				{{-- @if(!isset($status) || $status == App\Enums\OrderStatus::new)
+				@if(!isset($status) || $status == \App\Enums\OrderStatus::new)
 					<x-button w="50px" action="toCancelListBtn:{{$id ?? null}}" variant="red"><i class="fa-solid fa-fw fa-ban"></i></x-button>
 					<x-button w="50px" action="toWaitListBtn:{{$id ?? null}}" variant="blue"><i class="fa-solid fa-fw fa-hourglass-half"></i></x-button>
-				@elseif($status == App\Enums\OrderStatus::wait)
+				@elseif($status == \App\Enums\OrderStatus::wait)
 					<x-button w="50px" action="toCancelListBtn:{{$id ?? null}}" variant="red"><i class="fa-solid fa-fw fa-ban"></i></x-button>
-				@elseif($status == App\Enums\OrderStatus::cancel)
+				@elseif($status == \App\Enums\OrderStatus::cancel)
 					
-				@endif --}}
+				@endif
 				<x-button w="50px" variant="green" action="toTimesheetBtn:{{$id ?? null}},{{$date ?? null}},{{$order ?? '-'}}"><i class="fa-solid fa-fw fa-angles-right"></i></x-button>
 			</x-buttons-group>
 		</div>
