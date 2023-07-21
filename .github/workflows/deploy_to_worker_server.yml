@@ -27,4 +27,13 @@ jobs:
         run: ssh-keyscan -H ${{ env.SERVER_HOST }} >> ~/.ssh/known_hosts
       
       # Deploy
-      - run: rsync --exclude=/node_modules/ --exclude=/vendor/ --exclude=/.env --exclude=/.env.example  --exclude=/.editorconfig -rc --delete . ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }}:${{ env.SERVER_PATH }}
+      - run: |
+          rsync \
+          --exclude=/node_modules/ \
+          --exclude=/vendor/ \
+          --exclude=/.env \
+          --exclude=/.env.example \
+          --exclude=/.editorconfig \
+          -rc \
+          --delete \
+          . ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }}:${{ env.SERVER_PATH }}
