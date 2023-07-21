@@ -443,7 +443,7 @@
 			
 			return;
 		}
-		
+		 
 		orders = orders.reverse(); // реверс строк, в зависимости от текущей сортировки
 		
 		const countRowsInList = $('#ordersList').children().length; // кол-во уже имеющихся строк
