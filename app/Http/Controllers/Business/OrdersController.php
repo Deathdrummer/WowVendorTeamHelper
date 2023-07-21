@@ -59,10 +59,6 @@ class OrdersController extends Controller {
 	 * @return 
 	 */
 	public function incoming_orders(Request $request) {
-		
-		logger($request->all());
-		
-		
 		['orders' => $orders, 'count_rows_in_list' => $cuntRowsInList, 'current_page' => $currentPage] = $request->all();
 		
 		$allNewOrdersCount = count($orders) ?? 0;
@@ -81,7 +77,7 @@ class OrdersController extends Controller {
 		$pagInfo = $this->orderService->get($request, 'pagination');
 		
 		$timezones = $this->getSettings('timezones', 'id');
-		$status = $request->input('status', 1);
+		$status = OrderStatus::fromKey($request->input('status', 0));
 		
 		$new = true;
 		$itemView = $this->renderPath.'.item';
