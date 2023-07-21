@@ -1,4 +1,4 @@
-<?php namespace App\Http\Controllers\business;
+<?php namespace App\Http\Controllers\Business;
 
 use App\Helpers\DdrDateTime;
 use App\Http\Controllers\Controller;

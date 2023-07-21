@@ -1,10 +1,10 @@
 <?php
 
-use App\Http\Controllers\business\CommandsController;
-use App\Http\Controllers\business\EventsTypesController;
+use App\Http\Controllers\Business\CommandsController;
+use App\Http\Controllers\Business\EventsTypesController;
 use App\Http\Controllers\Business\OrdersController;
-use App\Http\Controllers\business\TimesheetController;
-use App\Http\Controllers\business\TimesheetPeriodsController;
+use App\Http\Controllers\Business\TimesheetController;
+use App\Http\Controllers\Business\TimesheetPeriodsController;
 use Illuminate\Support\Facades\Route;
 
 
