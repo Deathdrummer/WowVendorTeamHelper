@@ -320,10 +320,6 @@
 		
 	
 	
-	
-	
-	
-	
 	/*$.relocateTimesheetOrder = async (btn, orderId = null, timesheetId = null, orderNumber = null, type = 'move') => {
 		if (_.isNull(orderId) || _.isNull(timesheetId)) return false;
 		
