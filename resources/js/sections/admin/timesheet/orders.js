@@ -120,11 +120,15 @@ export async function buildOrdersTable(row = null, timesheetId = null, cb = null
 				break;
 		}	
 		const views = 'admin.section.system.render.orders.relocate';
+		
+		let calendarObj;
+		let abortContr;
 		const {
 			popper,
 			wait,
 			setHtml,
 			close,
+			onClose,
 			enableButtons,
 		} = await ddrPopup({
 			url: 'crud/orders/relocate',
@@ -138,25 +142,50 @@ export async function buildOrdersTable(row = null, timesheetId = null, cb = null
 		
 		enableButtons(true);
 		
+		onClose(() => {
+			calendarObj?.remove();
+			abortContr?.abort();
+		});
+		
 		let choosedTimesheetId = null;
 		
-		$.relocateOrderChooseDate = async (instance, date) => {
-			const ddrtableWait = $(popper).find('[ddrtable]').blockTable('wait');
-			
-			const {data, error, status, headers} = await ddrQuery.get('crud/orders/relocate/get_timesheets', {timesheet_id: timesheetId, date, type, views});
-			
-			if (error) {
-				console.log(error);
-				$.notify(error?.message, 'error');
-				return;
+		let isLoading = false;
+		calendarObj = calendar('relocateOrderCalendar', {
+			initDate: 'now',
+			async onSelect(instance, date) {
+				if (!date) return;
+				
+				abortContr = new AbortController();
+				
+				if (isLoading) {
+					abortContr?.abort();
+					isLoading = false;
+				} 
+				
+				const ddrtableWait = $(popper).find('[ddrtable]').blockTable('wait');
+				
+				isLoading = true;
+				const {data, error, status, headers} = await ddrQuery.get('crud/orders/relocate/get_timesheets', {timesheet_id: timesheetId, date, type, views}, {abortContr});
+				isLoading = false;
+				
+				if (error) {
+					console.log(error);
+					$.notify(error?.message, 'error');
+					return;
+				}
+				
+				ddrtableWait.destroy();
+				
+				$(popper).find('[ddrtable]').blockTable('setdData', data);
+				
+				choosedTimesheetId = null;
 			}
+		});
+		
+		
+		/*$.relocateOrderChooseDate = async (instance, date) => {
 			
-			ddrtableWait.destroy();
-			
-			$(popper).find('[ddrtable]').blockTable('setdData', data);
-			
-			choosedTimesheetId = null;
-		}
+		}*/
 		
 		
 		$.relocateOrderClearDate = () => {

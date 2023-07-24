@@ -207,6 +207,8 @@
 		const action = 'Перенести заказ';
 		const views = 'site.section.orders.render.relocate';
 		let calendarObj;
+		let abortContr;
+		let isLoading = false;
 		
 		const {
 			popper,
@@ -226,7 +228,7 @@
 		});
 		
 		onClose(() => {
-			calendarObj.remove();
+			calendarObj?.remove();
 		});
 		
 		await loadTimesheets(date);
@@ -234,8 +236,9 @@
 		enableButtons(true);
 		
 		calendarObj = calendar('relocateOrderCalendar', {
-			initDate: new Date(date),
+			initDate: date ? new Date(date) : 'now',
 			async onSelect(instance, date) {
+				if (!date) return;
 				await loadTimesheets(date);
 			}
 		});
@@ -244,18 +247,29 @@
 			if (_.isNull(date)) return;
 			const ddrtableWait = $(popper).find('[ddrtable]').blockTable('wait');
 			
+			if (isLoading) {
+				abortContr?.abort();
+				isLoading = false;
+			} 
+			
+			abortContr = new AbortController();
+			
 			const d = new Date(date);
 			let buildedDate = new Date(d.getFullYear(), d.getMonth(), d.getDate(), 0, 0, 0);
 			
-			const {data, error, status, headers} = await ddrQuery.get('client/orders/relocate/get_timesheets', {date: buildedDate, order_id, views});
+			isLoading = true;
+			const {data, error, status, headers, abort} = await ddrQuery.get('client/orders/relocate/get_timesheets', {date: buildedDate, order_id, views}, {abortContr});
+			isLoading = false;
+			
+			if (abort) return;
+			
+			ddrtableWait.destroy();
 			
 			if (error) {
 				console.log(error);
 				$.notify(error?.message, 'error');
 				return;
 			}
-			
-			ddrtableWait.destroy();
 			
 			$(popper).find('[ddrtable]').blockTable('setdData', data);
 			

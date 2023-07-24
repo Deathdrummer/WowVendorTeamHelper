@@ -23,7 +23,6 @@ return new class extends Migration
 			$table->json('settings')->nullable()->default(null)->comment('Настройки пользователя');
 			$table->unsignedInteger('_sort')->nullable()->default(0);
             $table->rememberToken();
-			$table->unsignedBigInteger('_sort')->default(0);
             $table->timestamps();
         });
     }

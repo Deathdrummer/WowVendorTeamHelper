@@ -1,12 +1,18 @@
 <x-input-group size="small">
 	
 	<div class="row row-cols-1 gy-20 mb2rem">
-		<div class="col">
+		{{-- <div class="col">
 			<p class="color-gray-500 fz14px mb3px">Выбрать дату:</p>
 			<x-datepicker
 				onselect="relocateOrderChooseDate"
 				onclear="relocateOrderClearDate"
 				class="w20rem" />
+		</div>
+		 --}}
+		
+		 <div class="col">
+			<p class="color-gray-500 fz14px mb3px">Выбрать дату:</p>
+			<input type="hidden" id="relocateOrderCalendar" />
 		</div>
 		
 		<div class="col">

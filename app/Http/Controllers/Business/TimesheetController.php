@@ -305,17 +305,17 @@ class TimesheetController extends Controller {
 		]]); */
 		
 		
-		$difficulties = $this->settings->get('difficulties')->mapWithKeys(function ($item, $key) {
+		$difficulties = $this->settings->get('difficulties')?->mapWithKeys(function ($item, $key) {
     		return [$item['id'] => $item['title']];
 		})->toArray();
 		
-		$eventsTypes = EventType::get()->mapWithKeys(function ($item, $key) use($difficulties) {
+		$eventsTypes = EventType::get()?->mapWithKeys(function ($item, $key) use($difficulties) {
 			return [$item['id'] => $item['title'].'-'.$difficulties[$item['difficult_id']]];
 		})->toArray();
 		
 		$this->data['events_types'] = $eventsTypes;
 		
-		$commands = Command::get()->mapWithKeys(function ($item, $key)  {
+		$commands = Command::get()?->mapWithKeys(function ($item, $key)  {
     		return [$item['id'] => $item['title']];
 		})->toArray();
 		
