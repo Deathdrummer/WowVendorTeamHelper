@@ -97,11 +97,6 @@
 	}
 	
 	
-	$.copyToClipboard = (e) => {
-		copyStringToClipboard($(e.target).text());
-	}
-	
-	
 	
 	onPageChange((page) => {
 		if (hasNewOrdersNoFirstPage) {

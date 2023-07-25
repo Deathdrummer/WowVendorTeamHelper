@@ -11,6 +11,10 @@ $.fn.tripleTap = function(callback) {
 }
 	
 	
+$.copyToClipboard = (e) => {
+	copyStringToClipboard($(e.target).text());
+	//$.notify('Скопировано 2!');
+}
 
 
 window.getOS = function() {

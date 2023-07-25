@@ -31,12 +31,21 @@
 					</div>
 				</div>
 				
-				@if(isset($show_locale) && $show_locale)
-				<div class="col-auto ms-auto">
-					<div class="header__block">
-						<x-localebar group="large" />
+				
+				<div class="col mr-2rem">
+					<div class="row justify-content-between g-20">
+						<teleport id="headerTeleport1"></teleport>
+						<teleport id="headerTeleport2"></teleport>
+						<teleport id="headerTeleport3"></teleport>
 					</div>
 				</div>
+				
+				@if(isset($show_locale) && $show_locale)
+					<div class="col-auto">
+						<div class="header__block">
+							<x-localebar group="large" />
+						</div>
+					</div>
 				@endif
 				
 				{{-- <div class="col-auto">
@@ -47,14 +56,12 @@
 					</div>
 				</div> --}}
 				
-				
-				
 				<div @class([
 						'col-auto',
-						'ms-auto' => !isset($show_locale) || !$show_locale
+						//'ms-auto' => !isset($show_locale) || !$show_locale
 					])>
 					<div class="header__block">
-						<p class="fz16px "><strong>{{$user->name ?? __('custom.anon')}}</strong></p>
+						<p class="fz16px"><strong>{{$user->name ?? __('custom.anon')}}</strong></p>
 					</div>
 				</div>
 				
