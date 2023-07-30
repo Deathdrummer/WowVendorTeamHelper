@@ -28,7 +28,14 @@ _.mixin({
 
 import img from '/resources/images/filetypes/svg.png';
 import img2 from '../images/filetypes/svg.png';
-console.log(img, img2);
+
+
+const rool = async () => await import('/resources/images/filetypes/svg.png');
+
+rool().then((rrr) => {
+	console.log(rrr);
+})
+console.log(img, img2, );
 
 import strtr from 'locutus/php/strings/strtr';
 window.strtr = strtr;
