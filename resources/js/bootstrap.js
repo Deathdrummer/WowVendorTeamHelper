@@ -33,7 +33,7 @@ import img2 from '../images/filetypes/svg.png';
 window.rool = async (name) => await import(`/resources/images/filetypes/${name}.png`);
 
 rool('svg').then((rrr) => {
-	console.log(rrr.default);
+	console.log(rrr);
 })
 
 import strtr from 'locutus/php/strings/strtr';
