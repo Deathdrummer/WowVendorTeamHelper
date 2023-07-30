@@ -1,17 +1,13 @@
 window.loadImage = async (fileName) => {
+	//if (isDev) {
+		const url = '../../images/'+fileName;
+		const resource = new URL(url, import.meta.url).href;
+		return resource;
+	//}
 	
 	
-	const {default: img} =  await import('../../images/'+fileName);
 	
-	return img;
-	//import * as imgUrl from '../../images/filetypes/svg.png';
-	
-	//console.log(test);
-	
-	//return imgUrl;
-	//const url = '/resources/images/'+fileName;
-	//const resource = new URL(url, import.meta.url).href;
-	//return resource;
+		
 }
 
 

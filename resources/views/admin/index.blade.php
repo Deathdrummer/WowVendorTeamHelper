@@ -21,7 +21,7 @@
 		@vite(['resources/sass/admin.sass', 'resources/sass/common/app.sass', 'resources/js/admin.js'])
 		
 		@if(config('app.env') == 'production')
-			<link rel="manifest" href="public/build/manifest.json">
+			{{-- <link rel="manifest" href="public/build/manifest.json"> --}}
 		@endunless
 		
 		
