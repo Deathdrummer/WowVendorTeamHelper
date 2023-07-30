@@ -45,6 +45,40 @@ window.getOS = function() {
 
 
 
+window.getManifest = async function(path = null) {
+	if (isDev) {
+		console.error('getManifest -> это локальная версия сайта, тут манифеста нет!');
+		return false;
+	}
+	
+	if (!path) {
+		if (isDev) console.error('getManifest -> не передан путь!');
+		return false;
+	}
+	
+	let savedManifest = ddrStore('manifest');
+	
+	
+	
+	if (!savedManifest) {
+		try {
+			const uuu = isDev ? '/public/build/manifest.json' : '';
+			const {default: manifest} = await import('');
+			ddrStore('manifest', manifest);
+			savedManifest = manifest;
+		} catch (err) {
+			throw new Error(`Unable to import manifest`)
+		}
+	}
+	
+	path = path.substr(0, 1) == '/' ? path.slice(1) : path;
+	
+	return savedManifest[path]?.file || null;	
+}
+
+
+
+
 
 window.callFunc = function(func, ...params) {
 	if (!_.isFunction(func)) {
@@ -155,27 +189,27 @@ if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phon
 
 function getBrowserType() {
   const test = regexp => {
-    return regexp.test(navigator.userAgent);
+	return regexp.test(navigator.userAgent);
   };
 
   if (test(/opr\//i) || !!window.opr) {
-    return 'Opera';
+	return 'Opera';
   } else if (test(/edg/i)) {
-    return 'Microsoft Edge';
+	return 'Microsoft Edge';
   } else if (test(/chrome|chromium|crios/i)) {
-    return 'Google Chrome';
+	return 'Google Chrome';
   } else if (test(/firefox|fxios/i)) {
-    return 'Mozilla Firefox';
+	return 'Mozilla Firefox';
   } else if (test(/safari/i)) {
-    return 'Apple Safari';
+	return 'Apple Safari';
   } else if (test(/trident/i)) {
-    return 'Microsoft Internet Explorer';
+	return 'Microsoft Internet Explorer';
   } else if (test(/ucbrowser/i)) {
-    return 'UC Browser';
+	return 'UC Browser';
   } else if (test(/samsungbrowser/i)) {
-    return 'Samsung Browser';
+	return 'Samsung Browser';
   } else {
-    return 'Unknown browser';
+	return 'Unknown browser';
   }
 }
 

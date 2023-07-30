@@ -26,6 +26,9 @@ _.mixin({
 });
 
 
+import img from '/resources/images/filetypes/svg.png';
+import img2 from '../images/filetypes/svg.png';
+console.log(img, img2);
 
 import strtr from 'locutus/php/strings/strtr';
 window.strtr = strtr;

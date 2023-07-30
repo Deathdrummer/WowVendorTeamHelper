@@ -21,6 +21,7 @@ import '@plugins/ddrQuery';
 import '@plugins/blockTable';
 
 
+
 $.notify.defaults({
 	clickToHide: true,
 	autoHide: true,
@@ -44,19 +45,6 @@ $.notify.defaults({
 // `scrollstop` event to 650ms (default is 250ms).
 $.event.special.scrollstop.latency = 650;
 
-
-async function test() {
-	let imgSrc = await loadImage(`filetypes/svg.png`);
-
-	console.log(imgSrc);
-	
-	
-	const img = document.createElement('img');
-	img.src = imgSrc;
-	$('body').append(img);
-}
-
-test();
 
 $(function() {
 	

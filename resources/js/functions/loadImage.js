@@ -1,13 +1,16 @@
 window.loadImage = async (fileName) => {
-	//if (isDev) {
-		const url = '../../images/'+fileName;
-		const resource = new URL(url, import.meta.url).href;
+	
+	const path = 'resources/images/'+fileName;
+	
+	if (isDev) {
+		const resource = new URL('/'+path, import.meta.url).href;
 		return resource;
-	//}
-	
-	
-	
+	} else {
+		console.log(45456);
+		const filePath = await getManifest(path);
 		
+		return filePath;	
+	}
 }
 
 
