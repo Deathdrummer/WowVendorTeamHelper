@@ -30,11 +30,14 @@ import img from '/resources/images/filetypes/svg.png';
 import img2 from '../images/filetypes/svg.png';
 
 
-window.rool = async (name) => await import(`/resources/images/filetypes/${name}.png`);
 
-rool('svg').then((rrr) => {
-	console.log(rrr);
-})
+function getImageUrl(name) {
+  return new URL(`/resources/images/filetypes/${name}.png`, import.meta.url).href;
+}
+console.log(getImageUrl('svg'));
+
+
+
 
 import strtr from 'locutus/php/strings/strtr';
 window.strtr = strtr;
