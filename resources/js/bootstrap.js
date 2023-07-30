@@ -36,10 +36,6 @@ window.getImageUrl = function(name) {
 }
 
 
-let rool = getImageUrl('filetypes/svg.png');
-
-console.log(rool);
-
 import strtr from 'locutus/php/strings/strtr';
 window.strtr = strtr;
 
