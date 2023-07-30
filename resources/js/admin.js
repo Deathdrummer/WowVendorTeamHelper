@@ -21,7 +21,6 @@ import '@plugins/ddrQuery';
 import '@plugins/blockTable';
 
 
-
 $.notify.defaults({
 	clickToHide: true,
 	autoHide: true,
