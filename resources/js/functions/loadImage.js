@@ -1,25 +1,5 @@
 window.loadImage = async (fileName) => {
-	
-	
-	//const path = await import(`/resources/images/${fileName}.png`);
-
-
-	//return path;
-	
-	
-	
-	/*
-	const path = 'resources/images/'+fileName;
-	
-	if (isDev) {
-		const resource = new URL('/'+path, import.meta.url).href;
-		return resource;
-	} else {
-		console.log(45456);
-		const filePath = await getManifest(path);
-		
-		return filePath;	
-	}*/
+	return getImageUrl(fileName);
 }
 
 

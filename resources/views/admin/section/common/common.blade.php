@@ -304,9 +304,6 @@
 		}
 	});*/
 	
-	console.log('hfghfgh', getImageUrl('svg'));
-	
-	
 	
 	const {getFiles, removeFile} = $.ddrFiles({
 		chooseSelector: '#uploadBtn',
