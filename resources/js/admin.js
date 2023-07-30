@@ -45,6 +45,19 @@ $.notify.defaults({
 $.event.special.scrollstop.latency = 650;
 
 
+async function test() {
+	let imgSrc = await loadImage(`filetypes/svg.png`);
+
+	console.log(imgSrc);
+	
+	
+	const img = document.createElement('img');
+	img.src = imgSrc;
+	$('body').append(img);
+}
+
+test();
+
 $(function() {
 	
 	let changeInputTOut, prevSetting;
