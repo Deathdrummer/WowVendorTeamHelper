@@ -14,11 +14,14 @@
 		@unless(config('app.env') == 'production')
 			<meta http-equiv="cache-control" content="no-cache">
 			<meta http-equiv="expires" content="1">
+			<link rel="manifest" href="public/build/manifest.json">
 		@endunless
 		
 		<link rel="shortcut icon" href="{{Vite::asset('resources/images/favicon.png')}}" /> 
 		
 		@vite(['resources/sass/admin.sass', 'resources/sass/common/app.sass', 'resources/js/admin.js'])
+		
+		
 		
 		<title>{{$company_name ?? 'BPM systems'}} | админ. панель</title>
 	</head>
