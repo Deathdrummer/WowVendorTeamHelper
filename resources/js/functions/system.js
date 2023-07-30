@@ -50,7 +50,7 @@ window.getManifest = async function(path = null) {
 		console.error('getManifest -> это локальная версия сайта, тут манифеста нет!');
 		return false;
 	}
-	
+	/*
 	if (!path) {
 		if (isDev) console.error('getManifest -> не передан путь!');
 		return false;
@@ -63,7 +63,7 @@ window.getManifest = async function(path = null) {
 	if (!savedManifest) {
 		try {
 			const uuu = isDev ? '/public/build/manifest.json' : '';
-			const {default: manifest} = await import('');
+			const {default: manifest} = await import(''));
 			ddrStore('manifest', manifest);
 			savedManifest = manifest;
 		} catch (err) {
@@ -73,7 +73,7 @@ window.getManifest = async function(path = null) {
 	
 	path = path.substr(0, 1) == '/' ? path.slice(1) : path;
 	
-	return savedManifest[path]?.file || null;	
+	return savedManifest[path]?.file || null;	*/
 }
 
 
