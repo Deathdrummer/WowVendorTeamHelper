@@ -304,7 +304,7 @@
 		}
 	});*/
 	
-	
+	console.log('hfghfgh', getImageUrl('svg'));
 	
 	
 	

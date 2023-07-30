@@ -31,10 +31,9 @@ import img2 from '../images/filetypes/svg.png';
 
 
 
-function getImageUrl(name) {
+window.getImageUrl = function(name) {
   return new URL(`/resources/images/filetypes/${name}.png`, import.meta.url).href;
 }
-console.log(getImageUrl('svg'));
 
 
 
