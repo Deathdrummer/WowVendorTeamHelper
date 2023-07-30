@@ -20,7 +20,7 @@
     'title'		=> null,
     'animation'	=> null,
     'animationDuration'	=> '1s',
-    'tag'		=> null
+    'tag'		=> null,
 ])
 
 @php

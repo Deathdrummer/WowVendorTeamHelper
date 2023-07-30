@@ -51,7 +51,7 @@ class File extends Component {
 	 * @return 
 	 */
 	public function isMultiple() {
-		if ($this->multiple) return 'multiple';
+		if ($this->multiple) return ' multiple';
 		return '';
 	}
 	

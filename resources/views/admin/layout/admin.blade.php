@@ -185,65 +185,65 @@
 	
 	
 	
-	let ddrInput = $('#singleFile').ddrInputs('file', {
-		compress: {
-			quality: 0.5,
-			width: 200,
-			height: 200,
-			//minWidth: 0,
-			//minHeigh: 0,
-			//maxWidth: 'infinity',
-			//maxHeight: 'infinity',
-			resize: 'contain', // none, contain,  cover.
-		},
-		background: '#e2e6ed',
-		before: function({selector, count}) {
-			let fileBlock = $(selector).closest('.file');
-			//$(fileBlock).find('[ddrfileimage]').html('<i class="fa-solid fa-spinner fa-spin-pulse"></i>');
-			$(fileBlock).find('[ddrfileimage]').html('<img class="ddr-file__image_loading ddr-file__image_loading-gray-70 fa-spin" style="--fa-animation-duration: 7s;" src="'+loadingIcon+'" />');
-		},
-		callback: function({selector, file, ext, preview, key, name, size, type}, complete) {
-			if (_.indexOf(['png', 'apng', 'jpeg', 'jpg', 'gif', 'bmp', 'webp'], ext) >= 0) {
-				$('#singleFileBlock').append('<img key="'+key+'" src="'+preview+'" />');
-			} else {
-				$('#singleFileBlock').append('<img key="'+key+'" src="assets/images/filetypes/'+ext+'.png" />');
-			}
-			
-			/*let fileBlock = $(selector).closest('.file');
-			
-			if (_.indexOf(['png', 'apng', 'jpeg', 'jpg', 'gif', 'bmp', 'webp'], ext) >= 0) {
-				$(fileBlock).find('[ddrfileimage]').html('<img src="'+src+'" />');
-			} else {
-				$(fileBlock).find('[ddrfileimage]').html('<img src="assets/images/filetypes/'+ext+'.png" />');
-			}*/
-		},
-		fail: function(selector, err) {
-			//console.log('fail', err);
-			//let fileBlock = $(selector).closest('.file');
-			//$(fileBlock).find('[ddrfileimage]').empty();
-		}/*,
-		proxy(data) {
-			files = data;
-		}*/
-	});
-	
-	
-	$('button').on(tapEvent, function() {
-		//let formData = ddrInput.getFormFiles();
-		//console.log(typeof formData, formData.get('ddrfile'));
-		$('#ddrForm').ddrFormSubmit({url: 'file', files: {name: 'ddrfile', items: ddrInput.getFormFiles()}});
-	
-		//$.ddrFormSubmit({fields: 'rtertert'});
-		
-		
-	});
-	
-	
-	$('#singleFileBlock').on(tapEvent, 'img', function() {
-		let key = $(this).attr('key');
-		ddrInput.removeFile(key);
-		$(this).remove();
-	});
+	//let ddrInput = $('#singleFile').ddrInputs('file', {
+	//	compress: {
+	//		quality: 0.5,
+	//		width: 200,
+	//		height: 200,
+	//		//minWidth: 0,
+	//		//minHeigh: 0,
+	//		//maxWidth: 'infinity',
+	//		//maxHeight: 'infinity',
+	//		resize: 'contain', // none, contain,  cover.
+	//	},
+	//	background: '#e2e6ed',
+	//	before: function({selector, count}) {
+	//		let fileBlock = $(selector).closest('.file');
+	//		//$(fileBlock).find('[ddrfileimage]').html('<i class="fa-solid fa-spinner fa-spin-pulse"></i>');
+	//		$(fileBlock).find('[ddrfileimage]').html('<img class="ddr-file__image_loading ddr-file__image_loading-gray-70 fa-spin" style="--fa-animation-duration: 7s;" src="'+loadingIcon+'" />');
+	//	},
+	//	callback: function({selector, file, ext, preview, key, name, size, type}, complete) {
+	//		if (_.indexOf(['png', 'apng', 'jpeg', 'jpg', 'gif', 'bmp', 'webp'], ext) >= 0) {
+	//			$('#singleFileBlock').append('<img key="'+key+'" src="'+preview+'" />');
+	//		} else {
+	//			$('#singleFileBlock').append('<img key="'+key+'" src="assets/images/filetypes/'+ext+'.png" />');
+	//		}
+	//		
+	//		/*let fileBlock = $(selector).closest('.file');
+	//		
+	//		if (_.indexOf(['png', 'apng', 'jpeg', 'jpg', 'gif', 'bmp', 'webp'], ext) >= 0) {
+	//			$(fileBlock).find('[ddrfileimage]').html('<img src="'+src+'" />');
+	//		} else {
+	//			$(fileBlock).find('[ddrfileimage]').html('<img src="assets/images/filetypes/'+ext+'.png" />');
+	//		}*/
+	//	},
+	//	fail: function(selector, err) {
+	//		//console.log('fail', err);
+	//		//let fileBlock = $(selector).closest('.file');
+	//		//$(fileBlock).find('[ddrfileimage]').empty();
+	//	}/*,
+	//	proxy(data) {
+	//		files = data;
+	//	}*/
+	//});
+	//
+	//isImgFile
+	//$('button').on(tapEvent, function() {
+	//	//let formData = ddrInput.getFormFiles();
+	//	//console.log(typeof formData, formData.get('ddrfile'));
+	//	$('#ddrForm').ddrFormSubmit({url: 'file', files: {name: 'ddrfile', items: ddrInput.getFormFiles()}});
+	//
+	//	//$.ddrFormSubmit({fields: 'rtertert'});
+	//	
+	//	
+	//});
+	//
+	//
+	//$('#singleFileBlock').on(tapEvent, 'img', function() {
+	//	let key = $(this).attr('key');
+	//	ddrInput.removeFile(key);
+	//	$(this).remove();
+	//});
 	
 	
 	

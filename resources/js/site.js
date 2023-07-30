@@ -7,6 +7,7 @@ import '@plugins/jquery.mousewheel';
 import '@plugins/dropdown';
 import '@plugins/ddrFormSubmit';
 import '@plugins/ddrInputs';
+import '@plugins/ddrFiles';
 //require('@plugins/ddrInputsChain');
 import '@plugins/ddrWaitBlock';
 import '@plugins/ddrPopup';
@@ -65,13 +66,11 @@ $(function() {
 	});
 	
 	
-	
 	/*ddrQuery.post('/slack/send_message', {
 		webhook: 'https://hooks.slack.com/services/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',
 		text: 'этот текст передан через аргумент'
 	});*/
-	
-	
+
 	
 	
 });

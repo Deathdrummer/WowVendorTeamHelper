@@ -6,7 +6,60 @@
 					loading="{{__('ui.loading')}}"
 					ready
 					>
-					<div class="ddrtabs">
+					
+					
+					<x-button variant="neutral" size="normal" action="getFilesAction" class="mb1rem">get files</x-button>
+					
+					
+					
+					<x-button variant="neutral" size="normal" id="uploadBtn" class="mb1rem">upload</x-button>
+					
+					
+					
+					
+					<div
+						id="dropFilesBlock"
+						class="w20rem h20rem border-all border-gray d-block dhover"
+						>
+					</div>
+					
+					
+					<div id="uploadedeFilesBlock" class="row row-cols-6 gx-5 gy-5"></div>
+
+					
+					
+					{{-- <div class="w50rem h50rem border border-all border-blue border-round-10" style="position: relative;">
+						
+						
+						<x-file id="singleFile" multiple>
+							<x-button for="singleFile">click</x-button>
+						</x-file>
+						<x-drop
+							for="singleFile"
+							class="border-all border-gray d-block"
+							multiple
+							drop="tool"
+							dragover="foo"
+							dragleave="bar"
+							style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
+							>
+							<p>sdfsdfs</p>
+						</x-drop>
+					</div> --}}
+					
+					
+						
+					
+					{{-- 
+					<label for="singleFile" id="singleFileDrop" class="w10rem h10rem border-all border-gray d-block" draggable="true"></label>
+					
+					<div id="singleFileBlock" class="row row-cols-6 gx-5 gy-5"></div> --}}
+					
+					
+					
+					
+					
+					{{-- <div class="ddrtabs">
 						<div class="ddrtabs__nav">
 							<ul class="ddrtabsnav" ddrtabsnav>
 								<li class="ddrtabsnav__item ddrtabsnav__item_active" ddrtabsitem="testTab1">Название вкладки 1</li>
@@ -30,11 +83,11 @@
 								Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum excepturi eveniet enim aspernatur voluptates nam a qui alias atque ducimus quidem officiis, consequatur architecto, ea distinctio.
 							</div>
 						</div>
-					</div>
+					</div> --}}
 				</x-card>
 			</div>
 			
-			<div class="col-6">
+			{{-- <div class="col-6">
 				<x-card
 					loading="{{__('ui.loading')}}"
 					ready
@@ -190,7 +243,7 @@
 						
 					
 				</x-card>
-			</div>
+			</div> --}}
 			
 		</div>
 		
@@ -202,7 +255,131 @@
 
 
 
+
+
 <script type="module">
+	
+	
+	
+	
+	/*$('#uploadBtn').ddrFiles('choose', {
+		multiple: true,
+		init({count}) {
+			console.log('before', count);
+		},
+		preload({key, iter}) {
+			console.log('preload', key, iter);
+		},
+		callback(fileData, complete, cbIters) {
+			console.log('callback', fileData, complete, cbIters);
+		},
+		done(allFiles) {
+			console.log('done', allFiles);
+		},
+		fail(file) {
+			console.log('fail', file);
+		},
+	});
+	
+	
+	
+	$('#dropFilesBlock').ddrFiles('drop', {
+		dragover(selector) {
+			$(selector).addClass('dhover-hovered');
+		},
+		dragleave(selector) {
+			$(selector).removeClass('dhover-hovered');
+		},
+		init({count}) {
+			console.log('before', count);
+		},
+		preload({key, iter}) {
+			console.log('preload', key, iter);
+		},
+		callback(fileData, complete, cbIters) {
+			console.log('callback', fileData, complete, cbIters);
+		},
+		done(allFiles) {
+			console.log('done', allFiles);
+		}
+	});*/
+	
+	
+	
+	
+	
+	const {getFiles, removeFile} = $.ddrFiles({
+		chooseSelector: '#uploadBtn',
+		dropSelector: '#dropFilesBlock',
+		multiple: true,
+		dragover(selector) {
+			$(selector).addClass('dhover-hovered');
+		},
+		dragleave(selector) {
+			$(selector).removeClass('dhover-hovered');
+		},
+		init({count}) {
+			$('#uploadedeFilesBlock').empty();
+			for (let i = 0; i < count; i++) {
+				let rool = $('<div class="col" filecontainer><div class="w100 h10rem border border-gray border-all border-round-5"></div></div>');
+				
+				$(rool).find('[filecontainer]').children().ddrWait({
+					iconHeight: '30px',
+					bgColor: '#fff3',
+				});
+				
+				$('#uploadedeFilesBlock').append(rool);
+			}
+		},
+		preload({key, iter, error}) {
+			$('#uploadedeFilesBlock').find('[filecontainer]').eq(iter).children().setAttrib('file-id', key);
+		},
+		async callback({file, name, ext, key, size, type, isImage, preview, error}, {done, index}) {
+			if (error) {
+				console.log(error);
+				return false;
+			}
+			
+			let imgSrc;
+			if (isImage) {
+				imgSrc = await preview({width: 100});
+			} else {
+				imgSrc = await loadImage(`filetypes/${ext}.png`);
+			}
+			
+			$('#uploadedeFilesBlock').find(`[file-id="${key}"]`).html(`<img class="w100 h100" style="object-fit: contain;" onerror="$.errorLoadingImage(this)" src="${imgSrc}" /><p class="fz12px lh100 text-center">${name}</p>`);
+			
+			if (done) {
+				$.notify('Готово!');
+			} 
+		},
+		done({files}) {
+			//console.log('done', files);
+		},
+	});
+	
+	
+	
+	$.getFilesAction = () => {
+		const rool = getFiles();
+		console.log(rool);
+	}
+	
+	
+	$('#uploadedeFilesBlock').on(tapEvent, '[file-id]', function() {
+		let key = $(this).attr('file-id');
+		removeFile(key);
+		$(this).closest('.col').remove();
+		console.log(getFiles());
+	});
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	$.openPopupWin = () => {
 		ddrPopup({

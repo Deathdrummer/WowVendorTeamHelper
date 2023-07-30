@@ -1,7 +1,7 @@
 import {defineConfig} from 'vite';
 import laravel from 'laravel-vite-plugin';
 import inject from "@rollup/plugin-inject";
-import dynamicImport from 'vite-plugin-dynamic-import'
+import dynamicImport from 'vite-plugin-dynamic-import';
 
 const path = require('path');
 
@@ -28,10 +28,10 @@ export default defineConfig({
 			'@': path.resolve(__dirname, 'resources/js'),
 			'@plugins': path.resolve(__dirname, 'resources/js/plugins'),
 			'@sass': path.resolve(__dirname, 'resources/sass'),
-			'@fonts': path.resolve(__dirname, 'resources/fonts')
+			'@fonts': path.resolve(__dirname, 'resources/fonts'),
 		}
 	},
 	define: {
 		'process.env': {}
-	}
+	},
 });

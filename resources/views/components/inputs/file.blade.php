@@ -13,11 +13,20 @@
     'action'        => 'setSetting'
 ])
 
-@php
-	$group = $group ?? $size;
-@endphp
 
 
+
+
+<div>
+	<input type="file" hidden id="{{$id}}"{{$isMultiple()}}>
+	{{$slot}}
+</div>
+
+
+
+
+
+{{-- 
 <div {{$attributes->class('file')}}>
 	<label for="{{$id}}" class="{{$group ? $group.'-' : ''}}file__label">
 		<div class="{{$group ? $group.'-' : ''}}file__image" ddrfileimage></div>
@@ -25,10 +34,11 @@
 	</label>
 	<input
 		type="file"
+		multiple
 		name="{{$name}}"
 		id="{{$id}}"
 		{{$setInpGroup()}}
 		{{$isMultiple()}}
 		@if($tag) {!!$tag!!} @endif
 		>
-</div>
+</div> --}}

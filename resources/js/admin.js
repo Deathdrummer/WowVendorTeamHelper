@@ -7,6 +7,7 @@ import '@plugins/jquery.mousewheel';
 import '@plugins/dropdown';
 import '@plugins/ddrFormSubmit';
 import '@plugins/ddrInputs';
+import '@plugins/ddrFiles';
 import '@plugins/ddrWaitBlock';
 import '@plugins/ddrPopup';
 import '@plugins/ddrDatepicker';
