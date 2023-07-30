@@ -1,5 +1,14 @@
 window.loadImage = async (fileName) => {
 	
+	
+	//const path = await import(`/resources/images/${fileName}.png`);
+
+
+	//return path;
+	
+	
+	
+	/*
 	const path = 'resources/images/'+fileName;
 	
 	if (isDev) {
@@ -10,7 +19,7 @@ window.loadImage = async (fileName) => {
 		const filePath = await getManifest(path);
 		
 		return filePath;	
-	}
+	}*/
 }
 
 
