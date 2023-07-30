@@ -32,11 +32,13 @@ import img2 from '../images/filetypes/svg.png';
 
 
 window.getImageUrl = function(name) {
-  return new URL(`/resources/images/filetypes/${name}.png`, import.meta.url).href;
+  return new URL(`/resources/images/${name}`, import.meta.url).href;
 }
 
 
+let rool = getImageUrl('filetypes/svg.png');
 
+console.log(rool);
 
 import strtr from 'locutus/php/strings/strtr';
 window.strtr = strtr;
