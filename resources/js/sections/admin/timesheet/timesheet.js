@@ -55,7 +55,7 @@ export async function timesheetCrud(periodId = null, listType = null, buildOrder
 		//enableButtons(true);
 		//changeInputs({'[save], [update]': 'enable'});
 		
-		$('#newTimesheetEventBtn').removeAttrib('hidden');
+		$('#newTimesheetEventBtn, #importTimesheetEventsBtn').removeAttrib('hidden');
 		
 		
 		
@@ -133,6 +133,101 @@ export async function timesheetCrud(periodId = null, listType = null, buildOrder
 				});
 			}
 		}
+		
+		
+		
+		
+		
+		
+		$.importTimesheetEventsAction = async (btn) => {
+			let timesheetImportBtnWait = $(btn).ddrWait({
+				iconHeight: '20px',
+				bgColor: '#b08ad791'
+			});
+			
+			const {
+				popper,
+				wait,
+				setHtml,
+				close,
+				enableButtons,
+				disableButtons,
+			} = await ddrPopup({
+				title: 'Импорт событий', // заголовок
+				url: 'crud/timesheet/import_form',
+				method: 'get',
+				params: {
+					views: viewsPath,
+					section: 'system.timesheet' // это для загрузки настроек
+				},
+				width: 500, // ширина окна
+				buttons: ['ui.close', {action: 'timesheetSave', title: 'Импортировать'}],
+				disabledButtons: true,
+			});
+			
+			timesheetImportBtnWait.destroy();
+			enableButtons('close');
+			
+			
+			let importTSWait;
+			const {getFile} = $('#importTSEvent').ddrFiles('choose', {
+				extensions: ['txt'],
+				init({count}) {
+					importTSWait = $('#importTSEvent').ddrWait({
+						iconHeight: '20px',
+						bgColor: '#b08ad791'
+					});
+				},
+				preload({key, iter}) {},
+				error({text, extensions, file}) {
+					if (text == 'forbidden_extension') {
+						$.notify(`Доступен только текстовый формат ${extensions.join(', ')}`, 'error');
+					}
+					importTSWait.destroy();
+				},
+				callback({file, name, ext, key, size, type, preview}, {done, index}) {
+					$('#importTSEventFileName').text(name);
+					//if ($('#importEventsSeparator').val()) enableButtons(true);
+					enableButtons(true);
+				},
+				done({files}) {
+					importTSWait.destroy();
+				},
+			});
+			
+			
+			
+			/*$('#importEventsSeparator').ddrInputs('change', function(input) {
+				if ($(input).val()) enableButtons(true);
+				else disableButtons(false);
+			});*/
+			
+			
+			
+			$.timesheetSave = async () => {
+				wait();
+				let file = getFile();
+					//separator = $('#importEventsSeparator').val();
+				
+				const {data, error, status, headers} = await ddrQuery.post('crud/timesheet/import', {period_id: periodId, file});
+				
+				if (error) {
+					$.notify('Ошибка импорта событий!', 'error');
+					wait(false);
+					return;
+				}
+				
+				list({list_type: listType.value}, () => {
+					$('#timesheetTable').blockTable('buildTable');
+					$.notify('События успешно импортированы!');
+					incrementLastPeriodCount(periodId, 20);
+					close();
+				});
+				
+			}
+			
+		}
+		
 		
 		
 		
@@ -324,10 +419,10 @@ export async function timesheetCrud(periodId = null, listType = null, buildOrder
 
 
 
-function incrementLastPeriodCount(periodId = null) {
+function incrementLastPeriodCount(periodId = null, countEvents = 1) {
 	if (_.isNull(periodId)) console.error('incrementLastPeriodCount ошибка -> не передан periodId');
 	let count = $('#lastTimesheetPeriodsBlock').find(`li[timesheetperiod="${periodId}"] [timesheetperiodscounter]`).text();
-	$('#lastTimesheetPeriodsBlock').find(`li[timesheetperiod="${periodId}"] [timesheetperiodscounter]`).text(Number(count) + 1);
+	$('#lastTimesheetPeriodsBlock').find(`li[timesheetperiod="${periodId}"] [timesheetperiodscounter]`).text(Number(count) + countEvents);
 }
 
 

@@ -5,14 +5,20 @@ export default class DdrInputs {
 	constructor(items, method) {
 		if (!items) return false;
 		
-		if (['change', 'state', 'enable', 'disable', 'addClass', 'removeClass'].includes(method)) {
-			if (items.length == 1 && (['input', 'select', 'textarea', 'button'].includes(items[0]?.tagName?.toLowerCase()) && !$(items).hasAttr('contenteditable') && !$(items).hasAttr('datepicker'))) {
-				items = items.find('input, select, textarea, button, [contenteditable], [datepicker]');
-			}
+		// Методы, которые могут применяться для блока - обертки, в котором находятся инпуты
+		const blockMethods = ['change', 'state', 'enable', 'disable', 'addClass', 'removeClass'];
+		
+		if (blockMethods.includes(method)) {
+			if (items.length == 1
+				&& !(['input', 'select', 'textarea', 'button'].includes(getTagName(items[0])) 
+				&& !$(items[0]).hasAttr('contenteditable')
+				&& !$(items[0]).hasAttr('datepicker'))) {
+					items = items.find('input, select, textarea, button, [contenteditable], [datepicker]');
+				}
 		}
 		
-		
 		let allData = [];
+		
 		items.each(function(k, item) {
 			let tag = item?.tagName?.toLowerCase(),
 				type = typeof $(item).attr('contenteditable') !== 'undefined' ? 'contenteditable' : (item?.type ? item?.type?.toLowerCase()?.replace('select-one', 'select') : null),

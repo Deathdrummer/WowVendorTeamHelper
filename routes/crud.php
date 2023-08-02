@@ -34,6 +34,8 @@ Route::resource('timesheet_periods', TimesheetPeriodsController::class)->only(['
 Route::get('timesheet/init', [TimesheetController::class, 'init']);
 Route::get('timesheet/orders', [TimesheetController::class, 'orders']);
 Route::post('timesheet/store_show', [TimesheetController::class, 'store_show']);
+Route::get('timesheet/import_form', [TimesheetController::class, 'get_import_form']);
+Route::post('timesheet/import', [TimesheetController::class, 'import_events']);
 Route::resource('timesheet', TimesheetController::class)->except(['show']);
 
 

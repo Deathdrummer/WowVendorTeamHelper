@@ -27,9 +27,18 @@
 	
 	<div class="col-auto ms-auto" teleport="#headerTeleport3">
 		<div class="header__block">
-			<div>
+			<x-buttons-group size="large" gx="10">
 				<x-button
-					size="large"
+					variant="purple"
+					action="importTimesheetEventsAction"
+					hidden
+					title="Импортировать события"
+					id="importTimesheetEventsBtn"
+					>
+					<i class="fa-solid fa-fw fa-file-import"></i>
+				</x-button>
+				
+				<x-button
 					variant="green"
 					action="newTimesheetEventAction"
 					hidden
@@ -38,7 +47,7 @@
 					>
 					<i class="fa-solid fa-fw fa-plus"></i>
 				</x-button>
-			</div>
+			</x-buttons-group>
 		</div>
 	</div>
 	
@@ -111,7 +120,7 @@
 	
 	$.timesheetPeriodsBuild = (btn, periodId) => {
 		if ($(btn).hasClass('active')) return;
-		$('#newTimesheetEventBtn').setAttrib('hidden');
+		$('#newTimesheetEventBtn, #importTimesheetEventsBtn').setAttrib('hidden');
 		$('#lastTimesheetPeriodsBlock').find('li').removeClass('active');
 		choosedPeriod.value = periodId;
 		

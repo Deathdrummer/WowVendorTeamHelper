@@ -23,6 +23,9 @@ export default defineConfig({
 		}),
 		dynamicImport(/* options */),
     ],
+	commonjsOptions: {
+		esmExternals: true 
+	},
 	resolve: {
 		alias: {
 			'@': path.resolve(__dirname, 'resources/js'),

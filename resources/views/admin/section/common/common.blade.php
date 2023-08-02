@@ -24,8 +24,9 @@
 					</div>
 					
 					
-					<div id="uploadedeFilesBlock" class="row row-cols-6 gx-5 gy-5"></div>
-
+					<div id="uploadedeFilesBlock" class="row row-cols-6 gx-5 gy-5 mt2rem"></div>
+					
+					
 					
 					
 					{{-- <div class="w50rem h50rem border border-all border-blue border-round-10" style="position: relative;">
@@ -255,11 +256,19 @@
 
 
 
+<style>
+	img {
+  display: block;
+
+  /* This rule is very important, please don't ignore this */
+  max-width: 100%;
+}
+</style>
+
+
 
 
 <script type="module">
-	
-	
 	
 	
 	/*$('#uploadBtn').ddrFiles('choose', {

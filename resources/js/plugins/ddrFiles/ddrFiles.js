@@ -76,7 +76,6 @@ export default class DdrFiles { // 29.07.23
 			callFunc((drop || dragleave), this);
 			
 			const files = getAddedFiles(e);
-			
 			loadFiles(files, loadFilesFuncs);
 			
 			return false;
@@ -161,6 +160,35 @@ export default class DdrFiles { // 29.07.23
 	//--------------------------------------------------------------------------------------------------------------------------------------------
 	
 	
+	/*	Получить список добавленных файлов
+			- объект event
+			- вернуть как простой массив
+	*/
+	getAddedFiles(event = null) {
+		if (!event) {
+			if (isDev) console.error('getAddedFiles -> не передан event!');
+			return false;
+		}
+		
+		let files = null;
+		
+		if (event?.originalEvent?.dataTransfer != undefined) files = event.originalEvent.dataTransfer.files;
+		else if (event?.dataTransfer != undefined) files = event.dataTransfer.files;
+		else if (event?.currentTarget?.files != undefined) files = event.currentTarget.files;
+		
+		let filesArr = Object.values(files);
+		
+		return filesArr.filter(file => isFile(file));
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	/* Загрузка файлов и обработка из
 			-  массив файлов
 			- параметры
@@ -189,11 +217,13 @@ export default class DdrFiles { // 29.07.23
 		}
 		
 		const compress = this.compressImage;
-		const fff = this.files;
+		const returnedFiles = this.files;
 		
-		const {init, preload, callback, done} = _.assign({
+		const {extensions, init, preload, error, callback, done} = _.assign({
+			extensions: null, // Разешенные расширения файлов
 			init: null, // перед инициализацией загрузки файлов
 			preload: null, // маркировка ключем key блоков под миниатюры картинок или иконки файлов
+			error: null, // вызывается в случае ошибки
 			callback: null, // файл загружен 
 			done: null, // все файлы загружены
 		}, params);
@@ -207,6 +237,12 @@ export default class DdrFiles { // 29.07.23
 		
 		$.each(files, function(iter, rawFile) {
 			let isImage = isImgFile(rawFile);
+			let [name, ext] = getFileName(rawFile);
+			
+			if (extensions && !extensions.includes(ext)) {
+				callFunc(error, {text: 'forbidden_extension', extensions, file: rawFile});
+				return true;
+			}
 			
 			rawFile.key = ddrHash(rawFile.name+rawFile.lastModified+rawFile.size, 2);
 			
@@ -215,19 +251,18 @@ export default class DdrFiles { // 29.07.23
 			reader = new FileReader();
 			
 			reader.onerror = function() {
-				callFunc(callback, null, {error: 1, file: rawFile});
+				callFunc(error, {text: 'loading_error', file: rawFile});
+				return true;
 			};
 			
 			reader.onload = function(e) {
 				if (e.target.error) {
-					callFunc(callback, null, {error: 1, file: rawFile});
+					callFunc(error, {text: 'loading_error', file: rawFile});
 					return true;
 				}
 				
-				let [name, ext] = getFileName(rawFile);
-				
 				if (rawFile.size == 0 && !ext) {
-					callFunc(callback, null, {error: 2, file: rawFile});
+					callFunc(error, {text: 'not_file', file: rawFile});
 					return true;
 				}
 				
@@ -249,40 +284,13 @@ export default class DdrFiles { // 29.07.23
 				allFiles[rawFile.key] = fileData;
 				
 				if (complete) {
-					fff.value = allFiles;
+					returnedFiles.value = allFiles;
 					callFunc(done, {files: allFiles});
 				} 
 			};
 			
 			reader.readAsDataURL(rawFile); // когда мы хотим использовать данные в src для img или другого тега
 		});
-		
-		// Возвращаем методы
-		// return {
-		// 	getFiles() {
-		// 		let filesData = {};
-		// 		$.each(allFiles, (k, file) => {
-		// 			filesData[fieldName+'['+file.key+']'] = file;
-		// 		});
-		// 		return filesData;
-		// 	},
-		// 	removeFile(index = false, count = 1) {
-		// 		if (index === false) return false;
-		// 		if (allFiles[index] !== undefined) delete allFiles[index];
-		// 	},
-		// 	getFormFiles() {
-		// 		return Object.values(allFiles);
-		// 		
-		// 		//let formData = new FormData();
-		// 		/*if (Object.keys(proxyData).length == 0) return false;
-		// 		
-		// 		$.each(proxyData, (k, file) => {
-		// 			formData.append(fieldName+'['+file.key+']', file, file.name);
-		// 		});
-		// 		
-		// 		return formData;*/
-		// 	}
-		// }
 	}
 	
 	
@@ -341,34 +349,6 @@ export default class DdrFiles { // 29.07.23
 			}
 		});
 	}
-	
-	
-	
-	
-	
-	/*	Получить список добавленных файлов
-			- объект event
-			- вернуть как простой массив
-	*/
-	getAddedFiles(event = null) {
-		if (!event) {
-			if (isDev) console.error('getAddedFiles -> не передан event!');
-			return false;
-		}
-		
-		let files = null;
-		
-		if (event?.originalEvent?.dataTransfer != undefined) files = event.originalEvent.dataTransfer.files;
-		else if (event?.dataTransfer != undefined) files = event.dataTransfer.files;
-		else if (event?.currentTarget?.files != undefined) files = event.currentTarget.files;
-		
-		let filesArr = Object.values(files);
-		
-		return filesArr.filter(file => isFile(file));
-	}
-	
-	
-	
 	
 	
 	

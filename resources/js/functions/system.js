@@ -15,6 +15,8 @@ $.fn.ddrClick = function(callback = null, countClicks = 1) {
 
 
 
+
+
 window.getOS = function() {
 	let userAgent = window.navigator.userAgent,
 		platform = window.navigator?.userAgentData?.platform || window.navigator.platform,

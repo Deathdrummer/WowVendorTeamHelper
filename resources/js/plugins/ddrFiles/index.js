@@ -72,6 +72,9 @@ const methodsObj = function(files) {
 		getFiles() {
 			return files.value;
 		},
+		getFile() {
+			return Object.values(files.value)[0]['file'];
+		},
 		removeFile(key = null, count = 1) {
 			if (_.isNull(key)) return false;
 			if (files.value[key] !== undefined) delete files.value[key];

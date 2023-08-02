@@ -185,6 +185,14 @@ window.setTagAttribute = function(attrName = null, rules = null, joinSign = ' ')
 
 
 
+window.getTagName = function(selector = null) {
+	if (_.isNull(selector)) throw new Error('Ошибка! getTagName -> не указан селектор');
+	return selector?.tagName?.toLowerCase();
+}
+
+
+
+
 
 $.fn.disableDrop = function(extClasses, callback) {
 	var selector = this;

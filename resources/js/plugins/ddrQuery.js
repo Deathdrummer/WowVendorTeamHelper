@@ -25,11 +25,11 @@ function _action(method, url, data = {}, params = {}) {
 		method,
 		url,
 		responseType: 'json', // 'arraybuffer', 'document', 'json', 'text', 'stream' 'blob' (только в браузере)
+		headers: {},
 		abortContr: null,
 	}, params);
 	
-	
-	
+	if (_hasFiles(data)) config.headers['Content-Type'] = 'multipart/form-data';
 	
 	if (_.indexOf(['get', 'head', 'options'], method) !== -1) {
 		if (_hasQueryInUrl(url) == false && data) _.set(config, 'params', data);
@@ -122,6 +122,20 @@ function _setMethodField(data, method = null) {
 function _hasQueryInUrl(url = null) {
 	if (_.isNull(url)) throw new Error('ddrQuery -> _hasQueryInUrl: не указан url!');
 	return url.includes('?');
+}
+
+
+
+function _hasFiles(data = null) {
+	if (_.isNull(data)) return false;
+	let hasFiles = false;
+	$.each(data, function(d, r) {
+		if (r instanceof File) {
+			hasFiles = true;
+			return false;
+		}
+	});
+	return hasFiles;
 }
 
 

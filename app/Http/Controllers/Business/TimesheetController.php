@@ -2,6 +2,7 @@
 
 use App\Helpers\DdrDateTime;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ImportTimesheetEventsRequest;
 use App\Models\Command;
 use App\Models\EventType;
 use App\Models\Timesheet;
@@ -283,6 +284,35 @@ class TimesheetController extends Controller {
 	
 	
 	
+	/**
+	* 
+	* @param
+	* @return
+	*/
+	public function get_import_form(Request $request) {
+		[
+			'views' => $viewPath,
+		] = $request->validate([
+			'views' => 'required|string',
+		]);
+		
+		return response()->view($viewPath.'.import_form');
+	}
+	
+	
+	
+	/**
+	* 
+	* @param
+	* @return
+	*/
+	public function import_events(ImportTimesheetEventsRequest $request) {
+		$request->validated();
+		
+		$res = $request->importEvents();
+
+		return response()->json($res);
+	}
 	
 	
 	
