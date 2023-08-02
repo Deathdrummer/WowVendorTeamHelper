@@ -64,10 +64,8 @@ class ImportTimesheetEventsRequest extends FormRequest {
 			if (count($splitRow) == 4) [$date, $time, $commandId, $eventTypeId] = $splitRow;
 			else continue;
 			
-			
-			
 			if (!isset($commands[$commandId]) || !isset($eventsTypes[$eventTypeId])) continue;
-			logger($commands[$commandId]);
+			
 			$importData[] = [
 				'command_id' 			=> $commands[$commandId],
 				'event_type_id' 		=> $eventsTypes[$eventTypeId],
