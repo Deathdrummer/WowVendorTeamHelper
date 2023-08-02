@@ -220,7 +220,7 @@ export async function timesheetCrud(periodId = null, listType = null, buildOrder
 				list({list_type: listType.value}, () => {
 					$('#timesheetTable').blockTable('buildTable');
 					$.notify('События успешно импортированы!');
-					incrementLastPeriodCount(periodId, 20);
+					incrementLastPeriodCount(periodId, data);
 					close();
 				});
 				

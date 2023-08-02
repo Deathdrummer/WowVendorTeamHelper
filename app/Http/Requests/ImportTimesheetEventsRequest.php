@@ -76,7 +76,8 @@ class ImportTimesheetEventsRequest extends FormRequest {
 		}
 		
 		$res = Timesheet::insert($importData);
-		return $res;
+		
+		return $res ? count($importData) : false;
 	}
 	
 	
