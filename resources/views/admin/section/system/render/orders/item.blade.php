@@ -6,9 +6,9 @@
 			<strong class="w3rem d-inline-block text-end">ориг</strong>:
 			@if($date)
 				@if(isset($timezones[$timezone_id]['format_24']) && $timezones[$timezone_id]['format_24'])
-					<span class="color-blue-hovered color-black-active noselect" onclick="$.copyToClipboard(event)">{{DdrDateTime::date($date, ['format' => 'DD.MM.YY HH:mm'])}} {{$timezones[$timezone_id]['timezone']}}</span>
+					<span class="color-gray-500-hovered color-blue-active noselect" onclick="$.copyToClipboard(event)">{{DdrDateTime::date($date, ['format' => 'DD.MM.YY HH:mm'])}} {{$timezones[$timezone_id]['timezone']}}</span>
 				@else
-					<span class="color-blue-hovered color-black-active noselect" onclick="$.copyToClipboard(event)">{{DdrDateTime::date($date, ['locale' => 'en', 'format' => 'DD.MM.YY h:mm A'])}} {{$timezones[$timezone_id]['timezone']}}</span>
+					<span class="color-gray-500-hovered color-blue-active noselect" onclick="$.copyToClipboard(event)">{{DdrDateTime::date($date, ['locale' => 'en', 'format' => 'DD.MM.YY h:mm A'])}} {{$timezones[$timezone_id]['timezone']}}</span>
 				@endif
 			@else
 				<span class="color-gray">-</span>
@@ -18,7 +18,7 @@
 		<p class="fz12px pointer" title="Кликните для копирования">
 			<strong class="w3rem d-inline-block text-end">мск</strong>:
 			@if($date)
-				<span class="color-blue-hovered color-black-active noselect" onclick="$.copyToClipboard(event)">{{DdrDateTime::date($date_msc, ['locale' => 'en', 'format' => 'DD.MM.YY HH:mm'])}} МСК</span>
+				<span class="color-gray-500-hovered color-blue-active noselect" onclick="$.copyToClipboard(event)">{{DdrDateTime::date($date_msc, ['locale' => 'en', 'format' => 'DD.MM.YY HH:mm'])}} МСК</span>
 			@else
 				<span class="color-gray">-</span>
 			@endif
