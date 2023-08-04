@@ -140,6 +140,7 @@ class TimesheetController extends Controller {
 		if (!$viewPath) return response()->json(['no_view' => true]);
 		
 		$this->_buildDataFromSettings();
+		$this->data['commands'] = array_column($this->data['commands'], 'title', 'id');
 		
 		return $this->view($viewPath.'.form', ['index' => $newItemIndex]);
     }
@@ -223,6 +224,8 @@ class TimesheetController extends Controller {
 		if (!$viewPath) return response()->json(['no_view' => true]);
 		
 		$this->_buildDataFromSettings();
+		$this->data['commands'] = array_column($this->data['commands'], 'title', 'id');
+		
 		
 		$timesheet = Timesheet::find($id);
 		
