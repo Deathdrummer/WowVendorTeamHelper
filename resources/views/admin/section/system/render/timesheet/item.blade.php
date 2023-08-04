@@ -7,24 +7,18 @@
 			<span
 				 class="color-gray-500-hovered color-blue-active noselect"
 				 onclick="$.copyToClipboard(event)"
-				 >
-				 {{DdrDateTime::time($datetime, ['format' => ['en' => 'h:i a']])}}
-			</span>
+				 >{{DdrDateTime::time($datetime, ['format' => ['en' => 'h:i a']])}}</span>
 			/
 			@if(isset($data['commands'][$command_id]['format_24']) && $data['commands'][$command_id]['format_24'])
 				<span
 					class="color-gray-500-hovered color-blue-active noselect"
 					onclick="$.copyToClipboard(event)"
-					>
-					{{DdrDateTime::time($datetime, ['format' => 'HH:mm', 'shift' => $data['commands'][$command_id]['shift']])}} {{$timezones[$timezone_id]['timezone']}}
-				</span>
+					>{{DdrDateTime::time($datetime, ['format' => 'HH:mm', 'shift' => $data['commands'][$command_id]['shift']])}} {{$timezones[$timezone_id]['timezone']}}</span>
 			@else
 				<span
 					class="color-gray-500-hovered color-blue-active noselect"
 					onclick="$.copyToClipboard(event)"
-					>
-					{{DdrDateTime::time($datetime, ['locale' => 'en', 'format' => 'h:m A', 'shift' => $data['commands'][$command_id]['shift']])}} {{$data['commands'][$command_id]['timezone']}}
-				</span>
+					>{{DdrDateTime::time($datetime, ['locale' => 'en', 'format' => 'h:m A', 'shift' => $data['commands'][$command_id]['shift']])}} {{$data['commands'][$command_id]['timezone']}}</span>
 			@endif
 		</p>
 	</x-table.td>
