@@ -70,7 +70,6 @@ class TimesheetController extends Controller {
 			'list_type'	=> 'required|string',
 		]);
 		
-		
 		if (!$viewPath) return response()->json(['no_view' => true]);
 		
 		$list = Timesheet::withCount('orders AS orders_count')
@@ -334,7 +333,6 @@ class TimesheetController extends Controller {
 			'value'		=> 'timezone'
 		]]); */
 		
-		
 		$difficulties = $this->settings->get('difficulties')?->mapWithKeys(function ($item, $key) {
     		return [$item['id'] => $item['title']];
 		})->toArray();
@@ -345,10 +343,13 @@ class TimesheetController extends Controller {
 		
 		$this->data['events_types'] = $eventsTypes;
 		
-		$commands = Command::get()?->mapWithKeys(function ($item, $key)  {
-    		return [$item['id'] => $item['title']];
+		$timezones = $this->settings->get('timezones', 'id')->toArray();
+		$commands = Command::get()?->mapWithKeys(function ($item, $key) use($timezones) {
+    		$item['shift'] = $timezones[$item['region_id']]['shift'];
+    		$item['format_24'] = $timezones[$item['region_id']]['format_24'] ?? 0;
+    		$item['timezone'] = $timezones[$item['region_id']]['timezone'] ?? '-';
+			return [$item['id'] => $item];
 		})->toArray();
-		
 		
 		$this->data['commands'] = $commands;
 	}

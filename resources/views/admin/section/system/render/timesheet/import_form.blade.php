@@ -2,7 +2,7 @@
 	<div class="col">
 		<p class="color-gray-600 fz12px mb3px">Выбрать файл:</p>
 		<x-button
-			size="normal"
+			size="large"
 			variant="purple"
 			id="importTSEvent"
 			>

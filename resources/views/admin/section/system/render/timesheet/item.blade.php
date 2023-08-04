@@ -3,10 +3,18 @@
 		<p>{{DdrDateTime::date($datetime)}}</p>
 	</x-table.td>
 	<x-table.td>
-		<p>{{DdrDateTime::time($datetime, ['format' => ['en' => 'h:i a']])}}</p>
+		<p>
+			{{DdrDateTime::time($datetime, ['format' => ['en' => 'h:i a']])}}
+			/
+			@if(isset($data['commands'][$command_id]['format_24']) && $data['commands'][$command_id]['format_24'])
+				{{DdrDateTime::time($datetime, ['format' => 'HH:mm', 'shift' => $data['commands'][$command_id]['shift']])}} {{$timezones[$timezone_id]['timezone']}}
+			@else
+				{{DdrDateTime::time($datetime, ['locale' => 'en', 'format' => 'h:m A', 'shift' => $data['commands'][$command_id]['shift']])}} {{$data['commands'][$command_id]['timezone']}}
+			@endif
+		</p>
 	</x-table.td>
 	<x-table.td>
-		<p>{{$data['commands'][$command_id] ?? '-'}}</p>
+		<p>{{$data['commands'][$command_id]['region_id'] ?? '-'}}</p>
 	</x-table.td>
 	<x-table.td>
 		<p>{{$data['events_types'][$event_type_id] ?? '-'}}</p>

@@ -2,7 +2,7 @@
 	<x-table.head>
 		<x-table.tr noborder>
 			<x-table.td class="w20rem" noborder><strong>Дата (МСК)</strong></x-table.td>
-			<x-table.td class="w12rem" noborder><strong>Время (МСК)</strong></x-table.td>
+			<x-table.td class="w20rem" noborder><strong>Время (МСК / ОРИГ)</strong></x-table.td>
 			<x-table.td class="w-auto" noborder><strong>Название команды</strong></x-table.td>
 			<x-table.td class="w30rem" noborder><strong>Тип события</strong></x-table.td>
 			<x-table.td class="w7rem" noborder><strong>Кол-во заказов</strong></x-table.td>

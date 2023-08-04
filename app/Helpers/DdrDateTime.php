@@ -63,6 +63,7 @@ class DdrDateTime {
 		$format = match(true) {
 			!isset($format) 	=> $defaultFormat,
 			is_array($format) 	=> $format[$locale] ?? $defaultFormat,
+			is_string($format) 	=> $format ?? $defaultFormat,
 			default				=> $defaultFormat,
 		};
 		
