@@ -322,7 +322,6 @@ class TimesheetController extends Controller {
 	
 	
 	
-	
 	/** Задать глобальные настройки
 	 * @return void
 	 */
