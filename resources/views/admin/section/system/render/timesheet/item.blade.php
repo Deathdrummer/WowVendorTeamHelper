@@ -14,7 +14,7 @@
 		</p>
 	</x-table.td>
 	<x-table.td>
-		<p>{{$data['commands'][$command_id]['region_id'] ?? '-'}}</p>
+		<p>{{$data['commands'][$command_id]['title'] ?? '-'}}</p>
 	</x-table.td>
 	<x-table.td>
 		<p>{{$data['events_types'][$event_type_id] ?? '-'}}</p>
