@@ -411,23 +411,11 @@ export async function timesheetCrud(periodId = null, listType = null, buildOrder
 		
 		
 		$.exportOrdersAction = async (btn) => {
-			
 			const {
-				state,
-				popper,
 				wait,
-				setTitle,
-				setButtons,
-				loadData,
-				setHtml,
-				setLHtml,
-				dialog,
 				close,
 				onClose,
-				onScroll,
-				disableButtons,
-				enableButtons,
-				setWidth,
+				enableButtons
 			} = await ddrPopup({
 				url: 'crud/timesheet/export',
 				method: 'get',
@@ -439,19 +427,18 @@ export async function timesheetCrud(periodId = null, listType = null, buildOrder
 			});
 			
 			
-			
-			let f, r;
+			let fromObj, toObj;
 			$('#exportOrdersDateFrom').on('datepickerinit', (target, dp) => {
-				f = dp;
+				fromObj = dp;
 			}); 
 			
 			$('#exportOrdersDateTo').on('datepickerinit', (target, dp) => {
-				r = dp;
+				toObj = dp;
 			}); 
 			
 			onClose(() => {
-				f.remove();
-				r.remove();
+				fromObj.remove();
+				toObj.remove();
 			});
 				
 			
@@ -499,15 +486,21 @@ export async function timesheetCrud(periodId = null, listType = null, buildOrder
 				
 				const {data, error, status, headers} = await ddrQuery.post('crud/timesheet/export', formData, {responseType: 'blob'});
 				
+				if (error) {
+					$.notify('Ошибка экспорта заказов!', 'error');
+					wait(false);
+					return;
+				}
+				
+				
 				$.ddrFiles('export', {
 					data,
 					headers,
 					filename,
+					done: () => {
+						close();
+					},
 				});
-				
-				wait(false);
-				//close();
-				
 			}
 			
 			

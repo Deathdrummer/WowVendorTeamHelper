@@ -1,3 +1,11 @@
+{{-- 
+Получить объект Datepicker от компанента
+$('#exportOrdersDateFrom').on('datepickerinit', (target, dp) => {
+	dp -  это объект
+}); 
+--}}
+
+
 @aware([
 	'settings' 	=> null,
 	'groupWrap'	=> null,

@@ -151,11 +151,12 @@ export default class DdrFiles { // 29.07.23
 			- коллбэк
 	*/
 	async export(params = {}) {
-		const {query, data, headers, filename} = _.assign({
+		const {query, data, headers, filename, done} = _.assign({
 			query: null, // url, params
 			data: null, // 
 			headers: {}, // 
 			filename: null, //
+			done: null, //
 		}, params);
 		
 		
@@ -199,6 +200,8 @@ export default class DdrFiles { // 29.07.23
 			el.click();
 			window.URL.revokeObjectURL(blob);
 		}
+		
+		callFunc(done);
 	}
 	
 	

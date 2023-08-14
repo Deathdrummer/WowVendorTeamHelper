@@ -48,13 +48,13 @@ window.loadingIcon = 'data:image/gif;base64,R0lGODlhyADIAPeoAP/eAP/eAP/fAP/fAP/f
 
 
 jQuery.expr[":"].icontains = jQuery.expr.createPseudo(function(arg) {
-    return function(elem) {
-        return jQuery(elem).text().toUpperCase().indexOf(arg.toUpperCase()) >= 0;
-    };
+	return function(elem) {
+		return jQuery(elem).text().toUpperCase().indexOf(arg.toUpperCase()) >= 0;
+	};
 });
 
 jQuery.fn.tagName = function() {
-    return this?.prop("tagName")?.toLowerCase();
+	return this?.prop("tagName")?.toLowerCase();
 };
 
 
@@ -82,20 +82,23 @@ window.Pusher = Pusher;
 
 
 window.Echo = new Echo({
-    broadcaster: 'pusher',
-    key: import.meta.env.VITE_PUSHER_APP_KEY,
-    cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER ?? 'mt1',
-    wsHost: import.meta.env.VITE_PUSHER_HOST ? import.meta.env.VITE_PUSHER_HOST : `ws-${import.meta.env.VITE_PUSHER_APP_CLUSTER}.pusher.com`,
-    wsPort: import.meta.env.VITE_PUSHER_PORT ?? 80,
-    wssPort: import.meta.env.VITE_PUSHER_PORT ?? 443,
-    forceTLS: (import.meta.env.VITE_PUSHER_SCHEME ?? 'https') === 'https',
-    enabledTransports: ['ws', 'wss'],
+	broadcaster: 'pusher',
+	key: import.meta.env.VITE_PUSHER_APP_KEY,
+	cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER ?? 'mt1',
+	wsHost: import.meta.env.VITE_PUSHER_HOST ? import.meta.env.VITE_PUSHER_HOST : `ws-${import.meta.env.VITE_PUSHER_APP_CLUSTER}.pusher.com`,
+	wsPort: import.meta.env.VITE_PUSHER_PORT ?? 80,
+	wssPort: import.meta.env.VITE_PUSHER_PORT ?? 443,
+	forceTLS: (import.meta.env.VITE_PUSHER_SCHEME ?? 'https') === 'https',
+	enabledTransports: ['ws', 'wss'],
 });
 
 
 // глобальная обработка AJAX ответаов
 axios.interceptors.response.use(function (response) {
-	if (isJson(response.data)) response.data = JSON.parse(response.data);
+	const {data, headers} = response;
+	
+	// Проверяет, если тип данных json, а сами данные в виде строки - привести данные в JSON
+	if (headers['content-type'] == "application/json" && _.isString(data)) response.data = JSON.parse(data);
 	return response;
 }, function (error) {
 	return Promise.reject(error);
