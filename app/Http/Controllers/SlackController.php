@@ -4,6 +4,7 @@ use App\Events\SendMessageEvent;
 use App\Models\Order;
 use App\Services\Business\OrderService;
 use App\Traits\Settingable;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Ixudra\Curl\Facades\Curl;
 
@@ -28,7 +29,7 @@ class SlackController extends Controller {
 			$dataToRows = [];
 			
 			foreach ($data as $row) {
-				$row['date_add'] = $dateAdd;
+				$row['date_add'] = Carbon::createFromTimestamp($dateAdd)->toDateTimeString();
 				
 				['id' => $id, 'date_msc' => $dateMsc] = Order::create($row);
 				
