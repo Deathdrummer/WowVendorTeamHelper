@@ -20,7 +20,7 @@
 	
 	<div class="col-auto" teleport="#headerTeleport2">
 		<div class="header__block">
-			<div id="lastTimesheetPeriodsBlock" class="ml3rem minw-4rem maxw-15rem h4rem"></div>
+			<div id="lastTimesheetPeriodsBlock" class="ml3rem minw-4rem maxw-35rem h4rem"></div>
 		</div>
 	</div>
 	
