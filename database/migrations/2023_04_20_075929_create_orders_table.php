@@ -20,7 +20,8 @@ return new class extends Migration
 			$table->timestamp('date')->nullable();
 			$table->unsignedInteger('timezone_id')->nullable();
 			$table->integer('status')->default(0)->comment('new: 0, wait: -1, cancel: -2, ready: 1, doprun: 2');
-            $table->timestamps();
+			$table->timestamp('date_add')->nullable();
+		    $table->timestamps();
         });
     }
 
