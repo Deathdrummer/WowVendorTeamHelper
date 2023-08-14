@@ -3,8 +3,8 @@ export default class DdrFiles { // 29.07.23
 	selector;
 	files;
 	
-	constructor(selector = null, files) {
-		if (!selector) throw new Error('DdrFiles -> Не передан селектор');
+	constructor(selector = null, files = null) {
+		if (_.isNull(selector)) throw new Error('DdrFiles -> Не передан селектор');
 		this.selector = selector || null;
 		this.files = files;
 	}
@@ -20,10 +20,10 @@ export default class DdrFiles { // 29.07.23
 			- preload: маркировка ключем key блоков под миниатюры картинок или иконки файлов
 			- callback: файл загружен 
 	*/
-	choose(params = {}) {
+	choose(params = {}, forcedSelector = null) {
 		const getAddedFiles = this.getAddedFiles;
 		const loadFiles = this.loadFiles.bind(this); // bind потому что в функции loadFiles идет обращение к контексту, но он там потерян, так как вызов идет отсюда, то есть уже 3 вложенности функций
-		const selector = this.selector;
+		const selector = this.selector || forcedSelector;
 		
 		const loadFilesParams = _.omit(params, ['multiple']);
 		
@@ -55,8 +55,8 @@ export default class DdrFiles { // 29.07.23
 			- preload: маркировка ключем key блоков под миниатюры картинок или иконки файлов
 			- callback: файл загружен 
 	*/
-	drop(params = {}) {
-		const selector = this.selector;
+	drop(params = {}, forcedSelector = null) {
+		const selector = this.selector || forcedSelector;
 		const getAddedFiles = this.getAddedFiles;
 		const loadFiles = this.loadFiles.bind(this);  // bind потому что в функции loadFiles идет обращение к контексту, но он там потерян, так как вызов идет отсюда, то есть уже 3 вложенности функций
 		
@@ -119,6 +119,30 @@ export default class DdrFiles { // 29.07.23
 	
 	
 	
+	
+	
+	upload(params = {}) {
+		if (!Object.values(params).length) {
+			if (isDev) console.error('class DdrFiles -> не переданы параметры!');
+			return false;
+		}
+		const {chooseSelector, dropSelector} = _.pick(params, ['chooseSelector', 'dropSelector']);
+		const chooseParams = _.pick(params, ['multiple', 'init', 'preload', 'callback', 'done', 'fail']);
+		const dropParams = _.pick(params, ['dragover', 'dragleave', 'drop', 'init', 'preload', 'callback', 'done', 'fail']);
+		
+		
+		this.choose(chooseParams, chooseSelector)
+		this.drop(dropParams, dropSelector);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	/*	Экспорт файлов полученных через AJAX (доработать)
 			- опции
 				- data: приходящие данные
@@ -126,25 +150,55 @@ export default class DdrFiles { // 29.07.23
 				- filename: имя файле
 			- коллбэк
 	*/
-	export(ops = {}, cb) {
-		const {data, headers, filename = 'noname'} = ops;
-		const headerContentDisp = headers["content-disposition"] || null;
+	async export(params = {}) {
+		const {query, data, headers, filename} = _.assign({
+			query: null, // url, params
+			data: null, // 
+			headers: {}, // 
+			filename: null, //
+		}, params);
 		
-		const fName = headerContentDisp && headerContentDisp.split("filename=")[1].replace(/["']/g, "");
-		const fExt = getFileName(fName, 2);
 		
-		const finalFileName = filename ? filename+'.'+fExt : fName;
+		if (query) {
+			const {url, params} = _.assign({
+				url: null,
+				params: {}, 
+			}, query);
+			
+			const {data: qData, error, status, headers: qHeaders} = await ddrQuery.get(url, params, {responseType: 'blob'});
+			
+			if (error) {
+				$.notify('export -> ddrQuery ошибка экспорта!', 'error');
+				return false;
+			}
+			
+			data = qData;
+			headers = qHeaders;
+		}
 		
-		const contentType = headers["content-type"];
-		const blob = new Blob([data], {contentType});
-		const href = window.URL.createObjectURL(blob);
-		const el = document.createElement("a");
-		el.setAttribute("href", href);
-		el.setAttribute("download", finalFileName);
-		el.click();
-		window.URL.revokeObjectURL(blob);
+
+		if (typeof window.navigator.msSaveBlob !== 'undefined') {
+			const blob = new Blob([data], {
+				type: 'application/octet-stream',
+			});
+			window.navigator.msSaveBlob(blob, filename);
+		} else {
+			const headerContentDisp = headers["content-disposition"] || null;
 		
-		callFunc(cb);
+			const fName = headerContentDisp && headerContentDisp.split("filename=")[1].replace(/["']/g, "");
+			const fExt = getFileName(fName, 2);
+			
+			const finalFileName = filename ? filename+'.'+fExt : fName;
+			
+			const contentType = headers["content-type"];
+			const blob = new Blob([data], {contentType});
+			const href = window.URL.createObjectURL(blob);
+			const el = document.createElement("a");
+			el.setAttribute("href", href);
+			el.setAttribute("download", finalFileName);
+			el.click();
+			window.URL.revokeObjectURL(blob);
+		}
 	}
 	
 	

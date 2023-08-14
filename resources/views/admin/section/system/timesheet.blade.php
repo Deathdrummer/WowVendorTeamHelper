@@ -29,6 +29,16 @@
 		<div class="header__block">
 			<x-buttons-group size="large" gx="10">
 				<x-button
+					variant="yellow"
+					action="exportOrdersAction"
+					hidden
+					title="Экспортировать заказы"
+					id="exportOrdersBtn"
+					>
+					<i class="fa-solid fa-fw fa-file-export"></i>
+				</x-button>
+				
+				<x-button
 					variant="purple"
 					action="importTimesheetEventsAction"
 					hidden
@@ -120,7 +130,7 @@
 	
 	$.timesheetPeriodsBuild = (btn, periodId) => {
 		if ($(btn).hasClass('active')) return;
-		$('#newTimesheetEventBtn, #importTimesheetEventsBtn').setAttrib('hidden');
+		$('#newTimesheetEventBtn, #importTimesheetEventsBtn, #exportOrdersBtn').setAttrib('hidden');
 		$('#lastTimesheetPeriodsBlock').find('li').removeClass('active');
 		choosedPeriod.value = periodId;
 		

@@ -8,9 +8,9 @@ $.fn.ddrFiles = function(method = null, ...params) {
 		return false;
 	}
 	
-	const hasMethod = [ 'choose', 'drop', 'export'].includes(method);
+	const hasMethod = [ 'choose', 'drop'].includes(method);
 	
-	if (!hasMethod) throw new Error(`ddrFiles -> такого метода «${method}» нет!`);
+	if (!hasMethod) throw new Error(`$.fn.ddrFiles -> такого метода «${method}» нет!`);
 	
 	const files = ref({});
 	
@@ -27,7 +27,8 @@ $.fn.ddrFiles = function(method = null, ...params) {
 
 
 
-/*	Комбинирование методов choose и drop
+/*	Вызов методов, не привязанных к селектору
+		- method - метод 
 		- params
 			- chooseSelector: селектор открытия кна диалога
 			- dropSelector: селектор drop - области бросания файлов 
@@ -40,21 +41,28 @@ $.fn.ddrFiles = function(method = null, ...params) {
 			- callback: файл загружен 
 			- fail: ошибка загрузки
 */
-$.ddrFiles = function(params = {}) {
+$.ddrFiles = function(method = null, params = {}) {
+	if (!method) {
+		if (isDev) console.error('$.ddrFiles -> не указан method!');
+		return false;
+	}
 	if (!params) {
 		if (isDev) console.error('$.ddrFiles -> не переданы параметры!');
 		return false;
 	}
 	
-	const {chooseSelector, dropSelector} = _.pick(params, ['chooseSelector', 'dropSelector']);
-	const chooseParams = _.pick(params, ['multiple', 'init', 'preload', 'callback', 'done', 'fail']);
-	const dropParams = _.pick(params, ['dragover', 'dragleave', 'drop', 'init', 'preload', 'callback', 'done', 'fail']);
+	const hasMethod = ['upload', 'export'].includes(method);
+	
+	if (!hasMethod) throw new Error(`$.ddrFiles -> такого метода «${method}» нет!`);
+	
 	
 	const files = ref({});
 	
-	new DdrFiles(document.querySelector(chooseSelector), files).choose(chooseParams);
-	new DdrFiles(document.querySelector(dropSelector), files).drop(dropParams);
+	const methods = new DdrFiles(false, files);
 	
+	if (method.includes(':')) method = method.replace(':', '_');
+	
+	methods[method](params);
 	
 	return methodsObj(files);
 }

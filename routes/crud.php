@@ -36,6 +36,8 @@ Route::get('timesheet/orders', [TimesheetController::class, 'orders']);
 Route::post('timesheet/store_show', [TimesheetController::class, 'store_show']);
 Route::get('timesheet/import_form', [TimesheetController::class, 'get_import_form']);
 Route::post('timesheet/import', [TimesheetController::class, 'import_events']);
+Route::get('timesheet/export', [TimesheetController::class, 'export_orders_form']);
+Route::post('timesheet/export', [TimesheetController::class, 'export_orders']);
 Route::resource('timesheet', TimesheetController::class)->except(['show']);
 
 

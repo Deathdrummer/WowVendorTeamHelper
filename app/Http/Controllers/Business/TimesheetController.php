@@ -1,5 +1,6 @@
 <?php namespace App\Http\Controllers\Business;
 
+use App\Exports\EventsExport;
 use App\Helpers\DdrDateTime;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ImportTimesheetEventsRequest;
@@ -9,6 +10,7 @@ use App\Models\Timesheet;
 use App\Services\Settings;
 use App\Traits\HasCrudController;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class TimesheetController extends Controller {
 	use HasCrudController;
@@ -114,6 +116,8 @@ class TimesheetController extends Controller {
 		
 		return $this->view($viewPath.'.init');
 	}
+	
+	
 	
 	
 	
@@ -314,6 +318,53 @@ class TimesheetController extends Controller {
 		$res = $request->importEvents();
 
 		return response()->json($res);
+	}
+	
+	
+	
+	
+	
+	
+	
+	/**
+	* 
+	* @param 
+	* @return 
+	*/
+	public function export_orders_form(Request $request) {
+		[
+			'views' 	=> $viewPath,
+		] = $request->validate([
+			'views' 	=> 'required|string',
+		]);
+		
+		return response(view($viewPath.'.export_form'));
+	}
+	
+	
+	
+	
+	
+	
+	
+	/**
+	* 
+	* @param
+	* @return
+	*/
+	public function export_orders(Request $request) {
+		[
+			'type' => $type,
+		] = $request->validate([
+			'type' => 'required|string',
+		]);
+		
+		
+		//$request->validated();
+		
+		//$res = $request->importEvents();
+		
+		return Excel::download(new EventsExport($type), 'contracts.xlsx');
 	}
 	
 	

@@ -217,6 +217,7 @@ return [
         'Vite' 			=> \Illuminate\Support\Facades\Vite::class,
 		'Curl'			=> Ixudra\Curl\Facades\Curl::class,
 		'DdrDateTime'	=> App\Helpers\DdrDateTime::class,
+		'Excel' 		=> Maatwebsite\Excel\Facades\Excel::class,
     ])->toArray(),
 
 ];

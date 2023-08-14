@@ -8,15 +8,15 @@
 					>
 					
 					
-					<x-button variant="neutral" size="normal" action="getFilesAction" class="mb1rem">get files</x-button>
+				{{-- 	<x-button variant="neutral" size="normal" action="getFilesAction" class="mb1rem">get files</x-button>
 					
 					
 					
 					<x-button variant="neutral" size="normal" id="uploadBtn" class="mb1rem">upload</x-button>
+					 --}}
 					
 					
-					
-					
+					{{-- 
 					<div
 						id="dropFilesBlock"
 						class="w20rem h20rem border-all border-gray d-block dhover"
@@ -27,31 +27,6 @@
 					<div id="uploadedeFilesBlock" class="row row-cols-6 gx-5 gy-5 mt2rem"></div>
 					
 					
-					
-					
-					{{-- <div class="w50rem h50rem border border-all border-blue border-round-10" style="position: relative;">
-						
-						
-						<x-file id="singleFile" multiple>
-							<x-button for="singleFile">click</x-button>
-						</x-file>
-						<x-drop
-							for="singleFile"
-							class="border-all border-gray d-block"
-							multiple
-							drop="tool"
-							dragover="foo"
-							dragleave="bar"
-							style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
-							>
-							<p>sdfsdfs</p>
-						</x-drop>
-					</div> --}}
-					
-					
-						
-					
-					{{-- 
 					<label for="singleFile" id="singleFileDrop" class="w10rem h10rem border-all border-gray d-block" draggable="true"></label>
 					
 					<div id="singleFileBlock" class="row row-cols-6 gx-5 gy-5"></div> --}}
@@ -60,7 +35,7 @@
 					
 					
 					
-					{{-- <div class="ddrtabs">
+					<div class="ddrtabs">
 						<div class="ddrtabs__nav">
 							<ul class="ddrtabsnav" ddrtabsnav>
 								<li class="ddrtabsnav__item ddrtabsnav__item_active" ddrtabsitem="testTab1">Название вкладки 1</li>
@@ -84,11 +59,11 @@
 								Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum excepturi eveniet enim aspernatur voluptates nam a qui alias atque ducimus quidem officiis, consequatur architecto, ea distinctio.
 							</div>
 						</div>
-					</div> --}}
+					</div>
 				</x-card>
 			</div>
 			
-			{{-- <div class="col-6">
+			<div class="col-6">
 				<x-card
 					loading="{{__('ui.loading')}}"
 					ready
@@ -244,7 +219,7 @@
 						
 					
 				</x-card>
-			</div> --}}
+			</div>
 			
 		</div>
 		
@@ -314,7 +289,7 @@
 	});*/
 	
 	
-	const {getFiles, removeFile} = $.ddrFiles({
+	const {getFiles, removeFile} = $.ddrFiles('upload', {
 		chooseSelector: '#uploadBtn',
 		dropSelector: '#dropFilesBlock',
 		multiple: true,

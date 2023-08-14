@@ -79,7 +79,7 @@ export async function timesheetPeriodsCrud(getLastTimesheetPeriods = null, times
 		
 		$.timesheetPeriodsWinBuild = (btn, periodId) => {
 			$('#lastTimesheetPeriodsBlock').find('li').removeClass('active');
-			$('#newTimesheetEventBtn, #importTimesheetEventsBtn').setAttrib('hidden');
+			$('#newTimesheetEventBtn, #importTimesheetEventsBtn, #exportOrdersBtn').setAttrib('hidden');
 			choosedPeriod.value = periodId;
 			
 			if (_.isFunction(timesheetCrud)) {
@@ -180,7 +180,7 @@ export async function timesheetPeriodsCrud(getLastTimesheetPeriods = null, times
 										});
 										$('#timesheetContainer').html('<p class="color-gray-400 fz16px noselect text-center">Выберите период</p>');
 										$('#listTypeChooser').setAttrib('hidden');
-										$('#newTimesheetEventBtn, #importTimesheetEventsBtn').setAttrib('hidden');
+										$('#newTimesheetEventBtn, #importTimesheetEventsBtn, #exportOrdersBtn').setAttrib('hidden');
 									}
 									
 								} else {
