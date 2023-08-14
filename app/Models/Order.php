@@ -43,6 +43,7 @@ class Order extends Model {
 	protected $fillable = [
 		'raw_data',
 		'date',
+		'date_add',
 		'order',
 		'server_name',
 		'link',
