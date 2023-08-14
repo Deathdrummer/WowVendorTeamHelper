@@ -25,7 +25,7 @@ class EventsExport implements WithMultipleSheets {
 		if ($this->params['type'] == 'all') {
 			
 			$dateFrom = DdrDateTime::buildTimestamp($this->params['date_from'], ['shift' => true]);
-			$dateTo = DdrDateTime::buildTimestamp($this->params['date_to'], '23:59:00', ['shift' => true]);
+			$dateTo = DdrDateTime::buildTimestamp($this->params['date_to'], '23:59:59', ['shift' => true]);
 			
 			$orders = Order::select('order', 'raw_data', 'status', 'date')
 				->where('date', '>=', $dateFrom)
