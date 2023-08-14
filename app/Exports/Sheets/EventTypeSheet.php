@@ -24,18 +24,33 @@ class EventTypeSheet extends \PhpOffice\PhpSpreadsheet\Cell\StringValueBinder im
 	use Settingable;
 	
 	private $orders = [];
-	private $columsNames = [];
+	private $columsData = [];
+	private $useColums = [];
 	private $listName;
+	private $contentRowsHeight = 35; # Высота контентных строк
+	private $mergeCols = [];
+	public static $freezeRows = 1; # количество строк для заморозки
+	
 
     public function __construct($orders, $listName) {
         $this->listName = $listName;
 		$this->orders = $orders;
 		
-		$this->columsNames = [
-			'order'		=> 'Номер заказа',
-			'raw_data'	=> 'Тело заказа',
+		
+		// Выписываются все поля, что могут быть использованы и задаются настройки для каждого поля
+		$this->columsData = [
+			'order'		=> ['name' => 'Номер заказа', 'width' => 10, 'horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_TOP, 'type' => 'number'],
+			'raw_data'	=> ['name' => 'Тело заказа', 'width' => 90, 'horizontal' => Alignment::HORIZONTAL_LEFT, 'vertical' => Alignment::VERTICAL_TOP, 'wrap' => true, 'type' => 'text'],
 		];
 		
+		// Какие столцы выводить в таблице (если в 2 и более строк - то указывать в виде массивов)
+		$this->useColums = [
+			'order',
+			'raw_data',
+		];
+		
+		# Объединить ячейки
+		$this->mergeCols = [/* 'A2:B2' */];
 		
     }
 	
@@ -76,15 +91,24 @@ class EventTypeSheet extends \PhpOffice\PhpSpreadsheet\Cell\StringValueBinder im
     * @return \Illuminate\Support\Array
     */
     public function array():array {
+		
+		$colsNames = [];
+		foreach ($this->useColums as $row => $colOrRow) {
+			if (is_array($colOrRow)) {
+				foreach ($colOrRow as $col) {
+					$colsNames[$row][] = $this->columsData[$col]['name'] ?? $col;
+				}
+			} else {
+				$colsNames[] =  $this->columsData[$colOrRow]['name'] ?? $colOrRow;
+			}
+		}
+		
+		
 		return [
-			$this->columsNames,
+			$colsNames,
 			$this->orders,
 		];
     }
-	
-	
-	
-	
 	
 	
 	
@@ -107,7 +131,7 @@ class EventTypeSheet extends \PhpOffice\PhpSpreadsheet\Cell\StringValueBinder im
      */
 	public static function afterSheet(AfterSheet $event):void  {
         $workSheet = $event->sheet->getDelegate();
-		$workSheet->freezePane('A2');
+		$workSheet->freezePane('A'.self::$freezeRows+1); # Указать до какой строки (не включительно) заморозить
     }
 	
 	
@@ -123,6 +147,14 @@ class EventTypeSheet extends \PhpOffice\PhpSpreadsheet\Cell\StringValueBinder im
 	public function styles(Worksheet $sheet):array {
 		[$colsInfo, $lastColCoord] = $this->getColumsInfo();
 		$lastRow = count($this->orders) + 1;
+		
+		
+		# Объединить ячейки
+		if ($this->mergeCols) {
+			foreach ($this->mergeCols as $mergeCol) {
+				$sheet->mergeCells($mergeCol);
+			}
+		}
 		
 		
 		
@@ -209,9 +241,9 @@ class EventTypeSheet extends \PhpOffice\PhpSpreadsheet\Cell\StringValueBinder im
 		}
 		
 		
-		// rows начиная со 2 строки
-		for ($row = 2; $row <= $lastRow; $row++) {
-			$sheet->getRowDimension($row)->setRowHeight(35);
+		// контентные rows
+		for ($row = $this->getUseColumsRowsCount(); $row <= $lastRow; $row++) {
+			$sheet->getRowDimension($row)->setRowHeight($this->contentRowsHeight);
 		}
 		
 		
@@ -244,25 +276,40 @@ class EventTypeSheet extends \PhpOffice\PhpSpreadsheet\Cell\StringValueBinder im
 	
 	
 	
+	/**
+	* 
+	* @param 
+	* @return 
+	*/
+	private function getUseColumsRowsCount() {
+		$rowsCount = 1;
+		
+		if (is_array($this->useColums[0])) {
+			$rowsCount = count($this->useColums);
+		}
+		
+		return $rowsCount;
+	}
+	
+	
+	
 	
 	/** Сформировать массв даных о столбцах
 	 * @param 
 	 * @return 
 	 */
 	private function getColumsInfo() {
-		// Выписываются все поля, что могут быть использованы и задаются настройки для каждого поля
-		$columsData = [
-			'order'		=> ['width' => 10, 'horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_TOP, 'type' => 'number'],
-			'raw_data'	=> ['width' => 90, 'horizontal' => Alignment::HORIZONTAL_LEFT, 'vertical' => Alignment::VERTICAL_TOP, 'wrap' => true, 'type' => 'text'],
-		];
-		
-		
-		
 		$intersectedData = [];
-		foreach ($this->columsNames as $field => $name) {
-			$intersectedData[$field] = $columsData[$field] ?? null;
+		foreach ($this->useColums as $fieldOrCols) {
+			if (is_array($fieldOrCols)) {
+				foreach ($fieldOrCols as $field) {
+					if (!isset($this->columsData[$field])) continue;
+					$intersectedData[$field] = $this->columsData[$field] ?? null;
+				}
+			} else {
+				$intersectedData[$fieldOrCols] = $this->columsData[$fieldOrCols] ?? null;
+			}
 		}
-		
 		
 		$coordsIndex = 0;
 		$lastColumnCoord = '';
