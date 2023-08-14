@@ -21,7 +21,7 @@ class SlackController extends Controller {
 		//$message = isset($event['subtype']) ? ($event['message'][0]['text'] ?? null) : $event['text'] ?? null; //----- для ручного теста
 		$message = isset($event['blocks']) ? ($event['blocks'][2]['text']['text'] ?? null) : null; // Новая версия
 		
-		$dateAdd = substr($event['ts'], 0, strpos($event['ts'], '.'));
+		$dateAdd = $event['ts'] ? substr($event['ts'], 0, strpos($event['ts'], '.')) : Carbon::now();
 		
 		$data = $orderService->parse($message);
 		
