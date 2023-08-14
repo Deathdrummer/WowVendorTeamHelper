@@ -82,6 +82,7 @@
 		setting = '{{$setting}}';
 	
 	
+	
 	let dateSelected = currentDate ? (new Date(currentDate.replace(/ /g,"T")) || new Date(currentDate.replace(/-/g, '/'))) : null;
 	
 	
@@ -149,10 +150,11 @@
 		//	// Do stuff when the calendar is shown.
 		//	// You have access to the datepicker instance for convenience.
 		//},
-		//onHide: instance => {
-		//	// Do stuff once the calendar goes away.
-		//	// You have access to the datepicker instance for convenience.
-		//},
+		/*onHide: instance => {
+			instance.remove();
+			// Do stuff once the calendar goes away.
+			// You have access to the datepicker instance for convenience.
+		},*/
 		formatter: (input, cd, instance) => {
 			if (currentDate) {
 				$(hiddenSelector).val(addZero(cd.getDate())+'-'+addZero(cd.getMonth() + 1)+'-'+cd.getFullYear());
@@ -180,6 +182,8 @@
 	
 	const datePicker = ddrDatepicker(selector, ops);
 	
+	
+	
 	let observer = new MutationObserver((mutationRecords) => {
 		let isDate = !$(mutationRecords[0]['target']).attr('date');
 		if (isDate) datePicker.setDate(); // клик на крестик (очистка поля)
@@ -191,7 +195,7 @@
 	});
 	
 	
-	
+	$(selector).trigger('datepickerinit', datePicker); 
 	
 	// datePicker.disabled = false // true отключить или включить
 	// picker.setDate(new Date(2099, 0, 1), true) 

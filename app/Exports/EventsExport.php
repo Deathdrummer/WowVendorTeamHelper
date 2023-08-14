@@ -2,6 +2,7 @@
 
 use App\Enums\OrderStatus;
 use App\Exports\Sheets\EventTypeSheet;
+use App\Helpers\DdrDateTime;
 use App\Models\Order;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
@@ -9,10 +10,10 @@ use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 class EventsExport implements WithMultipleSheets {
     use Exportable;
     
-	private $type;
+	private $params;
 	
-    public function __construct(?string $type = null) {
-		$this->type = $type;
+    public function __construct(?array $params = null) {
+		$this->params = $params;
     }
 
     /**
@@ -21,13 +22,21 @@ class EventsExport implements WithMultipleSheets {
     public function sheets(): array {
         $sheets = [];
 		
-		if ($this->type == 'all') {
+		if ($this->params['type'] == 'all') {
 			
-			$orders = Order::select('order', 'raw_data', 'status')->get()->makeHidden(['date_msc'])->mapToGroups(function($item, $key) {
-				$status = $item['status'];
-				unset($item['status']);
-				return [$status => $item];
-			});
+			$dateFrom = DdrDateTime::buildTimestamp($this->params['date_from'], ['shift' => true]);
+			$dateTo = DdrDateTime::buildTimestamp($this->params['date_to'], ['shift' => true]);
+			
+			$orders = Order::select('order', 'raw_data', 'status', 'date')
+				->where('date', '>=', $dateFrom)
+				->where('date', '<', $dateTo)
+				->get()
+				->makeHidden(['date_msc'])->mapToGroups(function($item, $key) {
+					$status = $item['status'];
+					$item['date'] = DdrDateTime::shift($item['date'], 'TZ');
+					unset($item['status']);
+					return [$status => $item];
+				});
 			
 			$listsNames = [
 				'new' 			=> 'Входящие',
@@ -39,7 +48,7 @@ class EventsExport implements WithMultipleSheets {
 				
 				$status = OrderStatus::fromKey($statName)->value;
 				
-				$sheets[] = new EventTypeSheet($orders[$status], $listName);
+				$sheets[] = new EventTypeSheet($orders[$status] ?? [], $listName);
 			}
 			
 		}

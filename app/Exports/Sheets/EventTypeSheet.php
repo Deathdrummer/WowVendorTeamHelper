@@ -41,12 +41,14 @@ class EventTypeSheet extends \PhpOffice\PhpSpreadsheet\Cell\StringValueBinder im
 		$this->columsData = [
 			'order'		=> ['name' => 'Номер заказа', 'width' => 10, 'horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_TOP, 'type' => 'number'],
 			'raw_data'	=> ['name' => 'Тело заказа', 'width' => 90, 'horizontal' => Alignment::HORIZONTAL_LEFT, 'vertical' => Alignment::VERTICAL_TOP, 'wrap' => true, 'type' => 'text'],
+			'date'		=> ['name' => 'Дата', 'width' => 30, 'horizontal' => Alignment::HORIZONTAL_LEFT, 'vertical' => Alignment::VERTICAL_TOP, 'wrap' => true, 'type' => 'text'],
 		];
 		
 		// Какие столцы выводить в таблице (если в 2 и более строк - то указывать в виде массивов)
 		$this->useColums = [
 			'order',
 			'raw_data',
+			'date',
 		];
 		
 		# Объединить ячейки

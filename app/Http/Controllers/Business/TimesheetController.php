@@ -1,7 +1,6 @@
 <?php namespace App\Http\Controllers\Business;
 
 use App\Exports\EventsExport;
-use App\Helpers\DdrDateTime;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ImportTimesheetEventsRequest;
 use App\Models\Command;
@@ -353,18 +352,13 @@ class TimesheetController extends Controller {
 	* @return
 	*/
 	public function export_orders(Request $request) {
-		[
-			'type' => $type,
-		] = $request->validate([
-			'type' => 'required|string',
+		$params = $request->validate([
+			'type'		=> 'required|string',
+			'date_from' => 'required|string',
+			'date_to'	=> 'required|string',
 		]);
 		
-		
-		//$request->validated();
-		
-		//$res = $request->importEvents();
-		
-		return Excel::download(new EventsExport($type), 'contracts.xlsx');
+		return Excel::download(new EventsExport($params), 'orders.xlsx');
 	}
 	
 	

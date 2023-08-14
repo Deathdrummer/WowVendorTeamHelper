@@ -438,6 +438,24 @@ export async function timesheetCrud(periodId = null, listType = null, buildOrder
 				//disabledButtons: true,
 			});
 			
+			
+			
+			let f, r;
+			$('#exportOrdersDateFrom').on('datepickerinit', (target, dp) => {
+				f = dp;
+			}); 
+			
+			$('#exportOrdersDateTo').on('datepickerinit', (target, dp) => {
+				r = dp;
+			}); 
+			
+			onClose(() => {
+				f.remove();
+				r.remove();
+			});
+				
+			
+			
 			enableButtons('close');
 			
 			let activeTab = 'all';
@@ -475,13 +493,16 @@ export async function timesheetCrud(periodId = null, listType = null, buildOrder
 				
 				wait();
 				
+				const filename = 'Входящий поток по дате '+$(formBlock).find('[name="date_from"]').val()+'_'+$(formBlock).find('[name="date_to"]').val();
+				
 				const formData = $(formBlock).ddrForm({type: activeTab});
 				
 				const {data, error, status, headers} = await ddrQuery.post('crud/timesheet/export', formData, {responseType: 'blob'});
 				
 				$.ddrFiles('export', {
 					data,
-					headers
+					headers,
+					filename,
 				});
 				
 				wait(false);
