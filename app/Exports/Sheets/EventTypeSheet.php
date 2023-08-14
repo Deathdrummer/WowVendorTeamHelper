@@ -127,7 +127,6 @@ class EventTypeSheet extends \PhpOffice\PhpSpreadsheet\Cell\StringValueBinder im
 		
 		
 		// global
-		
 		$sheet->getDefaultRowDimension()->setRowHeight(25);
 		$sheet->getRowDimension('1')->setRowHeight(60);
 		
