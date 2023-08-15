@@ -306,18 +306,6 @@ export async function orderCommentsChat(orderId = null, orderName = null, rowBtn
 		params: {views: viewsPath, order_id: orderId},
 		title: `Комментарии к заказу <span class="color-gray-60">«${orderName}»</span>`,
 		width: 700, // ширина окна
-		//frameOnly, // Загрузить только каркас
-		//html, // контент
-		//lhtml, // контент из языковых файлов
-		//buttons, // массив кнопок
-		//buttonsAlign, // выравнивание вправо
-		//disabledButtons, // при старте все кнопки кроме закрытия будут disabled
-		//closeByBackdrop, // Закрывать окно только по кнопкам [ddrpopupclose]
-		//changeWidthAnimationDuration, // ms
-		//buttonsGroup, // группа для кнопок
-		//winClass, // добавить класс к модальному окну
-		//centerMode, // контент по центру
-		//topClose // верхняя кнопка закрыть
 	});
 	
 	callFunc(cb);
@@ -341,12 +329,12 @@ export async function orderCommentsChat(orderId = null, orderName = null, rowBtn
 				chatSendMesage(orderId, mess);
 			}
 		}
-		
 	});
 	
 		
 	let stat = 0;					
 	$(chatMessageBlock).ddrInputs('change', (block, event) => {
+		console.log('change');
 		const {isShiftKey} = metaKeys(event);
 		
 		let mess = getContenteditable(chatMessageBlock);

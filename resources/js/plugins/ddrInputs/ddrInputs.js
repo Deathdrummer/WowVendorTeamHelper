@@ -10,9 +10,10 @@ export default class DdrInputs {
 		
 		if (blockMethods.includes(method)) {
 			if (items.length == 1
-				&& !(['input', 'select', 'textarea', 'button'].includes(getTagName(items[0])) 
+				&& !(['input', 'select', 'textarea', 'button'].includes(getTagName(items[0])))
 				&& !$(items[0]).hasAttr('contenteditable')
-				&& !$(items[0]).hasAttr('datepicker'))) {
+				&& !$(items[0]).hasAttr('datepicker')) {
+					console.log(24234234234);
 					items = items.find('input, select, textarea, button, [contenteditable], [datepicker]');
 				}
 		}
