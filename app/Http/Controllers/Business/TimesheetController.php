@@ -352,11 +352,18 @@ class TimesheetController extends Controller {
 	* @return
 	*/
 	public function export_orders(Request $request) {
-		$params = $request->validate([
-			'type'		=> 'required|string',
-			'date_from' => 'required|string',
-			'date_to'	=> 'required|string',
-		]);
+		if ($request->input('type') == 'all') {
+			$params = $request->validate([
+				'type'		=> 'required|string',
+				'date_from' => 'required|string',
+				'date_to'	=> 'required|string',
+			]);
+		} elseif ($request->input('type') == 'linked') {
+			$params = $request->validate([
+				'type'		=> 'required|string',
+				'period_id' => 'required|numeric',
+			]);
+		}
 		
 		return Excel::download(new EventsExport($params), 'orders.xlsx');
 	}

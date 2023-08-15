@@ -163,9 +163,10 @@ class OrdersController extends Controller {
 			'order_id'	=> 'required|numeric',
 		]);
 		
-		$order = Order::find($orderId);
-		$orderDate = $order->date_msc;
-		$timesheet = Timesheet::where('datetime', DdrDateTime::shift($order->date_msc, 'UTC'))->first();
+		if (!$order = Order::find($orderId)) return response()->json(false);
+		
+		$orderDate = $order?->date_msc;
+		$timesheet = Timesheet::where('datetime', DdrDateTime::shift($orderDate, 'UTC'))->first();
 		
 		$timesheets = Timesheet::future($date)
 			->withCount('orders AS orders_count')

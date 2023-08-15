@@ -1,9 +1,11 @@
 <?php namespace App\Exports;
 
 use App\Enums\OrderStatus;
+use App\Exports\Sheets\DdrSheet;
 use App\Exports\Sheets\EventTypeSheet;
 use App\Helpers\DdrDateTime;
 use App\Models\Order;
+use App\Models\Timesheet;
 use Carbon\Carbon;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
@@ -39,16 +41,16 @@ class EventsExport implements WithMultipleSheets {
 				->makeHidden(['date_msc'])
 				->mapToGroups(function($item, $key) {
 					$status = $item['status'];
-					$item['date'] = Carbon::parse($item['date_add'] ?? $item['created_at']);
+					$item['date'] = Carbon::parse($item['date_add'] ?? $item['created_at'])->format('Y-m-d H:i');
 					unset($item['status'], $item['date_add'], $item['created_at']);
 					return [$status => $item];
 				});
 			
 			
 			$listsNames = [
-				'new' 			=> 'Входящие',
-				'wait' 			=> 'Лист ожидания',
-				'cancel' 		=> 'Отмененные',
+				'new'		=> 'Входящие',
+				'wait'		=> 'Лист ожидания',
+				'cancel'	=> 'Отмененные',
 			];
 			
 			foreach ($listsNames as $statName => $listName) {
@@ -56,21 +58,46 @@ class EventsExport implements WithMultipleSheets {
 				$sheets[] = new EventTypeSheet($orders[$status] ?? [], $listName);
 			}
 			
+		} else if ($this->params['type'] == 'linked') {
+			
+			$periodId = $this->params['period_id'];
+			
+			
+			$data = Timesheet::where('timesheet_period_id', $periodId)->with('orders')->with('command')->get();
+			
+			$buildData = [];
+			foreach ($data->toArray() as $ts) {
+				foreach ($ts['orders'] as $k => $order) {
+					//if ($k == 0) $buildData[$order['status']][$k] = [];
+					$command = $k == 0 ? $ts['command']['title'] : null;
+					
+					$buildData[$order['status']][] = [
+						$command,
+						$order['order'],
+						$order['raw_data'],
+						Carbon::parse($order['date_add'] ?? $order['created_at'])->format('Y-m-d H:i'),
+					];
+					
+					if ($k + 1 == count($ts['orders'])) {
+						$buildData[$order['status']][] = ['','','','',];
+					}
+				}
+			}
+			
+			$listsNames = [
+				'new' 			=> 'Новые',
+				'wait' 			=> 'Ожидание',
+				'cancel' 		=> 'Отмененные',
+				'ready' 		=> 'Готовые',
+				'doprun' 		=> 'Допран',
+			];
+			
+			foreach ($listsNames as $statName => $listName) {
+				$status = OrderStatus::fromKey($statName)->value;
+				$sheets[] = new DdrSheet($buildData[$status] ?? [], $listName);
+			}
+			
 		}
-		
-		
-		/* $listsNames = [
-			'new' 			=> 'Новый',
-			'wait' 			=> 'Ожидание',
-			'cancel' 		=> 'Отмененный',
-			'ready' 		=> 'Готов',
-			'doprun' 		=> 'Допран',
-			'wait_nosort' 	=> 'Ожидание (Н)',
-			'cancel_nosort'	=> 'Отмененные (Н)',
-			'all' 			=> 'Вообще все',
-		]; */
-		
-		
 
         return $sheets;
     }

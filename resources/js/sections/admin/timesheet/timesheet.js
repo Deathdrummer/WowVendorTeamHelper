@@ -464,30 +464,40 @@ export async function timesheetCrud(periodId = null, listType = null, buildOrder
 				
 				const formBlock = $(`[exportordersform="${activeTab}"]`);
 				let stat = true;
+				let filename;
+				let formData = {};
+				
+				if (activeTab == 'all') {
+					if (!$(formBlock).find('[name="date_from"]').val()) {
+						$('#exportOrdersDateFrom').ddrInputs('error', 'Необходимо выбрать дату!');
+						stat = false;
+					} 
+					
+					if (!$(formBlock).find('[name="date_to"]').val()) {
+						$('#exportOrdersDateTo').ddrInputs('error', 'Необходимо выбрать дату!');
+						stat = false;
+					} 
+					
+					if (!stat) return;
+					
+					formData = $(formBlock).ddrForm({type: 'all'});
+					
+					filename = 'Входящий поток по дате '+$(formBlock).find('[name="date_from"]').val()+'_'+$(formBlock).find('[name="date_to"]').val();
+				
+				} else if (activeTab == 'linked') {
+					formData = {period_id: periodId, type: 'linked'};
+					const periodName = $(`[timesheetperiod="${periodId}"]`).attr('title');
+					filename = 'Данные за период: '+periodName;
+				}
 				
 				
-				if (!$(formBlock).find('[name="date_from"]').val()) {
-					$('#exportOrdersDateFrom').ddrInputs('error', 'Необходимо выбрать дату!');
-					stat = false;
-				} 
-				
-				if (!$(formBlock).find('[name="date_to"]').val()) {
-					$('#exportOrdersDateTo').ddrInputs('error', 'Необходимо выбрать дату!');
-					stat = false;
-				} 
-				
-				if (!stat) return;
 				
 				wait();
-				
-				const filename = 'Входящий поток по дате '+$(formBlock).find('[name="date_from"]').val()+'_'+$(formBlock).find('[name="date_to"]').val();
-				
-				const formData = $(formBlock).ddrForm({type: activeTab});
 				
 				const {data, error, status, headers} = await ddrQuery.post('crud/timesheet/export', formData, {responseType: 'blob'});
 				
 				if (error) {
-					$.notify('Ошибка экспорта заказов!', 'error');
+					$.notify('Ошибка экспорта данных!', 'error');
 					wait(false);
 					return;
 				}

@@ -20,7 +20,7 @@ use Maatwebsite\Excel\Concerns\WithProperties;
 use Maatwebsite\Excel\Concerns\WithTitle;
 
 
-class EventTypeSheet extends \PhpOffice\PhpSpreadsheet\Cell\StringValueBinder implements FromArray, WithStyles, WithEvents, WithProperties, WithTitle/*, WithColumnWidths, WithDefaultStyles, WithBackgroundColor */ {	
+class DdrSheet extends \PhpOffice\PhpSpreadsheet\Cell\StringValueBinder implements FromArray, WithStyles, WithEvents, WithProperties, WithTitle/*, WithColumnWidths, WithDefaultStyles, WithBackgroundColor */ {	
 	use Settingable;
 	
 	private $orders = [];
@@ -39,6 +39,7 @@ class EventTypeSheet extends \PhpOffice\PhpSpreadsheet\Cell\StringValueBinder im
 		
 		// Выписываются все поля, что могут быть использованы и задаются настройки для каждого поля
 		$this->columsData = [
+			'command'	=> ['name' => 'Команда', 'width' => 15, 'horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_TOP, 'type' => 'text'],
 			'order'		=> ['name' => 'Номер заказа', 'width' => 10, 'horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_TOP, 'type' => 'number'],
 			'raw_data'	=> ['name' => 'Тело заказа', 'width' => 90, 'horizontal' => Alignment::HORIZONTAL_LEFT, 'vertical' => Alignment::VERTICAL_TOP, 'wrap' => true, 'type' => 'text'],
 			'date'		=> ['name' => 'Дата поступления заказа', 'width' => 24, 'horizontal' => Alignment::HORIZONTAL_LEFT, 'vertical' => Alignment::VERTICAL_TOP, 'wrap' => true, 'type' => 'text'],
@@ -46,6 +47,7 @@ class EventTypeSheet extends \PhpOffice\PhpSpreadsheet\Cell\StringValueBinder im
 		
 		// Какие столцы выводить в таблице (если в 2 и более строк - то указывать в виде массивов)
 		$this->useColums = [
+			'command',
 			'order',
 			'raw_data',
 			'date',
