@@ -19,7 +19,7 @@
 		action="exportOrdersType:linked"
 		class="w15rem"
 		>
-		Лист ожидания
+		Экспорт данных за выбранный период
 	</x-chooser.item>
 </x-chooser>
 

@@ -427,6 +427,10 @@ export async function timesheetCrud(periodId = null, listType = null, buildOrder
 			});
 			
 			
+			const periodName = $(`[timesheetperiod="${periodId}"]`).attr('title'),
+				message = '<p class="text-center fz18px color-green mb2rem">Экспорт данных за период: '+periodName+'</p>';
+			$('[exportordersform="linked"]').html(message);
+			
 			let fromObj, toObj;
 			$('#exportOrdersDateFrom').on('datepickerinit', (target, dp) => {
 				fromObj = dp;

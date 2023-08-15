@@ -65,21 +65,35 @@ class EventsExport implements WithMultipleSheets {
 			
 			$data = Timesheet::where('timesheet_period_id', $periodId)->with('orders')->with('command')->get();
 			
+			
 			$buildData = [];
 			foreach ($data->toArray() as $ts) {
 				foreach ($ts['orders'] as $k => $order) {
 					//if ($k == 0) $buildData[$order['status']][$k] = [];
 					$command = $k == 0 ? $ts['command']['title'] : null;
 					
-					$buildData[$order['status']][] = [
+					$isDopRun = $order['pivot']['doprun'];
+					$status = $order['status'] ?? 0;
+					
+					$buildData[$status][] = [
 						$command,
 						$order['order'],
 						$order['raw_data'],
 						Carbon::parse($order['date_add'] ?? $order['created_at'])->format('Y-m-d H:i'),
 					];
 					
+					if ($isDopRun) {
+						$buildData[OrderStatus::doprun][] = [
+							$command,
+							$order['order'],
+							$order['raw_data'],
+							Carbon::parse($order['date_add'] ?? $order['created_at'])->format('Y-m-d H:i'),
+						];
+					}
+					
 					if ($k + 1 == count($ts['orders'])) {
-						$buildData[$order['status']][] = ['','','','',];
+						$buildData[$status][] = ['','','','',];
+						$buildData[OrderStatus::doprun][] = ['','','','',];
 					}
 				}
 			}
