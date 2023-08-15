@@ -67,9 +67,8 @@ class Order extends Model {
 	
 	
 	public function lastComment(): HasOne {
-        return $this->hasOne(OrderComment::class);
+        return $this->hasOne(OrderComment::class)->latestOfMany();
     }
-	
 	
 
 	

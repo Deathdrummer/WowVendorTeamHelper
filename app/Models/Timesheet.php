@@ -53,6 +53,7 @@ class Timesheet extends Model {
 			'id',
 			'id')
 			->as('pivot')
+			->with('lastComment')
 			->withPivot('doprun');
 	}
 	
@@ -66,6 +67,7 @@ class Timesheet extends Model {
 	public function command() {
 		return $this->hasOne(Command::class, 'id', 'command_id');
 	}
+	
 	
 	
 	

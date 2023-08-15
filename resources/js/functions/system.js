@@ -189,7 +189,7 @@ if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phon
 }
 
 
-function getBrowserType() {
+window.getBrowserType = function () {
   const test = regexp => {
 	return regexp.test(navigator.userAgent);
   };

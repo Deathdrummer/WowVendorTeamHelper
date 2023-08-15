@@ -39,10 +39,11 @@ class DdrSheet extends \PhpOffice\PhpSpreadsheet\Cell\StringValueBinder implemen
 		
 		// Выписываются все поля, что могут быть использованы и задаются настройки для каждого поля
 		$this->columsData = [
-			'command'	=> ['name' => 'Команда', 'width' => 15, 'horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_TOP, 'type' => 'text'],
-			'order'		=> ['name' => 'Номер заказа', 'width' => 10, 'horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_TOP, 'type' => 'number'],
-			'raw_data'	=> ['name' => 'Тело заказа', 'width' => 90, 'horizontal' => Alignment::HORIZONTAL_LEFT, 'vertical' => Alignment::VERTICAL_TOP, 'wrap' => true, 'type' => 'text'],
-			'date'		=> ['name' => 'Дата поступления заказа', 'width' => 24, 'horizontal' => Alignment::HORIZONTAL_LEFT, 'vertical' => Alignment::VERTICAL_TOP, 'wrap' => true, 'type' => 'text'],
+			'command'		=> ['name' => 'Команда', 'width' => 15, 'horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_TOP, 'type' => 'text'],
+			'order'			=> ['name' => 'Номер заказа', 'width' => 10, 'horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_TOP, 'type' => 'number'],
+			'raw_data'		=> ['name' => 'Тело заказа', 'width' => 90, 'horizontal' => Alignment::HORIZONTAL_LEFT, 'vertical' => Alignment::VERTICAL_TOP, 'wrap' => true, 'type' => 'text'],
+			'date'			=> ['name' => 'Дата поступления заказа', 'width' => 24, 'horizontal' => Alignment::HORIZONTAL_LEFT, 'vertical' => Alignment::VERTICAL_TOP, 'wrap' => true, 'type' => 'text'],
+			'last_comment'	=> ['name' => 'Последний комментарий', 'width' => 50, 'horizontal' => Alignment::HORIZONTAL_LEFT, 'vertical' => Alignment::VERTICAL_TOP, 'wrap' => true, 'type' => 'text'],
 		];
 		
 		// Какие столцы выводить в таблице (если в 2 и более строк - то указывать в виде массивов)
@@ -51,6 +52,7 @@ class DdrSheet extends \PhpOffice\PhpSpreadsheet\Cell\StringValueBinder implemen
 			'order',
 			'raw_data',
 			'date',
+			'last_comment',
 		];
 		
 		# Объединить ячейки

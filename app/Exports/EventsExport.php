@@ -65,7 +65,6 @@ class EventsExport implements WithMultipleSheets {
 			
 			$data = Timesheet::where('timesheet_period_id', $periodId)->with('orders')->with('command')->get();
 			
-			
 			$buildData = [];
 			foreach ($data->toArray() as $ts) {
 				$hasDopRun = false;
@@ -83,6 +82,7 @@ class EventsExport implements WithMultipleSheets {
 						$order['order'],
 						$order['raw_data'],
 						Carbon::parse($order['date_add'] ?? $order['created_at'])->format('Y-m-d H:i'),
+						$order['last_comment']['message'] ?? '',
 					];
 					
 					if ($isDopRun) {
@@ -91,6 +91,7 @@ class EventsExport implements WithMultipleSheets {
 							$order['order'],
 							$order['raw_data'],
 							Carbon::parse($order['date_add'] ?? $order['created_at'])->format('Y-m-d H:i'),
+							$order['last_comment']['message'] ?? '',
 						];
 					}
 					
