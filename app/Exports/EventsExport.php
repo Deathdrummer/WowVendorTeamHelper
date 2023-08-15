@@ -68,12 +68,15 @@ class EventsExport implements WithMultipleSheets {
 			
 			$buildData = [];
 			foreach ($data->toArray() as $ts) {
+				$hasDopRun = false;
 				foreach ($ts['orders'] as $k => $order) {
 					//if ($k == 0) $buildData[$order['status']][$k] = [];
 					$command = $k == 0 ? $ts['command']['title'] : null;
 					
 					$isDopRun = $order['pivot']['doprun'];
 					$status = $order['status'] ?? 0;
+					$hasDopRun = !!$isDopRun;
+					
 					
 					$buildData[$status][] = [
 						$command,
@@ -93,7 +96,11 @@ class EventsExport implements WithMultipleSheets {
 					
 					if ($k + 1 == count($ts['orders'])) {
 						$buildData[$status][] = ['','','','',];
-						$buildData[OrderStatus::doprun][] = ['','','','',];
+						
+						if ($hasDopRun) {
+							$buildData[OrderStatus::doprun][] = ['','','','',];
+							$hasDopRun = false;
+						}
 					}
 				}
 			}
