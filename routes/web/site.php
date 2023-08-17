@@ -324,6 +324,8 @@ Route::prefix('client')->middleware(['lang', 'isajax:site'])->group(function() {
 	Route::post('/orders/to_wait_list', [OrdersController::class, 'to_wait_list']);
 	Route::post('/orders/to_cancel_list', [OrdersController::class, 'to_cancel_list']);
 	
+	Route::get('orders/to_wait_list', [OrdersController::class, 'to_wait_list_form']);
+	Route::get('orders/to_cancel_list', [OrdersController::class, 'to_cancel_list_form']);
 	Route::get('orders/relocate', [OrdersController::class, 'relocate_client']);
 	Route::get('orders/relocate/get_timesheets', [OrdersController::class, 'get_relocate_timesheets_client']);
 	Route::post('orders/relocate', [OrdersController::class, 'set_relocate_client']);

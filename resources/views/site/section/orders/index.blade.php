@@ -117,13 +117,19 @@
 	
 	$.toWaitListBtn = async (btn, order_id = null) => {
 		if (_.isNull(order_id)) return;
+		
+		const views = 'movelist_form';
+		
 		const {
+			popper,
 			wait,
 			close,
 		} = await ddrPopup({
+			url: 'client/orders/to_wait_list',
+			params: {views},
+			method: 'get',
 			title: 'В лист ожидания',
 			width: 400, // ширина окна
-			html: '<p class="fz16px color-green">Вы действительно хотите перенести заказ в лист ожидания?</p>', // контент
 			buttons: ['ui.cancel', {title: 'Перенести', variant: 'green', action: 'toWaitListAction'}],
 			centerMode: true, // контент по центру
 		});
@@ -132,7 +138,9 @@
 		$.toWaitListAction = async (__) => {
 			wait();
 			
-			const {data, error, status, headers} = await ddrQuery.post('client/orders/to_wait_list', {order_id});
+			const message = $(popper).find('#comment').val();
+			
+			const {data, error, status, headers} = await ddrQuery.post('client/orders/to_wait_list', {order_id, message});
 			
 			if (error) {
 				$.notify(error?.message, 'error');
@@ -157,13 +165,19 @@
 	
 	$.toCancelListBtn = async (btn, order_id = null) => {
 		if (_.isNull(order_id)) return;
+		
+		const views = 'movelist_form';
+		
 		const {
+			popper,
 			wait,
 			close,
 		} = await ddrPopup({
+			url: 'client/orders/to_cancel_list',
+			params: {views},
+			method: 'get',
 			title: 'В отмененные',
 			width: 400, // ширина окна
-			html: '<p class="fz16px color-green">Вы действительно хотите перенести заказ в отмененные?</p>', // контент
 			buttons: ['ui.cancel', {title: 'Перенести', variant: 'green', action: 'toWaitListAction'}],
 			centerMode: true, // контент по центру
 		});
@@ -172,7 +186,9 @@
 		$.toWaitListAction = async (__) => {
 			wait();
 			
-			const {data, error, status, headers} = await ddrQuery.post('client/orders/to_cancel_list', {order_id});
+			const message = $(popper).find('#comment').val();
+			
+			const {data, error, status, headers} = await ddrQuery.post('client/orders/to_cancel_list', {order_id, message});
 			
 			if (error) {
 				$.notify(error?.message, 'error');

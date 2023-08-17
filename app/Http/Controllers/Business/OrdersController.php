@@ -87,16 +87,52 @@ class OrdersController extends Controller {
 	
 	
 	
+	
+	
+	
+	
+	
+	/** Форма отправки заказа в лист ожидания
+	 * @param 
+	 * @return 
+	 */
+	public function to_wait_list_form(Request $request) {
+		[
+			'views'	=> $viewPath,
+		] = $request->validate([
+			'views'	=> 'required|string',
+		]);
+
+		return $this->render($viewPath);
+	}
+	
+	
+	
 	/** Отправить заказ в лист ожидания
 	 * @param 
 	 * @return 
 	 */
 	public function to_wait_list(Request $request) {
-		['order_id' => $orderId] = $request->validate(['order_id' => 'required|numeric']);
+		[
+			'order_id'	=> $orderId,
+			'message'	=> $message
+		] = $request->validate([
+			'order_id'	=> 'required|numeric',
+			'message'	=> 'required|string'
+		]);
 		
 		$order = Order::find($orderId);
 		$order->fill(['status' => -1]);
 		$res = $order->save();
+		
+		// отправить коммент
+		if ($message) {
+			OrderComment::create([
+				'order_id' 	=> $orderId,
+				'from_id' 	=> auth('admin')->user()->id,
+				'message' 	=> $message,
+			]);
+		}
 		
 		return response()->json($res);
 	}
@@ -104,16 +140,48 @@ class OrdersController extends Controller {
 	
 	
 	
+	
+	
+	
+	/** Форма отправки заказа в отмененные
+	 * @param 
+	 * @return 
+	 */
+	public function to_cancel_list_form(Request $request) {
+		[
+			'views'	=> $viewPath,
+		] = $request->validate([
+			'views'	=> 'required|string',
+		]);
+
+		return $this->render($viewPath);
+	}
+	
 	/** Отправить заказ в отмененные
 	 * @param 
 	 * @return 
 	 */
 	public function to_cancel_list(Request $request) {
-		['order_id' => $orderId] = $request->validate(['order_id' => 'required|numeric']);
+		[
+			'order_id'	=> $orderId,
+			'message'	=> $message
+		] = $request->validate([
+			'order_id'	=> 'required|numeric',
+			'message'	=> 'required|string'
+		]);
 		
 		$order = Order::find($orderId);
 		$order->fill(['status' => -2]);
 		$res = $order->save();
+		
+		// отправить коммент
+		if ($message) {
+			OrderComment::create([
+				'order_id' 	=> $orderId,
+				'from_id' 	=> auth('admin')->user()->id,
+				'message' 	=> $message,
+			]);
+		}
 		
 		return response()->json($res);
 	}
@@ -130,14 +198,8 @@ class OrdersController extends Controller {
 	public function relocate_client(Request $request) {
 		[
 			'views'			=> $viewPath,
-			//'order_id'		=> $orderId,
-			//'timesheet_id'	=> $timesheetId,
-			//'type'			=> $type,
 		] = $request->validate([
 			'views'			=> 'required|string',
-			//'order_id'		=> 'required|numeric',
-			//'timesheet_id'	=> 'required|numeric',
-			//'type'			=> 'required|string',
 		]);
 		
 		
