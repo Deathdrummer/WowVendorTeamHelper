@@ -215,13 +215,13 @@ export async function buildOrdersTable(row = null, timesheetId = null, cb = null
 				return;
 			}
 			
-			if (data == 'moved') {
+			if (data?.stat == 'moved') {
 				$.notify(`Заказ «${orderNumber}» успешно перенесен!`);
 				_buildOrdersTable();
-			} else if (data == 'cloned') {
+			} else if (data?.stat == 'cloned') {
 				$.notify(`Заказ «${orderNumber}» успешно склонирован с новым статусом «Доп. ран»!`);
 				_buildOrdersTable();
-			} else if (data == 'updated') {
+			} else if (data?.stat == 'updated') {
 				$.notify(`Заказ «${orderNumber}» уже существует в выбранном событии! Обновился только статус!`, 'gray');
 			} else {
 				$.notify(`Заказ «${orderNumber}» со статусом «Доп. ран» уже существует в выбранном событии!`, 'gray');
@@ -261,9 +261,13 @@ export async function buildOrdersTable(row = null, timesheetId = null, cb = null
 			return;
 		}
 		
+		
 		$(row).siblings('[timesheetorders]').html(data);
 		
 		$(row).siblings('[timesheetorders]').find('[ddrtable]').blockTable('buildTable');
+		
+		const rowsCount = Number($(data).find('[ddrtablebody] [ddrtabletr]').length);
+		let count = $(row).find('[orderscount]').text(rowsCount);
 		
 		if (_.isFunction(cb)) cb();
 	}
@@ -334,7 +338,6 @@ export async function orderCommentsChat(orderId = null, orderName = null, rowBtn
 		
 	let stat = 0;					
 	$(chatMessageBlock).ddrInputs('change', (block, event) => {
-		console.log('change');
 		const {isShiftKey} = metaKeys(event);
 		
 		let mess = getContenteditable(chatMessageBlock);

@@ -29,8 +29,9 @@ window.isNull = function(str) {
 	Является ли строка json
 	- строка
 */
-window.isJson = function(str) {
+window.isJson = function(str = null) {
 	if (str == undefined || typeof str == 'undefined') return false;
+	
 	try {
 		JSON.parse(str);
 	} catch (e) {

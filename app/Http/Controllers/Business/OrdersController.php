@@ -684,7 +684,7 @@ class OrdersController extends Controller {
 			]);
 		}
 		
-		return $stat;
+		return response()->json(['stat' => $stat]);
 	}
 	
 	
@@ -717,30 +717,20 @@ class OrdersController extends Controller {
 	 */
 	private function _cloneOrder($orderId = null, $timesheetId = null, $choosedTimesheetId = null) {
 		$choosedTimesheet = Timesheet::find($choosedTimesheetId);
-		$choosedSync = $choosedTimesheet->orders()->syncWithPivotValues($orderId, ['doprun' => 1]);
+		$choosedSync = $choosedTimesheet->orders()->syncWithoutDetaching([$orderId => ['doprun' => 1]]);
 		
 		if ($choosedSync['attached']) {
 			$timesheet = Timesheet::find($timesheetId);
-			
-			$timesheet->orders()->syncWithPivotValues($orderId, ['doprun' => 1]);
-			/* 
-			$timesheet->orders()->syncWithoutDetaching([
-				$orderId => ['doprun' => 1],
-			]); */
-			
-			
-			/* $timesheet->orders()->sync([
-				$orderId => ['doprun' => 1],
-			]); */
+			$timesheet->orders()->syncWithoutDetaching([$orderId => ['doprun' => 1]]);
 		}
 		
 		$res = match(true) {
-			!!count($choosedSync['attached']) => 'cloned',
-			!!count($choosedSync['updated']) 	=> 'updated',
-			default 						=> false,
+			!!count($choosedSync['attached'] ?? [])	=> 'cloned',
+			!!count($choosedSync['updated'] ?? [])	=> 'updated',
+			default									=> false,
 		};
 		
-		return response()->json($res);
+		return $res;
 	}
 	
 }

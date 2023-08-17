@@ -120,7 +120,7 @@ class OrderService {
 		$order->fill(['status' => $stat]);
 		
 		$timesheet = Timesheet::find($timesheetId);
-		$timesheet->orders()->syncWithPivotValues($orderId, ['doprun' => null]);
+		$timesheet->orders()->updateExistingPivot($orderId, ['doprun' => null]);
 		
 		return $order->save();
 	}

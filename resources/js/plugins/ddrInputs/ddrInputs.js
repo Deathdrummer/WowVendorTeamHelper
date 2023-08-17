@@ -13,7 +13,6 @@ export default class DdrInputs {
 				&& !(['input', 'select', 'textarea', 'button'].includes(getTagName(items[0])))
 				&& !$(items[0]).hasAttr('contenteditable')
 				&& !$(items[0]).hasAttr('datepicker')) {
-					console.log(24234234234);
 					items = items.find('input, select, textarea, button, [contenteditable], [datepicker]');
 				}
 		}

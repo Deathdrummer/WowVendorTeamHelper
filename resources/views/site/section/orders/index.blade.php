@@ -281,6 +281,7 @@
 		
 		
 		$.relocateOrderAction = async () => {
+			console.log(2);
 			wait();
 			const formData = $(popper).ddrForm({order_id});
 			

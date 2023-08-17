@@ -96,9 +96,11 @@ window.Echo = new Echo({
 // глобальная обработка AJAX ответаов
 axios.interceptors.response.use(function (response) {
 	const {data, headers} = response;
+	const isJsonContentType = headers.get('content-type')?.includes('application/json');
 	
 	// Проверяет, если тип данных json, а сами данные в виде строки - привести данные в JSON
-	if (headers['content-type'] == "application/json" && _.isString(data)) response.data = JSON.parse(data);
+	if (isJsonContentType && _.isString(data) && isJson(data)) response.data = JSON.parse(data);
+	
 	return response;
 }, function (error) {
 	return Promise.reject(error);
