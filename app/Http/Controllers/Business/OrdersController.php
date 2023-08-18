@@ -228,7 +228,12 @@ class OrdersController extends Controller {
 		if (!$order = Order::find($orderId)) return response()->json(false);
 		
 		$orderDate = $order?->date_msc;
+		
 		$timesheet = Timesheet::where('datetime', DdrDateTime::shift($orderDate, 'UTC'))->first();
+		
+		
+		logger($timesheet);
+		
 		
 		$timesheets = Timesheet::future($date)
 			->withCount('orders AS orders_count')

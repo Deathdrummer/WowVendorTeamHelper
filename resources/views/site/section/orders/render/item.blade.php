@@ -90,7 +90,7 @@
 				@elseif($status == \App\Enums\OrderStatus::cancel)
 					
 				@endif
-				<x-button w="50px" variant="green" action="toTimesheetBtn:{{$id ?? null}},{{$date ?? null}},{{$order ?? '-'}}"><i class="fa-solid fa-fw fa-angles-right"></i></x-button>
+				<x-button w="50px" variant="green" action="toTimesheetBtn:{{$id ?? null}},{{$date_msc ?? null}},{{$order ?? '-'}}"><i class="fa-solid fa-fw fa-angles-right"></i></x-button>
 			</x-buttons-group>
 		</div>
 	</div>

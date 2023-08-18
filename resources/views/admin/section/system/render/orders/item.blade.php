@@ -48,7 +48,10 @@
 	<x-table.td>
 		<p class="fz12px"><span orderprice>{{$price}}</span> @symbal(dollar)</p>
 	</x-table.td>
-	<x-table.td class="h-center">
+	<x-table.td @class([
+			'h-center' => !isset($showType['text']) || !$showType['text']
+		])
+		>
 		<div class="d-inline-flex align-items-center pointer" onclick="$.openStatusesTooltip(this, {{$id}}, {{$timesheet_id}}, '{{$status}}')">
 			@if($showType['color'] ?? false)
 				<div
