@@ -57,7 +57,16 @@
 	<div class="col-auto">
 		<div class="order__block">
 			<div class="order__comment scrollblock scrollblock-light">
-				<p class="fz12px lh90">{{$last_comment['message'] ?? '-'}}</p>
+				@if($last_comment['message'] ?? false)
+					<p class="fz10px color-gray mb4px">
+						{{DdrDateTime::date($last_comment['created_at'] ?? null)}}
+						в
+						{{DdrDateTime::time($last_comment['created_at'] ?? null)}}
+						от
+						{{$last_comment['self'] ? 'меня' : ($last_comment['author']['name'] ?? 'оператора')}}
+					</p>
+					<p class="fz12px lh90">{{$last_comment['message'] ?? '-'}}</p>
+				@endif
 			</div>
 		</div>
 	</div>

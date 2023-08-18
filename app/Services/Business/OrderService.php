@@ -29,13 +29,11 @@ class OrderService {
 		
 		$orderFilter = app()->make(OrderFilter::class, compact('queryParams'));
 		
-		$query = Order::filter($orderFilter)->notTied()->with('lastComment')->orderBy('id', 'desc');
-		
-		
-		
+		$query = Order::filter($orderFilter)->notTied()->with('lastComment', function($query) {$query->with('author');})->orderBy('id', 'desc');
 		
 		$paginate = $this->paginate($query, $currentPage, $perPage)->toArray();
-		logger($this->_getAllFromPaginate($paginate));
+		
+		logger($paginate);
 		
 		return match($dataType) {
 			'all'			=> $this->_getAllFromPaginate($paginate),
