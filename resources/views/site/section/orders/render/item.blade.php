@@ -60,8 +60,7 @@
 				<div class="order__comment scrollblock scrollblock-light" rowcomment>
 					@if($last_comment['message'] ?? false)
 						<p class="fz10px color-gray mb4px" date>
-							{{DdrDateTime::date($last_comment['created_at'] ?? null)}}
-							в
+							{{DdrDateTime::date($last_comment['created_at'] ?? null, ['format' => 'D.MM.YYYY'])}}
 							{{DdrDateTime::time($last_comment['created_at'] ?? null)}}
 							от
 							{{$last_comment['self'] ? 'меня' : ($last_comment['author']['name'] ?? 'оператора')}}

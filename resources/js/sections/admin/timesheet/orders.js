@@ -499,7 +499,7 @@ function addNewCommentToRow(btn = null, message = null) {
 			seconds
 		} = ddrDateBuilder();
 		
-		$(commentSelector).children('p[date]').html(day.zero+' '+month.named+' '+year.full+' г. в '+hours.zero+':'+minutes.zero+' от меня');
+		$(commentSelector).children('p[date]').html(day.zero+'.'+month.zero+'.'+year.full+' '+hours.zero+':'+minutes.zero+' от меня');
 	}
 	
 }

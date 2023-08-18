@@ -64,8 +64,8 @@ window.calendar = function(calendarId = null, params = {}) {
 
 
 window.ddrDateBuilder = function(dateStr = false) {
-	var monthNames = {1: 'января', 2: 'февраля', 3: 'марта', 4: 'апреля', 5: 'мая', 6: 'июня', 7: 'июля', 8: 'августа', 9: 'августа', 10: 'октября', 11: 'ноября', 12: 'декабря'};
-
+	const monthNames = {1: 'января', 2: 'февраля', 3: 'марта', 4: 'апреля', 5: 'мая', 6: 'июня', 7: 'июля', 8: 'августа', 9: 'сентября', 10: 'октября', 11: 'ноября', 12: 'декабря'};
+	const monthNamesShort = {1: 'янв', 2: 'фев', 3: 'мар', 4: 'апр', 5: 'мая', 6: 'июн', 7: 'июл', 8: 'авг', 9: 'сен', 10: 'окт', 11: 'ноя', 12: 'дек'};
 	const d = dateStr ? new Date(dateStr) : new Date();
 	
 	const year = {
@@ -77,6 +77,7 @@ window.ddrDateBuilder = function(dateStr = false) {
 		short: d.getMonth() + 1,
 		zero: addZero(d.getMonth() + 1),
 		named: monthNames[d.getMonth() + 1],
+		namedShort: monthNamesShort[d.getMonth() + 1],
 	};
 	
 	const day = {
