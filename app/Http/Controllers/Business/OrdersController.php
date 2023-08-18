@@ -231,10 +231,6 @@ class OrdersController extends Controller {
 		
 		$timesheet = Timesheet::where('datetime', DdrDateTime::shift($orderDate, 'UTC'))->first();
 		
-		
-		logger($timesheet);
-		
-		
 		$timesheets = Timesheet::future($date)
 			->withCount('orders AS orders_count')
 			->orderBy('datetime', 'ASC')

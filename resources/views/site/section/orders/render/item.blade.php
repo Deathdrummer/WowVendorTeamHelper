@@ -56,6 +56,13 @@
 	</div>
 	<div class="col-auto">
 		<div class="order__block">
+			<div class="order__comment scrollblock scrollblock-light">
+				<p class="fz12px lh90">{{$last_comment['message'] ?? '-'}}</p>
+			</div>
+		</div>
+	</div>
+	<div class="col-auto">
+		<div class="order__block">
 			<div class="order__price">
 				@if($price)
 					<p>@number($price) @symbal(dollar)</p>

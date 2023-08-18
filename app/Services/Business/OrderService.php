@@ -29,10 +29,13 @@ class OrderService {
 		
 		$orderFilter = app()->make(OrderFilter::class, compact('queryParams'));
 		
-		$query = Order::filter($orderFilter)->notTied()->orderBy('id', 'desc');
-		 
+		$query = Order::filter($orderFilter)->notTied()->with('lastComment')->orderBy('id', 'desc');
+		
+		
+		
 		
 		$paginate = $this->paginate($query, $currentPage, $perPage)->toArray();
+		logger($this->_getAllFromPaginate($paginate));
 		
 		return match($dataType) {
 			'all'			=> $this->_getAllFromPaginate($paginate),
@@ -69,9 +72,7 @@ class OrderService {
 	public function getToTimesheetList($timesheetId = null):Collection|null {
 		$list = Timesheet::find($timesheetId)
 			->orders()
-			->with('lastComment', function($query) {
-				$query->orderBy('created_at', 'desc');
-			})
+			->with('lastComment')
 			->get();
 		
 		$statuses = OrderStatus::asFlippedArray();
