@@ -483,7 +483,7 @@ function addNewCommentToRow(btn = null, message = null) {
 	const commentSelector = $(btn).closest('[ordercommentblock]').find('[rowcomment]');
 	
 	if ($(commentSelector).children('p:not([date])').length == 0) $(commentSelector).append(`<p class="fz12px">${message}</p>`);
-	else $(commentSelector).children('p:not([date])').text(message);
+	else $(commentSelector).children('p:not([date])').replaceWith(`<p class="fz12px">${message}</p>`);
 	
 	
 	
