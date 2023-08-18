@@ -63,6 +63,7 @@
 
 <script type="module">
 	const {getOrders, pag, status, currentPage, perPage, lastPage, total} = await loadSectionScripts({section: 'orders', guard: 'site'});
+	const {orderCommentsChat} = await loadSectionScripts({section: 'timesheet', guard: 'admin'});
 	
 	await getOrders({init: true});
 	
@@ -328,6 +329,10 @@
 	
 		
 	
+	
+	$.openCommentsWin = (btn, orderId, orderName) => {
+		orderCommentsChat(orderId, orderName, btn);
+	}
 	
 		
 	

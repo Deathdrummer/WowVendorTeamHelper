@@ -56,20 +56,32 @@
 	</div>
 	<div class="col-auto">
 		<div class="order__block">
-			<div class="order__comment scrollblock scrollblock-light">
-				@if($last_comment['message'] ?? false)
-					<p class="fz10px color-gray mb4px">
-						{{DdrDateTime::date($last_comment['created_at'] ?? null)}}
-						в
-						{{DdrDateTime::time($last_comment['created_at'] ?? null)}}
-						от
-						{{$last_comment['self'] ? 'меня' : ($last_comment['author']['name'] ?? 'оператора')}}
-					</p>
-					<p class="fz12px lh90">{{$last_comment['message'] ?? '-'}}</p>
-				@else
-					<p class="fz10px color-gray-400">Нет комментариев</p>
-				@endif
-			</div>
+			<div class="d-flex justify-content-between align-items-center" ordercommentblock>
+				<div class="order__comment scrollblock scrollblock-light" rowcomment>
+					@if($last_comment['message'] ?? false)
+						<p class="fz10px color-gray mb4px" date>
+							{{DdrDateTime::date($last_comment['created_at'] ?? null)}}
+							в
+							{{DdrDateTime::time($last_comment['created_at'] ?? null)}}
+							от
+							{{$last_comment['self'] ? 'меня' : ($last_comment['author']['name'] ?? 'оператора')}}
+						</p>
+						<p class="fz12px lh90">{{$last_comment['message'] ?? '-'}}</p>
+					@else
+						<p class="fz10px color-gray-400">Нет комментариев</p>
+					@endif
+				</div>
+				<div class="align-self-center">
+					<x-button
+						size="verysmall"
+						w="2rem-5px"
+						variant="gray"
+						action="openCommentsWin:{{$id}},{{$order}}"
+						title="Открыть комментарии">
+						<i class="fa-regular fa-comments"></i>
+					</x-button>
+				</div>
+			</div>		
 		</div>
 	</div>
 	<div class="col-auto">
@@ -94,7 +106,9 @@
 				w="50px"
 				variant="purple"
 				action="openLink:{{$link ?? null}}"
-				><i class="fa-solid fa-fw fa-link"></i></x-button>
+				>
+				<i class="fa-solid fa-fw fa-link"></i>
+			</x-button>
 		</div>
 	</div>
 	<div class="col-auto">

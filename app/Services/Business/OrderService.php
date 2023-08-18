@@ -33,8 +33,6 @@ class OrderService {
 		
 		$paginate = $this->paginate($query, $currentPage, $perPage)->toArray();
 		
-		logger($paginate);
-		
 		return match($dataType) {
 			'all'			=> $this->_getAllFromPaginate($paginate),
 			'data'			=> $this->_getDataFromPaginate($paginate),

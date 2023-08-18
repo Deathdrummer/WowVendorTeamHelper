@@ -84,13 +84,28 @@ window.ddrDateBuilder = function(dateStr = false) {
 		zero: addZero(d.getDate()),
 	};
 	
+	const minutes = {
+		short: d.getMinutes(),
+		zero: addZero(d.getMinutes()),
+	};
+	
+	const hours = {
+		short: d.getHours(),
+		zero: addZero(d.getHours()),
+	};
+	
+	const seconds = {
+		short: d.getSeconds(),
+		zero: addZero(d.getSeconds()),
+	};
+	
 
 	return {
 		year,
 		month,
 		day,
-		hours: d.getHours(),
-		minutes: d.getMinutes(),
-		seconds: d.getSeconds(),
+		hours,
+		minutes,
+		seconds,
 	};
 };

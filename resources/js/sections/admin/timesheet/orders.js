@@ -482,6 +482,24 @@ function addNewCommentToRow(btn = null, message = null) {
 	
 	const commentSelector = $(btn).closest('[ordercommentblock]').find('[rowcomment]');
 	
-	if ($(commentSelector).children('p').length == 0) $(commentSelector).html(`<p class="fz12px">${message}</p>`);
-	else $(commentSelector).children('p').text(message);
+	if ($(commentSelector).children('p:not([date])').length == 0) $(commentSelector).append(`<p class="fz12px">${message}</p>`);
+	else $(commentSelector).children('p:not([date])').text(message);
+	
+	
+	
+	
+	if ($(commentSelector).children('p[date]').length == 1) {
+		
+		const {
+			year,
+			month,
+			day,
+			hours,
+			minutes,
+			seconds
+		} = ddrDateBuilder();
+		
+		$(commentSelector).children('p[date]').html(day.zero+' '+month.named+' '+year.full+' г. в '+hours.zero+':'+minutes.zero+' от меня');
+	}
+	
 }

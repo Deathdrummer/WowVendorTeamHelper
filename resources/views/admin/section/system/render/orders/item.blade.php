@@ -43,7 +43,7 @@
 					<i class="fa-regular fa-comments"></i>
 				</x-button>
 			</div>
-		</div>		
+		</div>
 	</x-table.td>
 	<x-table.td>
 		<p class="fz12px"><span orderprice>{{$price}}</span> @symbal(dollar)</p>
