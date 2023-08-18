@@ -66,6 +66,8 @@
 						{{$last_comment['self'] ? 'меня' : ($last_comment['author']['name'] ?? 'оператора')}}
 					</p>
 					<p class="fz12px lh90">{{$last_comment['message'] ?? '-'}}</p>
+				@else
+					<p class="fz10px color-gray-400">Нет комментариев</p>
 				@endif
 			</div>
 		</div>
