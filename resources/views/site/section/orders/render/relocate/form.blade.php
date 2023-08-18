@@ -27,8 +27,7 @@
 			<x-textarea name="comment" class="w100" rows="3" placeholder="Введите текст" noresize />
 		</div>
 	</div>
-	
-			
+		
 	<input type="hidden" name="timesheet_id" value=""> 
 	
 	{{-- @if($type == 'move')
