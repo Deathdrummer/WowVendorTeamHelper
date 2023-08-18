@@ -67,6 +67,7 @@
 						</p>
 						<p class="fz12px lh90">{{$last_comment['message'] ?? '-'}}</p>
 					@else
+						<p class="fz10px color-gray mb4px" date></p>
 						<p class="fz10px color-gray-400">Нет комментариев</p>
 					@endif
 				</div>
