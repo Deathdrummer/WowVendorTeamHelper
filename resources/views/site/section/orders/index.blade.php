@@ -33,7 +33,7 @@
 			<x-card
 				id="contractsCard"
 				class="minh5rem"
-				scrolled="calc(100vh - 214px)"
+				scrolled="calc(100vh - 216px)"
 				loading
 				>
 				
