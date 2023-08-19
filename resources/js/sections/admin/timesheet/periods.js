@@ -81,6 +81,7 @@ export async function timesheetPeriodsCrud(getLastTimesheetPeriods = null, times
 			$('#lastTimesheetPeriodsBlock').find('li').removeClass('active');
 			$('#newTimesheetEventBtn, #importTimesheetEventsBtn, #exportOrdersBtn').setAttrib('hidden');
 			choosedPeriod.value = periodId;
+			ddrStore('choosedPeriod', periodId);
 			
 			if (_.isFunction(timesheetCrud)) {
 				//timesheetCrud(periodId, listType);
@@ -174,6 +175,7 @@ export async function timesheetPeriodsCrud(getLastTimesheetPeriods = null, times
 									remove(row);
 									$.notify('Период успешно удален!');
 									
+									
 									if (choosedPeriod.value == id) {
 										getLastTimesheetPeriods(() => {
 											wait(false);
@@ -181,6 +183,7 @@ export async function timesheetPeriodsCrud(getLastTimesheetPeriods = null, times
 										$('#timesheetContainer').html('<p class="color-gray-400 fz16px noselect text-center">Выберите период</p>');
 										$('#listTypeChooser').setAttrib('hidden');
 										$('#newTimesheetEventBtn, #importTimesheetEventsBtn, #exportOrdersBtn').setAttrib('hidden');
+										ddrStore('choosedPeriod', false);
 									}
 									
 								} else {

@@ -67,14 +67,14 @@
 	
 	<x-chooser variant="neutral" size="normal" px="20" py="5" class="mb1rem" id="listTypeChooser" hidden>
 		<x-chooser.item
-			id="chooserAll"
 			action="setListTypeAction:actual"
 			active
+			listtypechooser="actual"
 			>Актуальные
 		</x-chooser.item>
 		<x-chooser.item
-			id="chooserAll"
 			action="setListTypeAction:past"
+			listtypechooser="past"
 			>Прошедшие
 		</x-chooser.item>
 	</x-chooser>
@@ -93,9 +93,9 @@
 
 <script type="module">
 	
-	const listType = ref('actual');
+	const listType = ref(ddrStore('listType') || 'actual');
 	const timesheetCrudList = ref(null);
-	const choosedPeriod = ref(null);
+	const choosedPeriod = ref(ddrStore('choosedPeriod'));
 	
 	const {
 		timesheetCrud,
@@ -116,9 +116,6 @@
 		iconHeight: '26px',
 	});
 	
-	//timesheetCrud();
-	
-	
 	
 	
 	$('#openTimesheetPeriodsBtn').ddrInputs('enable');
@@ -133,6 +130,7 @@
 		$('#newTimesheetEventBtn, #importTimesheetEventsBtn, #exportOrdersBtn').setAttrib('hidden');
 		$('#lastTimesheetPeriodsBlock').find('li').removeClass('active');
 		choosedPeriod.value = periodId;
+		ddrStore('choosedPeriod', periodId);
 		
 		timesheetCrud(periodId, listType, buildOrdersTable, (list) => {
 			timesheetCrudList.value = list;
@@ -159,6 +157,7 @@
 		});
 		
 		listType.value = type;
+		ddrStore('listType', type);
 		timesheetCrudList.value({list_type: listType.value}, () => {
 			$('#timesheetTable').blockTable('buildTable');
 			timesheetContainerWait.destroy();
@@ -186,10 +185,18 @@
 	
 	getLastTimesheetPeriods(() => {
 		lastTimesheetPeriodsWaitBlock.off();
+		if (choosedPeriod.value) $('#lastTimesheetPeriodsBlock').find(`[timesheetperiod="${choosedPeriod.value}"]`).addClass('active');
 	});
 	
 	
-	
+	// Автовыбор предыдущего выбранного периода
+	if (choosedPeriod.value) {
+		timesheetCrud(choosedPeriod.value, listType, buildOrdersTable, (list) => {
+			timesheetCrudList.value = list;
+			$('#listTypeChooser').find(`[listtypechooser]`).removeClass('chooser__item_active');
+			$('#listTypeChooser').find(`[listtypechooser="${listType.value}"]`).addClass('chooser__item_active');
+		});
+	}
 	
 	
 	

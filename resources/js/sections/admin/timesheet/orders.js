@@ -486,8 +486,6 @@ function addNewCommentToRow(btn = null, message = null) {
 	else $(commentSelector).children('p:not([date])').replaceWith(`<p class="fz12px">${message}</p>`);
 	
 	
-	
-	
 	if ($(commentSelector).children('p[date]').length == 1) {
 		
 		const {
