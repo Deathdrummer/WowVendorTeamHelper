@@ -20,13 +20,14 @@ export async function timesheetCrud(periodId = null, listType = null, buildOrder
 	timesheetContainerWait.destroy();
 	
 	
+	const search = $('#searchOrdersField').val() || null;
 	
 	$.ddrCRUD({
 		container: '#timesheetList',
 		itemToIndex: '[ddrtabletr]',
 		route: 'crud/timesheet',
 		params: {
-			list: {period_id: periodId, list_type: listType.value},
+			list: {period_id: periodId, list_type: listType.value, search},
 			//create: {period_id: periodId},
 			store: {timesheet_period_id: periodId},
 			edit: {period_id: periodId},
@@ -47,6 +48,7 @@ export async function timesheetCrud(periodId = null, listType = null, buildOrder
 		}
 		
 		callFunc(cb, list);
+		
 		
 		$('#listTypeChooser').removeAttrib('hidden');
 		

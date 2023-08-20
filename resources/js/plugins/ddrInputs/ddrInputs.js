@@ -6,7 +6,7 @@ export default class DdrInputs {
 		if (!items) return false;
 		
 		// Методы, которые могут применяться для блока - обертки, в котором находятся инпуты
-		const blockMethods = ['change', 'state', 'enable', 'disable', 'addClass', 'removeClass'];
+		const blockMethods = ['change', 'state', 'enable', 'disable', 'hide', 'show', 'addClass', 'removeClass'];
 		
 		if (blockMethods.includes(method)) {
 			if (items.length == 1
@@ -427,6 +427,30 @@ export default class DdrInputs {
 	}
 	
 	
+	
+	
+	
+	hide() {
+		if (!this.inputs) return false;
+		
+		this.inputs.forEach(({item, tag, type, group, wrapperClass, wrapperSelector}) => {
+			if (wrapperSelector) {
+				if ($(wrapperSelector).hasAttrib('hidden') === false) $(wrapperSelector).setAttrib('hidden');
+			}
+		});	
+	}
+	
+	
+	
+	show() {
+		if (!this.inputs) return false;
+		
+		this.inputs.forEach(({item, tag, type, group, wrapperClass, wrapperSelector}) => {
+			if (wrapperSelector) {
+				if ($(wrapperSelector).hasAttrib('hidden')) $(wrapperSelector).removeAttrib('hidden');
+			}
+		});	
+	}
 	
 	
 	

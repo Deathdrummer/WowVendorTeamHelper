@@ -358,9 +358,12 @@ class OrdersController extends Controller {
 		] = $request->validate([
 			'views'			=> 'required|string',
 			'timesheet_id'	=> 'required|numeric',
+			'search'		=> 'exclude|nullable|string',
 		]);
 		
-		$list = $this->orderService->getToTimesheetList($timesheetId);
+		$search = $request->input('search');
+		
+		$list = $this->orderService->getToTimesheetList($timesheetId, $search);
 		
 		$showType = $this->getSettings('order_statuses_showtype_list');
 		

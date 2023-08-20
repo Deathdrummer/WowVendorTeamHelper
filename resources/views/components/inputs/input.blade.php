@@ -18,6 +18,7 @@
 	'showrows' 		=> false,
 	'action'        => 'setSetting',
 	'icon'        	=> null,
+	'iconcolor'		=> null,
 	'iconbg'     	=> null,
 	'clearcolor'	=> null,
 	'cleared'		=> null,
@@ -99,7 +100,7 @@
 				'pointer' => $iconActionFunc
 			])
 			@if($iconActionFunc)onclick="$.{{$iconActionFunc}}(this{{$iconActionParams ? ', '.$iconActionParams : null}})" @endif
-			><i class="fa-solid fa-{{$icon}}"></i></div>
+			><i class="fa-solid fa-fw fa-{{$icon}}{{$iconcolor ? ' '.$iconcolor : ''}}"></i></div>
 	@endif
 	
 	<div class="{{($group ? $group.'-' : '').'input__errorlabel'}} noselect" errorlabel></div>

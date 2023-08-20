@@ -70,23 +70,29 @@ class TimesheetController extends Controller {
 			'views'		=> 'required|string',
 			'period_id'	=> 'required|numeric',
 			'list_type'	=> 'required|string',
+			'search'	=> 'exclude|nullable|string',
 		]);
+		
+		$search = $request->input('search');
 		
 		if (!$viewPath) return response()->json(['no_view' => true]);
 		
-		$list = Timesheet::withCount('orders AS orders_count')
+		$list = Timesheet::withCount(['orders AS orders_count' => function($query) use($search) {
+				$query->where('order', 'LIKE', '%'.$search.'%');
+			}])
 			->where('timesheet_period_id', $periodId)
 			->where(function($query) use($listType) {
 				if ($listType == 'actual') {
 					$query->where('datetime', '>=', now());
-				
 				} elseif ($listType == 'past') {
 					$query->where('datetime', '<', now());
 				}
-				
+			})->whereHas('orders', function($query) use($search) {
+				$query->where('order', 'LIKE', '%'.$search.'%');
 			})
 			->orderBy('datetime', 'ASC')
 			->get();
+		
 		
 		$this->_buildDataFromSettings();
 		

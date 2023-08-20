@@ -21,6 +21,19 @@
 	<div class="col-auto" teleport="#headerTeleport2">
 		<div class="header__block">
 			<div id="lastTimesheetPeriodsBlock" class="ml3rem minw-4rem maxw-35rem h6rem pt10px pb10px pr10px"></div>
+			
+			<div class="ml3rem">
+				<x-input
+					size="large"
+					id="searchOrdersField"
+					class="w25rem"
+					placeholder="Поиск по номеру заказа..."
+					icon="search"
+					iconcolor="color-gray"
+					iconaction="searchAction"
+					hidden 
+					/>
+			</div>
 		</div>
 	</div>
 	
@@ -116,11 +129,13 @@
 		$('#lastTimesheetPeriodsBlock').find('li').removeClass('active');
 		choosedPeriod.value = periodId;
 		ddrStore('choosedPeriod', periodId);
+		$('#searchOrdersField').ddrInputs('disable');
 		
 		timesheetCrud(periodId, listType, buildOrdersTable, (list) => {
 			timesheetCrudList.value = list;
 			isBuildesPeriod = false;
 			periodsBlockWait.destroy();
+			$('#searchOrdersField').ddrInputs('enable');
 		});
 		$(btn).addClass('active');
 	}
@@ -179,12 +194,76 @@
 	
 	// Автовыбор предыдущего выбранного периода
 	if (choosedPeriod.value) {
+		buildTimesheet();
+	}
+	
+	
+	let searchStr = '';
+	$('#searchOrdersField').ddrInputs('change', function(inp, event) {
+		$(inp).ddrInputs('disable');
+		
+		const str = event?.target?.value || null;
+		const icon = $(inp).siblings('.postfix_icon').find('i');
+		
+		searchStr = str;
+		
+		if (str) {
+			$(icon).removeClass('fa-search');
+			$(icon).addClass('fa-close');
+		} else {
+			$(icon).removeClass('fa-close');
+			$(icon).addClass('fa-search');
+		}
+		
+		
+		//console.log(icon);
+		//const str = event?.target?.value || null;
+		buildTimesheet(() => {
+			$(inp).ddrInputs('enable');
+		});
+	}, 300);
+	
+	
+	$.searchAction = (icon) => {
+		$('#searchOrdersField').ddrInputs('disable');
+		if (searchStr) {
+			$(icon).find('i').removeClass('fa-close');
+			$(icon).find('i').addClass('fa-search');
+			
+			$('#searchOrdersField').ddrInputs('value', false);
+			searchStr = '';
+			buildTimesheet(() => {
+				$('#searchOrdersField').ddrInputs('enable');
+				$('#searchOrdersField').ddrInputs('state', 'clear');
+			});
+			
+		} else {
+			//$(icon).find('i').removeClass('fa-search color-gray');
+			//$(icon).find('i').addClass('fa-close color-red');
+		}
+		
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	function buildTimesheet(cb = null) {
 		timesheetCrud(choosedPeriod.value, listType, buildOrdersTable, (list) => {
 			timesheetCrudList.value = list;
 			$('#listTypeChooser').find(`[listtypechooser]`).removeClass('chooser__item_active');
 			$('#listTypeChooser').find(`[listtypechooser="${listType.value}"]`).addClass('chooser__item_active');
+			$('#searchOrdersField').ddrInputs('show');
+			callFunc(cb);
 		});
 	}
+	
+	
 	
 	
 	

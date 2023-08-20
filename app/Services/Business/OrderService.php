@@ -65,10 +65,16 @@ class OrderService {
 	 * @param integer $timesheetId
 	 * @return Collection|null
 	 */
-	public function getToTimesheetList($timesheetId = null):Collection|null {
+	public function getToTimesheetList($timesheetId = null, $search = null):Collection|null {
 		$list = Timesheet::find($timesheetId)
-			->orders()
+			->orders(function($query) use($search) {
+				logger('query');
+				$query->where('order', 'LIKE', '%'.$search.'%');
+			})
 			->with('lastComment')
+			->when($search, function ($query) use ($search) {
+				return $query->where('order', 'LIKE', '%'.$search.'%');
+			})
 			->get();
 		
 		$statuses = OrderStatus::asFlippedArray();

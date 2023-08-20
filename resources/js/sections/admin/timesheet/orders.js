@@ -251,7 +251,10 @@ export async function buildOrdersTable(row = null, timesheetId = null, cb = null
 			bgColor: '#ecf3f5',
 		});
 		
-		const {data, error, status, headers} = await ddrQuery.get('crud/orders/timesheet_list', {timesheet_id: timesheetId, views: viewsPath});
+		
+		const search = $('#searchOrdersField').val() || null;
+		
+		const {data, error, status, headers} = await ddrQuery.get('crud/orders/timesheet_list', {timesheet_id: timesheetId, views: viewsPath, search});
 		
 		ordersWait.destroy();
 		

@@ -34,6 +34,8 @@ $.fn.ddrInputs = function(method = false, ...params) {
 			'error',
 			'disable',
 			'enable',
+			'hide',
+			'show',
 			'value',
 			'checked',
 			'selected',
