@@ -292,21 +292,9 @@ export async function orderCommentsChat(orderId = null, orderName = null, rowBtn
 	}
 	
 	const {
-		state, // isClosed
 		popper,
 		wait,
-		setTitle,
-		setButtons,
-		loadData,
-		setHtml,
-		setLHtml,
-		dialog,
 		close,
-		query,
-		onScroll,
-		disableButtons,
-		enableButtons,
-		setWidth
 	} = await ddrPopup({
 		url: 'crud/orders/comments',
 		method: 'get',

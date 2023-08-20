@@ -3,6 +3,7 @@
 use App\Models\Traits\Dateable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class OrderComment extends Model {
     use HasFactory, Dateable;
@@ -19,6 +20,7 @@ class OrderComment extends Model {
 	protected $fillable = [
 		'order_id',
 		'from_id',
+		'user_type',
 		'message',
 		'created_at',
 		'updated_at',
@@ -46,7 +48,13 @@ class OrderComment extends Model {
      * @return bool
      */
     public function getSelfAttribute() {
-		return $this->attributes['from_id'] == auth('admin')->user()->id;
+		$origin = request()->server('HTTP_X_FORWARDED_PROTO');
+		$origin = request()->server('HTTP_ORIGIN') ?? request()->server('HTTP_X_FORWARDED_PROTO').'://'.request()->server('SERVER_NAME');
+		$fullPath = request()->server('HTTP_REFERER');
+		$replaced = Str::replace($origin, '', $fullPath);
+		$guard = Str::is('/admin/*', $replaced) ? 'admin' : 'site';
+		
+		return $this->attributes['from_id'] == auth($guard)->user()->id;
     }
 	
 	

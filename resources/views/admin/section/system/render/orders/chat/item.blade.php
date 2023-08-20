@@ -19,7 +19,15 @@
 			'border-light',
 		])
 		>
-		<strong class="chat__author breakword select-text">{{$self ? ($author['name'] ?? null) : ($author['pseudoname'] ?? null)}}</strong>
+		<strong
+			@class([
+				'chat__author',
+				'breakword',
+				'select-text',
+				'color-green'	=> $user_type == 1,
+				'color-red'		=> $user_type == 2,
+			])
+			>{{$self ? ($author['name'] ?? null) : ($author['pseudoname'] ?? $author['name'])}} <sup class="fz10px color-gray-400">{{$user_type == 1 ? 'оператор' : 'админ'}}</sup></strong>
 		<p class="chat__message breakword select-text">{{$message ?? null}}</p>
 		<small class="fz10px color-gray-500 chat__date mt5px">{{DdrDateTime::date($created_at ?? null)}} в {{DdrDateTime::time($created_at ?? null)}}</small>
 	</div>

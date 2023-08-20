@@ -2,8 +2,10 @@
 
 use App\Enums\OrderStatus;
 use App\Http\Filters\OrderFilter;
+use App\Models\AdminUser;
 use App\Models\Order;
 use App\Models\Timesheet;
+use App\Models\User;
 use App\Traits\Settingable;
 use Carbon\Carbon;
 
@@ -102,7 +104,36 @@ class OrderService {
 	 */
 	public function getComments($orderId = null) {
 		if (is_null($orderId)) return false;
-		return Order::find($orderId)->comments()->with('author:id,name,pseudoname')->get();
+		$comments = Order::find($orderId)->comments()->get();
+		
+		
+		
+		$usersData = $comments->mapToGroups(function ($item) {
+			return [$item['user_type'] => $item['from_id']];
+		})->toArray();
+		
+		$clientUsers = User::whereIn('id', array_unique($usersData[1]))->get()->mapWithKeys(function($item) {
+			return [$item['id'] => [
+				'name'			=> $item['name'],
+				'pseudoname'	=> $item['pseudoname'],
+			]];
+		});
+		$adminUsers = AdminUser::whereIn('id', array_unique($usersData[2]))->get()->mapWithKeys(function($item) {
+			return [$item['id'] => [
+				'name' 			=> $item['name'] ?? null,
+				'pseudoname'	=> $item['pseudoname'] ?? null,
+			]];
+		});
+		
+		return $comments->map(function($item) use($clientUsers, $adminUsers) {
+			$item['author'] = match($item['user_type']) {
+				1		=> $clientUsers[$item['from_id']] ?? null,
+				2		=> $adminUsers[$item['from_id']] ?? null,
+				default	=> $clientUsers[$item['from_id']] ?? null,
+			};
+			
+			return $item;
+		});
 	}
 	
 	

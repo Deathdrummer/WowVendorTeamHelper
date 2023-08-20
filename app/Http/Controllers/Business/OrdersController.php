@@ -1,5 +1,6 @@
 <?php namespace App\Http\Controllers\Business;
 
+use App\Actions\AddOrderComment;
 use App\Enums\OrderStatus;
 use App\Helpers\DdrDateTime;
 use App\Http\Controllers\Controller;
@@ -112,13 +113,13 @@ class OrdersController extends Controller {
 	 * @param 
 	 * @return 
 	 */
-	public function to_wait_list(Request $request) {
+	public function to_wait_list(Request $request, AddorderComment $addOrderComment) {
 		[
 			'order_id'	=> $orderId,
-			'message'	=> $message
+			'message'	=> $message,
 		] = $request->validate([
 			'order_id'	=> 'required|numeric',
-			'message'	=> 'required|string'
+			'message'	=> 'required|string',
 		]);
 		
 		$order = Order::find($orderId);
@@ -127,11 +128,7 @@ class OrdersController extends Controller {
 		
 		// отправить коммент
 		if ($message) {
-			OrderComment::create([
-				'order_id' 	=> $orderId,
-				'from_id' 	=> auth('admin')->user()->id,
-				'message' 	=> $message,
-			]);
+			$addOrderComment($orderId, $message);
 		}
 		
 		return response()->json($res);
@@ -161,13 +158,13 @@ class OrdersController extends Controller {
 	 * @param 
 	 * @return 
 	 */
-	public function to_cancel_list(Request $request) {
+	public function to_cancel_list(Request $request, AddOrderComment $addOrderComment) {
 		[
 			'order_id'	=> $orderId,
-			'message'	=> $message
+			'message'	=> $message,
 		] = $request->validate([
 			'order_id'	=> 'required|numeric',
-			'message'	=> 'required|string'
+			'message'	=> 'required|string',
 		]);
 		
 		$order = Order::find($orderId);
@@ -176,11 +173,7 @@ class OrdersController extends Controller {
 		
 		// отправить коммент
 		if ($message) {
-			OrderComment::create([
-				'order_id' 	=> $orderId,
-				'from_id' 	=> auth('admin')->user()->id,
-				'message' 	=> $message,
-			]);
+			$addOrderComment($orderId, $message);
 		}
 		
 		return response()->json($res);
@@ -260,15 +253,15 @@ class OrdersController extends Controller {
 	 * @param 
 	 * @return 
 	 */
-	public function set_relocate_client(Request $request) {
+	public function set_relocate_client(Request $request, AddOrderComment $addOrderComment) {
 		[
-			'comment'				=> $comment,
-			'order_id'				=> $orderId,
-			'timesheet_id'			=> $timesheetId,
+			'comment'		=> $comment,
+			'order_id'		=> $orderId,
+			'timesheet_id'	=> $timesheetId,
 		] = $request->validate([
-			'comment'				=> 'nullable|string',
-			'order_id'				=> 'required|numeric',
-			'timesheet_id'			=> 'required|numeric',
+			'comment'		=> 'nullable|string',
+			'order_id'		=> 'required|numeric',
+			'timesheet_id'	=> 'required|numeric',
 		]);
 		
 		
@@ -288,11 +281,7 @@ class OrdersController extends Controller {
 		
 		// отправить коммент
 		if ($comment) {
-			OrderComment::create([
-				'order_id' 	=> $orderId,
-				'from_id' 	=> auth('admin')->user()->id,
-				'message' 	=> $comment,
-			]);
+			$addOrderComment($orderId, $comment);
 		}
 		
 		return response()->json(true);
@@ -457,7 +446,7 @@ class OrdersController extends Controller {
 	 * @param 
 	 * @return 
 	 */
-	public function save_form(Request $request) {
+	public function save_form(Request $request, AddOrderComment $addOrderComment) {
 		$formData = $request->validate([
 			'timesheet_id' 	=> 'required|numeric|exclude',
 			'timezone_id' 	=> 'required|numeric',
@@ -482,12 +471,7 @@ class OrdersController extends Controller {
 		
 		// Добавление комментария
 		if ($comment = $request->input('comment')) {
-			$selfId = auth('admin')->user()->id;
-			OrderComment::create([
-				'order_id'	=> $orderId,
-				'from_id'	=> $selfId,
-				'message'	=> $comment,
-			]);
+			$addOrderComment($orderId, $comment);
 		}
 		
 		$timesheet = Timesheet::find($timesheetId);
@@ -563,7 +547,7 @@ class OrdersController extends Controller {
 	 * @param 
 	 * @return 
 	 */
-	public function send_comment(Request $request) {
+	public function send_comment(Request $request, AddOrderComment $addOrderComment) {
 		[
 			'views'		=> $viewPath,
 			'order_id'	=> $orderId,
@@ -574,13 +558,7 @@ class OrdersController extends Controller {
 			'message'	=> 'required|string',
 		]);
 		
-		$selfId = auth('admin')->user()->id;
-		
-		$comment = OrderComment::create([
-			'order_id'	=> $orderId,
-			'from_id'	=> $selfId,
-			'message'	=> $message,
-		])->toArray();
+		$comment = $addOrderComment($orderId, $message);
 		
 		return response()->view($viewPath.'.chat.item', [...$comment]);
 	}
@@ -719,7 +697,7 @@ class OrdersController extends Controller {
 	 * @param 
 	 * @return 
 	 */
-	public function set_relocate(Request $request) {
+	public function set_relocate(Request $request, AddOrderComment $addOrderComment) {
 		[
 			'comment'				=> $comment,
 			'order_id'				=> $orderId,
@@ -743,11 +721,7 @@ class OrdersController extends Controller {
 		
 		// отправить коммент
 		if ($comment) {
-			OrderComment::create([
-				'order_id' 	=> $orderId,
-				'from_id' 	=> auth('admin')->user()->id,
-				'message' 	=> $comment,
-			]);
+			$addOrderComment($orderId, $comment);
 		}
 		
 		return response()->json(['stat' => $stat]);

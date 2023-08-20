@@ -17,6 +17,8 @@ return new class extends Migration {
 			
 			$table->unsignedBigInteger('from_id')->nullable();
 			
+			$table->unsignedInteger('user_type')->nullable()->default(1);
+			
 			$table->string('message')->nullable();
             
 			$table->timestamps();
