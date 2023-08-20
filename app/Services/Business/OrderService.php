@@ -112,13 +112,20 @@ class OrderService {
 			return [$item['user_type'] => $item['from_id']];
 		})->toArray();
 		
-		$clientUsers = User::whereIn('id', array_unique($usersData[1]))->get()->mapWithKeys(function($item) {
+		
+		$uniqueUsers = array_unique($usersData[1] ?? []);
+		$uniqueAdminsUsers = array_unique($usersData[2] ?? []);
+		
+		
+		
+		
+		$clientUsers = User::whereIn('id', $uniqueUsers)->get()->mapWithKeys(function($item) {
 			return [$item['id'] => [
 				'name'			=> $item['name'],
 				'pseudoname'	=> $item['pseudoname'],
 			]];
 		});
-		$adminUsers = AdminUser::whereIn('id', array_unique($usersData[2]))->get()->mapWithKeys(function($item) {
+		$adminUsers = AdminUser::whereIn('id', $uniqueAdminsUsers)->get()->mapWithKeys(function($item) {
 			return [$item['id'] => [
 				'name' 			=> $item['name'] ?? null,
 				'pseudoname'	=> $item['pseudoname'] ?? null,
