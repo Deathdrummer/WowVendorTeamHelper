@@ -312,7 +312,7 @@
 				if ($(commentTextSelector).children('p').length) {
 					$(commentTextSelector).children('p').text(commentStr);
 				} else {
-					$(commentTextSelector).html(`<p>${commentStr}</p>`);
+					$(commentTextSelector).html(`<p class="fz12px lh900 format wodrbreak color-gray-500">${commentStr}</p>`);
 				}
 				
 				close();
