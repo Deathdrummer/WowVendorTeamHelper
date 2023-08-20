@@ -123,6 +123,7 @@
 		
 		$('#ordersTypesChuser').removeAttrib('disabled');
 		$(inp).ddrInputs('enable');
+		$(inp).focus();
 		
 	}, 300);
 	

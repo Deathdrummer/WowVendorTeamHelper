@@ -221,6 +221,7 @@
 		//const str = event?.target?.value || null;
 		buildTimesheet(() => {
 			$(inp).ddrInputs('enable');
+			$(inp).focus();
 		});
 	}, 300);
 	
