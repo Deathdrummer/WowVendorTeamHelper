@@ -226,8 +226,8 @@
 	
 	
 	$.searchAction = (icon) => {
-		$('#searchOrdersField').ddrInputs('disable');
 		if (searchStr) {
+			$('#searchOrdersField').ddrInputs('disable');
 			$(icon).find('i').removeClass('fa-close');
 			$(icon).find('i').addClass('fa-search');
 			

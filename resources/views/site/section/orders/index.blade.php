@@ -127,11 +127,11 @@
 	}, 300);
 	
 	
+	
 	$.searchAction = async (icon) => {
-		$('#searchOrdersField').ddrInputs('disable');
-		$('#ordersTypesChuser').setAttrib('disabled');
-		
 		if (searchStr) {
+			$('#searchOrdersField').ddrInputs('disable');
+			$('#ordersTypesChuser').setAttrib('disabled');
 			$(icon).find('i').removeClass('fa-close');
 			$(icon).find('i').addClass('fa-search');
 			
@@ -147,7 +147,7 @@
 			
 			$('#searchOrdersField').ddrInputs('enable');
 			$('#searchOrdersField').ddrInputs('state', 'clear');
-			$('#ordersTypesChuser').setAttrib('enable');
+			$('#ordersTypesChuser').removeAttrib('disabled');
 			
 		} else {
 			//$(icon).find('i').removeClass('fa-search color-gray');
