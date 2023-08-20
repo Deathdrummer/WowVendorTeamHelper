@@ -22,6 +22,7 @@ class OrderService {
 	public function get($request = null, $dataType = 'all') { // data | pagination
 		$queryParams = $request->only([
 			'status',
+			'search',
 		]);
 		
 		$perPage = $this->getSettings('orders.per_page');

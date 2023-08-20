@@ -9,8 +9,10 @@ const total = ref(null);
 async function getOrders(ops = {}) {
 	const {
 		init,
+		search,
 	} = _.assign({
 		init: false, // обновление списка
+		search: null, // поиск по номеру заказа
 	}, ops);
 	
 	let wait;
@@ -25,6 +27,7 @@ async function getOrders(ops = {}) {
 	const {data, error, headers} = await ddrQuery.get('client/orders', {
 		status: status.value,
 		current_page: currentPage.value,
+		search,
 	});
 	
 	currentPage.value = Number(headers['current_page']);

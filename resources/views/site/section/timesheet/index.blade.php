@@ -31,7 +31,7 @@
 					icon="search"
 					iconcolor="color-gray"
 					iconaction="searchAction"
-					hidden 
+					hidden
 					/>
 			</div>
 		</div>
@@ -213,6 +213,7 @@
 		} else {
 			$(icon).removeClass('fa-close');
 			$(icon).addClass('fa-search');
+			$('#searchOrdersField').ddrInputs('state', 'clear');
 		}
 		
 		

@@ -2,31 +2,47 @@
 	
 	<div class="row flex-column justify-conetent-between h100">
 		<div class="col-auto">
-			<x-chooser
-				variant="neutral"
-				group="normal"
-				disabled
-				px="25"
-				id="ordersTypesChuser"
-				class="mb1rem"
-				>
-				<x-chooser.item
-					id="chooserAll"
-						action="getOrdersAction:new"
-						active>
-						Выходящие
-				</x-chooser.item>
-				<x-chooser.item
-					id="chooserAll"
-						action="getOrdersAction:wait">
-						Лист ожидания
-				</x-chooser.item>
-				<x-chooser.item
-					id="chooserAll"
-						action="getOrdersAction:cancel">
-						Отмененные
-				</x-chooser.item>
-			</x-chooser>
+			<div class="row gx-30">
+				<div class="col-auto">
+					<x-chooser
+						variant="neutral"
+						group="normal"
+						disabled
+						px="25"
+						id="ordersTypesChuser"
+						class="mb1rem"
+						>
+						<x-chooser.item
+							id="chooserAll"
+								action="getOrdersAction:new"
+								active>
+								Выходящие
+						</x-chooser.item>
+						<x-chooser.item
+							id="chooserAll"
+								action="getOrdersAction:wait">
+								Лист ожидания
+						</x-chooser.item>
+						<x-chooser.item
+							id="chooserAll"
+								action="getOrdersAction:cancel">
+								Отмененные
+						</x-chooser.item>
+					</x-chooser>
+				</div>
+				<div class="col">
+					<x-input
+						size="normal"
+						id="searchOrdersField"
+						class="w25rem"
+						placeholder="Поиск по номеру заказа..."
+						icon="search"
+						iconcolor="color-gray"
+						iconaction="searchAction"
+						{{-- hidden --}}
+						/>
+				</div>
+			</div>
 		</div>
 		
 		<div class="col">
@@ -37,9 +53,7 @@
 				loading
 				>
 				
-				
 				<ul class="ddrlist" id="ordersList"></ul>
-				
 			</x-card>
 		</div>
 		
@@ -70,9 +84,89 @@
 	const {pagRefresh, onPageChange} = pag('#pagSelector');
 	
 	let hasNewOrdersNoFirstPage = false;
+	let searchStr = null;
 	
 	$('#contractsCard').card('ready');
 	$('#ordersTypesChuser').removeAttrib('disabled');
+	
+	
+	
+	
+	
+	$('#searchOrdersField').ddrInputs('change', async function(inp, event) {
+		$(inp).ddrInputs('disable');
+		$('#ordersTypesChuser').setAttrib('disabled');
+		
+		const str = event?.target?.value || null;
+		const icon = $(inp).siblings('.postfix_icon').find('i');
+		
+		searchStr = str;
+		
+		if (str) {
+			$(icon).removeClass('fa-search');
+			$(icon).addClass('fa-close');
+		} else {
+			$(icon).removeClass('fa-close');
+			$(icon).addClass('fa-search');
+			$('#searchOrdersField').ddrInputs('state', 'clear');
+		}
+		
+		
+		currentPage.value = 1;
+		
+		await getOrders({search: str});
+		
+		pagRefresh({
+			countPages: lastPage.value,
+			currentPage: 1,
+		});
+		
+		$('#ordersTypesChuser').removeAttrib('disabled');
+		$(inp).ddrInputs('enable');
+		
+	}, 300);
+	
+	
+	$.searchAction = async (icon) => {
+		$('#searchOrdersField').ddrInputs('disable');
+		$('#ordersTypesChuser').setAttrib('disabled');
+		
+		if (searchStr) {
+			$(icon).find('i').removeClass('fa-close');
+			$(icon).find('i').addClass('fa-search');
+			
+			$('#searchOrdersField').ddrInputs('value', false);
+			searchStr = null;
+			
+			await getOrders();
+		
+			pagRefresh({
+				countPages: lastPage.value,
+				currentPage: 1,
+			});
+			
+			$('#searchOrdersField').ddrInputs('enable');
+			$('#searchOrdersField').ddrInputs('state', 'clear');
+			$('#ordersTypesChuser').setAttrib('enable');
+			
+		} else {
+			//$(icon).find('i').removeClass('fa-search color-gray');
+			//$(icon).find('i').addClass('fa-close color-red');
+		}
+		
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	$.getOrdersAction = async (selector, isActive, stat) => {
@@ -81,7 +175,7 @@
 		status.value = stat;
 		currentPage.value = 1;
 		
-		await getOrders();
+		await getOrders({search: searchStr});
 		
 		pagRefresh({
 			countPages: lastPage.value,
