@@ -267,7 +267,7 @@ class OrderService {
 	 * @return 
 	 */
 	private function _perseServerName(?string $order):string|null {
-		preg_match('/\/inv\s\w+-\w+/m', $order, $matches);
+		preg_match('/\/inv\s.+-[^,]+/m', $order, $matches);
 		if (!$matches) return null;
 		return $matches[0] ? $matches[0] : null;
 	}

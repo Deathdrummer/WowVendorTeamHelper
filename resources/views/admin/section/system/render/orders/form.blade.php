@@ -16,8 +16,8 @@
 					<x-input name="price" value="{{$price ?? null}}" class="w10rem" id="orderFormPrice" placeholder="Стоимость" />
 				</div>
 				<div class="col">
-					<p class="color-gray-600 fz12px mb3px">Имя сервера:</p>
-					<x-input name="server_name" value="{{$server_name ?? null}}" class="w100" placeholder="Имя сервера /inv" />
+					<p class="color-gray-600 fz12px mb3px">Инвайт:</p>
+					<x-input name="server_name" value="{{$server_name ?? null}}" class="w100" placeholder="Инвайт /inv" />
 				</div>
 			</div>
 		</div>

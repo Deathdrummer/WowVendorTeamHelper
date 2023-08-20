@@ -6,7 +6,7 @@
 				<x-table.td class="w8rem-4px"><strong>№ заказа</strong></x-table.td>
 				<x-table.td class="w19rem"><strong>Дата</strong></x-table.td>
 				<x-table.td class="w-auto"><strong>Данные</strong></x-table.td>
-				<x-table.td class="w16rem"><strong>Имя сервера</strong></x-table.td>
+				<x-table.td class="w16rem"><strong>Инвайт</strong></x-table.td>
 				<x-table.td class="w-30rem"><strong>Комментарий</strong></x-table.td>
 				<x-table.td class="w-9rem"><strong>Стоимость</strong></x-table.td>
 				<x-table.td
