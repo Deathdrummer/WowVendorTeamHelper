@@ -256,7 +256,7 @@
 	$.openTimesheetCommentWin = async (btn, timesheetId) => {
 		event.stopPropagation();
 		
-		const commentTextSelector = $(btn).closest('[ordercommentblock]').find('[rowcomment]').children('p');
+		const commentTextSelector = $(btn).closest('[ordercommentblock]').find('[rowcomment]');
 		
 		const {
 			popper,
@@ -309,7 +309,12 @@
 			}
 			
 			if (data) {
-				$(commentTextSelector).text(commentStr);
+				if ($(commentTextSelector).children('p').length) {
+					$(commentTextSelector).children('p').text(commentStr);
+				} else {
+					$(commentTextSelector).html(`<p>${commentStr}</p>`);
+				}
+				
 				close();
 			}
 		}
