@@ -116,10 +116,6 @@ class OrderService {
 		$uniqueUsers = array_unique($usersData[1] ?? []);
 		$uniqueAdminsUsers = array_unique($usersData[2] ?? []);
 		
-		logger($uniqueUsers);
-		logger($uniqueAdminsUsers);
-		
-		
 		$clientUsers = User::whereIn('id', $uniqueUsers)->get()->mapWithKeys(function($item) {
 			return [$item['id'] => [
 				'name'			=> $item['name'],

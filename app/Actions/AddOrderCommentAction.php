@@ -3,9 +3,8 @@
 use App\Models\AdminUser;
 use App\Models\OrderComment;
 use App\Models\User;
-use Illuminate\Support\Str;
 
-class AddOrderComment {
+class AddOrderCommentAction {
 	
 	/**
 	* Добавить комментарий к заказу
@@ -16,11 +15,7 @@ class AddOrderComment {
 	public function __invoke($orderId, $message):array {
 		if (!$orderId || !$message) return false;
 		
-		$origin = request()->server('HTTP_ORIGIN') ?? request()->server('REQUEST_SCHEME').'://'.request()->server('SERVER_NAME');
-		$fullPath = request()->server('HTTP_REFERER');
-		$replaced = Str::replace($origin, '', $fullPath);
-		
-		$guard = Str::is('/admin/*', $replaced) ? 'admin' : 'site';
+		$guard = getGuard();
 		
 		$selfId = auth($guard)->user()->id;
 		

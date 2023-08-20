@@ -1,13 +1,12 @@
 <?php namespace App\Http\Controllers\Business;
 
-use App\Actions\AddOrderComment;
+use App\Actions\AddOrderCommentAction;
 use App\Enums\OrderStatus;
 use App\Helpers\DdrDateTime;
 use App\Http\Controllers\Controller;
 use App\Models\Command;
 use App\Models\EventType;
 use App\Models\Order;
-use App\Models\OrderComment;
 use App\Models\Timesheet;
 use App\Services\Business\OrderService;
 use App\Traits\HasPaginator;
@@ -113,7 +112,7 @@ class OrdersController extends Controller {
 	 * @param 
 	 * @return 
 	 */
-	public function to_wait_list(Request $request, AddorderComment $addOrderComment) {
+	public function to_wait_list(Request $request, AddOrderCommentAction $addOrderComment) {
 		[
 			'order_id'	=> $orderId,
 			'message'	=> $message,
@@ -158,7 +157,7 @@ class OrdersController extends Controller {
 	 * @param 
 	 * @return 
 	 */
-	public function to_cancel_list(Request $request, AddOrderComment $addOrderComment) {
+	public function to_cancel_list(Request $request, AddOrderCommentAction $addOrderComment) {
 		[
 			'order_id'	=> $orderId,
 			'message'	=> $message,
@@ -253,7 +252,7 @@ class OrdersController extends Controller {
 	 * @param 
 	 * @return 
 	 */
-	public function set_relocate_client(Request $request, AddOrderComment $addOrderComment) {
+	public function set_relocate_client(Request $request, AddOrderCommentAction $addOrderComment) {
 		[
 			'comment'		=> $comment,
 			'order_id'		=> $orderId,
@@ -446,7 +445,7 @@ class OrdersController extends Controller {
 	 * @param 
 	 * @return 
 	 */
-	public function save_form(Request $request, AddOrderComment $addOrderComment) {
+	public function save_form(Request $request, AddOrderCommentAction $addOrderComment) {
 		$formData = $request->validate([
 			'timesheet_id' 	=> 'required|numeric|exclude',
 			'timezone_id' 	=> 'required|numeric',
@@ -547,7 +546,7 @@ class OrdersController extends Controller {
 	 * @param 
 	 * @return 
 	 */
-	public function send_comment(Request $request, AddOrderComment $addOrderComment) {
+	public function send_comment(Request $request, AddOrderCommentAction $addOrderComment) {
 		[
 			'views'		=> $viewPath,
 			'order_id'	=> $orderId,
@@ -697,7 +696,7 @@ class OrdersController extends Controller {
 	 * @param 
 	 * @return 
 	 */
-	public function set_relocate(Request $request, AddOrderComment $addOrderComment) {
+	public function set_relocate(Request $request, AddOrderCommentAction $addOrderComment) {
 		[
 			'comment'				=> $comment,
 			'order_id'				=> $orderId,

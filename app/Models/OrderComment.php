@@ -35,9 +35,9 @@ class OrderComment extends Model {
 	 * @param 
 	 * @return 
 	 */
-	public function author() {
+	/* public function author() {
 		return $this->hasOne(AdminUser::class, 'id', 'from_id');
-	}
+	} */
 	
 	
 	
@@ -48,11 +48,7 @@ class OrderComment extends Model {
      * @return bool
      */
     public function getSelfAttribute() {
-		$origin = request()->server('HTTP_ORIGIN') ?? request()->server('REQUEST_SCHEME').'://'.request()->server('SERVER_NAME');
-		$fullPath = request()->server('HTTP_REFERER');
-		$replaced = Str::replace($origin, '', $fullPath);
-		$guard = Str::is('/admin/*', $replaced) ? 'admin' : 'site';
-		
+		$guard = getGuard();
 		return $this->attributes['from_id'] == auth($guard)->user()->id;
     }
 	
