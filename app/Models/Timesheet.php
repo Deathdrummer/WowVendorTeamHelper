@@ -31,6 +31,7 @@ class Timesheet extends Model {
 		'command_id',
 		'event_type_id',
 		'timesheet_period_id',
+		'comment',
 		'datetime',
 		'_sort',
     ];

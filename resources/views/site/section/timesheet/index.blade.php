@@ -253,6 +253,74 @@
 	
 	
 	
+	$.openTimesheetCommentWin = async (btn, timesheetId) => {
+		event.stopPropagation();
+		
+		const commentTextSelector = $(btn).closest('[ordercommentblock]').find('[rowcomment]').children('p');
+		
+		const {
+			popper,
+			wait,
+			close,
+			enableButtons,
+		} = await ddrPopup({
+			url: 'crud/timesheet/comment',
+			method: 'get',
+			params: {id: timesheetId, views: 'admin.section.system.render.timesheet'},
+			title: 'Комментарий события', // заголовок
+			width: '500', // ширина окна
+			buttons: ['ui.close', {action: 'timesheetComentSave', title: 'Обновить'}],
+			disabledButtons: true, // при старте все кнопки кроме закрытия будут disabled
+		});
+		
+		enableButtons('close');
+		
+		const comment = $(popper).find('#timesheetComment');
+		let commentStr = '';
+		
+		$(comment).ddrInputs('change:one', function(_, e) {
+			enableButtons(true);
+		});
+		
+		$(comment).ddrInputs('change', function(_, e) {
+			commentStr = e?.target?.value || null;
+		});
+		
+		
+		
+		
+		$.timesheetComentSave = async () => {
+			wait();
+			const {data, error, headers} = await ddrQuery.post('crud/timesheet/comment', {
+				id: timesheetId,
+				comment: commentStr,
+			});
+			
+			if (error) {
+				$.notify('Ошибка обновления комментария!', 'error');
+				console.log(error);
+				if (error.errors) {
+					$.each(error.errors, function(field, errors) {
+						$(popper).find('[name="'+field+'"]').ddrInputs('error', errors[0]);
+					});
+				}
+				wait(false);
+				return;
+			}
+			
+			if (data) {
+				$(commentTextSelector).text(commentStr);
+				close();
+			}
+		}
+		
+	}
+	
+	
+	
+	
+	
+	
 	
 	
 	function buildTimesheet(cb = null) {

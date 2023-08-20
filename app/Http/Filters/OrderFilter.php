@@ -24,7 +24,4 @@ class OrderFilter extends AbstractFilter {
 		$builder->where('order', 'LIKE', '%'.$value.'%');
     }
 	
-	
-	
-	
 }

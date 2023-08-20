@@ -28,9 +28,9 @@
 	<x-table.td><p class="fz12px" orderservername>{{$server_name}}</p></x-table.td>
 	<x-table.td>
 		<div class="d-flex justify-content-between align-items-center" ordercommentblock>
-			<div class="mr5px scrollblock scrollblock-light maxh3rem-1px w100" rowcomment>
+			<div class="mr5px scrollblock scrollblock-light minh-1rem-4px maxh3rem-1px w100" rowcomment>
 				@if($last_comment)
-					<p class="fz12px" >{{$last_comment['message'] ?? null}}</p>
+					<p class="fz12px lh900 format wodrbreak color-gray-500">{{$last_comment['message'] ?? null}}</p>
 				@endif
 			</div>
 			<div class="align-self-center">

@@ -26,6 +26,26 @@
 		<p>{{$data['commands'][$command_id]['title'] ?? '-'}}</p>
 	</x-table.td>
 	<x-table.td>
+		<div class="d-flex justify-content-between align-items-center" ordercommentblock>
+			<div class="mr5px scrollblock scrollblock-light minh-1rem-4px maxh3rem-1px w100" rowcomment>
+				@if($comment)
+					<p class="fz12px lh900 format wodrbreak color-gray-500">{{$comment ?? null}}</p>
+				@endif
+			</div>
+			<div class="align-self-center">
+				<x-button
+					size="verysmall"
+					w="2rem-5px"
+					variant="gray"
+					action="openTimesheetCommentWin:{{$id}}"
+					title="Открыть комментарии">
+					<i class="fa-regular fa-comments"></i>
+				</x-button>
+			</div>
+		</div>
+		
+	</x-table.td>
+	<x-table.td>
 		<p>{{$data['events_types'][$event_type_id] ?? '-'}}</p>
 	</x-table.td>
 	<x-table.td class="h-center">

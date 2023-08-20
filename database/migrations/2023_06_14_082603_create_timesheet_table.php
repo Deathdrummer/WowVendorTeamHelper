@@ -15,6 +15,7 @@ return new class extends Migration
             $table->unsignedInteger('command_id')->nullable()->comment('информация берется из табл. "команды"');
             $table->unsignedInteger('event_type_id')->nullable()->comment('информация берется из табл. "типы событий". одной строкой "название-сложность"');
             $table->unsignedInteger('timesheet_period_id')->nullable()->comment('принадлежность к париоду');
+			$table->longText('comment')->nullable()->comment('комментарий события');
 			$table->timestamp('datetime')->nullable();
 			$table->unsignedInteger('_sort')->default(0);
         });

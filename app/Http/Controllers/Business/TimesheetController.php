@@ -1,5 +1,6 @@
 <?php namespace App\Http\Controllers\Business;
 
+use App\Actions\UpdateModelAction;
 use App\Exports\EventsExport;
 use App\Helpers\DdrDateTime;
 use App\Http\Controllers\Controller;
@@ -374,6 +375,55 @@ class TimesheetController extends Controller {
 		
 		return Excel::download(new EventsExport($params), 'orders.xlsx');
 	}
+	
+	
+	
+	
+	
+	
+	
+	/**
+	* 
+	* @param 
+	* @return 
+	*/
+	public function comment_form(Request $request) {
+		[
+			'id' 	=> $id,
+			'views'	=> $viewPath,
+		] = $request->validate([
+			'id'	=> 'required|numeric',
+			'views'	=> 'required|string',
+		]);
+		
+		$timesheeet = Timesheet::find($id);
+		
+		return response(view($viewPath.'.comment', ['comment' => $timesheeet?->comment]));
+	}
+	
+	
+	
+	/**
+	* 
+	* @param 
+	* @return 
+	*/
+	public function comment_save(Request $request, UpdateModelAction $update) {
+		[
+			'id' 		=> $id,
+			'comment'	=> $comment,
+		] = $request->validate([
+			'id'		=> 'required|numeric',
+			'comment'	=> 'required|string',
+		]);
+		
+		$res = $update(Timesheet::class, $id, ['comment' => $comment]);
+		
+		return response()->json($res);
+	}
+	
+	
+	
 	
 	
 	

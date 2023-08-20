@@ -38,6 +38,8 @@ Route::get('timesheet/import_form', [TimesheetController::class, 'get_import_for
 Route::post('timesheet/import', [TimesheetController::class, 'import_events']);
 Route::get('timesheet/export', [TimesheetController::class, 'export_orders_form']);
 Route::post('timesheet/export', [TimesheetController::class, 'export_orders']);
+Route::get('timesheet/comment', [TimesheetController::class, 'comment_form']);
+Route::post('timesheet/comment', [TimesheetController::class, 'comment_save']);
 Route::resource('timesheet', TimesheetController::class)->except(['show']);
 
 
