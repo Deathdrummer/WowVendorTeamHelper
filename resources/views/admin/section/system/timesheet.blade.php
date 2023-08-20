@@ -190,6 +190,84 @@
 	}
 	
 	
+	
+	$.openTimesheetCommentWin = async (btn, timesheetId) => {
+		event.stopPropagation();
+		
+		const commentTextSelector = $(btn).closest('[ordercommentblock]').find('[rowcomment]');
+		
+		const {
+			popper,
+			wait,
+			close,
+			enableButtons,
+		} = await ddrPopup({
+			url: 'crud/timesheet/comment',
+			method: 'get',
+			params: {id: timesheetId, views: 'admin.section.system.render.timesheet'},
+			title: 'Комментарий события', // заголовок
+			width: '500', // ширина окна
+			buttons: ['ui.close', {action: 'timesheetComentSave', title: 'Обновить'}],
+			disabledButtons: true, // при старте все кнопки кроме закрытия будут disabled
+		});
+		
+		enableButtons('close');
+		
+		const comment = $(popper).find('#timesheetComment');
+		let commentStr = '';
+		
+		$(comment).ddrInputs('change:one', function(_, e) {
+			enableButtons(true);
+		});
+		
+		$(comment).ddrInputs('change', function(_, e) {
+			commentStr = e?.target?.value || null;
+		});
+		
+		
+		
+		
+		$.timesheetComentSave = async () => {
+			wait();
+			const {data, error, headers} = await ddrQuery.post('crud/timesheet/comment', {
+				id: timesheetId,
+				comment: commentStr,
+			});
+			
+			if (error) {
+				$.notify('Ошибка обновления комментария!', 'error');
+				console.log(error);
+				if (error.errors) {
+					$.each(error.errors, function(field, errors) {
+						$(popper).find('[name="'+field+'"]').ddrInputs('error', errors[0]);
+					});
+				}
+				wait(false);
+				return;
+			}
+			
+			if (data) {
+				if ($(commentTextSelector).children('p').length) {
+					$(commentTextSelector).children('p').text(commentStr);
+				} else {
+					$(commentTextSelector).html(`<p class="fz12px lh900 format wodrbreak color-gray-500">${commentStr}</p>`);
+				}
+				
+				close();
+			}
+		}
+		
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	getLastTimesheetPeriods(() => {
 		lastTimesheetPeriodsWaitBlock.off();
 		if (choosedPeriod.value) $('#lastTimesheetPeriodsBlock').find(`[timesheetperiod="${choosedPeriod.value}"]`).addClass('active');
@@ -204,6 +282,7 @@
 			$('#listTypeChooser').find(`[listtypechooser="${listType.value}"]`).addClass('chooser__item_active');
 		});
 	}
+	
 	
 	
 	
