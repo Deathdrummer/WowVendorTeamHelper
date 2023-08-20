@@ -48,8 +48,7 @@ class OrderComment extends Model {
      * @return bool
      */
     public function getSelfAttribute() {
-		$origin = request()->server('HTTP_X_FORWARDED_PROTO');
-		$origin = request()->server('HTTP_ORIGIN') ?? request()->server('HTTP_X_FORWARDED_PROTO').'://'.request()->server('SERVER_NAME');
+		$origin = request()->server('HTTP_ORIGIN') ?? request()->server('REQUEST_SCHEME').'://'.request()->server('SERVER_NAME');
 		$fullPath = request()->server('HTTP_REFERER');
 		$replaced = Str::replace($origin, '', $fullPath);
 		$guard = Str::is('/admin/*', $replaced) ? 'admin' : 'site';
