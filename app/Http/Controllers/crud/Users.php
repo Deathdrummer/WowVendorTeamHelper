@@ -147,7 +147,6 @@ class Users extends Controller {
 			'email' 		=> 'required|email|unique:users,email',
 			'pseudoname'	=> 'required|string|max:50|unique:users,pseudoname',
 			'role'			=> 'numeric|nullable|exclude',
-			'department_id'	=> 'numeric|nullable',
 			'_sort'			=> 'required|regex:/[0-9]+/'
 		]);
 		
