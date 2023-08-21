@@ -213,13 +213,9 @@ class Users extends Controller {
 		$validated = $request->validate([
 			//'email' 	=> 'required|email'
 			'role' 			=> 'numeric|nullable',
-			'department_id'	=> 'numeric|nullable',
 		]);
 		
 		$user = User::where('id', $id)->first();
-		
-		$user->department_id = $validated['department_id'];
-		$user->save();
 		
 		if ($validated['role']) {
 			$data = $user->syncRoles($validated['role']);
