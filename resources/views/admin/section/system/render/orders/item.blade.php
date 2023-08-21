@@ -59,6 +59,12 @@
 	</x-table.td>
 	@endcando
 	
+	@cando('dannye-(klient):site')
+		<x-table.td class="w-spacer p-0"></x-table.td>
+	@else
+		<x-table.td class="w-auto p-0"></x-table.td>
+	@endcando
+	
 	@cando('uvedomleniya-(klient):site')
 		@if(isset($notifyButtons) && $notifyButtons)
 			<x-table.td class="h-center">
@@ -127,8 +133,6 @@
 		</x-button>
 	</x-table.td>
 	@endcando
-	
-	<x-table.td class="w-auto"></x-table.td>
 	
 	@cando('deystviya-(klient):site')
 	<x-table.td class="h-center">
