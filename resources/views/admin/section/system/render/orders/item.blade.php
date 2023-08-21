@@ -45,6 +45,21 @@
 			</div>
 		</div>
 	</x-table.td>
+	@if(isset($notifyButtons) && $notifyButtons)
+		<x-table.td class="h-center">
+			<x-buttons-group size="verysmall" gx="5">
+				@foreach($notifyButtons as $button)
+					<x-button
+						action="slackNotifyAction:{{$button['id'] ?? null}},{{$id}}"
+						variant="{{$button['color'] ?? 'neutral'}}"
+						title="{{$button['title'] ?? ''}}"
+						>
+						<i class="fa-solid fa-fw fa-{{$button['icon'] ?? 'check'}}"></i>
+					</x-button>
+				@endforeach
+			</x-buttons-group>
+		</x-table.td>
+	@endif
 	<x-table.td>
 		<p class="fz12px"><span orderprice>{{$price}}</span> @symbal(dollar)</p>
 	</x-table.td>

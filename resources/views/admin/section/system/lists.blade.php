@@ -8,6 +8,7 @@
 					<li class="ddrtabsnav__item ddrtabsnav__item_active" ddrtabsitem="sectionsTab1">Простые списки</li>
 					<li class="ddrtabsnav__item" ddrtabsitem="sectionsTab2">Составные списки</li>
 					<li class="ddrtabsnav__item" ddrtabsitem="sectionsTab3">Статусы заказов</li>
+					<li class="ddrtabsnav__item" ddrtabsitem="sectionsTab4">Уведомеления Slack</li>
 				</ul>
 			</div>
 			
@@ -181,6 +182,32 @@
 							@endforeach
 						</x-table.body>
 					</x-table>
+				</div>
+				
+				<div class="ddrtabscontent__item" ddrtabscontentitem="sectionsTab4">
+					
+					<code class="d-block mb2rem">
+						<strong>Подстановка данных</strong>
+						
+						<p class="color-gray">@{{raw}} 			- Тело заказа</p>
+						<p class="color-gray">@{{timezone}}		- Временная зона</p>
+						<p class="color-gray">@{{status}}			- Статус заказа</p>
+						<p class="color-gray">@{{order}}			- Номер заказа</p>
+						<p class="color-gray">@{{price}} 			- Стаомость</p>
+						<p class="color-gray">@{{server_name}} 	- Инвайт</p>
+						<p class="color-gray">@{{link}} 			- Ссылка</p>
+						<p class="color-gray">@{{date_add}} 		- Дата добавления</p>
+						<p class="color-gray">@{{date_msc}} 		- Дата по МСК</p>
+					</code>
+					
+					
+					<x-simplelist
+						setting="slack_notifies"
+						fieldset="ID:w6rem|number|id|1,Название уведомеления:w20rem|text|title,Цвет кнопки:w12rem|select|color,Иконка:w20rem|text|icon,Вебхук:w30rem|textarea|webhook,Сообщение:w30rem|textarea|message"
+						options="color;red:Красная,green:Зеленая,blue:Синяя"
+						{{-- onRemove="removeCustomerAction" --}}
+						group="normal"
+					 />
 				</div>
 				
 			</div>

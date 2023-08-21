@@ -355,11 +355,13 @@ class OrdersController extends Controller {
 		
 		$showType = $this->getSettings('order_statuses_showtype_list');
 		
+		$notifyButtons = $this->getSettings('slack_notifies');
+		
 		$statusesSettings = $this->getSettings('order_statuses');
 		$timezones = $this->getSettings('timezones', 'id');
 		$itemView = $viewPath.'.item';
 		
-		return response()->view($viewPath.'.list', compact('list', 'itemView', 'timezones', 'statusesSettings', 'showType'));
+		return response()->view($viewPath.'.list', compact('list', 'itemView', 'timezones', 'statusesSettings', 'showType', 'notifyButtons'));
 	}
 	
 	

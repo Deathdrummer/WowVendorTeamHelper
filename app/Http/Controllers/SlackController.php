@@ -1,12 +1,15 @@
 <?php namespace App\Http\Controllers;
 
+use App\Enums\OrderStatus;
 use App\Events\SendMessageEvent;
+use App\Helpers\DdrDateTime;
 use App\Models\Order;
 use App\Services\Business\OrderService;
 use App\Traits\Settingable;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Ixudra\Curl\Facades\Curl;
+use Illuminate\Support\Str;
 
 class SlackController extends Controller {
 	use Settingable;
@@ -56,14 +59,53 @@ class SlackController extends Controller {
 	 * @return 
 	 */
 	public function send_message(Request $request) {
+		[
+			'id'		=> $id,
+			'order_id'	=> $orderId,
+		] = $request->validate([
+			'id'		=> 'required|numeric',
+			'order_id'	=> 'required|numeric',
+		]);
 		
-		//logger('rtyrtytryrty');
+		$notifyButtons = $this->getSettings('slack_notifies', 'id', null, 'id:'.$id);
+		
+		if (!$data = $notifyButtons[$id] ?? null) return response()->json(false);
+		
+
+		$endpoint = $data['webhook'] ?? false;
+		if (!$endpoint) return response()->json(false);
+		
+		$timezones = $this->getSettings('timezones', 'id', 'timezone');
+		
+		$orderData = Order::find($orderId);
 		
 		
-		$endpoint = $request->input('webhook', false);
-		if (!$endpoint) return false;
+		$rawData = $orderData['raw_data'];
+		$timezone = $timezones[$orderData->timezone_id];
+		$status = OrderStatus::fromValue($orderData->status)->key;
+		$order = $orderData['order'] ?? '---';
+		$price = $orderData['price'] ?? '---';
+		$serverName = $orderData['server_name'] ?? '---';
+		$link = $orderData['link'] ?? '---';
+		$dateOrig = DdrDateTime::date($orderData->date).' в '.DdrDateTime::time($orderData->date);
+		$dateMsc = DdrDateTime::date($orderData->date_msc).' в '.DdrDateTime::time($orderData->date_msc);
+		$dateAdd = DdrDateTime::date($orderData->date_add).' в '.DdrDateTime::time($orderData->date_add);
+
+		$message = Str::swap([
+			'{{raw}}' 			=> $rawData,
+			'{{timezone}}' 		=> $timezone,
+			'{{status}}' 		=> $status,
+			'{{order}}' 		=> $order,
+			'{{price}}' 		=> $price,
+			'{{server_name}}'	=> $serverName,
+			'{{link}}' 			=> $link,
+			'{{date_orig}}' 	=> $dateOrig,
+			'{{date_msc}}' 		=> $dateMsc,
+			'{{date_add}}' 		=> $dateAdd,
+		], $data['message'] ?? '');
+		
 		$response = Curl::to($endpoint)
-			->withData(['payload' => json_encode(["text" => $request->input('text', 'Это сообщение отправено из сервиса')])])
+			->withData(['payload' => json_encode(["text" => $message])])
 			->withHeaders(['Content-Type' => 'application/x-www-form-urlencoded'])
 			->withContentType('application/json')
 			->returnResponseObject()
