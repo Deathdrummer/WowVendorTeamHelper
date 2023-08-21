@@ -29,14 +29,14 @@ $.notify.defaults({
 	arrowShow: true,
 	arrowSize: 5,
 	//position: '...',
-	elementPosition: 'bottom left',
+	elementPosition: 'top right',
 	globalPosition: 'bottom right',
 	style: 'bootstrap',
 	className: 'success',
 	showAnimation: 'fadeIn',
 	showDuration: 200,
 	hideAnimation: 'fadeOut',
-	hideDuration: 3000,
+	hideDuration: 100,
 	gap: 2
 });
 

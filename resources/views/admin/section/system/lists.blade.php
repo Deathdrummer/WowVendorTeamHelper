@@ -204,7 +204,7 @@
 					<x-simplelist
 						setting="slack_notifies"
 						fieldset="ID:w6rem|number|id|1,Название уведомеления:w20rem|text|title,Цвет кнопки:w12rem|select|color,Иконка:w20rem|text|icon,Вебхук:w30rem|textarea|webhook,Сообщение:w30rem|textarea|message"
-						options="color;red:Красная,green:Зеленая,blue:Синяя"
+						options="color;light:Светлая,dark:Темная,gray:Серая,neutral:Нейтральная,orange:Оранжевая,yellow:Желтая,purple:Фиолетовая,red:Красная,green:Зеленая,blue:Синяя"
 						{{-- onRemove="removeCustomerAction" --}}
 						group="normal"
 					 />

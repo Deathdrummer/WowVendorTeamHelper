@@ -1,6 +1,8 @@
 <x-table.tr class="h4rem">
 	<x-table.td class="h-center"><strong class="fz12px">{{$loop->index + 1}}</strong></x-table.td>
-	<x-table.td><p class="fz12px"orderordernumber>{{$order}}</p></x-table.td>
+	@cando('nomer-zakaza-(klient):site')<x-table.td><p class="fz12px"orderordernumber>{{$order}}</p></x-table.td> @endcando
+	
+	@cando('data-(klient):site')
 	<x-table.td>
 		<p class="fz12px pointer" title="Кликните для копирования">
 			<strong class="w3rem d-inline-block text-end">ориг</strong>:
@@ -24,8 +26,12 @@
 			@endif
 		</p>
 	</x-table.td>
-	<x-table.td><p class="fz12px lh90 preline" orderrawdata>{{$raw_data}}</p></x-table.td>
-	<x-table.td><p class="fz12px" orderservername>{{$server_name}}</p></x-table.td>
+	@endcando
+	
+	@cando('dannye-(klient):site')<x-table.td><p class="fz12px lh90 preline" orderrawdata>{{$raw_data}}</p></x-table.td> @endcando
+	@cando('invayt-(klient):site')<x-table.td><p class="fz12px" orderservername>{{$server_name}}</p></x-table.td> @endcando
+	
+	@cando('kommentariy-(klient):site')
 	<x-table.td>
 		<div class="d-flex justify-content-between align-items-center" ordercommentblock>
 			<div class="mr5px scrollblock scrollblock-light minh-1rem-4px maxh3rem-1px w100" rowcomment>
@@ -45,24 +51,33 @@
 			</div>
 		</div>
 	</x-table.td>
-	@if(isset($notifyButtons) && $notifyButtons)
-		<x-table.td class="h-center">
-			<x-buttons-group size="verysmall" gx="5">
-				@foreach($notifyButtons as $button)
-					<x-button
-						action="slackNotifyAction:{{$button['id'] ?? null}},{{$id}}"
-						variant="{{$button['color'] ?? 'neutral'}}"
-						title="{{$button['title'] ?? ''}}"
-						>
-						<i class="fa-solid fa-fw fa-{{$button['icon'] ?? 'check'}}"></i>
-					</x-button>
-				@endforeach
-			</x-buttons-group>
-		</x-table.td>
-	@endif
+	@endcando
+	
+	@cando('stoimost-(klient):site')
 	<x-table.td>
 		<p class="fz12px"><span orderprice>{{$price}}</span> @symbal(dollar)</p>
 	</x-table.td>
+	@endcando
+	
+	@cando('uvedomleniya-(klient):site')
+		@if(isset($notifyButtons) && $notifyButtons)
+			<x-table.td class="h-center">
+				<x-buttons-group size="verysmall" gx="5">
+					@foreach($notifyButtons as $button)
+						<x-button
+							action="slackNotifyAction:{{$button['id'] ?? null}},{{$id}}"
+							variant="{{$button['color'] ?? 'neutral'}}"
+							title="{{$button['title'] ?? ''}}"
+							>
+							<i class="fa-solid fa-fw fa-{{$button['icon'] ?? 'check'}}"></i>
+						</x-button>
+					@endforeach
+				</x-buttons-group>
+			</x-table.td>
+		@endif
+	@endcando
+	
+	@cando('status-(klient):site')
 	<x-table.td @class([
 			'h-center' => !isset($showType['text']) || !$showType['text']
 		])
@@ -95,6 +110,9 @@
 			@endif
 		</div>
 	</x-table.td>
+	@endcando
+	
+	@cando('ssylka-(klient):site')
 	<x-table.td class="h-center v-center">
 		<x-button
 			size="verysmall"
@@ -108,6 +126,11 @@
 			<i class="fa-solid fa fa-link"></i>
 		</x-button>
 	</x-table.td>
+	@endcando
+	
+	<x-table.td class="w-auto"></x-table.td>
+	
+	@cando('deystviya-(klient):site')
 	<x-table.td class="h-center">
 		<x-buttons-group group="verysmall" w="2rem-5px" gx="4">
 			{{-- <x-button variant="green" title=""><i class="fa-solid fa-info"></i></x-button> --}}
@@ -116,4 +139,5 @@
 			<x-button variant="blue" action="editTimesheetOrder:{{$id}},{{$order}},{{$timesheet_id}}" title="Редактировать заказ"><i class="fa-solid fa-pen-to-square"></i></x-button>
 		</x-buttons-group>
 	</x-table.td>
+	@endcando
 </x-table.tr>

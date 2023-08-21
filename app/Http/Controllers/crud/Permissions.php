@@ -131,7 +131,7 @@ class Permissions extends Controller {
 		
 		$validFields = $request->validate([
 			'name'	=> 'required|string|unique:permissions,name',
-			'title'	=> 'required|string|unique:permissions,title',
+			'title'	=> 'required|string',
 			'guard'	=> 'required|string|exclude',
 			'group'	=> 'required|numeric',
 			'sort'	=> 'required|regex:/[0-9]+/'
@@ -193,7 +193,7 @@ class Permissions extends Controller {
 			'title'	=> [
         		'string',
         		'required',
-				Rule::unique('permissions')->ignore(Permission::where('id', $id)->first()),
+				//Rule::unique('permissions')->ignore(Permission::where('id', $id)->first()),
 			],
 			'group'	=> 'required|numeric',
 			'guard'	=> 'required|string|exclude',
