@@ -1,5 +1,6 @@
 <?php namespace App\Services\Business;
 
+use App\Enums\Guards;
 use App\Enums\OrderStatus;
 use App\Http\Filters\OrderFilter;
 use App\Models\AdminUser;
@@ -32,9 +33,30 @@ class OrderService {
 		
 		$orderFilter = app()->make(OrderFilter::class, compact('queryParams'));
 		
-		$query = Order::filter($orderFilter)->notTied()->with('lastComment', function($query) {$query->with('author');})->orderBy('id', 'desc');
+		$query = Order::filter($orderFilter)
+			->notTied()
+			->with('lastComment', function($query) {
+				$query->with('author:id,name,pseudoname', 'adminauthor:id,name,pseudoname');
+			})
+			->orderBy('id', 'desc');
 		
 		$paginate = $this->paginate($query, $currentPage, $perPage)->toArray();
+		
+		if ($paginate['data'] ?? false) {
+			foreach ($paginate['data'] as $k => $row) {
+				if (!isset($row['last_comment'])) continue;
+				
+				$userType = (int)$row['last_comment']['user_type'] ?? null;
+				
+				$paginate['data'][$k]['last_comment']['author'] = match($userType) {
+					1		=> $row['last_comment']['author'] ?? null,
+					2		=> $row['last_comment']['adminauthor'] ?? null,
+					default	=> null,
+				};
+				
+				unset($paginate['data'][$k]['last_comment']['adminauthor']);
+			}
+		}
 		
 		return match($dataType) {
 			'all'			=> $this->_getAllFromPaginate($paginate),
@@ -104,40 +126,18 @@ class OrderService {
 	 */
 	public function getComments($orderId = null) {
 		if (is_null($orderId)) return false;
-		$comments = Order::find($orderId)->comments()->get();
+		$comments = Order::find($orderId)->comments()->with('author:id,name,pseudoname', 'adminauthor:id,name,pseudoname')->get()->toArray();
 		
+		if (!$comments) return null;
 		
-		
-		$usersData = $comments->mapToGroups(function ($item) {
-			return [$item['user_type'] => $item['from_id']];
-		})->toArray();
-		
-		
-		$uniqueUsers = array_unique($usersData[1] ?? []);
-		$uniqueAdminsUsers = array_unique($usersData[2] ?? []);
-		
-		$clientUsers = User::whereIn('id', $uniqueUsers)->get()->mapWithKeys(function($item) {
-			return [$item['id'] => [
-				'name'			=> $item['name'],
-				'pseudoname'	=> $item['pseudoname'],
-			]];
-		});
-		$adminUsers = AdminUser::whereIn('id', $uniqueAdminsUsers)->get()->mapWithKeys(function($item) {
-			return [$item['id'] => [
-				'name' 			=> $item['name'] ?? null,
-				'pseudoname'	=> $item['pseudoname'] ?? null,
-			]];
-		});
-		
-		return $comments->map(function($item) use($clientUsers, $adminUsers) {
-			$item['author'] = match($item['user_type']) {
-				1		=> $clientUsers[$item['from_id']] ?? null,
-				2		=> $adminUsers[$item['from_id']] ?? null,
-				default	=> $clientUsers[$item['from_id']] ?? null,
-			};
+		foreach ($comments as $k => $comment) {
+			$author = $comment['author'] ?? null;
+			$adminauthor = $comment['adminauthor'] ?? null;
+			unset($comments[$k]['adminauthor']);
+			$comments[$k]['author'] = $author ?: $adminauthor;
 			
-			return $item;
-		});
+		}
+		return $comments;
 	}
 	
 	

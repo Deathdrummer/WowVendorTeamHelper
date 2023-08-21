@@ -63,7 +63,12 @@
 							{{DdrDateTime::date($last_comment['created_at'] ?? null, ['format' => 'D.MM.YYYY'])}}
 							{{DdrDateTime::time($last_comment['created_at'] ?? null)}}
 							от
-							{{$last_comment['self'] ? 'меня' : ($last_comment['author']['name'] ?? 'оператора')}}
+							<span 
+								@class([
+									'color-green' => $last_comment['user_type'] == 1,
+									'color-red' => $last_comment['user_type'] == 2,
+								])
+								>{{$last_comment['self'] ? 'меня' : (($last_comment['author']['name'] ?? 'удаленный '.($last_comment['user_type'] == 1 ? 'оператор' : 'админ')) ?: ($last_comment['author']['pseudoname'] ?? 'удаленный '.($last_comment['user_type'] == 1 ? 'оператор' : 'админ')))}}</span>
 						</p>
 						<p class="fz12px lh90">{{$last_comment['message'] ?? '-'}}</p>
 					@else

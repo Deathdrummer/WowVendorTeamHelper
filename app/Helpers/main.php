@@ -58,16 +58,19 @@ if (! function_exists('translitSlug')) {
 
 if (! function_exists('getGuard')) {
     /**
-     * @param string  $value
-     * @param string  $glue
+     * @param array  $params
      * @return string
      */
-    function getGuard() {
+    function getGuard(?array $params = null):string {
         $origin = request()->server('HTTP_ORIGIN') ?? request()->server('REQUEST_SCHEME').'://'.request()->server('SERVER_NAME');
 		$fullPath = request()->server('HTTP_REFERER');
 		$replaced = Str::replace($origin, '', $fullPath);
-		$guard = Str::is('/admin/*', $replaced) ? 'admin' : 'site';
-		return $guard;
+		
+		if (!$params) return Str::is('/admin/*', $replaced) ? 'admin' : 'site';
+		
+		foreach ($params as $path => $guard) {
+			if (Str::is($path, $replaced)) return $guard;
+		}
     }
 }
 
