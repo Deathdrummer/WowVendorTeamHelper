@@ -203,6 +203,8 @@ export async function buildOrdersTable(row = null, timesheetId = null, cb = null
 		
 		
 		$.relocateOrderAction = async () => {
+			console.log(1);
+			
 			wait();
 			const formData = $(popper).ddrForm({order_id: orderId, timesheet_id: timesheetId, choosed_timesheet_id: choosedTimesheetId});
 			
@@ -215,16 +217,18 @@ export async function buildOrdersTable(row = null, timesheetId = null, cb = null
 				return;
 			}
 			
+			const on = orderNumber.replace('&amp;', '&');
+			
 			if (data?.stat == 'moved') {
-				$.notify(`Заказ «${orderNumber}» успешно перенесен!`);
+				$.notify(`Заказ «${on}» успешно перенесен!`);
 				_buildOrdersTable();
 			} else if (data?.stat == 'cloned') {
-				$.notify(`Заказ «${orderNumber}» успешно склонирован с новым статусом «Доп. ран»!`);
+				$.notify(`Заказ «${on}» успешно склонирован с новым статусом «Доп. ран»!`);
 				_buildOrdersTable();
 			} else if (data?.stat == 'updated') {
-				$.notify(`Заказ «${orderNumber}» уже существует в выбранном событии! Обновился только статус!`, 'gray');
+				$.notify(`Заказ «${on}» уже существует в выбранном событии! Обновился только статус!`, 'gray');
 			} else {
-				$.notify(`Заказ «${orderNumber}» со статусом «Доп. ран» уже существует в выбранном событии!`, 'gray');
+				$.notify(`Заказ «${on}» со статусом «Доп. ран» уже существует в выбранном событии!`, 'gray');
 			}
 			
 			close();
