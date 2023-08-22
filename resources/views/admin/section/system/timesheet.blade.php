@@ -262,6 +262,22 @@
 	
 	
 	
+	$.copyInviteColumn = (cell) => {
+		const rowIndex = $(cell).index();
+		const data = [];
+		$(cell).closest('[ddrtablehead]').siblings('[ddrtablebody]').find('[ddrtabletr]').each(function(k, row) {
+			let cell = $(row).find(`[ddrtabletd]:eq(${rowIndex})`);
+			let cellValue = $(cell).text().trim();
+			if (cellValue) data.push(cellValue);
+		});
+		
+		const resultStr = data.join("\n");
+		
+		if (resultStr) $.copyToClipboard(event, resultStr);
+	}
+	
+	
+	
 	
 	
 	$.slackNotifyAction = async (btn, id, orderId) => {

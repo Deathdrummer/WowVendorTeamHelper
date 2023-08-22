@@ -54,7 +54,7 @@
 	@endcando
 	
 	@cando('stoimost-(klient):site')
-	<x-table.td>
+	<x-table.td class=" h-end">
 		<p class="fz12px"><span orderprice>{{$price}}</span> @symbal(dollar)</p>
 	</x-table.td>
 	@endcando

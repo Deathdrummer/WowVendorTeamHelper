@@ -6,9 +6,9 @@
 				@cando('nomer-zakaza-(klient):site')<x-table.td class="w8rem-4px"><strong>№ заказа</strong></x-table.td> @endcando
 				@cando('data-(klient):site')<x-table.td class="w19rem"><strong>Дата</strong></x-table.td> @endcando
 				@cando('dannye-(klient):site')<x-table.td class="w-auto"><strong>Данные</strong></x-table.td> @endcando
-				@cando('invayt-(klient):site')<x-table.td class="w16rem"><strong>Инвайт</strong></x-table.td> @endcando
+				@cando('invayt-(klient):site')<x-table.td class="w16rem pointer color-neutral-hovered" onclick="$.copyInviteColumn(this)"><strong>Инвайт</strong></x-table.td> @endcando
 				@cando('kommentariy-(klient):site')<x-table.td class="w-30rem"><strong>Комментарий</strong></x-table.td> @endcando
-				@cando('stoimost-(klient):site')<x-table.td class="w-9rem"><strong>Стоимость</strong></x-table.td> @endcando
+				@cando('stoimost-(klient):site')<x-table.td class="w-6rem" title="Стоимость"><strong>$</strong></x-table.td> @endcando
 				
 				@cando('dannye-(klient):site')
 					<x-table.td class="w-spacer p-0"></x-table.td>
