@@ -1,7 +1,7 @@
 $.copyToClipboard = (e, copyData = null) => {
 	e.stopPropagation();
 	copyStringToClipboard(copyData || $(e.target).text());
-	//$.notify('Скопировано! copyToClipboard');
+	$.notify('Скопировано! copyToClipboard');
 }
 
 
