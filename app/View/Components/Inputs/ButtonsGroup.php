@@ -12,6 +12,7 @@ class ButtonsGroup extends Component {
     public $groupW;
     public $gx;
     public $gy;
+    public $inline;
     public $groupDisabled;
     public $groupVariant;
     public $tag;
@@ -32,11 +33,13 @@ class ButtonsGroup extends Component {
 		?string $w = null,
 		?bool $disabled = false,
 		?bool $rounded = null,
+		?bool $inline = null,
 		?string $variant = null,
         ?string $tag = null,
 	) {
         $this->groupWrap = $group ?? $size ?? 'normal';
         $this->groupRounded = isset($rounded);
+        $this->inline = $inline;
         $this->groupPx = $px;
         $this->groupW = $w;
         $this->gx = $gx;
@@ -56,7 +59,7 @@ class ButtonsGroup extends Component {
      */
     public function render() {
         return <<<'blade'
-			<div @class(['row', 'buttons-group', $groupWrap.'-buttons-group' => $groupWrap, 'gx-'.$gx => $gx !== null, 'gy-'.$gy => $gy !== null]) {{$tagParam ? $tag.'='.$tagParam.'' : $tag}}>{{$slot}}</div>
+			<div {{$attributes->class(['d-inline-block' => $inline])}}><div @class(['row', 'buttons-group', $groupWrap.'-buttons-group' => $groupWrap, 'gx-'.$gx => $gx !== null, 'gy-'.$gy => $gy !== null]) {{$tagParam ? $tag.'='.$tagParam.'' : $tag}}>{{$slot}}</div></div>
 		blade;
     }
 }

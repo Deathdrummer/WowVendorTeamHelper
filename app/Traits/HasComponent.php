@@ -57,6 +57,15 @@ trait HasComponent {
 	
 	
 	
+	/**
+	* 
+	* @param 
+	* @return 
+	*/
+	public function clearAttr($attr, $search, $replace) {
+		return str_replace(['"', $search], ['', $replace], $attr);
+	}
+	
 	
 	
 	

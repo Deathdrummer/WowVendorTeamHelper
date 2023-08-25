@@ -22,19 +22,6 @@
 	</td>
 	<td></td>
 	<td class="center">
-		<x-button
-			variant="{{$temporary_password ? 'green' : 'light'}}"
-			group="small"
-			action="usersSendEmail:{{$id}}"
-			class="px-0 w3rem"
-			title="{{$temporary_password ? 'Выслать доступ сотруднику' : 'Выслать доступ повторно'}}">
-			<i class="fa-solid fa-envelope"></i>
-		</x-button>
-	</td>
-	<td class="center">
-		<x-button variant="neutral" group="small" action="usersSetRules:{{$id}},{{isset($pseudoname) ? $pseudoname : __('custom.anon')}}" class="px-0 w3rem"><i class="fa-solid fa-list-check"></i></x-button>
-	</td>
-	<td class="center">
 		@if(isset($email_verified_at) && $email_verified_at)
 			<i class="fa-solid fa-check color-green"></i>
 		@else
@@ -42,7 +29,34 @@
 		@endif
 	</td>
 	<td class="center">
-		<x-buttons-group group="small" w="3rem">
+		<x-buttons-group group="small" w="3rem" gx="6" inline>
+			<x-button
+				variant="light"
+				group="small"
+				action="userSettings:{{$id}}"
+				class="px-0 w3rem"
+				title="Настройки пользователи"
+				>
+				<i class="fa-solid fa-cog"></i>
+			</x-button>
+			<x-button
+				variant="{{$temporary_password ? 'green' : 'light'}}"
+				group="small"
+				action="usersSendEmail:{{$id}}"
+				class="px-0 w3rem"
+				title="{{$temporary_password ? 'Выслать доступ сотруднику' : 'Выслать доступ повторно'}}"
+				>
+				<i class="fa-solid fa-envelope"></i>
+			</x-button>
+			<x-button
+				variant="green"
+				group="small"
+				action="usersSetRules:{{$id}},{{isset($pseudoname) ? $pseudoname : __('custom.anon')}}"
+				class="px-0 w3rem"
+				title="Права пользователя"
+				>
+				<i class="fa-solid fa-list-check"></i>
+			</x-button>
 			<x-button
 				variant="blue"
 				action="usersUpdate"

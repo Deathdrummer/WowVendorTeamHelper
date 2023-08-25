@@ -1,11 +1,13 @@
 <?php namespace App\Http\Controllers\crud;
 
+use App\Actions\AjaxDataAction;
 use App\Http\Controllers\Controller;
 use App\Mail\UserCreated;
-use App\Models\Department;
+use App\Models\Command;
 use App\Models\User;
 use App\Traits\HasCrudController;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
@@ -387,6 +389,69 @@ class Users extends Controller {
 		$hasPermissions = !!count($user->getAllPermissions());
 		return response()->json(['was_role' => $hasRole, 'has_permissions' => $hasPermissions]);
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	/**
+	* 
+	* @param 
+	* @return 
+	*/
+	public function settings(Request $request) {
+		[
+			'id' 	=> $id,
+			'view' 	=> $view,
+		] = $request->validate([
+			'id'	=> 'required|numeric',
+			'view'	=> 'required|string',
+		]);
+		
+		if(!$user = User::find($id)) return response()->json(false);
+		
+		$userCommands = data_get($user->settings, 'commands');
+		
+		$commands = Command::all();
+		
+		$this->addSettingToGlobalData('timezones', 'id');
+		
+		return $this->view($view.'.settings', compact('commands', 'userCommands'));
+	}
+	
+	
+	
+	
+	/**
+	* 
+	* @param 
+	* @return 
+	*/
+	public function set_setting(Request $request, AjaxDataAction $ajaxAction) {
+		$fields = $request->validate([
+			'id'		=> 'required|numeric|exclude',
+			'setting'	=> 'required|string',
+			'value'		=> 'nullable',
+			'type'		=> 'required|string', // single arr
+			'remove'	=> 'boolean',
+		]);
+		
+		$userId = $request->input('id');
+		
+		if(!$user = User::find($userId)) return response()->json(false);
+		
+		$mutated = $ajaxAction($user->settings, $fields);
+		
+		$user->settings = $mutated;
+		$saveRes = $user->save();
+		return response()->json($saveRes);
+	}
+	
+	
+	
 	
 	
 	

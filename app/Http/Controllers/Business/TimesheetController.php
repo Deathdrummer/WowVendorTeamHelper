@@ -1,5 +1,6 @@
 <?php namespace App\Http\Controllers\Business;
 
+use App\Actions\GetUserSetting;
 use App\Actions\UpdateModelAction;
 use App\Exports\EventsExport;
 use App\Helpers\DdrDateTime;
@@ -62,7 +63,7 @@ class TimesheetController extends Controller {
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request) {
+    public function index(Request $request, GetUserSetting $getUserSetting) {
 		[
 			'views'		=> $viewPath,
 			'period_id'	=> $periodId,
@@ -78,6 +79,10 @@ class TimesheetController extends Controller {
 		
 		if (!$viewPath) return response()->json(['no_view' => true]);
 		
+		$guard = getGuard();
+		//logger(auth('site')->user()->can('ogranichit-komandy:site'));
+		//logger(auth('admin')->user()->can('ogranichit-komandy:site'));
+		
 		$list = Timesheet::withCount(['orders AS orders_count' => function($query) use($search) {
 				$query->where('order', 'LIKE', '%'.$search.'%');
 			}])
@@ -90,6 +95,9 @@ class TimesheetController extends Controller {
 				}
 			})->whereHas('orders', function($query) use($search) {
 				$query->where('order', 'LIKE', '%'.$search.'%');
+			})
+			->when($guard == 'site' && auth('site')->user()->cannot('razreshit-vse-komandy:site'), function($query) use($getUserSetting) {
+				return $query->whereIn('command_id', $getUserSetting('commands') ?? []);
 			})
 			->orderBy('datetime', 'ASC')
 			->get();

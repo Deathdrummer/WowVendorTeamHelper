@@ -38,6 +38,7 @@
 	])}}
 	>
 	<button
+		{{$clearAttr($attributes->whereStartsWith('ddr-'), 'ddr-', '')}}
 		@if($id)id="{{$id}}"@endif
 		{{$attributes->filter(fn ($value, $key) => $key !== 'class')}}
 		@if($disabled || !$enabled)disabled @endif

@@ -702,6 +702,9 @@ teleport
 .h-0, .h0
 	height: 0 !important
 
+.b-0, .b0
+	flex-basis: 0 !important
+
 
 .minw-0, .minw0
 	min-width: 0 !important
@@ -730,6 +733,9 @@ teleport
 	
 	.maxh-#{$px}px, .maxh#{$px}px
 		max-height: #{$px}px !important
+	
+	.b-#{$px}px, .b#{$px}px
+		flex-basis: #{$px}px !important
 
 
 $bPoints: map-remove($grid-breakpoints, xs)
@@ -755,6 +761,9 @@ $bPoints: map-remove($grid-breakpoints, xs)
 			
 			.maxh-#{$breakpoint}-#{$px}px
 				max-height: #{$px}px !important
+			
+			.b-#{$breakpoint}-#{$px}px
+				flex-basis: #{$px}px !important
 	
 	
 	
@@ -781,6 +790,9 @@ $bPoints: map-remove($grid-breakpoints, xs)
 	
 	.maxh-#{$percent*5}, .maxh#{$percent*5}
 		max-height: #{$percent*5%} !important
+	
+	.b-#{$percent*5}, .b#{$percent*5}
+		flex-basis: #{$percent*5%} !important
 
 
 $bPoints: map-remove($grid-breakpoints, xs)
@@ -806,6 +818,9 @@ $bPoints: map-remove($grid-breakpoints, xs)
 			
 			.maxh-#{$breakpoint}-#{$percent*5}
 				max-height: #{$percent*5%} !important
+			
+			.b-#{$breakpoint}-#{$percent*5}
+				flex-basis: #{$percent*5%} !important
 				
 		
 				
@@ -854,6 +869,14 @@ $bPoints: map-remove($grid-breakpoints, xs)
 		@for $px from 1 through 9
 			&-#{$px}px, &#{$px}px
 				max-height: calc(#{$rem}rem + #{$px}px) !important
+		
+	
+	.b-#{$rem}rem, .b#{$rem}rem
+		flex-basis: #{$rem}rem !important
+		
+		@for $px from 1 through 9
+			&-#{$px}px, &#{$px}px
+				flex-basis: calc(#{$rem}rem + #{$px}px) !important
 			
 			
 
@@ -879,7 +902,8 @@ $bPoints: map-remove($grid-breakpoints, xs)
 .maxh-50rem, .maxh50rem
 	max-height: 50rem !important
 
-
+.b-50rem, .b50rem
+	flex-basis: 50rem !important
 		
 		
 
@@ -938,6 +962,13 @@ $bPoints: map-remove($grid-breakpoints, xs)
 				@for $px from 1 through 9
 					&-#{$px}px
 						max-height: calc(#{$rem}rem + #{$px}px) !important
+			
+			.b-#{$breakpoint}-#{$rem}rem
+				flex-basis: #{$rem}rem !important
+				
+				@for $px from 1 through 9
+					&-#{$px}px
+						flex-basis: calc(#{$rem}rem + #{$px}px) !important
 
 
 

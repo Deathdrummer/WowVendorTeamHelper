@@ -8,10 +8,8 @@
 						<td class="w30rem"><strong>E-mail</strong></td>
 						<td class="w30rem"><strong>Роль</strong></td>
 						<td></td>
-						<td class="w7rem center" title="Выслать доступ повторно"><strong>Высл. письм.</strong></td>
-						<td class="w7rem center"><strong>Права</strong></td>
 						<td class="w7rem center" title="Верифицирован"><strong>Вериф.</strong></td>
-						<td class="w10rem center"><strong>Действия</strong></td>
+						<td class="w16rem center"><strong>Действия</strong></td>
 					</tr>
 				</thead>
 				<tbody id="adminsList"></tbody>

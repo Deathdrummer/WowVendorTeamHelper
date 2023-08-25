@@ -43,6 +43,7 @@
     
     <textarea
         @if($name)name="{{$name}}" @endif
+        {{$clearAttr($attributes->whereStartsWith('ddr-'), 'ddr-', '')}}
         @isset($id) id="{{$id}}"@endisset
         rows="{{$rows}}"
         placeholder="{{$placeholder}}"

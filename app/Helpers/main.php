@@ -1,7 +1,164 @@
 <?php
 
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Symfony\Component\Mime\Encoder\IdnAddressEncoder;
+
+
+if (! function_exists('ddr_data_set')) {
+    /**
+     * Set an item on an array or object using dot notation.
+     *
+     * @param  mixed  $target
+     * @param  string|array  $key
+     * @param  mixed  $value
+     * @param  bool  $overwrite
+     * @return mixed
+     */
+    function ddr_data_set(&$target, $key, $value, $overwrite = true) {
+        $segments = is_array($key) ? $key : explode('.', $key);
+
+        if (($segment = array_shift($segments)) === '*') {
+            if (! Arr::accessible($target)) {
+                $target = [];
+            }
+
+            if ($segments) {
+                foreach ($target as &$inner) {
+                    ddr_data_set($inner, $segments, $value, $overwrite);
+                }
+            } elseif ($overwrite) {
+                foreach ($target as &$inner) {
+                    $inner = $value;
+                }
+            }
+        } elseif (Arr::accessible($target)) {
+            if ($segments) {
+				if (count($segments) == 1 && reset($segments) === '') {
+					if (!in_array($value, $target[$segment] ?? [])) $target[$segment][] = $value;
+				} else {
+					if (! Arr::exists($target, $segment)) {
+						$target[$segment] = [];
+					}
+
+					ddr_data_set($target[$segment], $segments, $value, $overwrite);
+				}	
+            } elseif ($overwrite || ! Arr::exists($target, $segment)) {
+                $target[$segment] = $value;
+            }
+        } elseif (is_object($target)) {
+            if ($segments) {
+                if (! isset($target->{$segment})) {
+                    $target->{$segment} = [];
+                }
+
+                ddr_data_set($target->{$segment}, $segments, $value, $overwrite);
+            } elseif ($overwrite || ! isset($target->{$segment})) {
+                $target->{$segment} = $value;
+            }
+        } else {
+            $target = [];
+
+            if ($segments) {
+                ddr_data_set($target[$segment], $segments, $value, $overwrite);
+            } elseif ($overwrite) {
+                $target[$segment] = $value;
+            }
+        }
+
+        return $target;
+    }
+}
+
+
+
+
+if (! function_exists('ddr_data_forget')) {
+    /**
+     * Remove / unset an item from an array or object using "dot" notation.
+     *
+     * @param  mixed  $target
+     * @param  string|array|int|null  $key
+     * @return mixed
+     */
+    function ddr_data_forget(&$target, $key) {
+        $segments = is_array($key) ? $key : explode('.', $key);
+
+        if (($segment = array_shift($segments)) === '*' && Arr::accessible($target)) {
+            if ($segments) {
+                foreach ($target as &$inner) {
+                    ddr_data_forget($inner, $segments);
+                }
+            }
+        } elseif (Arr::accessible($target)) {
+            if ($segments && Arr::exists($target, $segment)) {
+                ddr_data_forget($target[$segment], $segments);
+            } else {
+				$isNumArr = !Arr::isAssoc($target);
+                Arr::forget($target, $segment);
+				if ($isNumArr) $target = array_values($target);
+            }
+        } elseif (is_object($target)) {
+            if ($segments && isset($target->{$segment})) {
+                ddr_data_forget($target->{$segment}, $segments);
+            } elseif (isset($target->{$segment})) {
+                unset($target->{$segment});
+            }
+        }
+
+        return $target;
+    }
+}
+
+
+
+
+
+if (! function_exists('bringTypes')) {
+	/**
+	 * Приводит типы данных элементов массива (стар. bringTypes)
+	 * @param mixed $inpData 
+	 * @return mixed
+	*/
+	function bringTypes($inpData = false):mixed {
+		if(empty($inpData)) return false;
+		if (is_array($inpData)) {
+			$resData = [];
+			foreach($inpData as $key => $val) {
+				if(is_string($val)) $resData[$key] = trim($val);
+				if(!is_array($val)) {
+					if((is_bool($val) && $val === false) || $val === 'false' || $val === 'FALSE') $resData[$key] = false;
+					elseif((is_bool($val) && $val === true) || $val === 'true' || $val === 'TRUE') $resData[$key] = true;
+					elseif(is_null($val) || $val === 'null' || $val === 'NULL' || $val === null || $val === NULL || $val === '' || preg_match('/^\s+$/', $val)) $resData[$key] = null;
+					elseif(is_float($val) || (preg_match('/^-?\d+\.\d+$/', $val) && substr($val, -1) != '0')) $resData[$key] = (float)$val;
+					elseif(preg_match('/^-?\d+\.\d+$/', $val) && substr($val, -1) == '0') $resData[$key] = (string)$val;
+					elseif(is_int($val) || preg_match('/^-?\d+$/', $val)) $resData[$key] = (int)$val;
+					else $resData[$key] = (string)$val;
+				} 
+				else $resData[$key] = arrBringTypes($val);
+			}
+		} else {
+			if((is_bool($inpData) && $inpData === false) || $inpData === 'false' || $inpData === 'FALSE') $resData = false;
+			elseif((is_bool($inpData) && $inpData === true) || $inpData === 'true' || $inpData === 'TRUE') $resData = true;
+			elseif(is_null($inpData) || $inpData === 'null' || $inpData === 'NULL' || $inpData === null || $inpData === NULL || $inpData === '' || preg_match('/^\s+$/', $inpData)) $resData = null;
+			elseif(is_float($inpData) || (preg_match('/^-?\d+\.\d+$/', $inpData) && substr($inpData, -1) != '0')) $resData = (float)$inpData;
+			elseif(preg_match('/^-?\d+\.\d+$/', $inpData) && substr($inpData, -1) == '0') $resData = (string)$inpData;
+			elseif(is_int($inpData) || preg_match('/^-?\d+$/', $inpData)) $resData = (int)$inpData;
+			else $resData = (string)$inpData;
+		}
+		return $resData;
+	}
+}
+
+
+
+
+
+
+
+
+
+
 
 if (! function_exists('translit')) {
     /**

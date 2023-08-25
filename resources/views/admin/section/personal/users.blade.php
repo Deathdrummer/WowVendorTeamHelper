@@ -9,10 +9,10 @@
 						<td class="w30rem"><strong>E-mail</strong></td>
 						<td class="w28rem"><strong>Роль</strong></td>
 						<td></td>
-						<td class="w7rem center" title="Выслать доступ сотруднику"><strong>Высл. письм.</strong></td>
-						<td class="w7rem center"><strong>Права</strong></td>
 						<td class="w7rem center" title="Верифицирован"><strong>Вериф.</strong></td>
-						<td class="w10rem center"><strong>Действия</strong></td>
+						{{-- <td class="w7rem center" title="Выслать доступ сотруднику"><strong>Высл. доступ.</strong></td>
+						<td class="w7rem center"><strong>Права</strong></td> --}}
+						<td class="w20rem center"><strong>Действия</strong></td>
 					</tr>
 				</thead>
 				<tbody id="usersList"></tbody>
@@ -40,7 +40,7 @@
 		route: 'ajax/users',
 		viewsPath: 'admin.section.personal.render.users',
 		//onInit(container) {},
-	}).then(({error, list, changeInputs, create, store, storeWithShow, update, destroy, remove, query}) => {
+	}).then(({error, list, changeInputs, create, store, storeWithShow, update, destroy, remove, query, viewsPath}) => {
 		
 		$('#usersCard').card('ready');
 		
@@ -239,6 +239,85 @@
 				}
 			});
 		}
+		
+		
+		
+		
+		
+		
+		
+		
+		$.userSettings = async (btn, userId) => {
+			const {
+				state,
+				popper,
+				wait,
+				setTitle,
+				setButtons,
+				loadData,
+				setHtml,
+				setLHtml,
+				dialog,
+				close,
+				onClose,
+				onScroll,
+				disableButtons,
+				enableButtons,
+				setWidth,
+			} = await ddrPopup({
+				url: 'ajax/users/settings',
+				method: 'get',
+				params: {view: viewsPath, id: userId},
+				title: 'Настройки пользователя', // заголовок
+				width: 1000, // ширина окна
+				buttons: ['ui.close'/*, {title: 'Сохранить', action: 'userSettingsSaveBtn', disabled: 1}*/]
+			});
+			
+			
+			$(popper).ddrInputs('change:one', function() {
+				enableButtons(true);
+			});
+			
+			
+			$(popper).find('[name]').ddrBuildInputsData({
+				//timeout,
+				onBefore(inp, e) {
+					//console.log(inp, e);
+					
+				},
+				async onChange({setting, value, type, remove, inp, done}) {
+					//console.log('onChange');
+					//let abortContr = createAbortCtrl();
+					
+					const {data, error, status, headers, abort} = await ddrQuery.put('ajax/users/settings', {id: userId, setting, value, type, remove}/*, {abortContr}*/);
+					
+					//console.log(abort);
+					done();
+					
+					if (error) {
+						console.log(error);
+						$.notify(error?.message, 'error');
+						return;
+					}
+					
+					
+					//console.log({setting, value, type, remove});
+				},
+			});
+			
+			
+			
+			
+			
+			
+			
+			
+			
+		}
+		
+		
+		
+		
 		
 		
 	});

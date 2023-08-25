@@ -20,14 +20,6 @@
 	</td>
 	<td></td>
 	<td class="center">
-		<x-button variant="neutral" group="small" action="adminsSendEmail:{{$id}}" class="px-0 w3rem" title="Выслать доступ повторно">
-			<i class="fa-solid fa-envelope"></i>
-		</x-button>
-	</td>
-	<td class="center">
-		<x-button variant="neutral" group="small" action="adminsSetRules:{{$id}},{{isset($pseudoname) ? $pseudoname : __('custom.anon')}}" class="px-0 w3rem"><i class="fa-solid fa-list-check"></i></x-button>
-	</td>
-	<td class="center">
 		@isset($email_verified_at)
 			@if($email_verified_at)
 				<i class="fa-solid fa-check color-green"></i>
@@ -39,7 +31,24 @@
 		@endisset
 	</td>
 	<td class="center">
-		<x-buttons-group group="small" w="3rem">
+		<x-buttons-group group="small" w="3rem" gx="6" inline>
+			<x-button
+				variant="light"
+				group="small"
+				action="adminsSendEmail:{{$id}}"
+				class="px-0 w3rem"
+				title="Выслать доступ повторно"
+				>
+				<i class="fa-solid fa-envelope"></i>
+			</x-button>
+			<x-button
+				variant="neutral"
+				group="small"
+				action="adminsSetRules:{{$id}},{{isset($pseudoname) ? $pseudoname : __('custom.anon')}}"
+				class="px-0 w3rem"
+				>
+				<i class="fa-solid fa-list-check"></i>
+			</x-button>
 			<x-button
 				variant="blue"
 				action="adminsUpdate"

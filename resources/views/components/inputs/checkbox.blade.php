@@ -5,6 +5,7 @@
 
 @props([
 	'checked' 	=> false,
+	'value' 	=> false,
 	'id' 		=> 'checkbox'.rand(0,9999999),
 	'disabled'	=> false,
 	'setting' 	=> false,
@@ -27,11 +28,13 @@
 	])}}>
 	
 	<input
+		{{$clearAttr($attributes->whereStartsWith('ddr-'), 'ddr-', '')}}
 		type="checkbox"
 		@if($name)name="{{$name}}" @endif
 		@if($setting)oninput="$.setSetting(this, '{{$setting}}')" @endif
 		id="{{$id}}"
 		@checked($checked ?: $setChecked($checked, $settings, $setting)) 
+		@if($value)value="{{$value}}" @endif
 		@if($disabled)disabled @endif
 		@isset($group) inpgroup="{{$group}}" @endisset
 		@if($setting)oninput="$.{{$action}}(this{{isset($actionParams) ? ', '.$actionParams : null}})"@endif

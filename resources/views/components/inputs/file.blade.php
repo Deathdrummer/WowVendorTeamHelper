@@ -18,7 +18,7 @@
 
 
 <div>
-	<input type="file" hidden id="{{$id}}"{{$isMultiple()}}>
+	<input {{$clearAttr($attributes->whereStartsWith('ddr-'), 'ddr-', '')}} type="file" hidden id="{{$id}}"{{$isMultiple()}}>
 	{{$slot}}
 </div>
 

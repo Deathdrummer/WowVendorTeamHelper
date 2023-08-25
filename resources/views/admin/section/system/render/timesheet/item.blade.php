@@ -6,18 +6,18 @@
 		<p>
 			<span
 				 class="color-gray-500-hovered color-blue-active noselect"
-				 onclick="$.copyToClipboard(event, '{{DdrDateTime::date($datetime, ['format' => 'YY.MM.DD'])}} {{DdrDateTime::time($datetime, ['format' => ['en' => 'h:i a']])}}')"
+				 onclick="$.copyToClipboard(event, '{{DdrDateTime::date($datetime, ['format' => 'DD.MM'])}} {{DdrDateTime::time($datetime, ['format' => ['en' => 'h:i a']])}}')"
 				 >{{DdrDateTime::time($datetime, ['format' => ['en' => 'h:i a']])}}</span>
 			/
 			@if(isset($data['commands'][$command_id]['format_24']) && $data['commands'][$command_id]['format_24'])
 				<span
 					class="color-gray-500-hovered color-blue-active noselect"
-					onclick="$.copyToClipboard(event, '{{DdrDateTime::date($datetime, ['format' => 'YY.MM.DD'])}} {{DdrDateTime::time($datetime, ['format' => 'HH:mm', 'shift' => $data['commands'][$command_id]['shift']])}} {{$timezones[$timezone_id]['timezone']}}')"
+					onclick="$.copyToClipboard(event, '{{DdrDateTime::date($datetime, ['format' => 'DD.MM'])}} {{DdrDateTime::time($datetime, ['format' => 'HH:mm', 'shift' => $data['commands'][$command_id]['shift']])}} {{$timezones[$timezone_id]['timezone']}}')"
 					>{{DdrDateTime::time($datetime, ['format' => 'HH:mm', 'shift' => $data['commands'][$command_id]['shift']])}} {{$timezones[$timezone_id]['timezone']}}</span>
 			@else
 				<span
 					class="color-gray-500-hovered color-blue-active noselect"
-					onclick="$.copyToClipboard(event, '{{DdrDateTime::date($datetime, ['format' => 'YY.MM.DD'])}} {{DdrDateTime::time($datetime, ['locale' => 'en', 'format' => 'h:m A', 'shift' => $data['commands'][$command_id]['shift']])}} {{$data['commands'][$command_id]['timezone']}}')"
+					onclick="$.copyToClipboard(event, '{{DdrDateTime::date($datetime, ['format' => 'DD.MM'])}} {{DdrDateTime::time($datetime, ['locale' => 'en', 'format' => 'h:m A', 'shift' => $data['commands'][$command_id]['shift']])}} {{$data['commands'][$command_id]['timezone']}}')"
 					>{{DdrDateTime::time($datetime, ['locale' => 'en', 'format' => 'h:m A', 'shift' => $data['commands'][$command_id]['shift']])}} {{$data['commands'][$command_id]['timezone']}}</span>
 			@endif
 		</p>

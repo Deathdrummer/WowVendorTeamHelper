@@ -21,10 +21,8 @@
 		</td>
 		<td></td>
 		<td class="center"><span class="color-gray">-</span></td>
-		<td class="center"><span class="color-gray">-</span></td>
-		<td class="center"><span class="color-gray">-</span></td>
-		<td class="center">
-			<x-buttons-group group="small" w="3rem">
+		<td class="right">
+			<x-buttons-group group="small" class="mr3px" w="3rem" gx="6" inline>
 				<x-button variant="blue" action="usersSave" title="Сохранить" disabled save><i class="fa-solid fa-floppy-disk"></i></x-button>
 				<x-button variant="red" action="usersRemove" title="Удалить"><i class="fa-solid fa-trash-can"></i></x-button>
 			</x-buttons-group>

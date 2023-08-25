@@ -28,9 +28,11 @@
 
 <script type="module">
 	
+	
 	loadPermissionSection('admin', true);
 	
-	$.loadPermissionsSection = (tab, guard) => {
+	$.loadPermissionsSection = (tab, isActive, guard) => {
+		if (tab.classList.contains('ddrtabsnav__item_active')) return false;
 		loadPermissionSection(guard);
 	}
 	

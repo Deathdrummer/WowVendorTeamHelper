@@ -19,6 +19,7 @@ import '@plugins/tooltip';
 import '@plugins/ddrCalc';
 import '@plugins/ddrQuery';
 import '@plugins/blockTable';
+import '@plugins/ddrBuildInputsData';
 
 
 

@@ -49,6 +49,7 @@ choose-empty - разрешить выбирать пункт [не выбран
 	
 	<select
 		@if($name)name="{{$name}}" @endif
+		{{$clearAttr($attributes->whereStartsWith('ddr-'), 'ddr-', '')}}
 		id="{{$id}}"
 		@isset($group)inpgroup="{{$group}}" @endisset
 		@if($disabled || !$enabled)disabled @endif
