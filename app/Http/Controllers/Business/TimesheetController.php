@@ -89,8 +89,10 @@ class TimesheetController extends Controller {
 				} elseif ($listType == 'past') {
 					$query->where('datetime', '<', now());
 				}
-			})->whereHas('orders', function($query) use($search) {
-				$query->where('order', 'LIKE', '%'.$search.'%');
+			})->when($search, function($query) use($search) {
+				$query->whereHas('orders', function($q) use($search) {
+					$q->where('order', 'LIKE', '%'.$search.'%');
+				});
 			})
 			->when(isGuard('site') && auth('site')->user()->cannot('razreshit-vse-komandy:site'), function($query) use($getUserSetting) {
 				return $query->whereIn('command_id', $getUserSetting('commands') ?? []);

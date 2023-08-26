@@ -248,6 +248,8 @@ export async function buildOrdersTable(row = null, timesheetId = null, cb = null
 	
 	
 	$.detachTimesheetOrder = async (btn, orderId = null, timesheetId = null, orderNumber = null) => {
+		const row = $(btn).closest('[ddrtabletr]');
+		const notRows = $(row).siblings('[ddrtabletr]').length == 0;
 		const {
 			popper,
 			wait,
@@ -280,6 +282,11 @@ export async function buildOrdersTable(row = null, timesheetId = null, cb = null
 			
 			if (data) {
 				$.notify(`Заказ ${orderNumber} успешно отвязан!`);
+				if (notRows) {
+					$(row).closest('[ddrtable]').replaceWith('<p class="color-gray-400 text-center mt2rem fz14px">Нет заказов</p>');
+				} else {
+					$(row).remove();
+				}
 				close();
 			}
 			

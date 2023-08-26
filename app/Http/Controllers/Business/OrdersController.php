@@ -779,8 +779,6 @@ class OrdersController extends Controller {
 		
 		$timesheet = Timesheet::find($timesheetId);
 		
-		logger($status);
-		
 		if (!$res = $timesheet->orders()->detach($orderId)) return response()->json(false);
 		
 		$stat = $updateAction(Order::class, $orderId, ['status' => $status]);
