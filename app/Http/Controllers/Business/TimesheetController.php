@@ -79,10 +79,6 @@ class TimesheetController extends Controller {
 		
 		if (!$viewPath) return response()->json(['no_view' => true]);
 		
-		$guard = getGuard();
-		//logger(auth('site')->user()->can('ogranichit-komandy:site'));
-		//logger(auth('admin')->user()->can('ogranichit-komandy:site'));
-		
 		$list = Timesheet::withCount(['orders AS orders_count' => function($query) use($search) {
 				$query->where('order', 'LIKE', '%'.$search.'%');
 			}])
@@ -96,7 +92,7 @@ class TimesheetController extends Controller {
 			})->whereHas('orders', function($query) use($search) {
 				$query->where('order', 'LIKE', '%'.$search.'%');
 			})
-			->when($guard == 'site' && auth('site')->user()->cannot('razreshit-vse-komandy:site'), function($query) use($getUserSetting) {
+			->when(isGuard('site') && auth('site')->user()->cannot('razreshit-vse-komandy:site'), function($query) use($getUserSetting) {
 				return $query->whereIn('command_id', $getUserSetting('commands') ?? []);
 			})
 			->orderBy('datetime', 'ASC')

@@ -249,21 +249,8 @@
 		
 		$.userSettings = async (btn, userId) => {
 			const {
-				state,
 				popper,
-				wait,
-				setTitle,
-				setButtons,
-				loadData,
-				setHtml,
-				setLHtml,
-				dialog,
-				close,
-				onClose,
-				onScroll,
-				disableButtons,
 				enableButtons,
-				setWidth,
 			} = await ddrPopup({
 				url: 'ajax/users/settings',
 				method: 'get',
@@ -280,18 +267,13 @@
 			
 			
 			$(popper).find('[name]').ddrBuildInputsData({
-				//timeout,
-				onBefore(inp, e) {
-					//console.log(inp, e);
-					
-				},
+				//onBefore(inp, e) {},
 				async onChange({setting, value, type, remove, inp, done}) {
 					//console.log('onChange');
 					//let abortContr = createAbortCtrl();
 					
 					const {data, error, status, headers, abort} = await ddrQuery.put('ajax/users/settings', {id: userId, setting, value, type, remove}/*, {abortContr}*/);
 					
-					//console.log(abort);
 					done();
 					
 					if (error) {
@@ -299,20 +281,8 @@
 						$.notify(error?.message, 'error');
 						return;
 					}
-					
-					
-					//console.log({setting, value, type, remove});
 				},
 			});
-			
-			
-			
-			
-			
-			
-			
-			
-			
 		}
 		
 		

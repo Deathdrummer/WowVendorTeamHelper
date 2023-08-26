@@ -55,3 +55,5 @@ Route::post('orders/set_status', [OrdersController::class, 'set_status']);
 Route::get('orders/relocate', [OrdersController::class, 'relocate']);
 Route::get('orders/relocate/get_timesheets', [OrdersController::class, 'get_relocate_timesheets']);
 Route::post('orders/relocate', [OrdersController::class, 'set_relocate']);
+Route::get('orders/detach', [OrdersController::class, 'detach_form']);
+Route::post('orders/detach', [OrdersController::class, 'detach']);

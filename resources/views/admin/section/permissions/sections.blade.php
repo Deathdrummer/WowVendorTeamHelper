@@ -31,7 +31,7 @@
 	
 	loadPermissionSection('admin', true);
 	
-	$.loadPermissionsSection = (tab, isActive, guard) => {
+	$.loadPermissionsSection = (tab, guard = 'site') => {
 		if (tab.classList.contains('ddrtabsnav__item_active')) return false;
 		loadPermissionSection(guard);
 	}

@@ -43,7 +43,7 @@
 				
 				@cando('ssylka-(klient):site')<x-table.td class="w4rem h-center" title="Ссылка"><i class="fa-solid fa-fw fa-link"></i></x-table.td> @endcando
 				
-				@cando('deystviya-(klient):site')<x-table.td class="w-10rem"><strong>Действия</strong></x-table.td> @endcando
+				@cando('deystviya-(klient):site')<x-table.td class="w-13rem"><strong>Действия</strong></x-table.td> @endcando
 			</x-table.tr>
 		</x-table.head>
 		<x-table.body>

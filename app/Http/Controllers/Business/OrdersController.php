@@ -1,6 +1,7 @@
 <?php namespace App\Http\Controllers\Business;
 
 use App\Actions\AddOrderCommentAction;
+use App\Actions\UpdateModelAction;
 use App\Enums\OrderStatus;
 use App\Helpers\DdrDateTime;
 use App\Http\Controllers\Controller;
@@ -727,6 +728,79 @@ class OrdersController extends Controller {
 		
 		return response()->json(['stat' => $stat]);
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	/**
+	* 
+	* @param 
+	* @return 
+	*/
+	public function detach_form(Request $request) {
+		[
+			'views'			=> $viewPath,
+		] = $request->validate([
+			'views'			=> 'required|string',
+		]);
+		
+		$lists = [
+			OrderStatus::new 		=> 'Входящие',
+			OrderStatus::wait 		=> 'Лист ожидания',
+			OrderStatus::cancel 	=> 'Отмененные',
+		];
+		
+		return response()->view($viewPath.'.unlink_order', compact('lists'));
+	}
+	
+	
+	
+	/**
+	* 
+	* @param 
+	* @return 
+	*/
+	public function detach(Request $request, UpdateModelAction $updateAction) {
+		[
+			'order_id'		=> $orderId,
+			'timesheet_id'	=> $timesheetId,
+			'status'		=> $status,
+		] = $request->validate([
+			'order_id'		=> 'required|numeric',
+			'timesheet_id'	=> 'required|numeric',
+			'status'		=> 'required|numeric',
+		]);
+		
+		$timesheet = Timesheet::find($timesheetId);
+		
+		logger($status);
+		
+		if (!$res = $timesheet->orders()->detach($orderId)) return response()->json(false);
+		
+		$stat = $updateAction(Order::class, $orderId, ['status' => $status]);
+		
+		return response()->json($stat);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	

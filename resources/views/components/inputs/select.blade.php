@@ -48,6 +48,9 @@ choose-empty - разрешить выбирать пункт [не выбран
 	
 	
 	<select
+		@class([
+			'select-noemptyval'	=> !$emptyHasValue
+		])
 		@if($name)name="{{$name}}" @endif
 		{{$clearAttr($attributes->whereStartsWith('ddr-'), 'ddr-', '')}}
 		id="{{$id}}"

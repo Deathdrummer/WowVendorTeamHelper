@@ -233,6 +233,33 @@ if (! function_exists('getGuard')) {
 
 
 
+if (! function_exists('isGuard')) {
+    /**
+     * @param array  $pendingGuard ожидаемый гуард
+     * @param array  $params
+     * @return string
+     */
+    function isGuard(string $pendingGuard = null, ?array $params = null):string {
+        $origin = request()->server('HTTP_ORIGIN') ?? request()->server('REQUEST_SCHEME').'://'.request()->server('SERVER_NAME');
+		$fullPath = request()->server('HTTP_REFERER');
+		$replaced = Str::replace($origin, '', $fullPath);
+		
+		if (!$params) {
+			$g = Str::is('/admin/*', $replaced) ? 'admin' : 'site';
+			return $g == $pendingGuard;
+		} 
+		
+		foreach ($params as $path => $guard) {
+			$g = Str::is($path, $replaced);
+			if ($g == $pendingGuard) return true;
+		}
+		
+		return false;
+    }
+}
+
+
+
 
 
 

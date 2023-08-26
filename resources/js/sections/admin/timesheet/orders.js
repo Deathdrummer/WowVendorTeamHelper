@@ -237,6 +237,58 @@ export async function buildOrdersTable(row = null, timesheetId = null, cb = null
 		
 	}
 		
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	$.detachTimesheetOrder = async (btn, orderId = null, timesheetId = null, orderNumber = null) => {
+		const {
+			popper,
+			wait,
+			close,
+		} = await ddrPopup({
+			url: 'crud/orders/detach',
+			method: 'get',
+			params: {views: 'admin.section.system.render.orders'},
+			title: `Отвязать заказ ${orderNumber}`, // заголовок
+			width: 500, // ширина окна
+			//html: `<p class="color-green fz16px">Отвязать заказ ${orderNumber} и перенести в лист ожидания?</p>`, // контент
+			buttons: ['ui.close', {action: 'detachTimesheetOrderAction', title: 'Перенести'}], // массив кнопок
+			centerMode: true, // контент по центру
+		});
+		
+		
+		$.detachTimesheetOrderAction = async (btn) => {
+			wait();
+			
+			const status = $(popper).find('#listType').val();
+			
+			const {data, error, headers} = await ddrQuery.post('crud/orders/detach', {order_id: orderId, timesheet_id: timesheetId, status});
+			
+			if (error) {
+				console.log(error);
+				$.notify(error?.message, 'error');
+				wait(false);
+				return;
+			}
+			
+			if (data) {
+				$.notify(`Заказ ${orderNumber} успешно отвязан!`);
+				close();
+			}
+			
+			
+		}
+		
+		
+	}
+	
 		
 		
 	
@@ -454,6 +506,9 @@ export async function showStatusesTooltip(btn = null, orderId = null, timesheetI
 				$(statBlock).find('[rowstatusicon]').setAttrib('class', `fa-solid fa-fw fa-${icon}`);
 				if (color) $(statBlock).find('[rowstatusicon]').css('color', `${color}`);
 			}
+			
+			changeOnclickAttr(statBlock, stat, status);
+			
 		}
 		
 		statusesTooltip.destroy();
@@ -466,6 +521,12 @@ export async function showStatusesTooltip(btn = null, orderId = null, timesheetI
 
 
 
+
+function changeOnclickAttr(selector, search, replace) {
+	let onclickAttr = $(selector).attr('onclick');
+	onclickAttr = onclickAttr.replace(search, replace);
+	$(selector).attr('onclick', onclickAttr);
+}
 
 
 
