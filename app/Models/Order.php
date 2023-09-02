@@ -9,6 +9,7 @@ use App\Traits\Settingable;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
@@ -61,17 +62,55 @@ class Order extends Model {
 	
 	
 	
-	public function comments(): HasMany {
+	public function comments():HasMany {
         return $this->hasMany(OrderComment::class);
     }
 	
 	
-	public function lastComment(): HasOne {
+	public function lastComment():HasOne {
         return $this->hasOne(OrderComment::class)->latestOfMany();
     }
 	
-
 	
+	
+	
+	public function timesheets():BelongsToMany {
+		return $this->belongsToMany(
+			Timesheet::class,
+			'timesheet_order',
+			'order_id',
+			'timesheet_id',
+			'id',
+			'id')
+			->as('pivot')
+			->withPivot('doprun');
+	}
+	
+	
+	public function timesheet_to_confirm():BelongsToMany {
+		return $this->belongsToMany(
+			Timesheet::class,
+		 	'confirmed_orders',
+			'order_id',
+			'timesheet_id',
+			'id',
+			'id')
+			->as('pivot')
+			->withPivot('from_id', 'confirm', 'date_add', 'date_confirm');
+	}
+
+	public function has_confirm_orders():BelongsToMany {
+		return $this->belongsToMany(
+			Timesheet::class,
+		 	'confirmed_orders',
+			'order_id',
+			'timesheet_id',
+			'id',
+			'id')
+			->as('pivot')
+			->withPivot('confirm')/* 
+			->wherePivot('confirm', 1) */;
+	}
 	
 	
 	
@@ -131,7 +170,6 @@ class Order extends Model {
 	/**
      * Вывести с определенным статусом
      * @param $stat - new wait cancel ready doprun
-     * @return Carbon|null
      */
 	public function scopeStatus($query, $stat) {
 		$status = OrderStatus::fromKey($stat);
@@ -143,8 +181,6 @@ class Order extends Model {
 	
 	/**
      * Вывести не привязанные к событию заказы
-     * @param $stat - new wait cancel ready doprun
-     * @return Carbon|null
      */
 	public function scopeNotTied($query) {
 		return $query->whereIn('orders.id', function ($builder) {
@@ -152,6 +188,47 @@ class Order extends Model {
         }, not: true);
 	}
 	
+	
+	/**
+     * Вывести привязанные к событию заказы
+     */
+	public function scopeTied($query) {
+		return $query->whereIn('orders.id', function ($builder) {
+            $builder->select('timesheet_order.order_id')->from('timesheet_order');
+        }, not: false);
+	}
+	
+	
+	
+	/**
+     * Вывести неподтвержденные заказы
+     */
+	public function scopeNotConfirmed($query) {
+		return $query->whereIn('orders.id', function ($builder) {
+            $builder->select('confirmed_orders.order_id')->from('confirmed_orders');
+        }, not: true);
+	}
+	
+	
+	
+	/**
+     * Вывести подтвержденные заказы
+     */
+	public function scopeConfirmed($query, $type) {
+		return $query->whereIn('orders.id', function ($builder) use($type) {
+            $builder->select('confirmed_orders.order_id')
+				->from('confirmed_orders')
+				->when($type, function($q) use($type) {
+					$confirm = match($type) {
+						'actual'	=> 0,
+						'past'		=> 1,
+						default		=> 0,
+					};
+					
+					$q->where('confirmed_orders.confirm', $confirm);
+				});
+        }, not: false);
+	}
 	
 	
 	

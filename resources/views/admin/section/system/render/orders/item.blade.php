@@ -54,8 +54,8 @@
 	@endcando
 	
 	@cando('stoimost-(klient):site')
-	<x-table.td class=" h-end">
-		<p class="fz12px"><span orderprice>{{$price}}</span> @symbal(dollar)</p>
+	<x-table.td class="h-end">
+		<p class="fz12px nowrap"><span orderprice>{{$price}}</span> @symbal(dollar)</p>
 	</x-table.td>
 	@endcando
 	
@@ -83,38 +83,48 @@
 		@endif
 	@endcando
 	
+	
+	
+	
 	@cando('status-(klient):site')
 	<x-table.td @class([
-			'h-center' => !isset($showType['text']) || !$showType['text']
+			'h-center' => !isset($showType['text']) || !$showType['text'] || $confirmed || $confirm
 		])
 		>
-		<div class="d-inline-flex align-items-center pointer" onclick="$.openStatusesTooltip(this, {{$id}}, {{$timesheet_id}}, '{{$status}}')">
-			@if($showType['color'] ?? false)
-				<div
-					class="w2rem h2rem border-rounded-circle"
-					style="background-color: {{$statusesSettings[$status]['color'] ?? null}};"
-					title="{{$statusesSettings[$status]['name'] ?? null}}"
-					rowstatuscolor
-					></div>
-			@endif
+		@if($confirmed)
+			<i class="fa-regular fa-fw fa-clock color-green fz18px" title="На подтверждении"></i>
+		@elseif($confirm)
+			<i class="fa-regular fa-fw fa-circle-check color-green fz18px" title="Подтвержден"></i>
+		@else
+			<div class="d-inline-flex align-items-center pointer" onclick="$.openStatusesTooltip(this, {{$id}}, {{$timesheet_id}}, '{{$status}}')">
+				@if($showType['color'] ?? false)
+					<div
+						class="w2rem h2rem border-rounded-circle"
+						style="background-color: {{$statusesSettings[$status]['color'] ?? null}};"
+						title="{{$statusesSettings[$status]['name'] ?? null}}"
+						rowstatuscolor
+						></div>
+				@endif
+				
+				@if($showType['icon'] ?? false)
+					<i
+						class="fa-solid fa-fw fa-{{$statusesSettings[$status]['icon'] ?? null}}"
+						style="color: {{$statusesSettings[$status]['color'] ?? null}};"
+						title="{{$statusesSettings[$status]['name'] ?? null}}"
+						rowstatusicon
+						></i>
+				@endif
+				
+				@if($showType['text'] ?? false)
+					<p class="fz12px ml5px" rowstatustext>{{$statusesSettings[$status]['name'] ?? null}}</p>
+				@endif
+				
+				@if(!isset($showType) || empty($showType))
+					<p class="fz12px ml5px" rowstatustext>{{$statusesSettings[$status]['name'] ?? null}}</p>
+				@endif
+			</div>
+		@endif
 			
-			@if($showType['icon'] ?? false)
-				<i
-					class="fa-solid fa-fw fa-{{$statusesSettings[$status]['icon'] ?? null}}"
-					style="color: {{$statusesSettings[$status]['color'] ?? null}};"
-					title="{{$statusesSettings[$status]['name'] ?? null}}"
-					rowstatusicon
-					></i>
-			@endif
-			
-			@if($showType['text'] ?? false)
-				<p class="fz12px ml5px" rowstatustext>{{$statusesSettings[$status]['name'] ?? null}}</p>
-			@endif
-			
-			@if(!isset($showType) || empty($showType))
-				<p class="fz12px ml5px" rowstatustext>{{$statusesSettings[$status]['name'] ?? null}}</p>
-			@endif
-		</div>
 	</x-table.td>
 	@endcando
 	
@@ -138,7 +148,7 @@
 	<x-table.td class="h-center">
 		<x-buttons-group group="verysmall" w="2rem-5px" gx="4" inline>
 			{{-- <x-button variant="green" title=""><i class="fa-solid fa-info"></i></x-button> --}}
-			<x-button variant="gray" action="detachTimesheetOrder:{{$id}},{{$timesheet_id}},{{$order}}" title="Отвязать от события и присвоить статус «ожидание»"><i class="fa-solid fa-fw fa-link-slash"></i></x-button>
+			<x-button variant="gray" action="detachTimesheetOrder:{{$id}},{{$timesheet_id}},{{$order}}" title="Отвязать от события"><i class="fa-solid fa-fw fa-link-slash"></i></x-button>
 			<x-button variant="yellow" action="relocateTimesheetOrder:{{$id}},{{$timesheet_id}},{{$order}},move" title="Переместить заказ"><i class="fa-solid fa-fw fa-angles-right"></i></x-button>
 			<x-button variant="yellow" action="relocateTimesheetOrder:{{$id}},{{$timesheet_id}},{{$order}},clone" title="Клонировать заказ"><i class="fa-regular fa-fw fa-clone"></i></x-button>
 			<x-button variant="blue" action="editTimesheetOrder:{{$id}},{{$order}},{{$timesheet_id}}" title="Редактировать заказ"><i class="fa-solid fa-fw fa-pen-to-square"></i></x-button>

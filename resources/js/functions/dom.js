@@ -67,7 +67,13 @@ $.fn.ddrWatch = function(method = null, opsOrCb = null, callback = null) {
 	
 	if (!callback || !_.isFunction(callback)) throw Error('Ошибка! watch не указан коллбэк!');
 	
-	const selector = this;
+	const selector = $(this)[0];
+	
+	if (!_.isElement(selector)) {
+		if (isDev) console.error('ddrWatch ошибка -> указанный селектор не является селектором!');
+		return false;
+	}
+	
 	
 	if (method == 'mutate') {
 		let observer = new MutationObserver(callback);
@@ -84,7 +90,7 @@ $.fn.ddrWatch = function(method = null, opsOrCb = null, callback = null) {
 			attributeFilter: ['class'],
 		});
 		
-		observer.observe($(selector)[0], {
+		observer.observe(selector, {
 			childList,
 			subtree,
 			attributes,
@@ -96,7 +102,7 @@ $.fn.ddrWatch = function(method = null, opsOrCb = null, callback = null) {
 			callback(entries);
 		});
 		
-		observer.observe($(selector)[0]);
+		observer.observe(selector);
 	}
 	
 };

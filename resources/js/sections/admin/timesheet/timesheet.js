@@ -31,7 +31,7 @@ export async function timesheetCrud(periodId = null, listType = null, buildOrder
 			//create: {period_id: periodId},
 			store: {timesheet_period_id: periodId},
 			edit: {period_id: periodId},
-			update: {list_type: '34534534'},
+			//update: {list_type: '34534534'},
 			//destroy: {period_id: periodId},
 		},
 		/*globalParams: {

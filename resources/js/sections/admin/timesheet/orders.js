@@ -203,8 +203,6 @@ export async function buildOrdersTable(row = null, timesheetId = null, cb = null
 		
 		
 		$.relocateOrderAction = async () => {
-			console.log(1);
-			
 			wait();
 			const formData = $(popper).ddrForm({order_id: orderId, timesheet_id: timesheetId, choosed_timesheet_id: choosedTimesheetId});
 			
@@ -455,6 +453,7 @@ export async function orderCommentsChat(orderId = null, orderName = null, rowBtn
 
 
 export async function showStatusesTooltip(btn = null, orderId = null, timesheetId = null, stat = null, cb = null) {
+	let ref, ttip;
 	const statusesTooltip = $(btn).ddrTooltip({
 		cls: 'noselect',
 		offset: [-1, 3],
@@ -467,7 +466,7 @@ export async function showStatusesTooltip(btn = null, orderId = null, timesheetI
 		},
 		onShow: async function({reference, popper, show, hide, destroy, waitDetroy, setContent, setData, setProps}) {
 			const {data, error, status, headers} = await ddrQuery.get('crud/orders/statuses', {order_id: orderId, status: stat, views: viewsPath});
- 	
+			
 		 	if (error) {
 				console.log(error);
 				$.notify(error?.message, 'error');
@@ -475,6 +474,8 @@ export async function showStatusesTooltip(btn = null, orderId = null, timesheetI
 			}
 			
 			setData(data);
+			ref = reference;
+			ttip = popper;
 			waitDetroy();
 		}
 	});
@@ -485,11 +486,18 @@ export async function showStatusesTooltip(btn = null, orderId = null, timesheetI
 	$.setOrderStatus = async (li, status, isActive) => {
 		if (isActive) return false;
 		
-		$(li).closest('[orderstatusestooltip]').find('[ordertatus]').removeClass('statusitem-active');
-		
+		$(li).closest('[orderstatusestooltip]').find('[ordertatus]').removeClass('statusitem-active');	
 		$(li).addClass('statusitem-active');
 		
+		const ttWait = $(ttip).ddrWait({
+			iconHeight: '25px',
+			bgColor: '#ffffffa1'
+		});
+		
 		const {data, error, headers} = await ddrQuery.post('crud/orders/set_status', {order_id: orderId, timesheet_id: timesheetId, status});
+		
+		ttWait.destroy();
+		statusesTooltip.destroy();
  	
 	 	if (error) {
 			console.log(error);
@@ -498,27 +506,43 @@ export async function showStatusesTooltip(btn = null, orderId = null, timesheetI
 		}
 		
 		if (data) {
-			const {name, icon, color} = data;
-			const statBlock = $(btn);
-			
-			if (name) {
-				$(statBlock).find('[rowstatustext]').text(name);
+			if (['wait', 'cancel'].includes(status)) {
+				let hasRows = !!$(ref).closest('[ddrtabletr]').siblings('[ddrtabletr]').length;
+				
+				if (hasRows) $(ref).closest('[ddrtabletr]').remove();
+				else $(ref).closest('[ddrtable]').replaceWith('<p class="color-gray-400 text-center mt2rem fz14px">Нет заказов</p>');
+				
+				let listNames = {
+					wait: 'лист ожидания',
+					cancel: 'отмененные',
+				};
+				
+				$.notify(`Заказ успешно отвязан и перенесен в ${listNames[status]}`);
+				
+			} else if (status == 'ready') {
+				$(btn).closest('[ddrtabletd]').addClass('h-center');
+				$(btn).replaceWith('<i class="fa-regular fa-fw fa-clock color-green fz18px" title="На подтверждении"></i>');
+				$.notify(`Заказ отправлен на подтверждение!`);
+			} else {
+				const {name, icon, color} = data;
+				const statBlock = $(btn);
+				
+				if (name) {
+					$(statBlock).find('[rowstatustext]').text(name);
+				}
+				
+				if (color) {
+					$(statBlock).find('[rowstatuscolor]').css('background-color', `${color}`);
+				}
+				
+				if (icon) {
+					$(statBlock).find('[rowstatusicon]').setAttrib('class', `fa-solid fa-fw fa-${icon}`);
+					if (color) $(statBlock).find('[rowstatusicon]').css('color', `${color}`);
+				}
+				
+				changeOnclickAttr(statBlock, stat, status);
 			}
-			
-			if (color) {
-				$(statBlock).find('[rowstatuscolor]').css('background-color', `${color}`);
-			}
-			
-			if (icon) {
-				$(statBlock).find('[rowstatusicon]').setAttrib('class', `fa-solid fa-fw fa-${icon}`);
-				if (color) $(statBlock).find('[rowstatusicon]').css('color', `${color}`);
-			}
-			
-			changeOnclickAttr(statBlock, stat, status);
-			
 		}
-		
-		statusesTooltip.destroy();
 	}
 	
 }
@@ -546,8 +570,8 @@ function addNewCommentToRow(btn = null, message = null) {
 	
 	const commentSelector = $(btn).closest('[ordercommentblock]').find('[rowcomment]');
 	
-	if ($(commentSelector).children('p:not([date])').length == 0) $(commentSelector).append(`<p class="fz12px">${message}</p>`);
-	else $(commentSelector).children('p:not([date])').replaceWith(`<p class="fz12px">${message}</p>`);
+	if ($(commentSelector).children('p:not([date])').length == 0) $(commentSelector).append(`<p class="fz12px lh900 format wodrbreak color-gray-500">${message}</p>`);
+	else $(commentSelector).children('p:not([date])').replaceWith(`<p class="fz12px lh900 format wodrbreak color-gray-500">${message}</p>`);
 	
 	
 	if ($(commentSelector).children('p[date]').length == 1) {

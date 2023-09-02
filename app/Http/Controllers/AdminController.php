@@ -32,13 +32,13 @@ class AdminController extends Controller {
 	 * @return 
 	 */
 	public function login(Request $request) {
-		
 		$request->merge(['email' => encodeEmail($request->input('email'))]);
 		
 		$authFields = $request->validate([
 			'email' 	=> 'required|email|exists:admin_users,email',
 			'password' 	=> 'required|string'
 		]);
+		
 		if (!Auth::guard('admin')->attempt($authFields, true)) return response()->json(['no_auth' => __('auth.failed')]);
 		
 		if (!Auth::guard('admin')->user()->is_main_admin && !Auth::guard('admin')->user()->email_verified_at) {

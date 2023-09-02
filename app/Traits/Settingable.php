@@ -83,7 +83,7 @@ trait Settingable {
 	 * @return 
 	 */
 	public function _getSettings($setting = null, ?string $key = null, ?string $value = null, $filter = null) {
-		if (!$setting) throw new \Exception('addSettingToGlobalData не переданы параметры');
+		if (!$setting) throw new \Exception('_getSettings не переданы параметры');
 		
 		$settingsService = app()->make(Settings::class);
 		

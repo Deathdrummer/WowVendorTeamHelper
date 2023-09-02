@@ -2,6 +2,7 @@
 
 use App\Enums\Guards;
 use App\Enums\OrderStatus;
+use App\Helpers\DdrDateTime;
 use App\Http\Filters\OrderFilter;
 use App\Models\AdminUser;
 use App\Models\Order;
@@ -22,7 +23,7 @@ class OrderService {
 	 * @param 
 	 * @return 
 	 */
-	public function get($request = null, $dataType = 'all') { // data | pagination
+	public function get($request = null, $params = []) { // list | pagination | all (default)
 		$queryParams = $request->only([
 			'status',
 			'search',
@@ -34,7 +35,12 @@ class OrderService {
 		$orderFilter = app()->make(OrderFilter::class, compact('queryParams'));
 		
 		$query = Order::filter($orderFilter)
-			->notTied()
+			->when(isset($params['tied']) && $params['tied'] === true, function($query) {
+				$query->tied();
+			}, function($query) {
+				$query->notTied();
+			})
+			->with('timesheets')
 			->with('lastComment', function($query) {
 				$query->with('author:id,name,pseudoname', 'adminauthor:id,name,pseudoname');
 			})
@@ -58,26 +64,13 @@ class OrderService {
 			}
 		}
 		
-		return match($dataType) {
+		return match($params['data'] ?? 'all') {
 			'all'			=> $this->_getAllFromPaginate($paginate),
-			'data'			=> $this->_getDataFromPaginate($paginate),
+			'list'			=> $this->_getDataFromPaginate($paginate),
 			'pagination'	=> $this->_getInfoFromPaginate($paginate),
 		};
 	}
 	
-	
-	
-	
-	
-	/**
-	 * @param 
-	 * @return 
-	 */
-	public function parse(?string $string) {
-		//$arrData = $this->_removeEquals($string); // удалить "==="
-		$arrData = $this->_removeQuotationMarks($string); // удалить "```"
-		return $this->_getOrders($arrData);
-	}
 	
 	
 	
@@ -93,14 +86,25 @@ class OrderService {
 	public function getToTimesheetList($timesheetId = null, $search = null):Collection|null {
 		$list = Timesheet::find($timesheetId)
 			->orders(function($query) use($search) {
-				logger('query');
 				$query->where('order', 'LIKE', '%'.$search.'%');
 			})
+			/* ->withExists(['has_confirm_orders as is_confirmed' => function($q) use($timesheetId) { // это если нужно задать для конкретного заказа а для допранов - нет
+				$q->where('confirmed_orders.timesheet_id', $timesheetId);
+			}]) */
+			->withExists(['has_confirm_orders as confirmed' => function($q) use($timesheetId) {
+				$q->where('confirmed_orders.confirm', 0);
+			}])
+			->withExists(['has_confirm_orders as confirm' => function($q) use($timesheetId) {
+				$q->where('confirmed_orders.confirm', 1);
+			}])
+			//->withExists('has_confirm_orders as is_confirmed')
 			->with('lastComment')
 			->when($search, function ($query) use ($search) {
 				return $query->where('order', 'LIKE', '%'.$search.'%');
 			})
 			->get();
+		
+		//logger($list->toArray());
 		
 		$statuses = OrderStatus::asFlippedArray();
 
@@ -109,6 +113,93 @@ class OrderService {
 			$row['timesheet_id'] = $row->pivot->timesheet_id;
 			return $row;
 		});
+	}
+	
+	
+	
+	
+	
+	
+	
+	/**
+	 * @param 
+	 * @return 
+	 */
+	public function getToConfirmedList($type = 'actual') { // list | pagination | all (default)
+		$list = Order::confirmed($type)
+			->with('timesheet_to_confirm', function($query) {
+				$query->select('timesheet.id as timesheet_id', 'command_id', 'datetime');
+			})
+			->with('lastComment', function($query) {
+				$query->with('author:id,name,pseudoname', 'adminauthor:id,name,pseudoname');
+			})
+			->orderBy('id', 'desc')
+			->get()
+			->map(function($row) {
+				$timesheetToConfirm = $row->timesheet_to_confirm->first();
+				
+				$row['from_id'] = $timesheetToConfirm->pivot->from_id;
+				$row['confirm'] = $timesheetToConfirm->pivot->confirm;
+				$row['date_add'] = $timesheetToConfirm->pivot->date_add;
+				$row['date_confirm'] = $timesheetToConfirm->pivot->date_confirm;
+				$row['command_id'] = $timesheetToConfirm->command_id;
+				$row['timesheet_id'] = $timesheetToConfirm->timesheet_id;
+				$row['datetime'] = $timesheetToConfirm->datetime;
+				
+				unset($row['timesheet_to_confirm']);
+				return $row;
+			});
+		
+		
+		//logger($list->toArray());
+		
+		/* 
+		if ($paginate['data'] ?? false) {
+			$statuses = $params['statuses'] ? OrderStatus::asFlippedArray() : null;
+			
+			foreach ($paginate['data'] as $k => $row) {
+				if ($statuses) {
+					$paginate['data'][$k]['status'] = $row['pivot']['doprun'] ? $statuses[OrderStatus::doprun] : ($statuses[$row['status']] ?? 0);
+					$paginate['data'][$k]['timesheet_id'] = $row['pivot']['timesheet_id'];
+					logger($paginate['data'][$k]);
+				}
+				
+				if (!isset($row['last_comment'])) continue;
+				
+				$userType = (int)$row['last_comment']['user_type'] ?? null;
+				
+				$paginate['data'][$k]['last_comment']['author'] = match($userType) {
+					1		=> $row['last_comment']['author'] ?? null,
+					2		=> $row['last_comment']['adminauthor'] ?? null,
+					default	=> null,
+				};
+				
+				unset($paginate['data'][$k]['last_comment']['adminauthor']);
+			}
+		} */
+		
+		
+		
+		
+		return $list;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	/**
+	 * @param 
+	 * @return 
+	 */
+	public function parse(?string $string) {
+		//$arrData = $this->_removeEquals($string); // удалить "==="
+		$arrData = $this->_removeQuotationMarks($string); // удалить "```"
+		return $this->_getOrders($arrData);
 	}
 	
 	
@@ -157,11 +248,21 @@ class OrderService {
 		
 		$order = Order::find($orderId);
 		$order->fill(['status' => $stat]);
+		if (!$order->save()) return false;
 		
 		$timesheet = Timesheet::find($timesheetId);
-		$timesheet->orders()->updateExistingPivot($orderId, ['doprun' => null]);
 		
-		return $order->save();
+		if (in_array($status, ['cancel', 'wait'])) {
+			$timesheet->orders()->detach($orderId);
+		} else {
+			$timesheet->orders()->updateExistingPivot($orderId, ['doprun' => null]);
+			
+			if ($status == 'ready') {
+				$timesheet->confirmOrders()->syncWithPivotValues($orderId, ['from_id' => auth('site')->id(), 'date_add' => DdrDateTime::now()]);
+			}
+		}
+		
+		return true;
 	}
 	
 	

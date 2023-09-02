@@ -1,4 +1,4 @@
-<x-table class="w100" id="timesheetTable" noborder scrolled="68vh">
+<x-table class="w100" id="timesheetTable" noborder scrolled="{{$scrolled ?? '68vh'}}">
 	<x-table.head>
 		<x-table.tr noborder>
 			<x-table.td class="w20rem" noborder><strong>Дата (МСК)</strong></x-table.td>

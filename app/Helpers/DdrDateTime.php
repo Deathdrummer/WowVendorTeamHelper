@@ -101,7 +101,7 @@ class DdrDateTime {
 		extract($params);
 		
 		$timestamp = match(true) {
-			isset($time) 	=> $date.' '.$time,
+			isset($time) 	=> $date.($time ? ' '.$time : ''),
 			!isset($time) 	=> $date,
 			default			=> null,
 		};
@@ -142,6 +142,15 @@ class DdrDateTime {
 			'timestamp' => $timestamp,
 			'shift' 	=> $shift,
 		]);
+	}
+	
+	
+	
+	/** Вернуть текущее время объекта Carbon
+	 * @return Carbon
+	 */
+	public static function now():Carbon {
+		return Carbon::now();
 	}
 	
 	

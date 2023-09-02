@@ -4,6 +4,7 @@ use App\Helpers\DdrDateTime;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Timesheet extends Model {
     use HasFactory/*, Collectionable, Dateable, Settingable, Filterable */;
@@ -45,7 +46,7 @@ class Timesheet extends Model {
 	 * @param 
 	 * @return 
 	 */
-	public function orders() {
+	public function orders():BelongsToMany {
 		return $this->belongsToMany(
 			Order::class,
 			'timesheet_order',
@@ -57,6 +58,26 @@ class Timesheet extends Model {
 			->with('lastComment')
 			->withPivot('doprun');
 	}
+	
+	
+	
+	public function confirmOrders():BelongsToMany {
+		return $this->belongsToMany(
+			Order::class,
+		 	'confirmed_orders',
+			'timesheet_id',
+			'order_id',
+			'id',
+			'id')
+			->as('pivot')
+			->withPivot('from_id', 'confirm', 'date_add', 'date_confirm');
+	}
+	
+	
+	
+	
+	
+	
 	
 	
 	

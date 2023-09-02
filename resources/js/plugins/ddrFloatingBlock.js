@@ -1,9 +1,3 @@
-
-
-
-
-
-
 $.fn.ddrFloatingBlock = function(blockSelector = null, params) {
 	const containerSelector = this;
 	

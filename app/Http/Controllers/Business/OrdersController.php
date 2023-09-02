@@ -1,14 +1,17 @@
 <?php namespace App\Http\Controllers\Business;
 
 use App\Actions\AddOrderCommentAction;
+use App\Actions\SendSlackMessageAction;
 use App\Actions\UpdateModelAction;
 use App\Enums\OrderStatus;
 use App\Helpers\DdrDateTime;
 use App\Http\Controllers\Controller;
 use App\Models\Command;
+use App\Models\ConfirmedOrder;
 use App\Models\EventType;
 use App\Models\Order;
 use App\Models\Timesheet;
+use App\Models\TimesheetOrder;
 use App\Services\Business\OrderService;
 use App\Traits\HasPaginator;
 use App\Traits\Renderable;
@@ -74,7 +77,7 @@ class OrdersController extends Controller {
 			$orders = array_slice($orders, -$perPage, $perPage);
 		}
 		
-		$pagInfo = $this->orderService->get($request, 'pagination');
+		$pagInfo = $this->orderService->get($request, ['data' => 'pagination']);
 		
 		$timezones = $this->getSettings('timezones', 'id');
 		$status = OrderStatus::fromKey($request->input('status', 'new'))->value;
@@ -84,6 +87,100 @@ class OrdersController extends Controller {
 		$hasMoreOrders = !!($allNewOrdersCount - count($orders) > 0);
 		return $this->renderWithHeaders('list', compact('orders', 'itemView', 'new', 'timezones', 'status'), ['orders_count' => count($orders), ...$pagInfo]);
 	}
+	
+	
+	
+	
+	/**
+	* 
+	* @param 
+	* @return 
+	*/
+	public function confirmed_orders(Request $request) {
+		[
+			'type'	=> $type,
+			'views'	=> $viewPath,
+		] = $request->validate([
+			'type'	=> 'required|string',
+			'views'	=> 'required|string',
+		]);
+		
+		$list = $this->orderService->getToConfirmedList($type);
+		
+		$notifyButtons = $this->getSettings('slack_notifies');
+		$showType = $this->getSettings('order_statuses_showtype_list');
+		$statusesSettings = $this->getSettings('order_statuses');
+		$timezones = $this->getSettings('timezones', 'id');
+		
+		$commands = Command::get()?->mapWithKeys(function ($item, $key) use($timezones) {
+    		$item['timezone'] = $timezones[$item['region_id']]['timezone'] ?? '-';
+    		$item['shift'] = $timezones[$item['region_id']]['shift'];
+    		$item['format_24'] = $timezones[$item['region_id']]['format_24'] ?? 0;
+			return [$item['id'] => $item];
+		})->toArray();
+		
+		$itemView = $viewPath.'.item';
+		
+		return response()->view($viewPath.'.list', compact('list', 'itemView', 'timezones', 'statusesSettings', 'commands', 'showType', 'notifyButtons', 'type'));
+	}
+	
+	
+	
+	
+	
+	/**
+	* 
+	* @param 
+	* @return 
+	*/
+	public function confirm_order(Request $request, UpdateModelAction $updateAction, SendSlackMessageAction $sendMessage) {
+		[
+			'order_id'	=> $orderId,
+		] = $request->validate([
+			'order_id'	=> 'required|numeric',
+		]);
+		
+		$response = $updateAction(ConfirmedOrder::class, ['order_id' => $orderId], ['confirm' => true, 'date_confirm' => DdrDateTime::now()]);
+		
+		if (!$response) return response()->json(false);
+		
+		$data = $this->getSettings('confirm_orders');
+		
+		$sendMassResp = $sendMessage([
+			'order_id' => $orderId,
+			'webhook' => $data['webhook'],
+			'message' => $data['message'],
+		]);
+		
+		return response()->json($response && $sendMassResp);
+	}
+	
+	
+	
+	/**
+	* 
+	* @param 
+	* @return 
+	*/
+	public function remove_order_from_confirmed(Request $request, UpdateModelAction $updateModel) {
+		[
+			'order_id'		=> $orderId,
+			'timesheet_id'	=> $timesheetId,
+		] = $request->validate([
+			'order_id'		=> 'required|numeric',
+			'timesheet_id'	=> 'required|numeric',
+		]);
+		
+		if (!$deleted = ConfirmedOrder::where('order_id', $orderId)->delete()) return response()->json(false);
+		
+		TimesheetOrder::where('order_id', $orderId)->update(['doprun' => null]);
+		
+		$res = $updateModel(Order::class, $orderId, ['status' => OrderStatus::new]);
+		
+		return response()->json($res);
+	}
+	
+	
 	
 	
 	

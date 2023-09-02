@@ -57,3 +57,6 @@ Route::get('orders/relocate/get_timesheets', [OrdersController::class, 'get_relo
 Route::post('orders/relocate', [OrdersController::class, 'set_relocate']);
 Route::get('orders/detach', [OrdersController::class, 'detach_form']);
 Route::post('orders/detach', [OrdersController::class, 'detach']);
+Route::get('orders/confirmed', [OrdersController::class, 'confirmed_orders']);
+Route::put('orders/confirm', [OrdersController::class, 'confirm_order']);
+Route::delete('orders/confirm', [OrdersController::class, 'remove_order_from_confirmed']);

@@ -189,24 +189,24 @@
 					<code class="d-block mb2rem">
 						<strong>Подстановка данных</strong>
 						
-						<p class="color-gray">@{{raw}} 			- Тело заказа</p>
-						<p class="color-gray">@{{timezone}}		- Временная зона</p>
-						<p class="color-gray">@{{status}}			- Статус заказа</p>
-						<p class="color-gray">@{{order}}			- Номер заказа</p>
-						<p class="color-gray">@{{price}} 			- Стаомость</p>
-						<p class="color-gray">@{{server_name}} 	- Инвайт</p>
-						<p class="color-gray">@{{link}} 			- Ссылка</p>
-						<p class="color-gray">@{{date_add}} 		- Дата добавления</p>
-						<p class="color-gray">@{{date_msc}} 		- Дата по МСК</p>
+						<p class="color-gray-500 color-gray-600-hovered pointer color-green-active" onclick="$.copyToClipboard(event, '@{{raw}}')" title="Скопировать">@{{raw}} 			- Тело заказа</p>
+						<p class="color-gray-500 color-gray-600-hovered pointer color-green-active" onclick="$.copyToClipboard(event, '@{{timezone}}')" title="Скопировать">@{{timezone}}		- Временная зона</p>
+						<p class="color-gray-500 color-gray-600-hovered pointer color-green-active" onclick="$.copyToClipboard(event, '@{{status}}')" title="Скопировать">@{{status}}			- Статус заказа</p>
+						<p class="color-gray-500 color-gray-600-hovered pointer color-green-active" onclick="$.copyToClipboard(event, '@{{order}}')" title="Скопировать">@{{order}}			- Номер заказа</p>
+						<p class="color-gray-500 color-gray-600-hovered pointer color-green-active" onclick="$.copyToClipboard(event, '@{{price}}')" title="Скопировать">@{{price}} 			- Стаомость</p>
+						<p class="color-gray-500 color-gray-600-hovered pointer color-green-active" onclick="$.copyToClipboard(event, '@{{server_name}}')" title="Скопировать">@{{server_name}} 	- Инвайт</p>
+						<p class="color-gray-500 color-gray-600-hovered pointer color-green-active" onclick="$.copyToClipboard(event, '@{{link}}')" title="Скопировать">@{{link}} 			- Ссылка</p>
+						<p class="color-gray-500 color-gray-600-hovered pointer color-green-active" onclick="$.copyToClipboard(event, '@{{date_add}}')" title="Скопировать">@{{date_add}} 		- Дата добавления</p>
+						<p class="color-gray-500 color-gray-600-hovered pointer color-green-active" onclick="$.copyToClipboard(event, '@{{date_msc}}')" title="Скопировать">@{{date_msc}} 		- Дата по МСК</p>
 					</code>
 					
 					
 					<x-simplelist
 						setting="slack_notifies"
-						fieldset="ID:w6rem|number|id|1,Название уведомеления:w20rem|text|title,Цвет кнопки:w12rem|select|color,Иконка:w20rem|text|icon,Вебхук:w30rem|textarea|webhook,Сообщение:w30rem|textarea|message"
+						fieldset="ID:w6rem|number|id|1,Название уведомеления:w20rem|text|title,Цвет кнопки:w20rem|select|color,Иконка:w15rem|text|icon,Вебхук:w30rem|textarea|webhook,Сообщение:w30rem|textarea|message"
 						options="color;light:Светлая,dark:Темная,gray:Серая,neutral:Нейтральная,orange:Оранжевая,yellow:Желтая,purple:Фиолетовая,red:Красная,green:Зеленая,blue:Синяя"
 						{{-- onRemove="removeCustomerAction" --}}
-						group="normal"
+						group="small"
 					 />
 				</div>
 				

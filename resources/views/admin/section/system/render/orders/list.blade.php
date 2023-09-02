@@ -8,7 +8,7 @@
 				@cando('dannye-(klient):site')<x-table.td class="w-auto"><strong>Данные</strong></x-table.td> @endcando
 				@cando('invayt-(klient):site')<x-table.td class="w16rem pointer color-neutral-hovered" onclick="$.copyInviteColumn(this)"><strong>Инвайт</strong></x-table.td> @endcando
 				@cando('kommentariy-(klient):site')<x-table.td class="w-30rem"><strong>Комментарий</strong></x-table.td> @endcando
-				@cando('stoimost-(klient):site')<x-table.td class="w-6rem" title="Стоимость"><strong>$</strong></x-table.td> @endcando
+				@cando('stoimost-(klient):site')<x-table.td class="w-7rem h-end" title="Стоимость"><strong>$</strong></x-table.td> @endcando
 				
 				@cando('dannye-(klient):site')
 					<x-table.td class="w-spacer p-0"></x-table.td>
@@ -24,7 +24,7 @@
 							@elseif(count($notifyButtons ?? 1) > 3)
 								<strong>Уведомления</strong>
 							@else
-								<i class="fa-regular fa-bell" title="Уведомления"></i>
+								<i class="fa-brands fa-fw fa-slack" title="Уведомления в Слак"></i>
 							@endif
 						</x-table.td>
 					@endif	

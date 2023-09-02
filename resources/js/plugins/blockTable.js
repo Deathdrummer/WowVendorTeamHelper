@@ -140,8 +140,6 @@ class BlockTable {
 		});
 		
 		
-		
-		
 		function _initHeadCellsWidths() {
 			$(headCells).each(function(index, cell) {
 				let width = Math.max($(cell).width(), $(cell)[0].offsetWidth, $(cell)[0].clientWidth, $(cell).outerWidth());

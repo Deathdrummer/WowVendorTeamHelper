@@ -12,13 +12,13 @@
 			@if(isset($data['commands'][$command_id]['format_24']) && $data['commands'][$command_id]['format_24'])
 				<span
 					class="color-gray-500-hovered color-blue-active noselect"
-					onclick="$.copyToClipboard(event, '{{DdrDateTime::date($datetime, ['format' => 'DD.MM'])}} {{DdrDateTime::time($datetime, ['format' => 'HH:mm', 'shift' => $data['commands'][$command_id]['shift']])}} {{$timezones[$timezone_id]['timezone']}}')"
-					>{{DdrDateTime::time($datetime, ['format' => 'HH:mm', 'shift' => $data['commands'][$command_id]['shift']])}} {{$timezones[$timezone_id]['timezone']}}</span>
+					onclick="$.copyToClipboard(event, '{{DdrDateTime::date($datetime, ['format' => 'DD.MM'])}} {{DdrDateTime::time($datetime, ['format' => 'H:i', 'shift' => $data['commands'][$command_id]['shift']])}} {{$data['commands'][$command_id]['timezone']}}')"
+					>{{DdrDateTime::time($datetime, ['format' => 'H:i', 'shift' => $data['commands'][$command_id]['shift']])}} <span class="color-gray">{{$data['commands'][$command_id]['timezone']}}</span></span>
 			@else
 				<span
 					class="color-gray-500-hovered color-blue-active noselect"
-					onclick="$.copyToClipboard(event, '{{DdrDateTime::date($datetime, ['format' => 'DD.MM'])}} {{DdrDateTime::time($datetime, ['locale' => 'en', 'format' => 'h:m A', 'shift' => $data['commands'][$command_id]['shift']])}} {{$data['commands'][$command_id]['timezone']}}')"
-					>{{DdrDateTime::time($datetime, ['locale' => 'en', 'format' => 'h:m A', 'shift' => $data['commands'][$command_id]['shift']])}} {{$data['commands'][$command_id]['timezone']}}</span>
+					onclick="$.copyToClipboard(event, '{{DdrDateTime::date($datetime, ['format' => 'DD.MM'])}} {{DdrDateTime::time($datetime, ['locale' => 'en', 'format' => 'h:i A', 'shift' => $data['commands'][$command_id]['shift']])}} {{$data['commands'][$command_id]['timezone']}}')"
+					>{{DdrDateTime::time($datetime, ['locale' => 'en', 'format' => 'h:i A', 'shift' => $data['commands'][$command_id]['shift']])}} <span class="color-gray">{{$data['commands'][$command_id]['timezone']}}</span></span>
 			@endif
 		</p>
 	</x-table.td>

@@ -20,8 +20,8 @@ class OrderFilter extends AbstractFilter {
     }
 	
 	
-	 public function search(Builder $builder, $value) {
+	public function search(Builder $builder, $value) {
 		$builder->where('order', 'LIKE', '%'.$value.'%');
-    }
+	}
 	
 }

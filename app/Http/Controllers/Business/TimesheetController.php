@@ -101,6 +101,7 @@ class TimesheetController extends Controller {
 			->get();
 		
 		
+		
 		$this->_buildDataFromSettings();
 		
 		$itemView = $viewPath.'.item';
@@ -127,7 +128,13 @@ class TimesheetController extends Controller {
 		
 		if (!$viewPath) return response()->json(['no_view' => true]);
 		
-		return $this->view($viewPath.'.init');
+		$scrolled = match(getGuard()) {
+			'admin'	=> 'calc(100vh - 238px)',
+			'site'	=> 'calc(100vh - 202px)',
+			default	=> 'calc(100vh - 238px)',
+		};
+		
+		return $this->view($viewPath.'.init', ['scrolled' => $scrolled]);
 	}
 	
 	
@@ -444,11 +451,10 @@ class TimesheetController extends Controller {
 	 * @return void
 	 */
 	private function _buildDataFromSettings():void {
-		/* $this->addSettingToGlobalData([[
+		$this->addSettingToGlobalData([[
 			'setting'	=> 'timezones',
 			'key'		=> 'id',
-			'value'		=> 'timezone'
-		]]); */
+		]]);
 		
 		$difficulties = $this->settings->get('difficulties')?->mapWithKeys(function ($item, $key) {
     		return [$item['id'] => $item['title']];
@@ -460,9 +466,9 @@ class TimesheetController extends Controller {
 		
 		$this->data['events_types'] = $eventsTypes;
 		
-		$timezones = $this->settings->get('timezones', 'id')->toArray();
+		$timezones = $this->data['timezones'];
 		$commands = Command::get()?->mapWithKeys(function ($item, $key) use($timezones) {
-    		$item['shift'] = $timezones[$item['region_id']]['shift'];
+    		$item['shift'] = (int)$timezones[$item['region_id']]['shift'];
     		$item['format_24'] = $timezones[$item['region_id']]['format_24'] ?? 0;
     		$item['timezone'] = $timezones[$item['region_id']]['timezone'] ?? '-';
 			return [$item['id'] => $item];
