@@ -520,7 +520,6 @@ export async function showStatusesTooltip(btn = null, orderId = null, timesheetI
 				$.notify(`Заказ успешно отвязан и перенесен в ${listNames[status]}`);
 				
 			} else if (status == 'ready') {
-				$(btn).closest('[ddrtabletd]').addClass('h-center');
 				$(btn).replaceWith('<i class="fa-regular fa-fw fa-clock color-green fz18px" title="На подтверждении"></i>');
 				$.notify(`Заказ отправлен на подтверждение!`);
 			} else {
