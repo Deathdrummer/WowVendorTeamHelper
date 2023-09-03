@@ -88,11 +88,11 @@
 	
 	@cando('status-(klient):site')
 	<x-table.td @class([
-			'h-center' => !isset($showType['text']) || !$showType['text'] || $confirmed || $confirm
+			'h-center' => !isset($showType['text']) || !$showType['text']
 		])
 		>
 		@if($confirmed)
-			<i class="fa-regular fa-fw fa-clock color-green fz18px" title="На подтверждении"></i>
+			<i class="fa-regular fa-fw fa-clock color-gray fz18px" title="На подтверждении"></i>
 		@elseif($confirm)
 			<i class="fa-regular fa-fw fa-circle-check color-green fz18px" title="Подтвержден"></i>
 		@else
