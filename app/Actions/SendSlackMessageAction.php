@@ -4,7 +4,6 @@ use App\Enums\OrderStatus;
 use App\Helpers\DdrDateTime;
 use App\Models\Order;
 use App\Traits\Settingable;
-use Illuminate\Http\Response;
 use Illuminate\Support\Str;
 use Ixudra\Curl\Facades\Curl;
 
@@ -35,7 +34,6 @@ class SendSlackMessageAction {
 		$dateMsc = DdrDateTime::date($orderData->date_msc).' в '.DdrDateTime::time($orderData->date_msc);
 		$dateAdd = DdrDateTime::date($orderData->date_add).' в '.DdrDateTime::time($orderData->date_add);
 		
-		
 		$statuses = [
 			'new'		=> 'новый',
 			'wait'		=> 'ожидание',
@@ -43,10 +41,7 @@ class SendSlackMessageAction {
 			'ready'		=> 'готов',
 			'doprun'	=> 'допран',
 		];
-
-
-
-
+		
 		$message = Str::swap([
 			'{{raw}}' 			=> $rawData,
 			'{{timezone}}' 		=> $timezone,

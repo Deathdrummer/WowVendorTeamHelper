@@ -64,10 +64,8 @@ class SlackController extends Controller {
 			'order_id'	=> 'required|numeric',
 		]);
 		
-
 		$notifyButtons = $this->getSettings('slack_notifies', 'id', null, 'id:'.$id);
 		if (!$data = $notifyButtons[$id] ?? null) return response()->json(false);
-		
 		
 		$response = $sendMessage([
 			'order_id' => $orderId,
