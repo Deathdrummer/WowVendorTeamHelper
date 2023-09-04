@@ -69,8 +69,8 @@ class SlackController extends Controller {
 		
 		$response = $sendMessage([
 			'order_id' => $orderId,
-			'webhook' => $data['webhook'],
-			'message' => $data['message'],
+			'webhook' => $data['webhook'] ?? null,
+			'message' => $data['message'] ?? null,
 		]);
 		
 		return response()->json($response);

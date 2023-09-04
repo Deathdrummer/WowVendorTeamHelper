@@ -23,7 +23,7 @@
 		</div>
 		<div class="col">
 			<p class="color-gray-600 fz12px mb3px">Тело заказа:</p>
-			<x-textarea name="raw_data" value="{{$raw_data ?? null}}" class="w100" rows="5" placeholder="Введите текст" noresize />
+			<x-textarea name="raw_data" id="newOrderRawData" value="{{$raw_data ?? null}}" class="w100" rows="5" placeholder="Введите текст" noresize />
 		</div>
 		
 		@if($action == 'new')

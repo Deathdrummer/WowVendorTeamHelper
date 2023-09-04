@@ -148,8 +148,8 @@ class OrdersController extends Controller {
 		
 		$sendMassResp = $sendMessage([
 			'order_id' => $orderId,
-			'webhook' => $data['webhook'],
-			'message' => $data['message'],
+			'webhook' => $data['webhook'] ?? null,
+			'message' => $data['message'] ?? null,
 		]);
 		
 		return response()->json($response && $sendMassResp);

@@ -281,6 +281,12 @@ export async function timesheetCrud(periodId = null, listType = null, buildOrder
 			});
 			
 			
+			$('#newOrderRawData').ddrInputs('change', (inp, e) => {
+				parseRawToFields(popper, e.target.value);
+			}, 300);
+			
+			
+			
 			$.timesheetAddOrder = async () => {
 				wait();
 				const formData = $(popper).ddrForm({timesheet_id});
@@ -549,6 +555,21 @@ export async function timesheetCrud(periodId = null, listType = null, buildOrder
 
 
 
+
+
+function parseRawToFields(popper, value) {
+	const serverNameMathes = /\/inv\s[^,]+/.exec(value),
+		priceMathes = /(\d{1,}.\d{1,2})\$/.exec(value),
+		orderMathes = /&(amp;)?[^,]+/.exec(value);
+	
+	const serverName = $(popper).find('[name="server_name"]'),
+		order = $(popper).find('[name="order"]'),
+		price = $(popper).find('[name="price"]');
+	
+	$(serverName).val(serverNameMathes[0]);
+	$(price).val(priceMathes[0]);
+	$(order).val(orderMathes[0]);
+}
 
 
 
