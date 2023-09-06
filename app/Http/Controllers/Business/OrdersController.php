@@ -121,7 +121,9 @@ class OrdersController extends Controller {
 		
 		$itemView = $viewPath.'.item';
 		
-		return response()->view($viewPath.'.list', compact('list', 'itemView', 'timezones', 'statusesSettings', 'commands', 'showType', 'notifyButtons', 'type'));
+		return response()
+			->view($viewPath.'.list', compact('list', 'itemView', 'timezones', 'statusesSettings', 'commands', 'showType', 'notifyButtons', 'type'))
+			->withHeaders(['orders_count' => count($list)]);
 	}
 	
 	
@@ -154,6 +156,30 @@ class OrdersController extends Controller {
 		
 		return response()->json($response && $sendMassResp);
 	}
+	
+	
+	
+	/**
+	* 
+	* @param 
+	* @return 
+	*/
+	public function confirm_all_orders() {
+		//$confirmedOrder = ConfirmedOrder::all();
+		//$response = $confirmedOrder->update(['confirm' => true, 'date_confirm' => DdrDateTime::now()]);
+		
+		$response = ConfirmedOrder::whereNot('confirm', 1)->update([
+			'confirm' => true,
+			'date_confirm' => DdrDateTime::now()
+		]);
+		
+		
+		return response()->json($response);
+	}
+	
+	
+	
+	
 	
 	
 	

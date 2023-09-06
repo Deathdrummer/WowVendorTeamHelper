@@ -79,15 +79,17 @@ class TimesheetController extends Controller {
 		
 		if (!$viewPath) return response()->json(['no_view' => true]);
 		
+		$timesheetToPastHours = $this->settings->get('timesheet.to_past_hours', 0);
+		
 		$list = Timesheet::withCount(['orders AS orders_count' => function($query) use($search) {
 				$query->where('order', 'LIKE', '%'.$search.'%');
 			}])
 			->where('timesheet_period_id', $periodId)
-			->where(function($query) use($listType) {
+			->where(function($query) use($listType, $timesheetToPastHours) {
 				if ($listType == 'actual') {
-					$query->where('datetime', '>=', now());
+					$query->where('datetime', '>=', now()->addHours(-1 * $timesheetToPastHours));
 				} elseif ($listType == 'past') {
-					$query->where('datetime', '<', now());
+					$query->where('datetime', '<', now()->addHours(-1 * $timesheetToPastHours));
 				}
 			})->when($search, function($query) use($search) {
 				$query->whereHas('orders', function($q) use($search) {
@@ -97,7 +99,7 @@ class TimesheetController extends Controller {
 			->when(isGuard('site') && auth('site')->user()->cannot('razreshit-vse-komandy:site'), function($query) use($getUserSetting) {
 				return $query->whereIn('command_id', $getUserSetting('commands') ?? []);
 			})
-			->orderBy('datetime', 'ASC')
+			->orderBy('datetime', $listType == 'actual' ? 'ASC' : 'DESC')
 			->get();
 		
 		

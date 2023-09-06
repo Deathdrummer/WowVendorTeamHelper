@@ -59,4 +59,5 @@ Route::get('orders/detach', [OrdersController::class, 'detach_form']);
 Route::post('orders/detach', [OrdersController::class, 'detach']);
 Route::get('orders/confirmed', [OrdersController::class, 'confirmed_orders']);
 Route::put('orders/confirm', [OrdersController::class, 'confirm_order']);
+Route::put('orders/confirm_all', [OrdersController::class, 'confirm_all_orders']);
 Route::delete('orders/confirm', [OrdersController::class, 'remove_order_from_confirmed']);

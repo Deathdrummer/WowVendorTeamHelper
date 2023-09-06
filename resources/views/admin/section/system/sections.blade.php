@@ -9,7 +9,8 @@
 				<div class="ddrtabs__nav">
 					<ul class="ddrtabsnav" ddrtabsnav>
 						<li class="ddrtabsnav__item ddrtabsnav__item_active" ddrtabsitem="sectionsTab1">Заказы</li>
-						<li class="ddrtabsnav__item" ddrtabsitem="sectionsTab2">Подтверждение готовности заказов</li>
+						<li class="ddrtabsnav__item" ddrtabsitem="sectionsTab2">События</li>
+						<li class="ddrtabsnav__item" ddrtabsitem="sectionsTab3">Подтверждение готовности заказов</li>
 					</ul>
 				</div>
 				
@@ -33,7 +34,26 @@
 						</div>
 					</div>
 					
-					<div class="ddrtabscontent__item" ddrtabscontentitem="sectionsTab2">
+					<div class="ddrtabscontent__item ddrtabscontent__item_visible" ddrtabscontentitem="sectionsTab2">
+						<div class="row row-cols-1 gy-20">
+							<div class="col">
+								<p class="mb1rem">Отправка в прошедшие спустя часов:</p>
+								<x-input
+									type="number"
+									class="w7rem"
+									group="large"
+									label="часов"
+									min="0"
+									max="50"
+									showrows
+									setting="timesheet.to_past_hours"
+								/>
+							</div>
+						</div>
+					</div>
+					
+					
+					<div class="ddrtabscontent__item" ddrtabscontentitem="sectionsTab3">
 						<div class="row row-cols-1 gy-20">
 							<div class="col">
 								<p class="mb1rem">Вебхук</p>

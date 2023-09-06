@@ -127,31 +127,32 @@ class OrderService {
 	 */
 	public function getToConfirmedList($type = 'actual') { // list | pagination | all (default)
 		$list = Order::confirmed($type)
+			->whereHas('timesheet_to_confirm')
 			->with('timesheet_to_confirm', function($query) {
 				$query->select('timesheet.id as timesheet_id', 'command_id', 'datetime');
+				//$query->orderBy('datetime', 'ASC');
 			})
 			->with('lastComment', function($query) {
 				$query->with('author:id,name,pseudoname', 'adminauthor:id,name,pseudoname');
 			})
-			->orderBy('id', 'desc')
+			//->orderBy('datetime', 'desc')
 			->get()
 			->map(function($row) {
 				$timesheetToConfirm = $row->timesheet_to_confirm->first();
 				
-				$row['from_id'] = $timesheetToConfirm->pivot->from_id;
-				$row['confirm'] = $timesheetToConfirm->pivot->confirm;
-				$row['date_add'] = $timesheetToConfirm->pivot->date_add;
-				$row['date_confirm'] = $timesheetToConfirm->pivot->date_confirm;
-				$row['command_id'] = $timesheetToConfirm->command_id;
-				$row['timesheet_id'] = $timesheetToConfirm->timesheet_id;
-				$row['datetime'] = $timesheetToConfirm->datetime;
+				$row['from_id'] = $timesheetToConfirm?->pivot->from_id;
+				$row['confirm'] = $timesheetToConfirm?->pivot->confirm;
+				$row['date_add'] = $timesheetToConfirm?->pivot->date_add;
+				$row['date_confirm'] = $timesheetToConfirm?->pivot->date_confirm;
+				$row['command_id'] = $timesheetToConfirm?->command_id;
+				$row['timesheet_id'] = $timesheetToConfirm?->timesheet_id;
+				$row['datetime'] = $timesheetToConfirm?->datetime;
 				
 				unset($row['timesheet_to_confirm']);
 				return $row;
-			});
+			})
+			->sortByDesc('datetime');
 		
-		
-		//logger($list->toArray());
 		
 		/* 
 		if ($paginate['data'] ?? false) {
