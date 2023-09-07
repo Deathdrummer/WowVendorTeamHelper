@@ -1,6 +1,7 @@
 <?php namespace App\Http\Controllers\Business;
 
 use App\Actions\AddOrderCommentAction;
+use App\Actions\LogEventAction;
 use App\Actions\SendSlackMessageAction;
 use App\Actions\UpdateModelAction;
 use App\Enums\OrderStatus;
@@ -164,17 +165,27 @@ class OrdersController extends Controller {
 	* @param 
 	* @return 
 	*/
-	public function confirm_all_orders() {
-		//$confirmedOrder = ConfirmedOrder::all();
-		//$response = $confirmedOrder->update(['confirm' => true, 'date_confirm' => DdrDateTime::now()]);
+	public function confirm_all_orders(SendSlackMessageAction $sendMessage) {
+		$query = ConfirmedOrder::whereNot('confirm', 1);
 		
-		$response = ConfirmedOrder::whereNot('confirm', 1)->update([
+		$ordersIds = $query->get()->pluck('order_id')->toArray();
+		
+		$response = $query->update([
 			'confirm' => true,
 			'date_confirm' => DdrDateTime::now()
 		]);
 		
+		if (!$response) return response()->json(false);
 		
-		return response()->json($response);
+		$data = $this->getSettings('confirm_orders');
+		
+		$sendMassResp = $sendMessage([
+			'order_id' 	=> $ordersIds,
+			'webhook' 	=> $data['webhook'] ?? null,
+			'message' 	=> $data['message'] ?? null,
+		]);
+		
+		return response()->json($response && $sendMassResp);
 	}
 	
 	
