@@ -147,6 +147,7 @@ class Users extends Controller {
 		
 		$validFields = $request->validate([
 			'email' 		=> 'required|email|unique:users,email',
+			'name'			=> 'required|string|max:50',
 			'pseudoname'	=> 'required|string|max:50|unique:users,pseudoname',
 			'role'			=> 'numeric|nullable|exclude',
 			'_sort'			=> 'required|regex:/[0-9]+/'
