@@ -14,7 +14,8 @@
 					'p3px',
 					'pointer',
 					'mr15px' => !$loop->first,
-					'noselect'
+					'noselect',
+					'active' => $item['id'] == $choosedPeriod ?? null,
 				])
 				onclick="$.timesheetPeriodsBuild(this, {{$item['id'] ?? null}})"
 				timesheetperiod="{{$item['id'] ?? null}}"

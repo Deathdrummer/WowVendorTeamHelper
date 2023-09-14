@@ -20,6 +20,7 @@ import '@plugins/ddrCalc';
 import '@plugins/ddrQuery';
 import '@plugins/blockTable';
 import '@plugins/ddrBuildInputsData';
+import '@plugins/ddrPagination';
 
 
 

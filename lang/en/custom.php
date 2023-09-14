@@ -16,7 +16,5 @@ return [
 	'denied_section_message' => 'Access denied!',
 	
 	
-	'anon' => 'Anonymous'
-	
-	
+	'anon' => 'Anonymous',
 ];

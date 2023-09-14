@@ -15,5 +15,5 @@ return [
 	'denied_section_title' => 'Доступ запрещен',
 	'denied_section_message' => 'Вам запрещено посещать данный раздел!',
 	
-	'anon' => 'Аноним'
+	'anon' => 'Аноним',
 ];

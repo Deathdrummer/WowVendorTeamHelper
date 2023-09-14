@@ -1,16 +1,12 @@
 <?php namespace App\Services\Business;
 
-use App\Enums\Guards;
 use App\Enums\OrderStatus;
 use App\Helpers\DdrDateTime;
 use App\Http\Filters\OrderFilter;
-use App\Models\AdminUser;
 use App\Models\Order;
 use App\Models\Timesheet;
-use App\Models\User;
 use App\Traits\Settingable;
 use Carbon\Carbon;
-
 use App\Traits\HasPaginator;
 use Illuminate\Support\Collection;
 
@@ -255,11 +251,13 @@ class OrderService {
 		
 		if (in_array($status, ['cancel', 'wait'])) {
 			$timesheet->orders()->detach($orderId);
+			eventLog()->orderDetach($order, $status);
 		} else {
 			$timesheet->orders()->updateExistingPivot($orderId, ['doprun' => null]);
 			
 			if ($status == 'ready') {
 				$timesheet->confirmOrders()->syncWithoutDetaching([$orderId => ['from_id' => auth('site')->id(), 'date_add' => DdrDateTime::now()]]);
+				eventLog()->orderToConfirm($order, $status);
 			}
 		}
 		

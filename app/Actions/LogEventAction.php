@@ -1,16 +1,17 @@
 <?php namespace App\Actions;
 
 use App\Helpers\DdrDateTime;
-use App\Models\EventLoger;
+use App\Models\EventLog;
 
 class LogEventAction {
 	
 	/**
 	* Отправить событие в логи
 	* @param integer $eventType Тип события
+	* @param array $info информация
 	* @return array
 	*/
-	public function __invoke($eventType = null):array {
+	public function __invoke($eventType = null, $info = null) {
 		if (!$eventType) return false;
 		
 		$guard = getGuard();
@@ -23,11 +24,12 @@ class LogEventAction {
 			default	=> 1,
 		};
 		
-		return EventLoger::create([
+		return EventLog::create([
 			'from_id'		=> $selfId,
 			'user_type'		=> $userType,
 			'event_type'	=> $eventType,
+			'info'			=> $info,
 			'datetime'		=> DdrDateTime::now(),
-		])->toArray();
+		]);
 	}
 }

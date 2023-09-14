@@ -4,9 +4,6 @@ namespace App\Enums;
 
 use BenSampo\Enum\Enum;
 
-/**
- * 
- */
 final class OrderStatus extends Enum {
 	const new		= 0;
 	const wait		= -1;

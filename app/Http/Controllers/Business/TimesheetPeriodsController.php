@@ -88,9 +88,9 @@ class TimesheetPeriodsController extends Controller {
 	 */
 	public function last_periods(Request $request) {
 		[
-			'views'		=> $viewPath,
+			'views'				=> $viewPath,
 		] = $request->validate([
-			'views'		=> 'required|string',
+			'views'				=> 'required|string',
 		]);
 		
 		if (!$viewPath) return response()->json(['no_view' => true]);
@@ -100,7 +100,9 @@ class TimesheetPeriodsController extends Controller {
 			->limit(5)
 			->get();
 		
-		return $this->view($viewPath.'.last_periods', compact('list'));
+		$choosedPeriod = $request->input('choosed_period');
+		
+		return $this->view($viewPath.'.last_periods', compact('list', 'choosedPeriod'));
 	}
 	
 	
@@ -176,7 +178,6 @@ class TimesheetPeriodsController extends Controller {
 		if (!$viewPath) return response()->json(['no_view' => true]);
 		if (!$item = $this->_storeRequest($request)) return response()->json(false);
 		
-		
 		//$this->_buildDataFromSettings();
 		return $this->view($viewPath.'.item', $item);
     }
@@ -198,7 +199,7 @@ class TimesheetPeriodsController extends Controller {
 			$validFields['_sort'] = $request['_sort'];
 		}
 		
-		return TimesheetPeriod::create($validFields)->withCount(['timesheet_items'])->first();
+		return TimesheetPeriod::create($validFields);
 	}
 	
 	

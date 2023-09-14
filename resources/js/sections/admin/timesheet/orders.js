@@ -150,6 +150,9 @@ export async function buildOrdersTable(row = null, timesheetId = null, cb = null
 		let choosedTimesheetId = null;
 		
 		let isLoading = false;
+		
+		getTsEvents(new Date());
+		
 		calendarObj = calendar('relocateOrderCalendar', {
 			initDate: 'now',
 			async onSelect(instance, date) {
@@ -162,26 +165,29 @@ export async function buildOrdersTable(row = null, timesheetId = null, cb = null
 					isLoading = false;
 				} 
 				
-				const ddrtableWait = $(popper).find('[ddrtable]').blockTable('wait');
-				
-				isLoading = true;
-				const {data, error, status, headers} = await ddrQuery.get('crud/orders/relocate/get_timesheets', {timesheet_id: timesheetId, date, type, views}, {abortContr});
-				isLoading = false;
-				
-				if (error) {
-					console.log(error);
-					$.notify(error?.message, 'error');
-					return;
-				}
-				
-				ddrtableWait.destroy();
-				
-				$(popper).find('[ddrtable]').blockTable('setdData', data);
+				getTsEvents(date);
 				
 				choosedTimesheetId = null;
 			}
 		});
 		
+		
+		async function getTsEvents(date) {
+			const ddrtableWait = $(popper).find('[ddrtable]').blockTable('wait');
+			isLoading = true;
+			const {data, error, status, headers} = await ddrQuery.get('crud/orders/relocate/get_timesheets', {timesheet_id: timesheetId, date, type, views}, {abortContr});
+			isLoading = false;
+			
+			if (error) {
+				console.log(error);
+				$.notify(error?.message, 'error');
+				return;
+			}
+			
+			ddrtableWait.destroy();
+			
+			$(popper).find('[ddrtable]').blockTable('setdData', data);
+		}
 		
 		/*$.relocateOrderChooseDate = async (instance, date) => {
 			
@@ -277,6 +283,8 @@ export async function buildOrdersTable(row = null, timesheetId = null, cb = null
 				wait(false);
 				return;
 			}
+			
+			console.log(data);
 			
 			if (data) {
 				$.notify(`Заказ ${orderNumber} успешно отвязан!`);

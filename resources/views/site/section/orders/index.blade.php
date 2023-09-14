@@ -274,12 +274,12 @@
 			method: 'get',
 			title: 'В отмененные',
 			width: 400, // ширина окна
-			buttons: ['ui.cancel', {title: 'Перенести', variant: 'green', action: 'toWaitListAction'}],
+			buttons: ['ui.cancel', {title: 'Перенести', variant: 'green', action: 'toCancelListAction'}],
 			centerMode: true, // контент по центру
 		});
 		
 		
-		$.toWaitListAction = async (__) => {
+		$.toCancelListAction = async (__) => {
 			wait();
 			
 			const message = $(popper).find('#comment').val();
@@ -553,62 +553,69 @@
 	
 	
 	//----------------------------------------------------------------------------------------- Прослушка
-	Echo.channel('send_message_channel').listen('.incoming_orders', async ({orders}) => {
-		if (!orders.length || status.value != 'new') return;
-		
-		if (currentPage.value != 1) {
-			hasNewOrdersNoFirstPage = true;
+	if (Echo.connector.channels['send_message_channel'] === undefined) {
+		listenSendMessageChannel();
+	}
+	
+	function listenSendMessageChannel() {
+		Echo.channel('send_message_channel').listen('.incoming_orders', async ({orders}) => {
+			if (!orders.length || status.value != 'new') return;
 			
-			total.value = total.value + orders.length;
-			lastPage.value = Math.ceil(total.value / perPage.value);
-			
-			return;
-		}
-		 
-		orders = orders.reverse(); // реверс строк, в зависимости от текущей сортировки
-		
-		const countRowsInList = $('#ordersList').children().length; // кол-во уже имеющихся строк
-		
-		const {data: ordersHtml, error: ordersError, headers: ordersHeaders} = await ddrQuery.post('client/orders/incoming_orders', {
-			orders,
-			status: status.value,
-			count_rows_in_list: countRowsInList,
-			current_page: currentPage.value,
-		});
-		
-		
-		if (ordersError) {
-			if (ordersError.status == 419) $.notify(`Ошибка загрузки заказов! Устарела сессия! Пожалуйста, переагрузите страницу!`, 'error');
-			else $.notify(`Ошибка загрузки заказов!`, 'error');
-			throw new Error(ordersError.message);
-		}
-		
-		if (!ordersHtml) return;
-		
-		const newOrdersRowsCount = Number(ordersHeaders['orders_count'] || 0);
-		const ordersPerPage = Number(ordersHeaders['per_page'] || 0);
-		const ordersLastPage = Number(ordersHeaders['last_page'] || 1);
-		let isFirstPage = currentPage.value == 1;
-		
-		// Если первая страница
-		if (isFirstPage) {
-			if (countRowsInList + newOrdersRowsCount > ordersPerPage) {
-				let removeOldRowsCount = (countRowsInList + newOrdersRowsCount) - ordersPerPage + 1;
-				$('#ordersList').find(`[order]:gt(-${removeOldRowsCount})`).remove();
+			if (currentPage.value != 1) {
+				hasNewOrdersNoFirstPage = true;
+				
+				total.value = total.value + orders.length;
+				lastPage.value = Math.ceil(total.value / perPage.value);
+				
+				return;
 			}
+			 
+			orders = orders.reverse(); // реверс строк, в зависимости от текущей сортировки
 			
-			if ($('#ordersList').find('[noorders]').length) $('#ordersList').find('[noorders]').remove();
+			const countRowsInList = $('#ordersList').children().length; // кол-во уже имеющихся строк
 			
-			$('#ordersList').prepend(ordersHtml);
-			
-			pagRefresh({
-				countPages: ordersLastPage,
-				currentPage: 1,
+			const {data: ordersHtml, error: ordersError, headers: ordersHeaders} = await ddrQuery.post('client/orders/incoming_orders', {
+				orders,
+				status: status.value,
+				count_rows_in_list: countRowsInList,
+				current_page: currentPage.value,
 			});
 			
-			$.notify(`Поступили новые заказы! ${newOrdersRowsCount} шт.`);
-		}
+			
+			if (ordersError) {
+				if (ordersError.status == 419) $.notify(`Ошибка загрузки заказов! Устарела сессия! Пожалуйста, переагрузите страницу!`, 'error');
+				else $.notify(`Ошибка загрузки заказов!`, 'error');
+				throw new Error(ordersError.message);
+			}
+			
+			if (!ordersHtml) return;
+			
+			const newOrdersRowsCount = Number(ordersHeaders['orders_count'] || 0);
+			const ordersPerPage = Number(ordersHeaders['per_page'] || 0);
+			const ordersLastPage = Number(ordersHeaders['last_page'] || 1);
+			let isFirstPage = currentPage.value == 1;
+			
+			// Если первая страница
+			if (isFirstPage) {
+				if (countRowsInList + newOrdersRowsCount > ordersPerPage) {
+					let removeOldRowsCount = (countRowsInList + newOrdersRowsCount) - ordersPerPage + 1;
+					$('#ordersList').find(`[order]:gt(-${removeOldRowsCount})`).remove();
+				}
+				
+				if ($('#ordersList').find('[noorders]').length) $('#ordersList').find('[noorders]').remove();
+				
+				$('#ordersList').prepend(ordersHtml);
+				
+				pagRefresh({
+					countPages: ordersLastPage,
+					currentPage: 1,
+				});
+				
+				$.notify(`Поступили новые заказы! ${newOrdersRowsCount} шт.`);
+			}
+		});
+	}
+	
 		
-	});
 	
 </script>

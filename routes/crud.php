@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Business\CommandsController;
+use App\Http\Controllers\Business\EventsLogsController;
 use App\Http\Controllers\Business\EventsTypesController;
 use App\Http\Controllers\Business\OrdersController;
 use App\Http\Controllers\Business\TimesheetController;
@@ -61,3 +62,9 @@ Route::get('orders/confirmed', [OrdersController::class, 'confirmed_orders']);
 Route::put('orders/confirm', [OrdersController::class, 'confirm_order']);
 Route::put('orders/confirm_all', [OrdersController::class, 'confirm_all_orders']);
 Route::delete('orders/confirm', [OrdersController::class, 'remove_order_from_confirmed']);
+
+
+
+
+// Логи действий пользователей
+Route::get('events_logs', EventsLogsController::class);

@@ -131,7 +131,7 @@ export async function timesheetPeriodsCrud(getLastTimesheetPeriods = null, times
 				if (error) {
 					timesheetSaveWait.destroy();
 					$.notify(error.message, 'error');
-				} 
+				}
 				
 				if (error.errors) {
 					$.each(error.errors, function(field, errors) {
@@ -146,7 +146,7 @@ export async function timesheetPeriodsCrud(getLastTimesheetPeriods = null, times
 					
 					getLastTimesheetPeriods(() => {
 						lastTimesheetPeriodsWaitBlock.destroy();
-					});
+					}, choosedPeriod);
 				}
 			});
 		}
@@ -175,16 +175,16 @@ export async function timesheetPeriodsCrud(getLastTimesheetPeriods = null, times
 									remove(row);
 									$.notify('Период успешно удален!');
 									
-									
 									if (choosedPeriod.value == id) {
-										getLastTimesheetPeriods(() => {
-											wait(false);
-										});
 										$('#timesheetContainer').html('<p class="color-gray-400 fz16px noselect text-center">Выберите период</p>');
 										$('#listTypeChooser').setAttrib('hidden');
 										$('#newTimesheetEventBtn, #importTimesheetEventsBtn, #exportOrdersBtn').setAttrib('hidden');
 										ddrStore('choosedPeriod', false);
 									}
+									
+									getLastTimesheetPeriods(() => {
+										wait(false);
+									}, choosedPeriod);
 									
 								} else {
 									$.notify('Ошибка удаления периода!', 'error');

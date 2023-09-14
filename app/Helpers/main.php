@@ -1,8 +1,23 @@
 <?php
 
+use App\Services\EventLogService;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Symfony\Component\Mime\Encoder\IdnAddressEncoder;
+
+
+
+
+
+if (! function_exists('eventLog')) {
+	function eventLog() {
+		return app()->make(EventLogService::class);
+	}
+}
+
+
+
+
 
 
 if (! function_exists('ddr_data_set')) {

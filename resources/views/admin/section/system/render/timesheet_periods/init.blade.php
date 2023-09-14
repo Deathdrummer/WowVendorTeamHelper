@@ -10,7 +10,7 @@
 	<x-table.head>
 		<x-table.tr noborder>
 			<x-table.td class="w-auto" noborder><strong>Название периода</strong></x-table.td>
-			<x-table.td class="w9rem" noborder><strong>Кол-ко записей</strong></x-table.td>
+			<x-table.td class="w9rem" noborder><strong>Кол-ко событий</strong></x-table.td>
 			<x-table.td class="w9rem" noborder><strong>Действия</strong></x-table.td>
 		</x-table.tr>
 	</x-table.head>

@@ -14,6 +14,7 @@ use App\Models\Order;
 use App\Models\Timesheet;
 use App\Models\TimesheetOrder;
 use App\Services\Business\OrderService;
+use App\Services\EventLogService;
 use App\Traits\HasPaginator;
 use App\Traits\Renderable;
 use App\Traits\Settingable;
@@ -143,9 +144,11 @@ class OrdersController extends Controller {
 			'order_id'	=> 'required|numeric',
 		]);
 		
-		$response = $updateAction(ConfirmedOrder::class, ['order_id' => $orderId], ['confirm' => true, 'date_confirm' => DdrDateTime::now()]);
+		$response = $updateAction(ConfirmedOrder::class, ['order_id' => $orderId], ['confirm' => true, 'date_confirm' => DdrDateTime::now()], returnModel: true);
 		
 		if (!$response) return response()->json(false);
+		
+		eventLog()->orderConfirm($response);
 		
 		$data = $this->getSettings('confirm_orders');
 		
@@ -168,7 +171,8 @@ class OrdersController extends Controller {
 	public function confirm_all_orders(SendSlackMessageAction $sendMessage) {
 		$query = ConfirmedOrder::whereNot('confirm', 1);
 		
-		$ordersIds = $query->get()->pluck('order_id')->toArray();
+		$rows = $query->get();
+		$ordersIds = $rows->pluck('order_id')->toArray();
 		
 		$response = $query->update([
 			'confirm' => true,
@@ -176,6 +180,8 @@ class OrdersController extends Controller {
 		]);
 		
 		if (!$response) return response()->json(false);
+		
+		eventLog()->ordersConfirm($rows);
 		
 		$data = $this->getSettings('confirm_orders');
 		
@@ -212,7 +218,9 @@ class OrdersController extends Controller {
 		
 		TimesheetOrder::where('order_id', $orderId)->update(['doprun' => null]);
 		
-		$res = $updateModel(Order::class, $orderId, ['status' => OrderStatus::new]);
+		$res = $updateModel(Order::class, $orderId, ['status' => OrderStatus::new], returnModel: true);
+		
+		eventLog()->ordersRemoveFromConfirmed($res);
 		
 		return response()->json($res);
 	}
@@ -253,12 +261,14 @@ class OrdersController extends Controller {
 			'message'	=> $message,
 		] = $request->validate([
 			'order_id'	=> 'required|numeric',
-			'message'	=> 'required|string',
+			'message'	=> 'string|nullable',
 		]);
 		
 		$order = Order::find($orderId);
-		$order->fill(['status' => -1]);
+		$order->fill(['status' => OrderStatus::wait]);
 		$res = $order->save();
+		
+		eventLog()->orderToWaitlList($order);
 		
 		// отправить коммент
 		if ($message) {
@@ -288,6 +298,7 @@ class OrdersController extends Controller {
 		return $this->render($viewPath);
 	}
 	
+	
 	/** Отправить заказ в отмененные
 	 * @param 
 	 * @return 
@@ -298,12 +309,14 @@ class OrdersController extends Controller {
 			'message'	=> $message,
 		] = $request->validate([
 			'order_id'	=> 'required|numeric',
-			'message'	=> 'required|string',
+			'message'	=> 'string|nullable',
 		]);
 		
 		$order = Order::find($orderId);
-		$order->fill(['status' => -2]);
+		$order->fill(['status' => OrderStatus::cancel]);
 		$res = $order->save();
+		
+		eventLog()->orderToCancelList($order);
 		
 		// отправить коммент
 		if ($message) {
@@ -410,6 +423,8 @@ class OrdersController extends Controller {
 		$order = Order::find($orderId);
 		$order->fill(['status' => OrderStatus::new]);
 		$res = $order->save();
+		
+		eventLog()->orderAttach($order, $timesheetId);
 		
 		if (!$res) return response()->json(false);
 		
@@ -582,7 +597,7 @@ class OrdersController extends Controller {
 	 * @param 
 	 * @return 
 	 */
-	public function save_form(Request $request, AddOrderCommentAction $addOrderComment) {
+	public function save_form(Request $request, AddOrderCommentAction $addOrderComment, EventLogService $eventLog) {
 		$formData = $request->validate([
 			'timesheet_id' 	=> 'required|numeric|exclude',
 			'timezone_id' 	=> 'required|numeric',
@@ -601,17 +616,20 @@ class OrdersController extends Controller {
 		
 		$formData['date'] = DdrDateTime::buildTimestamp($formData['date'], ['shift' => $shift]);
 		
-		['id' => $orderId] = Order::create($formData);
+		$order = Order::create($formData);
 		
 		$timesheetId = $request->input('timesheet_id');
 		
 		// Добавление комментария
 		if ($comment = $request->input('comment')) {
-			$addOrderComment($orderId, $comment);
+			$addOrderComment($order['id'], $comment);
 		}
 		
 		$timesheet = Timesheet::find($timesheetId);
-		$timesheet->orders()->attach([$orderId]);
+		$timesheet->orders()->attach([$order['id']]);
+		
+		$eventLog->orderCreated($order, $timesheetId);
+		
 		return response()->json(true);
 	}
 	
@@ -624,7 +642,7 @@ class OrdersController extends Controller {
 	 * @param 
 	 * @return 
 	 */
-	public function update_form(Request $request) {
+	public function update_form(Request $request, EventLogService $eventLog) {
 		$formData = $request->validate([
 			'order_id' 		=> 'required|numeric|exclude',
 			'timesheet_id'	=> 'required|numeric|exclude',
@@ -642,6 +660,7 @@ class OrdersController extends Controller {
 		$order->fill($formData);
 		$res = $order->save();
 		
+		$eventLog->orderUpdated($order);
 		
 		//logger($order->timesheets);
 		// Обновить поле doprun в промежуточной таблице
@@ -915,9 +934,13 @@ class OrdersController extends Controller {
 		
 		if (!$res = $timesheet->orders()->detach($orderId)) return response()->json(false);
 		
-		$stat = $updateAction(Order::class, $orderId, ['status' => $status]);
+		ConfirmedOrder::where('order_id', $orderId)->delete();
 		
-		return response()->json($stat);
+		$order = $updateAction(Order::class, $orderId, ['status' => $status], returnModel: true);
+		
+		eventLog()->orderDetach($order, $status);
+		
+		return response()->json(!!$order);
 	}
 	
 	
@@ -928,13 +951,10 @@ class OrdersController extends Controller {
 	
 	
 	
+	//------------------------------------------------------------------------------------------------------------------
 	
 	
-	
-	
-	
-	
-	
+
 	
 	/** Переместить заказ
 	 * @param 
@@ -953,7 +973,11 @@ class OrdersController extends Controller {
 		$order->fill(['status' => OrderStatus::new]);
 		$res = $order->save();
 		
-		return (!!count($sync['attached']) && $res)  ? 'moved' : false;
+		$movedStat = (!!count($sync['attached']) && $res) ? 'moved' : false;
+		
+		if ($movedStat) eventLog()->orderMove($order, $timesheetId, $choosedTimesheetId);
+		
+		return $movedStat;
 	}
 	
 	
@@ -976,6 +1000,8 @@ class OrdersController extends Controller {
 			!!count($choosedSync['updated'] ?? [])	=> 'updated',
 			default									=> false,
 		};
+		
+		if ($res) eventLog()->orderDoprun($orderId, $timesheetId, $choosedTimesheetId);
 		
 		return $res;
 	}

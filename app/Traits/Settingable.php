@@ -66,6 +66,25 @@ trait Settingable {
 	
 	
 	
+	/** Получить данные из настроек и вернуть их (статическая функция)
+	 * чтобы получить сразу несколько данных из настроек - можно передать любое количество массовов: [
+	 *		'setting'	=> 'contract-types',
+	 *		'key'		=> 'id',
+	 *		'value'		=> 'title',
+	 *		'filter'	=> 'id:3'
+	 * ] 
+	 * @param mixed $setting
+	 * @param string $key
+	 * @param string $value
+	 * @param string $filter
+	 * @return mixed
+	 */
+	public static function getSettingsStatic(...$params) {
+		return (new class { use Settingable; })->getSettings(...$params);
+	}
+	
+	
+	
 	/**
 	 * @param 
 	 * @return Collection|null

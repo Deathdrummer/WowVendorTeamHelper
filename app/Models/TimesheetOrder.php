@@ -5,9 +5,9 @@ use App\Models\Traits\Dateable;
 use App\Models\Traits\Filterable;
 use App\Traits\Settingable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\Pivot;
 
-class TimesheetOrder extends Model {
+class TimesheetOrder extends Pivot {
     use HasFactory, Collectionable, Dateable, Settingable, Filterable;
 	
 	
@@ -41,12 +41,6 @@ class TimesheetOrder extends Model {
      * @var array
      */
     protected $guarded = false;
-	
-	
-	
-	
-	
-	
 	
 	
 	

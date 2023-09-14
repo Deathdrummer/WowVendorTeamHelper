@@ -164,9 +164,6 @@ export async function timesheetCrud(periodId = null, listType = null, buildOrder
 			
 			wait();
 			
-			
-			
-			
 			edit(id, (data, container, {error, status, headers}) => {
 				timesheetEditBtnWait.destroy();
 				wait(false);
@@ -185,6 +182,8 @@ export async function timesheetCrud(periodId = null, listType = null, buildOrder
 			
 			
 			$.timesheetUpdate = async (btn, __) => {
+				wait();
+				
 				let form = $(popper);
 					
 				update(id, form, (data, container, {error}) => {
@@ -310,9 +309,7 @@ export async function timesheetCrud(periodId = null, listType = null, buildOrder
 					$.notify('Заказ успешно добавлен!');
 					
 					if ($(btn).closest('[ddrtabletr]').hasAttr('opened')) {
-						buildOrdersTable($(btn).closest('[ddrtabletr]'), timesheet_id, () => {
-							incrementTimesheetCount(btn, timesheet_id);
-						});
+						buildOrdersTable($(btn).closest('[ddrtabletr]'), timesheet_id);
 					} else {
 						incrementTimesheetCount(btn, timesheet_id);
 					}
@@ -558,17 +555,24 @@ export async function timesheetCrud(periodId = null, listType = null, buildOrder
 
 
 function parseRawToFields(popper, value) {
-	const serverNameMathes = /\/inv\s[^,]+/.exec(value),
-		priceMathes = /(\d{1,}.\d{1,2})\$/.exec(value),
-		orderMathes = /&(amp;)?[^,]+/.exec(value);
-	
 	const serverName = $(popper).find('[name="server_name"]'),
 		order = $(popper).find('[name="order"]'),
 		price = $(popper).find('[name="price"]');
 	
-	$(serverName).val(serverNameMathes[0]);
-	$(price).val(priceMathes[0]);
-	$(order).val(orderMathes[0]);
+	if (!value) {
+		$(serverName).val('');
+		$(price).val('');
+		$(order).val('');
+		return;
+	} 
+	
+	const serverNameMathes = /\/inv\s[^,]+/.exec(value),
+		priceMathes = /(\d{1,}.\d{1,2})\$/.exec(value),
+		orderMathes = /&(amp;)?[^,]+/.exec(value);
+	
+	$(serverName).val(serverNameMathes ? serverNameMathes[0] : '');
+	$(price).val(priceMathes ? priceMathes[0] : '');
+	$(order).val(orderMathes ? orderMathes[0] : '');
 }
 
 

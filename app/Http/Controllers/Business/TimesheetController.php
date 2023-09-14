@@ -1,6 +1,7 @@
 <?php namespace App\Http\Controllers\Business;
 
 use App\Actions\GetUserSetting;
+use App\Actions\LogEventAction;
 use App\Actions\UpdateModelAction;
 use App\Exports\EventsExport;
 use App\Helpers\DdrDateTime;
@@ -63,7 +64,7 @@ class TimesheetController extends Controller {
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request, GetUserSetting $getUserSetting) {
+    public function index(Request $request, GetUserSetting $getUserSetting, LogEventAction $log) {
 		[
 			'views'		=> $viewPath,
 			'period_id'	=> $periodId,

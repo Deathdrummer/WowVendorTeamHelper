@@ -186,7 +186,7 @@ class DdrDateTime {
 		elseif (isset($isoFormat)) {
 			if (is_array($isoFormat)) $carbon = $carbon->isoFormat(...$isoFormat);
 			else $carbon = $carbon->isoFormat($isoFormat);
-		} 
+		}
 		
 		return $carbon;
 	}
