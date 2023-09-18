@@ -557,8 +557,8 @@ export async function showStatusesTooltip(btn = null, orderId = null, timesheetI
 
 
 function decrementTimesheetCount(btn = null) {
-	if (_.isNull(btn)) console.error('incrementTimesheetCount ошибка -> не передан btn');
-	const tsRow = $(btn).closest('[timesheetorders]').siblings('[ddrtabletr]').find('[orderscount]');
+	if (_.isNull(btn)) console.error('decrementTimesheetCount ошибка -> не передан btn');
+	const tsRow = $(btn).closest('[timesheetorders]').prev('[ddrtabletr]').find('[orderscount]');
 	let count = Number($(tsRow).text());
 	$(tsRow).text(count - 1);
 }
