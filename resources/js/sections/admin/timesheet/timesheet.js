@@ -311,7 +311,7 @@ export async function timesheetCrud(periodId = null, listType = null, buildOrder
 					if ($(btn).closest('[ddrtabletr]').hasAttr('opened')) {
 						buildOrdersTable($(btn).closest('[ddrtabletr]'), timesheet_id);
 					} else {
-						incrementTimesheetCount(btn, timesheet_id);
+						incrementTimesheetCount(btn);
 					}
 					close();
 				}
@@ -587,10 +587,10 @@ function incrementLastPeriodCount(periodId = null, countEvents = 1) {
 
 
 
-function incrementTimesheetCount(btn = null, timesheetId = null) {
-	if (_.isNull(timesheetId)) console.error('incrementTimesheetCount ошибка -> не передан timesheetId');
-	let count = $(btn).closest('[ddrtabletr]').find('[orderscount]').text();
-	$(btn).closest('[ddrtabletr]').find('[orderscount]').text(Number(count) + 1);
+function incrementTimesheetCount(btn = null) {
+	if (_.isNull(btn)) console.error('incrementTimesheetCount ошибка -> не передан btn');
+	let count = Number($(btn).closest('[ddrtabletr]').find('[orderscount]').text());
+	$(btn).closest('[ddrtabletr]').find('[orderscount]').text(count + 1);
 }
 
 

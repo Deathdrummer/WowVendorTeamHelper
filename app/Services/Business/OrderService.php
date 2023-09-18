@@ -256,8 +256,9 @@ class OrderService {
 			$timesheet->orders()->updateExistingPivot($orderId, ['doprun' => null]);
 			
 			if ($status == 'ready') {
-				$timesheet->confirmOrders()->syncWithoutDetaching([$orderId => ['from_id' => auth('site')->id(), 'date_add' => DdrDateTime::now()]]);
-				eventLog()->orderToConfirm($order, $status);
+				$detachingData = ['from_id' => auth('site')->id(), 'date_add' => DdrDateTime::now()];
+				$timesheet->confirmOrders()->syncWithoutDetaching([$orderId => $detachingData]);
+				eventLog()->orderToConfirm($order, $timesheetId, $detachingData);
 			}
 		}
 		

@@ -67,4 +67,5 @@ Route::delete('orders/confirm', [OrdersController::class, 'remove_order_from_con
 
 
 // Логи действий пользователей
-Route::get('events_logs', EventsLogsController::class);
+Route::get('events_logs', [EventsLogsController::class, 'index']);
+Route::get('event_log', [EventsLogsController::class, 'info']);

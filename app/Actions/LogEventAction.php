@@ -2,6 +2,7 @@
 
 use App\Helpers\DdrDateTime;
 use App\Models\EventLog;
+use Error;
 
 class LogEventAction {
 	
@@ -11,8 +12,8 @@ class LogEventAction {
 	* @param array $info информация
 	* @return array
 	*/
-	public function __invoke($eventType = null, $info = null) {
-		if (!$eventType) return false;
+	public function __invoke($group = null, $eventType = null, $info = null) {
+		if (!$group || !$eventType) throw new Error('LogEventAction ошибка -> отсутствуют обязательные аргументы!');
 		
 		$guard = getGuard();
 		
@@ -24,10 +25,16 @@ class LogEventAction {
 			default	=> 1,
 		};
 		
+		$sortCounter = 0;
+		foreach ($info as $field => $data) {
+			$info[$field]['sort'] = $sortCounter++;
+		}
+		
 		return EventLog::create([
 			'from_id'		=> $selfId,
 			'user_type'		=> $userType,
 			'event_type'	=> $eventType,
+			'group'			=> $group,
 			'info'			=> $info,
 			'datetime'		=> DdrDateTime::now(),
 		]);

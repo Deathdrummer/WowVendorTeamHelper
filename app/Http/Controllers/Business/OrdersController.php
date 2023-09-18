@@ -1,7 +1,6 @@
 <?php namespace App\Http\Controllers\Business;
 
 use App\Actions\AddOrderCommentAction;
-use App\Actions\LogEventAction;
 use App\Actions\SendSlackMessageAction;
 use App\Actions\UpdateModelAction;
 use App\Enums\OrderStatus;
@@ -144,7 +143,7 @@ class OrdersController extends Controller {
 			'order_id'	=> 'required|numeric',
 		]);
 		
-		$response = $updateAction(ConfirmedOrder::class, ['order_id' => $orderId], ['confirm' => true, 'date_confirm' => DdrDateTime::now()], returnModel: true);
+		$response = $updateAction(ConfirmedOrder::class, ['order_id' => $orderId], ['confirmed_from_id' => auth('site')?->user()?->id, 'confirm' => true, 'date_confirm' => DdrDateTime::now()], returnModel: true);
 		
 		if (!$response) return response()->json(false);
 		
@@ -175,6 +174,7 @@ class OrdersController extends Controller {
 		$ordersIds = $rows->pluck('order_id')->toArray();
 		
 		$response = $query->update([
+			'confirmed_from_id' => auth('site')?->user()?->id,
 			'confirm' => true,
 			'date_confirm' => DdrDateTime::now()
 		]);
@@ -220,7 +220,7 @@ class OrdersController extends Controller {
 		
 		$res = $updateModel(Order::class, $orderId, ['status' => OrderStatus::new], returnModel: true);
 		
-		eventLog()->ordersRemoveFromConfirmed($res);
+		eventLog()->orderRemoveFromConfirmed($res);
 		
 		return response()->json($res);
 	}
@@ -266,9 +266,8 @@ class OrdersController extends Controller {
 		
 		$order = Order::find($orderId);
 		$order->fill(['status' => OrderStatus::wait]);
-		$res = $order->save();
-		
 		eventLog()->orderToWaitlList($order);
+		$res = $order->save();
 		
 		// отправить коммент
 		if ($message) {
@@ -314,9 +313,8 @@ class OrdersController extends Controller {
 		
 		$order = Order::find($orderId);
 		$order->fill(['status' => OrderStatus::cancel]);
-		$res = $order->save();
-		
 		eventLog()->orderToCancelList($order);
+		$res = $order->save();
 		
 		// отправить коммент
 		if ($message) {
@@ -418,13 +416,11 @@ class OrdersController extends Controller {
 		
 		if (!count($sync['attached'])) return response()->json(false);
 		
-		
 		// менять статус на новый
 		$order = Order::find($orderId);
 		$order->fill(['status' => OrderStatus::new]);
-		$res = $order->save();
-		
 		eventLog()->orderAttach($order, $timesheetId);
+		$res = $order->save();
 		
 		if (!$res) return response()->json(false);
 		
@@ -654,13 +650,14 @@ class OrdersController extends Controller {
 		]);
 		
 		$orderId = $request->input('order_id');
-		//$timesheetId = $request->input('timesheet_id');
+		$timesheetId = $request->input('timesheet_id');
 		
 		$order = Order::find($orderId);
 		$order->fill($formData);
+		$eventLog->orderUpdated($order, $timesheetId);
 		$res = $order->save();
 		
-		$eventLog->orderUpdated($order);
+		
 		
 		//logger($order->timesheets);
 		// Обновить поле doprun в промежуточной таблице
@@ -938,7 +935,7 @@ class OrdersController extends Controller {
 		
 		$order = $updateAction(Order::class, $orderId, ['status' => $status], returnModel: true);
 		
-		eventLog()->orderDetach($order, $status);
+		eventLog()->orderDetach($order, $timesheetId, $status);
 		
 		return response()->json(!!$order);
 	}
@@ -971,11 +968,12 @@ class OrdersController extends Controller {
 		// менять статус на новый
 		$order = Order::find($orderId);
 		$order->fill(['status' => OrderStatus::new]);
+		$oldStatus = $order?->status;
 		$res = $order->save();
 		
 		$movedStat = (!!count($sync['attached']) && $res) ? 'moved' : false;
 		
-		if ($movedStat) eventLog()->orderMove($order, $timesheetId, $choosedTimesheetId);
+		if ($movedStat) eventLog()->orderMove($order, $oldStatus, $timesheetId, $choosedTimesheetId);
 		
 		return $movedStat;
 	}

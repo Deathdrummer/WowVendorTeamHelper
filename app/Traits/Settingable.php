@@ -220,9 +220,14 @@ trait Settingable {
 	 * @return 
 	 */
 	private function _setFilter($data, $filter) {
-		$f = splitString($filter, ':');
-		$filterKey = $f[0] ?? null;
-		$filterValue = $f[1] ?? null;
+		if (is_array($filter)) {
+			$filterKey = key($filter) ?? null;
+			$filterValue = current($filter) ?? null;
+		} else {
+			$f = splitString($filter, ':');
+			$filterKey = $f[0] ?? null;
+			$filterValue = $f[1] ?? null;
+		}
 		
 		$data = $data->filter(function ($value) use($filterKey, $filterValue) {
 			if (is_array($value) && $value[$filterKey] == $filterValue) return true;

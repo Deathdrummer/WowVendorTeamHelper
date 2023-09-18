@@ -64,7 +64,7 @@ class TimesheetController extends Controller {
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request, GetUserSetting $getUserSetting, LogEventAction $log) {
+    public function index(Request $request, GetUserSetting $getUserSetting) {
 		[
 			'views'		=> $viewPath,
 			'period_id'	=> $periodId,

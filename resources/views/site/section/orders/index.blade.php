@@ -328,10 +328,10 @@
 			url: 'client/orders/relocate',
 			method: 'get',
 			params: {order_id, views},
-			title: `Отправить заказ: <span class="color-gray">${orderNumber}</span> в событие`, // заголовок
+			title: `Привязать заказ: <span class="color-gray">${orderNumber}</span> к событию`, // заголовок
 			width: 700, // ширина окна
 			disabledButtons: true,
-			buttons: ['ui.close', {action: 'relocateOrderAction', title: 'Отправить'}],
+			buttons: ['ui.close', {action: 'relocateOrderAction', title: 'Привязать'}],
 		});
 		
 		onClose(() => {

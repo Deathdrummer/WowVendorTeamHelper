@@ -28,8 +28,10 @@ class DdrDateTime {
 			default				=> $defaultFormat,
 		};
 		
-		$shift = match(true) {
+		$buildShift = match(true) {
 			$shift ?? false				=> config('app.shift_hours', 0),
+			($shift ?? null) == '-'		=> (-1 * config('app.shift_hours', 0)),
+			($shift ?? null) == '+'		=> config('app.shift_hours', 0),
 			is_numeric($shift ?? null)	=> (int)$shift,
 			default						=> null,
 		};
@@ -37,7 +39,7 @@ class DdrDateTime {
 		return self::buildCarbon([
 			'timestamp' => $timestamp,
 			'isoFormat'	=> $format,
-			'shift' 	=> $shift,
+			'shift' 	=> $buildShift,
 			'locale' 	=> $locale,
 		]);
     }
@@ -67,8 +69,10 @@ class DdrDateTime {
 			default				=> $defaultFormat,
 		};
 		
-		$shift = match(true) {
+		$buildShift = match(true) {
 			$shift ?? false				=> config('app.shift_hours', 0),
+			($shift ?? null) == '-'		=> (-1 * config('app.shift_hours', 0)),
+			($shift ?? null) == '+'		=> config('app.shift_hours', 0),
 			is_numeric($shift ?? null)	=> (int)$shift,
 			default						=> null,
 		};
@@ -76,7 +80,7 @@ class DdrDateTime {
 		return self::buildCarbon([
 			'timestamp' => $timestamp,
 			'format' 	=> $format,
-			'shift' 	=> $shift,
+			'shift' 	=> $buildShift,
 			'locale' 	=> $locale,
 		]);
     }
@@ -106,15 +110,17 @@ class DdrDateTime {
 			default			=> null,
 		};
 		
-		$shift = match(true) {
-			$shift ?? false				=> (-1 * config('app.shift_hours', 0)), // так как мы ориентируемся на UTC - от указанной даты мы наоборот, отномаем смещение
+		$buildShift = match(true) {
+			$shift ?? null				=> (-1 * config('app.shift_hours', 0)), // так как мы ориентируемся на UTC - от указанной даты мы наоборот, отномаем смещение
+			($shift ?? null) == '-'		=> (-1 * config('app.shift_hours', 0)),
+			($shift ?? null) == '+'		=> config('app.shift_hours', 0),
 			is_numeric($shift ?? null)	=> (int)$shift,
 			default						=> null,
 		};
 		
 		return self::buildCarbon([
 			'timestamp' => $timestamp,
-			'shift' 	=> $shift,
+			'shift' 	=> $buildShift,
 			'locale' 	=> $locale ?? App::currentLocale(),
 		]);
 	}
@@ -131,7 +137,7 @@ class DdrDateTime {
 	 * @return Carbon
 	 */
 	public static function shift($timestamp = null, $shift = null):Carbon {
-		$shift = match(true) {
+		$buildShift = match(true) {
 			($shift ?? null) == 'UTC'		=> (-1 * config('app.shift_hours', 0)), // так как мы ориентируемся на UTC - от указанной даты мы наоборот, отномаем смещение
 			($shift ?? null) == 'TZ'		=> config('app.shift_hours', 0),
 			is_numeric($shift ?? null)	=> (int)$shift,
@@ -140,7 +146,7 @@ class DdrDateTime {
 		
 		return self::buildCarbon([
 			'timestamp' => $timestamp,
-			'shift' 	=> $shift,
+			'shift' 	=> $buildShift,
 		]);
 	}
 	

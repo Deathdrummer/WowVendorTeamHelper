@@ -40,11 +40,12 @@ trait HasEvents {
 		
 		$buildedFields = [];
 		foreach ($originalData as $field => $value) {
-			$buildedFields[$field]['data'] = in_array($field, $datetimeFields) ? DdrdateTime::buildTimestamp($value) : self::mapField($field, $value, $mapValues);
+			$buildedFields[$field]['data'] = in_array($field, $datetimeFields) ? DdrdateTime::buildTimestamp($value, ['shift' => '+']) : self::mapField($field, $value, $mapValues);
+			if (in_array($field, $datetimeFields)) $buildedFields[$field]['meta']['date'] = 1;
 			if (in_array($field, $datetimeFields) && !self::isDateChanged(DdrdateTime::buildTimestamp($value), $changedData[$field])) continue;
 			
 			if ($value != ($changed = bringTypes($changedData[$field]))) {
-				$buildedFields[$field]['updated'] = in_array($field, $datetimeFields) ? $changedData[$field] : self::mapField($field, $changed, $mapValues);
+				$buildedFields[$field]['updated'] = in_array($field, $datetimeFields) ? DdrdateTime::shift($changedData[$field], 'TZ') : self::mapField($field, $changed, $mapValues);
 			}
 		}
 		

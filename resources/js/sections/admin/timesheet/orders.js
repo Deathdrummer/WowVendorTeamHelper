@@ -270,7 +270,7 @@ export async function buildOrdersTable(row = null, timesheetId = null, cb = null
 		});
 		
 		
-		$.detachTimesheetOrderAction = async (btn) => {
+		$.detachTimesheetOrderAction = async (__) => {
 			wait();
 			
 			const status = $(popper).find('#listType').val();
@@ -284,9 +284,8 @@ export async function buildOrdersTable(row = null, timesheetId = null, cb = null
 				return;
 			}
 			
-			console.log(data);
-			
 			if (data) {
+				decrementTimesheetCount(btn);
 				$.notify(`Заказ ${orderNumber} успешно отвязан!`);
 				if (notRows) {
 					$(row).closest('[ddrtable]').replaceWith('<p class="color-gray-400 text-center mt2rem fz14px">Нет заказов</p>');
@@ -295,8 +294,6 @@ export async function buildOrdersTable(row = null, timesheetId = null, cb = null
 				}
 				close();
 			}
-			
-			
 		}
 		
 		
@@ -557,6 +554,14 @@ export async function showStatusesTooltip(btn = null, orderId = null, timesheetI
 
 
 
+
+
+function decrementTimesheetCount(btn = null) {
+	if (_.isNull(btn)) console.error('incrementTimesheetCount ошибка -> не передан btn');
+	const tsRow = $(btn).closest('[timesheetorders]').siblings('[ddrtabletr]').find('[orderscount]');
+	let count = Number($(tsRow).text());
+	$(tsRow).text(count - 1);
+}
 
 
 

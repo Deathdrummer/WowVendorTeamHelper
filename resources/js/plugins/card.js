@@ -26,4 +26,5 @@ $.fn.card = function(comand) {
 	
 	
 	comands[comand]();
+	return comands;
 }

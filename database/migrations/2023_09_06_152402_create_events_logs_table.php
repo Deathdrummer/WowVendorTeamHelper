@@ -16,6 +16,7 @@ return new class extends Migration
 			$table->unsignedBigInteger('from_id')->nullable();
 			$table->unsignedTinyInteger('user_type')->nullable();
 			$table->unsignedTinyInteger('event_type')->nullable();
+			$table->unsignedTinyInteger('group')->nullable();
 			$table->json('info')->nullable();
             $table->timestamp('datetime')->nullable();
         });

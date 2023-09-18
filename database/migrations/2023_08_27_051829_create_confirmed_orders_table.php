@@ -16,6 +16,7 @@ return new class extends Migration
 			$table->unsignedBigInteger('order_id')->nullable();
 			$table->unsignedBigInteger('timesheet_id')->nullable();
 			$table->unsignedBigInteger('from_id')->nullable();
+			$table->unsignedBigInteger('confirmed_from_id')->nullable();
 			$table->boolean('confirm')->default(0);
 			$table->timestamp('date_add')->nullable();
 			$table->timestamp('date_confirm')->nullable();

@@ -1,5 +1,6 @@
 <?php namespace App\Http\Controllers\Business;
 
+use App\Enums\LogEventsGroups;
 use App\Enums\LogEventsTypes;
 use App\Http\Controllers\Controller;
 use App\Models\EventLog;
@@ -19,13 +20,20 @@ class EventsLogsController extends Controller {
 	* @param 
 	* @return 
 	*/
-	public function __invoke(Request $request) {
-		$page = $request->input('page', 0);
+	public function index(Request $request) {
+		[
+			'page'	=> $page,
+			'group'	=> $group,
+		] = $request->validate([
+			'page'	=> 'required|numeric',
+			'group'	=> 'required|numeric',
+		]);
 		
 		$query = EventLog::query()
 			->with('author:id,name,pseudoname')
 			->with('adminauthor:id,name,pseudoname')
 			//->with('author:id,name,pseudoname', 'adminauthor:id,name,pseudoname')
+			->where('group', (int)$group)
 			->orderBy('id', 'DESC');
 		
 		$paginate = $this->paginate($query, $page, 15)->toArray();
@@ -54,10 +62,43 @@ class EventsLogsController extends Controller {
 			'total'			=> $paginate['total'] ?? null,
 		];
 		
-		return response()->view('admin.section.system.render.logs.list', compact('data'))->withHeaders($headers);
+		
+		$view = LogEventsGroups::fromValue((int)$group)->key;
+		
+		return response()->view('admin.section.system.render.logs.'.$view, compact('data'))->withHeaders($headers);
 	}
 	
 	
+	
+	
+	
+	
+	
+	
+	
+	/**
+	* 
+	* @param 
+	* @return 
+	*/
+	public function info(Request $request) {
+		[
+			'id'	=> $id,
+		] = $request->validate([
+			'id'	=> 'required|numeric',
+		]);
+		
+		$row = EventLog::find($id);
+		$infoData = collect(($row->info));
+		
+		$hasUpdated = $infoData->contains(function ($value, $key) {
+			return array_key_exists('updated', $value);
+		});
+		
+		$data = $infoData->sortBy('sort');
+		
+		return response()->view('admin.section.system.render.logs.info', compact('data', 'hasUpdated'))->withHeaders(['hasUpdated' => $hasUpdated]);
+	}
 	
 	
 	

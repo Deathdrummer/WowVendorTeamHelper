@@ -1,6 +1,5 @@
 <?php namespace App\Models;
 
-use App\Actions\LogEventAction;
 use App\Enums\OrderStatus;
 use App\Helpers\DdrDateTime;
 use App\Models\Traits\Collectionable;
