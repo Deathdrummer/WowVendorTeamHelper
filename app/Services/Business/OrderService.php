@@ -245,13 +245,12 @@ class OrderService {
 		
 		$order = Order::find($orderId);
 		$order->fill(['status' => $stat]);
-		if (!$order->save()) return false;
 		
 		$timesheet = Timesheet::find($timesheetId);
 		
 		if (in_array($status, ['cancel', 'wait'])) {
 			$timesheet->orders()->detach($orderId);
-			eventLog()->orderDetach($order, $status);
+			eventLog()->orderDetach($order, $timesheetId, $status);
 		} else {
 			$timesheet->orders()->updateExistingPivot($orderId, ['doprun' => null]);
 			
@@ -262,7 +261,7 @@ class OrderService {
 			}
 		}
 		
-		return true;
+		return $order->save();
 	}
 	
 	

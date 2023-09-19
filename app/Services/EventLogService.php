@@ -333,8 +333,9 @@ class EventLogService {
 		$dateMsc = DdrDateTime::shift($order?->date, (-1 * $timezone['shift']));
 		
 		$orderStatuses = $this->getSettings('order_statuses');
-		$oldStatus = $orderStatuses[OrderStatus::fromValue((int)$oldStatus)?->key]['name'] ?? '-';
-		$newStatus = $orderStatuses[OrderStatus::fromValue((int)$order?->status)?->key]['name'] ?? '-';
+		$isConfirmed = ConfirmedOrder::where('order_id', $order?->id)->count();
+		$oldStatus = $isConfirmed ? 'На подтверждении' : $orderStatuses[OrderStatus::fromValue((int)$oldStatus)?->key]['name'] ?? '-';
+		//$newStatus = $isConfirmed ? 'На подтверждении' : $orderStatuses[OrderStatus::fromValue((int)$order?->status)?->key]['name'] ?? '-';
 		
 		$info = [
 			'id' => ['data' => $order?->id ?? '-', 'title' => 'ID заказа'],
@@ -346,7 +347,7 @@ class EventLogService {
 			'date' => ['data' => $order?->date ?? '-', 'title' => 'Дата и время ориг.', 'meta' => ['date' => 1]],
 			'date_msc' => ['data' => $dateMsc, 'title' => 'Дата и время МСК', 'meta' => ['date' => 1]],
 			'timezone' => ['data' => $timezone['timezone'], 'title' => 'Временная зона'],
-			'statuses' => ['data' => $oldStatus, 'updated' => $newStatus, 'title' => 'Статус заказа'],
+			'statuses' => ['data' => $oldStatus, 'title' => 'Статус заказа'],
 			
 			'command' => ['data' => $oldCommand?->title ?? '-', 'updated' => $newCommand?->title ?? '-', 'title' => 'Команда', 'sort' => 10],
 			'timesheet_period' => ['data' => $oldTimesheetPeriod?->title ?? '-', 'title' => 'Период'],
@@ -554,7 +555,7 @@ class EventLogService {
 		$orderStatuses = $this->getSettings('order_statuses');
 		$tsOrder = TimesheetOrder::where('order_id', $order?->id)->first();
 		
-		$oldStatus = $tsOrder?->doprun == 1 ? $orderStatuses['doprun']['name'] ?? '-' : $orderStatuses[OrderStatus::fromValue((int)$oldData['status'])?->key]['name'] ?? '-';
+		$oldStatus = $tsOrder?->doprun == 1 ? ($orderStatuses['doprun']['name'] ?? '-') : ($orderStatuses[OrderStatus::fromValue($oldData['status'])?->key]['name'] ?? '-');
 		
 		$info = [
 			'id' => ['data' => $order?->id ?? '-', 'title' => 'ID заказа'],
@@ -567,7 +568,7 @@ class EventLogService {
 			'date_msc' => ['data' => $dateMsc, 'title' => 'Дата и время МСК', 'meta' => ['date' => 1]],
 			'timezone' => ['data' => $timezone['timezone'], 'title' => 'Временная зона'],
 			'status' => ['data' => $oldStatus, 'title' => 'Предыдущий статус'],
-			'new_status' => ['data' => $orderStatuses[OrderStatus::fromValue((int)$status)?->key]['name'] ?? '-', 'title' => 'Новый статус'],
+			'new_status' => ['data' => $orderStatuses[$status]['name'] ?? '-', 'title' => 'Новый статус'],
 			
 			'command' => ['data' => $command?->title ?? '-', 'title' => 'Команда', 'sort' => 10],
 			'timesheet_period' => ['data' => $timesheetPeriod?->title ?? '-', 'title' => 'Период'],

@@ -11,10 +11,11 @@ class UpdateModelAction {
 	* @param $data данные для обновления
 	* @return Model|bool|null
 	*/
-	public function __invoke($modelClass, $idOrField, $data, $returnModel = false):Model|bool|null {
+	public function __invoke($modelClass, $idOrField, $data, $callback = false, $returnModel = false):Model|bool|null {
 		$model = App::make($modelClass);
 		$currendModel = is_array($idOrField) ? $model->where($idOrField)->firstOrFail() : $model->find($idOrField);
 		$currendModel->fill($data);
+		if ($callback && is_callable($callback)) $callback($currendModel);
 		$res = $currendModel->save();
 		
 		return $returnModel ? $currendModel : $res;

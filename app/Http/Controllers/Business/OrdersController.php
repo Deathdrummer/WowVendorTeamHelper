@@ -933,9 +933,9 @@ class OrdersController extends Controller {
 		
 		ConfirmedOrder::where('order_id', $orderId)->delete();
 		
-		$order = $updateAction(Order::class, $orderId, ['status' => $status], returnModel: true);
-		
-		eventLog()->orderDetach($order, $timesheetId, $status);
+		$order = $updateAction(Order::class, $orderId, ['status' => $status], function($order) use($timesheetId, $status) {
+			eventLog()->orderDetach($order, $timesheetId, OrderStatus::fromValue((int)$status)?->key ?? 'new');
+		});
 		
 		return response()->json(!!$order);
 	}

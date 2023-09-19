@@ -54,7 +54,7 @@
 							@if($row['meta']['symbal'] ?? false)
 								<p>{{$row['data']}} @symbal(rub)</p>
 							@elseif($row['meta']['date'] ?? false)
-								<p class="fz12px">{{DdrDateTime::date($row['data'] ?? null, ['shift' => '-'])}} в {{DdrDateTime::time($row['data'] ?? null, ['shift' => '-'])}}</p>
+								<p class="fz12px">{{DdrDateTime::date($row['data'] ?? null)}} в {{DdrDateTime::time($row['data'] ?? null)}}</p>
 							@else
 								<p>{{$row['data']}}</p>
 							@endif

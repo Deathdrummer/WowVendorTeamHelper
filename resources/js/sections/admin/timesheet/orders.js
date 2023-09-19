@@ -514,6 +514,8 @@ export async function showStatusesTooltip(btn = null, orderId = null, timesheetI
 			if (['wait', 'cancel'].includes(status)) {
 				let hasRows = !!$(ref).closest('[ddrtabletr]').siblings('[ddrtabletr]').length;
 				
+				decrementTimesheetCount(btn);
+				
 				if (hasRows) $(ref).closest('[ddrtabletr]').remove();
 				else $(ref).closest('[ddrtable]').replaceWith('<p class="color-gray-400 text-center mt2rem fz14px">Нет заказов</p>');
 				
