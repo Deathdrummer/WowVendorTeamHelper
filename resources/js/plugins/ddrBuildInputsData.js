@@ -20,7 +20,7 @@ $.fn.ddrBuildInputsData = function(params = []) {
 		//abortContr: null,
 	}, params);
 	
-	if (!attr) throw new Error('ddrRool ошибка ->  не указан attr');
+	if (!attr) throw new Error('ddrBuildInputsData ошибка ->  не указан attr');
 	
 	/*const createAbortCtrl = () => {
 		const abCtrl = new AbortController();

@@ -28,8 +28,6 @@ import '@plugins/ddrPagination';
 
 
 
-
-
 $.notify.defaults({
 	clickToHide: true,
 	autoHide: true,
