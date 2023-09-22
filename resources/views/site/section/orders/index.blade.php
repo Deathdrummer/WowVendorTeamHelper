@@ -172,7 +172,6 @@
 	
 	$.getOrdersAction = async (selector, isActive, stat) => {
 		if (isActive) return;
-		playAlert();
 		$('#ordersTypesChuser').setAttrib('disabled');
 		status.value = stat;
 		currentPage.value = 1;
@@ -612,7 +611,7 @@
 				});
 				
 				$.notify(`Поступили новые заказы! ${newOrdersRowsCount} шт.`);
-				ringtone('notify.mp3');
+				//ringtone('notify.mp3');
 			}
 		});
 	}

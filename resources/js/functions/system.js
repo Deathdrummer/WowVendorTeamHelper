@@ -1,3 +1,5 @@
+import '@plugins/ringtone';
+
 window.isIos = /iPhone|iPad|iPod/i.test(navigator.userAgent);
 window.tapEvent = (('ontouchstart' in window) && !isIos) ? 'tap' : 'click';
 
@@ -16,9 +18,9 @@ $.fn.ddrClick = function(callback = null, countClicks = 1) {
 
 // http://slack-api.loc/storage/notify.mp3'
 window.ringtone = function(url = null) {
-	
 	if (!url) console.error('ringtone ошибка! Не передан URL аудио');
-	playAlert(url);
+	playAlert.content['notify'] = [`${location.origin}/storage/${url}`];
+	playAlert('notify');
 }
 
 
