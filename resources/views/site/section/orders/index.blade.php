@@ -172,6 +172,7 @@
 	
 	$.getOrdersAction = async (selector, isActive, stat) => {
 		if (isActive) return;
+		playAlert();
 		$('#ordersTypesChuser').setAttrib('disabled');
 		status.value = stat;
 		currentPage.value = 1;

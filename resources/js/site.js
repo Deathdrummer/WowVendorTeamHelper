@@ -23,6 +23,7 @@ import '@plugins/jquery.ui';
 import '@plugins/ddrCalc';
 import '@plugins/ddrQuery';
 import '@plugins/ddrPagination';
+import '@plugins/ringtone';
 
 
 
