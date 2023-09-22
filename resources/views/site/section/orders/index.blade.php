@@ -551,7 +551,7 @@
 	
 	
 	
-	
+	ringtone('notify.mp3');
 	//----------------------------------------------------------------------------------------- Прослушка
 	if (Echo.connector.channels['send_message_channel'] === undefined) {
 		listenSendMessageChannel();
@@ -612,6 +612,7 @@
 				});
 				
 				$.notify(`Поступили новые заказы! ${newOrdersRowsCount} шт.`);
+				ringtone('notify.mp3');
 			}
 		});
 	}

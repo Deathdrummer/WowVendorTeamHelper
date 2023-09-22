@@ -56,9 +56,6 @@ $.event.special.scrollstop.latency = 20;
 
 
 
-
-
-
 $(function() {
 	
 	$('body').on('contextmenu', function(e) {

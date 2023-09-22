@@ -34,6 +34,7 @@ window.notify = function(message = '', className = 'success', timeOut, ops = {})
 		gap: 2
 	});
 	
+	
 	return {
 		close() {
 			$('.notifyjs-ddr-base').trigger('notify-hide');
