@@ -20,7 +20,6 @@ $.fn.ddrClick = function(callback = null, countClicks = 1) {
 window.ringtone = function(url = null) {
 	if (!url) console.error('ringtone ошибка! Не передан URL аудио');
 	const ringtonPath = getFileUrl(url);
-	console.log(ringtonPath);
 	playAlert.content['notify'] = [ringtonPath];
 	playAlert('notify');
 }
