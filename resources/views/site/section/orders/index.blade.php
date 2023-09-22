@@ -172,6 +172,7 @@
 	
 	$.getOrdersAction = async (selector, isActive, stat) => {
 		if (isActive) return;
+		ringtone('notify.mp3');
 		$('#ordersTypesChuser').setAttrib('disabled');
 		status.value = stat;
 		currentPage.value = 1;
@@ -551,7 +552,6 @@
 	
 	
 	
-	ringtone('notify.mp3');
 	//----------------------------------------------------------------------------------------- Прослушка
 	if (Echo.connector.channels['send_message_channel'] === undefined) {
 		listenSendMessageChannel();
