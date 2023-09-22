@@ -19,9 +19,7 @@ $.fn.ddrClick = function(callback = null, countClicks = 1) {
 // http://slack-api.loc/storage/notify.mp3'
 window.ringtone = function(url = null) {
 	if (!url) console.error('ringtone ошибка! Не передан URL аудио');
-	console.log(url);
 	const ringtonPath = getFileUrl(url);
-	console.log(ringtonPath);
 	playAlert.content['notify'] = [ringtonPath];
 	playAlert('notify');
 }
