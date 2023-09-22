@@ -172,6 +172,7 @@
 	
 	$.getOrdersAction = async (selector, isActive, stat) => {
 		if (isActive) return;
+		ringtone('notify2.mp3');
 		$('#ordersTypesChuser').setAttrib('disabled');
 		status.value = stat;
 		currentPage.value = 1;
@@ -611,7 +612,7 @@
 				});
 				
 				$.notify(`Поступили новые заказы! ${newOrdersRowsCount} шт.`);
-				ringtone('offline-sms-meloboom.mp3');
+				ringtone('notify.mp3');
 			}
 		});
 	}
