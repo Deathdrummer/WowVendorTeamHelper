@@ -31,8 +31,15 @@ import img2 from '../images/filetypes/svg.png';
 
 
 
-window.getImageUrl = function(name) {
-  return new URL(`/resources/images/${name}`, import.meta.url).href;
+window.getImageUrl = function(name = null) {
+	if (!url) console.error('getImageUrl ошибка! Не передан URL');
+	return new URL(`/resources/images/${name}`, import.meta.url).href;
+}
+
+
+window.getFileUrl = function(url = null) {
+	if (!url) console.error('getFileUrl ошибка! Не передан URL');
+	return new URL(`/resources/files/${url}`, import.meta.url).href;
 }
 
 
