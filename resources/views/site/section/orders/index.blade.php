@@ -611,7 +611,7 @@
 				});
 				
 				$.notify(`Поступили новые заказы! ${newOrdersRowsCount} шт.`);
-				//ringtone('notify.mp3');
+				ringtone('notify.mp3');
 			}
 		});
 	}
