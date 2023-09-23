@@ -157,6 +157,13 @@ class OrdersController extends Controller {
 			'message' => $data['message'] ?? null,
 		]);
 		
+		// Доп. проверка отправки уведомления.
+		// Если не отправилось - то статус подтверждения отменяется
+		if ($sendMassResp !== 'ok') {
+			$updateAction(ConfirmedOrder::class, ['order_id' => $orderId], ['confirmed_from_id' => null, 'confirm' => false, 'date_confirm' => null]);
+			return response()->json(false);
+		}
+		
 		return response()->json($response && $sendMassResp);
 	}
 	

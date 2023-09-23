@@ -115,7 +115,7 @@ class SendSlackMessageAction {
 			->withData(['payload' => json_encode(["text" => $message])])
 			->withHeaders(['Content-Type' => 'application/x-www-form-urlencoded'])
 			->withContentType('application/json')
-			->returnResponseObject()
+			//->returnResponseObject()
 			->post();
 	}
 	

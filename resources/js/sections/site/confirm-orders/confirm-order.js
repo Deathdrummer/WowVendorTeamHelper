@@ -12,6 +12,8 @@ export async function confirmOrder(btn, id) {
 		if (hasRows) $(btn).closest('[ddrtabletr]').remove();
 		else $(btn).closest('[ddrtable]').replaceWith('<p class="color-gray-400 text-center mt2rem fz14px">Нет заказов</p>');
 		$.notify('Заказ успешно подтвежден!');
+	} else {
+		$.notify('Ошибка! Заказ не подтвежден!', 'error');
 	}
 }
 
