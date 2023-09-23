@@ -61,7 +61,7 @@ class ImportTimesheetEventsRequest extends FormRequest {
 		foreach($rows as $k => $row) {
 			$splitRow = preg_split('/\s+/', $row); 
 			
-			if (count($splitRow) == 4) [$date, $time, $commandId, $eventTypeId] = $splitRow;
+			if (count($splitRow) == 4) [$date, $time, $eventTypeId, $commandId] = $splitRow;
 			else continue;
 			
 			if (!isset($commands[$commandId]) || !isset($eventsTypes[$eventTypeId])) continue;
