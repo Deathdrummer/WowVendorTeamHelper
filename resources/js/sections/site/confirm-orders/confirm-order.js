@@ -47,6 +47,9 @@ export async function confirmAllOrders(btn) {
 			$('#confirmOrdersBlock').html('<p class="color-gray-400 text-center mt2rem fz14px">Нет заказов</p>');
 			$.notify('Все заказы успешно подтвеждены!');
 			close();
+		} else {
+			$.notify('Ошибка! Заказы не подтвежден!', 'error');
+			close();
 		}
 	}
 	
