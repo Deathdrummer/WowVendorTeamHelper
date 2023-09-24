@@ -323,13 +323,24 @@ class OrderService {
 			$timesheet->orders()->updateExistingPivot($orderId, ['doprun' => null]);
 			
 			if ($status == 'ready') {
-				$detachingData = ['from_id' => auth('site')->id(), 'date_add' => DdrDateTime::now()];
+				$now = DdrDateTime::now();
+				$detachingData = ['from_id' => auth('site')->id(), 'date_add' => $now];
+				
+				// Если номер заказа начинается на #
+				if ($isHashOrder = preg_match('/\#\w+/', $order?->order)) {
+					$detachingData['confirmed_from_id'] = auth('site')->id();
+					$detachingData['confirm'] = true;
+					$detachingData['date_confirm'] = $now;
+				}
+				
 				$timesheet->confirmOrders()->syncWithoutDetaching([$orderId => $detachingData]);
 				eventLog()->orderToConfirm($order, $timesheetId, $detachingData);
 			}
 		}
 		
-		return $order->save();
+		if (!$order->save()) return false;
+		
+		return $isHashOrder ? 'hash' : true;
 	}
 	
 	

@@ -568,7 +568,7 @@ function parseRawToFields(popper, value) {
 	
 	const serverNameMathes = /\/inv\s[^,]+/.exec(value),
 		priceMathes = /(\d{1,}.\d{1,2})\$/.exec(value),
-		orderMathes = /&(amp;)?[^,]+/.exec(value);
+		orderMathes = /(?<=\s)(&(amp;)?|#)[^,]+/.exec(value);
 	
 	$(serverName).val(serverNameMathes ? serverNameMathes[0] : '');
 	$(price).val(priceMathes ? priceMathes[0] : '');

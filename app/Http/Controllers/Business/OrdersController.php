@@ -811,11 +811,11 @@ class OrdersController extends Controller {
 			'status'		=> 'required|string',
 		]);
 		
-		if (!$this->orderService->setStatus($orderId, $timesheetId, $status)) return response()->json(false);
+		if (!$setStatRes = $this->orderService->setStatus($orderId, $timesheetId, $status)) return response()->json(false);
 		
 		$orderStatusesSettings = $this->getSettingsCollect("order_statuses.{$status}");
 		
-		return response()->json($orderStatusesSettings);
+		return response()->json([...$orderStatusesSettings, 'isHash' => ($setStatRes === 'hash')]);
 	}
 	
 	
