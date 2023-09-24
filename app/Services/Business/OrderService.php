@@ -4,6 +4,7 @@ use App\Enums\OrderStatus;
 use App\Helpers\DdrDateTime;
 use App\Http\Filters\OrderFilter;
 use App\Models\Order;
+use App\Models\OrderRawDataHistory;
 use App\Models\Timesheet;
 use App\Traits\Settingable;
 use Carbon\Carbon;
@@ -93,6 +94,7 @@ class OrderService {
 			->withExists(['has_confirm_orders as confirm' => function($q) use($timesheetId) {
 				$q->where('confirmed_orders.confirm', 1);
 			}])
+			->withCount('rawDataHistory as rawDataHistory')
 			//->withExists('has_confirm_orders as is_confirmed')
 			->with('lastComment')
 			->when($search, function ($query) use ($search) {
@@ -219,17 +221,83 @@ class OrderService {
 		if (!$comments) return null;
 		
 		foreach ($comments as $k => $comment) {
-			$author = $comment['author'] ?? null;
-			$adminauthor = $comment['adminauthor'] ?? null;
-			unset($comments[$k]['adminauthor']);
-			$comments[$k]['author'] = $author ?: $adminauthor;
+			$comments[$k]['author'] = match($comment['user_type']) {
+				1	=> $comment['author'] ?? null,
+				2	=> $comment['adminauthor'] ?? null,
+				default	=> null,
+			};
 			
+			unset($comments[$k]['adminauthor']);
 		}
+		
 		return $comments;
 	}
 	
 	
 	
+	
+	
+	
+	/**
+	* 
+	* @param 
+	* @return 
+	*/
+	public function getRawDataHistory($orderId = null) {
+		if (is_null($orderId)) return false;
+		
+		$history = Order::find($orderId)
+			->rawDataHistory()
+			->with('author:id,name,pseudoname', 'adminauthor:id,name,pseudoname')
+			->orderBy('id', 'DESC')
+			->get()
+			->toArray();
+		
+		if (!$history) return null;
+		
+		foreach ($history as $k => $row) {
+			$history[$k]['author'] = match($row['user_type']) {
+				1	=> $row['author'] ?? null,
+				2	=> $row['adminauthor'] ?? null,
+				default	=> null,
+			};
+			
+			unset($history[$k]['adminauthor']);
+		}
+		
+		return $history;
+	}
+	
+	
+	
+	
+	/**
+	* 
+	* @param 
+	* @return 
+	*/
+	public function setRawDataHistory($orderId = null, $data = null) {
+		if (is_null($orderId)) return false;
+		
+		$diffData = diffStrings($data['data'] ?? '', $data['updated'] ?? '');
+		
+		$guard = getGuard();
+		
+		$userType = match($guard) {
+			'site'	=> 1,
+			'admin'	=> 2,
+			default	=> 1,
+		};
+		
+		$fromId = auth($guard)->user()->id;
+		
+		return OrderRawDataHistory::create([
+			'order_id' => $orderId,
+			'from_id' => $fromId,
+			'user_type' => $userType,
+			'data' => $diffData,
+		]);
+	}
 	
 	
 	

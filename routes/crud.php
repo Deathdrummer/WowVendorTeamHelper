@@ -51,6 +51,7 @@ Route::post('orders/form', [OrdersController::class, 'save_form']);
 Route::put('orders/form', [OrdersController::class, 'update_form']);
 Route::get('orders/comments', [OrdersController::class, 'comments']);
 Route::post('orders/send_comment', [OrdersController::class, 'send_comment']);
+Route::get('orders/rawdatahistory', [OrdersController::class, 'rawdatahistory']);
 Route::get('orders/statuses', [OrdersController::class, 'statuses']);
 Route::post('orders/set_status', [OrdersController::class, 'set_status']);
 Route::get('orders/relocate', [OrdersController::class, 'relocate']);

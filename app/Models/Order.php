@@ -74,6 +74,10 @@ class Order extends Model {
     }
 	
 	
+	public function rawDataHistory():HasMany {
+        return $this->hasMany(OrderRawDataHistory::class, 'order_id', 'id');
+    }
+	
 	
 	
 	public function timesheets():BelongsToMany {

@@ -3,6 +3,7 @@
 @import "@sass/common/mixins/scrollbar"
 @import "@sass/common/mixins/actives"
 @import "@sass/common/mixins/font"
+@import "@sass/common/mixins/hr"
 
 
 
@@ -102,6 +103,31 @@ teleport
 	display: inline
 
 
+.difftext
+	line-height: 1.4em
+	font-family: consolas
+	color: #828991
+	
+	del
+		text-decoration: none
+		background-color: #ffdddd
+		color: #a90000
+		padding-left: 2px
+		padding-right: 2px
+		border-radius: 2px
+		
+	
+	ins
+		text-decoration: none
+		background-color: #d1f9d1
+		color: #004200
+		padding-left: 2px
+		padding-right: 2px
+		border-radius: 2px
+		
+
+
+
 .showrows::-webkit-inner-spin-button,
 [showrows]::-webkit-inner-spin-button,
 [showrows]::-webkit-outer-spin-button
@@ -180,6 +206,12 @@ teleport
 .bg
 	&-white
 		background-color: #fff
+		
+		&-pointer:hover
+			filter: brightness(1.1)
+		
+		&-pointer:active
+			filter: brightness(0.9)
 	
 	&-blue
 		background-color: #1bdbe0
@@ -189,6 +221,12 @@ teleport
 		
 		&-active:active
 			+ddrActives((active: (bg: #16afb2 !important)))
+		
+		&-pointer:hover
+			filter: brightness(1.1)
+		
+		&-pointer:active
+			filter: brightness(0.9)
 	
 	
 	&-gray
@@ -199,6 +237,12 @@ teleport
 		
 		&-active:active
 			+ddrActives((active: (bg: #bfbfbf !important)))
+		
+		&-pointer:hover
+			filter: brightness(1.1)
+		
+		&-pointer:active
+			filter: brightness(0.9)
 				
 				
 	&-neutral
@@ -209,6 +253,12 @@ teleport
 		
 		&-active:active
 			+ddrActives((active: (bg: #828faf !important)))
+			
+		&-pointer:hover
+			filter: brightness(1.1)
+		
+		&-pointer:active
+			filter: brightness(0.9)
 		
 		
 	&-green
@@ -219,6 +269,12 @@ teleport
 			
 		&-active:active
 			+ddrActives((active: (bg: #2aa92d !important)))
+			
+		&-pointer:hover
+			filter: brightness(1.1)
+		
+		&-pointer:active
+			filter: brightness(0.9)
 		
 		
 	&-red
@@ -229,6 +285,12 @@ teleport
 	
 		&-active:active
 			+ddrActives((active: (bg: #ff1a41 !important)))
+			
+		&-pointer:hover
+			filter: brightness(1.1)
+		
+		&-pointer:active
+			filter: brightness(0.9)
 		
 		
 	
@@ -240,6 +302,12 @@ teleport
 		
 		&-active:active
 			+ddrActives((active: (bg: #ffd240 !important)))
+			
+		&-pointer:hover
+			filter: brightness(1.1)
+		
+		&-pointer:active
+			filter: brightness(0.9)
 	
 	
 	
@@ -251,6 +319,12 @@ teleport
 		
 		&-active:active
 			+ddrActives((active: (bg: #f1e8c6 !important)))
+			
+		&-pointer:hover
+			filter: brightness(1.1)
+		
+		&-pointer:active
+			filter: brightness(0.9)
 	
 	
 	&-purple
@@ -261,6 +335,12 @@ teleport
 		
 		&-active:active
 			+ddrActives((active: (bg: #8d67b3 !important)))
+			
+		&-pointer:hover
+			filter: brightness(1.1)
+		
+		&-pointer:active
+			filter: brightness(0.9)
 	
 	
 	&-light
@@ -271,6 +351,12 @@ teleport
 			
 		&-active:active
 			+ddrActives((active: (bg: #e9eeef !important)))
+			
+		&-pointer:hover
+			filter: brightness(1.1)
+		
+		&-pointer:active
+			filter: brightness(0.9)
 	
 	
 	&-dark
@@ -281,6 +367,12 @@ teleport
 		
 		&-active:active
 			+ddrActives((active: (bg: #29323d !important)))
+			
+		&-pointer:hover
+			filter: brightness(1.1)
+		
+		&-pointer:active
+			filter: brightness(0.9)
 
 
 
@@ -306,6 +398,13 @@ teleport
 		&-active:active
 			color: #3d3e4e !important
 			transition: color 0s !important
+			
+		&-pointer:hover
+			filter: brightness(1.1)
+		
+		&-pointer:active
+			filter: brightness(0.9)
+			
 	
 	&-light
 		color: #d2d2df
@@ -317,6 +416,12 @@ teleport
 		&-active:active
 			color: #d2d2df !important
 			transition: color 0s !important
+			
+		&-pointer:hover
+			filter: brightness(1.1)
+		
+		&-pointer:active
+			filter: brightness(0.9)
 	
 	&-white
 		color: #fff
@@ -328,6 +433,12 @@ teleport
 		&-active:active
 			color: #fff !important
 			transition: color 0s !important
+			
+		&-pointer:hover
+			filter: brightness(1.1)
+		
+		&-pointer:active
+			filter: brightness(0.9)
 	
 	&-blue
 		color: #03d1ff
@@ -339,6 +450,12 @@ teleport
 		&-active:active
 			color: #03d1ff !important
 			transition: color 0s !important
+			
+		&-pointer:hover
+			filter: brightness(1.1)
+		
+		&-pointer:active
+			filter: brightness(0.9)
 		
 	&-orange
 		color: #ffb100
@@ -350,6 +467,12 @@ teleport
 		&-active:active
 			color: #ffb100 !important
 			transition: color 0s !important
+			
+		&-pointer:hover
+			filter: brightness(1.1)
+		
+		&-pointer:active
+			filter: brightness(0.9)
 		
 	&-red
 		color: #ff8585
@@ -361,6 +484,12 @@ teleport
 		&-active:active
 			color: #ff8585 !important
 			transition: color 0s !important
+			
+		&-pointer:hover
+			filter: brightness(1.1)
+		
+		&-pointer:active
+			filter: brightness(0.9)
 	
 	&-green
 		color: #1ed52c
@@ -372,6 +501,12 @@ teleport
 		&-active:active
 			color: #1ed52c !important
 			transition: color 0s !important
+			
+		&-pointer:hover
+			filter: brightness(1.1)
+		
+		&-pointer:active
+			filter: brightness(0.9)
 	
 	&-gray
 		color: #c1c1c1
@@ -383,6 +518,12 @@ teleport
 		&-active:active
 			color: #c1c1c1 !important
 			transition: color 0s !important
+			
+		&-pointer:hover
+			filter: brightness(1.1)
+		
+		&-pointer:active
+			filter: brightness(0.9)
 		
 	&-gray-100
 		color: #f8f9fa
@@ -394,6 +535,12 @@ teleport
 		&-active:active
 			color: #f8f9fa !important
 			transition: color 0s !important
+			
+		&-pointer:hover
+			filter: brightness(1.1)
+		
+		&-pointer:active
+			filter: brightness(0.9)
 	
 	&-gray-200
 		color: #e9ecef
@@ -405,6 +552,12 @@ teleport
 		&-active:active
 			color: #e9ecef !important
 			transition: color 0s !important
+			
+		&-pointer:hover
+			filter: brightness(1.1)
+		
+		&-pointer:active
+			filter: brightness(0.9)
 		
 	&-gray-300
 		color: #dee2e6
@@ -416,6 +569,12 @@ teleport
 		&-active:active
 			color: #dee2e6 !important
 			transition: color 0s !important
+			
+		&-pointer:hover
+			filter: brightness(1.1)
+		
+		&-pointer:active
+			filter: brightness(0.9)
 	
 	&-gray-400
 		color: #ced4da
@@ -427,6 +586,12 @@ teleport
 		&-active:active
 			color: #ced4da !important
 			transition: color 0s !important
+			
+		&-pointer:hover
+			filter: brightness(1.1)
+		
+		&-pointer:active
+			filter: brightness(0.9)
 	
 	&-gray-500
 		color: #adb5bd
@@ -438,6 +603,12 @@ teleport
 		&-active:active
 			color: #adb5bd !important
 			transition: color 0s !important
+			
+		&-pointer:hover
+			filter: brightness(1.1)
+		
+		&-pointer:active
+			filter: brightness(0.9)
 	
 	&-gray-600
 		color: #6c757d
@@ -449,6 +620,12 @@ teleport
 		&-active:active
 			color: #6c757d !important
 			transition: color 0s !important
+			
+		&-pointer:hover
+			filter: brightness(1.1)
+		
+		&-pointer:active
+			filter: brightness(0.9)
 		
 	&-gray-700
 		color: #495057
@@ -460,6 +637,12 @@ teleport
 		&-active:active
 			color: #495057 !important
 			transition: color 0s !important
+			
+		&-pointer:hover
+			filter: brightness(1.1)
+		
+		&-pointer:active
+			filter: brightness(0.9)
 		
 	&-gray-800
 		color: #343a40
@@ -471,6 +654,12 @@ teleport
 		&-active:active
 			color: #343a40 !important
 			transition: color 0s !important
+			
+		&-pointer:hover
+			filter: brightness(1.1)
+		
+		&-pointer:active
+			filter: brightness(0.9)
 		
 	&-gray-900
 		color: #212529
@@ -482,6 +671,12 @@ teleport
 		&-active:active
 			color: #212529 !important
 			transition: color 0s !important
+			
+		&-pointer:hover
+			filter: brightness(1.1)
+		
+		&-pointer:active
+			filter: brightness(0.9)
 		
 	&-darkgray
 		color: #99acad
@@ -493,6 +688,12 @@ teleport
 		&-active:active
 			color: #99acad !important
 			transition: color 0s !important
+			
+		&-pointer:hover
+			filter: brightness(1.1)
+		
+		&-pointer:active
+			filter: brightness(0.9)
 	
 	&-dark
 		color: #6a6b76
@@ -504,6 +705,12 @@ teleport
 		&-active:active
 			color: #6a6b76 !important
 			transition: color 0s !important
+			
+		&-pointer:hover
+			filter: brightness(1.1)
+		
+		&-pointer:active
+			filter: brightness(0.9)
 	
 
 
@@ -706,7 +913,7 @@ teleport
 .h-0, .h0
 	height: 0 !important
 
-.b-0, .b0
+.b-0, .b0, .fb-0, .fb0
 	flex-basis: 0 !important
 
 
@@ -738,7 +945,7 @@ teleport
 	.maxh-#{$px}px, .maxh#{$px}px
 		max-height: #{$px}px !important
 	
-	.b-#{$px}px, .b#{$px}px
+	.b-#{$px}px, .b#{$px}px, .fb-#{$px}px, .fb#{$px}px
 		flex-basis: #{$px}px !important
 
 
@@ -766,7 +973,7 @@ $bPoints: map-remove($grid-breakpoints, xs)
 			.maxh-#{$breakpoint}-#{$px}px
 				max-height: #{$px}px !important
 			
-			.b-#{$breakpoint}-#{$px}px
+			.b-#{$breakpoint}-#{$px}px, .fb-#{$breakpoint}-#{$px}px
 				flex-basis: #{$px}px !important
 	
 	
@@ -795,7 +1002,7 @@ $bPoints: map-remove($grid-breakpoints, xs)
 	.maxh-#{$percent*5}, .maxh#{$percent*5}
 		max-height: #{$percent*5%} !important
 	
-	.b-#{$percent*5}, .b#{$percent*5}
+	.b-#{$percent*5}, .b#{$percent*5}, .fb-#{$percent*5}, .fb#{$percent*5}
 		flex-basis: #{$percent*5%} !important
 
 
@@ -823,7 +1030,7 @@ $bPoints: map-remove($grid-breakpoints, xs)
 			.maxh-#{$breakpoint}-#{$percent*5}
 				max-height: #{$percent*5%} !important
 			
-			.b-#{$breakpoint}-#{$percent*5}
+			.b-#{$breakpoint}-#{$percent*5}, .fb-#{$breakpoint}-#{$percent*5}
 				flex-basis: #{$percent*5%} !important
 				
 		
@@ -875,7 +1082,7 @@ $bPoints: map-remove($grid-breakpoints, xs)
 				max-height: calc(#{$rem}rem + #{$px}px) !important
 		
 	
-	.b-#{$rem}rem, .b#{$rem}rem
+	.b-#{$rem}rem, .b#{$rem}rem, .fb-#{$rem}rem, .fb#{$rem}rem
 		flex-basis: #{$rem}rem !important
 		
 		@for $px from 1 through 9
@@ -906,7 +1113,7 @@ $bPoints: map-remove($grid-breakpoints, xs)
 .maxh-50rem, .maxh50rem
 	max-height: 50rem !important
 
-.b-50rem, .b50rem
+.b-50rem, .b50rem, .fb-50rem, .fb50rem
 	flex-basis: 50rem !important
 		
 		
@@ -967,7 +1174,7 @@ $bPoints: map-remove($grid-breakpoints, xs)
 					&-#{$px}px
 						max-height: calc(#{$rem}rem + #{$px}px) !important
 			
-			.b-#{$breakpoint}-#{$rem}rem
+			.b-#{$breakpoint}-#{$rem}rem, .fb-#{$breakpoint}-#{$rem}rem
 				flex-basis: #{$rem}rem !important
 				
 				@for $px from 1 through 9
@@ -1710,3 +1917,14 @@ $tableColor: #efefef
 			
 			&.ddrtable__tr:not(:first-of-type)
 				border-top: 1px solid #efefef !important
+
+
+
+
+
+.hr
+	&-light
+		+hr(10%, 90%, #d4dbe0)
+	
+	&-dark
+		+hr(10%, 90%, #8a9ba7)

@@ -14,6 +14,7 @@ use App\Models\TimesheetOrder;
 use App\Models\TimesheetPeriod;
 use App\Models\Traits\HasEvents;
 use App\Models\User;
+use App\Services\Business\OrderService;
 use App\Traits\Settingable;
 
 class EventLogService {
@@ -166,6 +167,9 @@ class EventLogService {
 		$eventType = $this->getTsEventType($timesheet?->event_type_id);
 		$timesheetPeriod = TimesheetPeriod::find($timesheet?->timesheet_period_id);
 		$timezone = $this->getTimezone($order?->timezone_id);
+		
+		$orderService = app()->make(OrderService::class);
+		$orderService->setRawDataHistory($order?->id, $buildFields('raw_data'));
 		
 		$info = [
 			'id' => $buildFields('id', 'ID заказа'),

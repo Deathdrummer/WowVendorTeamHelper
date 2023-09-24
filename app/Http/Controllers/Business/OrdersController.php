@@ -677,9 +677,9 @@ class OrdersController extends Controller {
 		$eventLog->orderUpdated($order, $timesheetId);
 		$res = $order->save();
 		
+		$orderWithCount = $order->loadCount('rawDataHistory as rawDataHistory');
+		$formData['rawDataHistory'] = $orderWithCount?->rawDataHistory ?? 0;
 		
-		
-		//logger($order->timesheets);
 		// Обновить поле doprun в промежуточной таблице
 		//$timesheet = Timesheet::find($timesheetId);
 		//$timesheet->orders()->updateExistingPivot($orderId, ['doprun' => 3]);
@@ -734,6 +734,32 @@ class OrdersController extends Controller {
 		
 		return response()->view($viewPath.'.chat.item', [...$comment]);
 	}
+	
+	
+	
+	
+	
+	
+	/**
+	* 
+	* @param 
+	* @return 
+	*/
+	public function rawdatahistory(Request $request) {
+		[
+			'views'		=> $viewPath,
+			'order_id'	=> $orderId,
+		] = $request->validate([
+			'views'		=> 'required|string',
+			'order_id'	=> 'required|numeric',
+		]);
+		
+		$history = $this->orderService->getRawDataHistory($orderId);
+		
+		return response()->view($viewPath.'.raw_data_history', compact('history', 'orderId'));
+	}
+	
+	
 	
 	
 	

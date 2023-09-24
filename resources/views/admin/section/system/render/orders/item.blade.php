@@ -28,7 +28,28 @@
 	</x-table.td>
 	@endcando
 	
-	@cando('dannye-(klient):site')<x-table.td><p class="fz12px lh90 preline" orderrawdata>{{$raw_data}}</p></x-table.td> @endcando
+	@cando('dannye-(klient):site')
+		<x-table.td>
+			@if($rawDataHistory ?? false)
+				<div class="d-flex justify-content-between align-items-center">
+					<div class="mr5px scrollblock scrollblock-light minh-1rem-4px maxh3rem-1px w100">
+						<p class="fz12px lh90 preline" orderrawdata>{{$raw_data}}</p>
+					</div>
+					<div class="align-self-center">
+						<i
+							class="fa-solid fa-fw fa-pen-to-square fz18px pointer color-green color-green-pointer color-green-active"
+							onclick="$.openRawDataHistoryWin(this, {{$id}}, '{{$order}}')"
+							orderrawcounter
+							title="Изменений: {{$rawDataHistory}}"
+							></i>
+					</div>
+				</div>
+			@else
+				<p class="fz12px lh90 preline" orderrawdata>{{$raw_data}}</p>
+			@endif
+		</x-table.td>
+	@endcando
+	
 	@cando('invayt-(klient):site')<x-table.td><p class="fz12px" orderservername>{{$server_name}}</p></x-table.td> @endcando
 	
 	@cando('kommentariy-(klient):site')
@@ -46,7 +67,7 @@
 					variant="gray"
 					action="openCommentsWin:{{$id}},{{$order}}"
 					title="Открыть комментарии">
-					<i class="fa-regular fa-comments"></i>
+					<i class="fa-regular fa-fw fa-comments"></i>
 				</x-button>
 			</div>
 		</div>

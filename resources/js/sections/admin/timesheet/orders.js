@@ -29,10 +29,7 @@ export async function buildOrdersTable(row = null, timesheetId = null, cb = null
 		return;
 	}
 	
-	
 	_buildOrdersTable();
-	
-	
 	
 	$.editTimesheetOrder = async (btn, orderId = null, orderNumber = null, timesheetId = null) => {
 		if (_.isNull(orderId)) return false;
@@ -84,14 +81,35 @@ export async function buildOrdersTable(row = null, timesheetId = null, cb = null
 			if (data) {
 				$.notify('Заказ успешно обновлен!')
 				
-				const {order, price, server_name, raw_data, link} = data;
+				const {order, price, server_name, raw_data, link, rawDataHistory} = data;
+				
 				const orderRow = $(btn).closest('[ddrtabletr]');
 				
 				if (order) $(orderRow).find('[orderordernumber]').text(order);
 				if (price) $(orderRow).find('[orderprice]').text($.number(price, 2, '.', ' '));
 				if (server_name) $(orderRow).find('[orderservername]').text(server_name);
-				if (raw_data) $(orderRow).find('[orderrawdata]').text(raw_data);
 				if (link) $(orderRow).find('[orderlink]').setAttrib('onclick', `$.openLink(this, '${link}')`);
+				
+				if (raw_data) {
+					if (rawDataHistory == 1) {
+						$(orderRow).find('[orderrawdata]').replaceWith('<div class="d-flex justify-content-between align-items-center"> \
+							<div class="mr5px scrollblock scrollblock-light minh-1rem-4px maxh3rem-1px w100">\
+								<p class="fz12px lh90 preline" orderrawdata="">'+raw_data+'</p>\
+							</div>\
+							<div class="align-self-center">\
+								<i\
+									class="fa-solid fa-fw fa-pen-to-square fz18px pointer color-green color-green-pointer color-green-active"\
+									onclick="$.openRawDataHistoryWin(this, '+orderId+', \''+order+'\')"\
+									orderrawcounter\
+									title="Изменений: '+rawDataHistory+'"></i>\
+							</div>\
+						</div>');
+					
+					} else {
+						$(orderRow).find('[orderrawdata]').text(raw_data);
+						$(orderRow).find('[orderrawcounter]').attr('title', 'Изменений: '+rawDataHistory);
+					}
+				} 
 				
 				close();
 			}
@@ -446,6 +464,39 @@ export async function orderCommentsChat(orderId = null, orderName = null, rowBtn
 		}
 	 	
 	}
+	
+}
+
+
+
+
+
+
+
+
+
+
+
+export async function rawDataHistory(orderId = null, orderName = null, rowBtn = null, cb = null) {
+	if (_.isNull(orderId)) {
+		console.error('rawDataHistory ошибка -> не передан orderId!');
+		return;
+	}
+	
+	
+	const {
+		popper,
+		wait,
+		close,
+	} = await ddrPopup({
+		url: 'crud/orders/rawdatahistory',
+		method: 'get',
+		params: {views: viewsPath, order_id: orderId},
+		title: `История изменений данных заказа: <span class="color-gray-60">«${orderName}»</span>`,
+		width: 1000, // ширина окна
+	});
+	
+	callFunc(cb);
 	
 }
 
