@@ -98,6 +98,7 @@
 		timesheetOrders,
 		buildOrdersTable,
 		orderCommentsChat,
+		rawDataHistory,
 		showStatusesTooltip
 	} = await loadSectionScripts({section: 'timesheet', guard: 'admin'});
 	
@@ -173,6 +174,10 @@
 		window.open(url, '_blank');
 	}
 	
+	
+	$.openRawDataHistoryWin = (btn, orderId, orderName) => {
+		rawDataHistory(orderId, orderName, btn);
+	}
 	
 	
 	$.openCommentsWin = (btn, orderId, orderName) => {
