@@ -47,6 +47,7 @@ class Order extends Model {
 		'date',
 		'date_add',
 		'order',
+		'order_type',
 		'server_name',
 		'link',
 		'price',
