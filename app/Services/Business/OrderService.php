@@ -369,6 +369,7 @@ class OrderService {
 			if ($matches) {
 				foreach ($matches as $match) {
 					if (strpos($rawData, trim($match)) === false) {
+						logger('matches '.trim($match).' false');
 						$stat = false;
 						break;
 					}
@@ -378,6 +379,7 @@ class OrderService {
 			if ($stat && $exceptions) {
 				foreach ($exceptions as $exception) {
 					if (strpos($rawData, trim($exception)) !== false) {
+						logger('exceptions '.trim($exception).' false');
 						$stat = false;
 						break;
 					}
