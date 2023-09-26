@@ -349,6 +349,60 @@ class OrderService {
 	
 	
 	
+	/**
+	* 
+	* @param 
+	* @return 
+	*/
+	public function setOrderType($order = null) {
+		if (!$order) return null;
+		
+		logger($order);
+		
+		if (!$rawData = $order['raw_data'] ?? false) return null;
+		
+		$patterns = $this->getSettings('orders_types');
+		
+		foreach ($patterns as $row) {
+			$matches = explode("\n", $row['matches'] ?? '');
+			$exceptions = explode("\n", $row['exceptions'] ?? '');
+			$stat = true;
+			
+			foreach ($matches as $match) {
+				if (strpos($rawData, trim($match)) === false) {
+					$stat = false;
+					break;
+				}
+			}
+			
+			if ($stat) {
+				foreach ($exceptions as $exception) {
+					if (strpos($rawData, trim($exception)) !== false) {
+						$stat = false;
+						break;
+					}
+				}
+			}
+			
+			if ($stat) return (int)$row['id'] ?? null;
+		}
+		
+		return null;
+		
+		
+		
+		
+		
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	

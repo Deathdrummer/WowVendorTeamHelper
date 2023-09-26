@@ -31,6 +31,8 @@ class SlackController extends Controller {
 			foreach ($data as $row) {
 				$row['date_add'] = Carbon::createFromTimestamp($dateAdd)->toDateTimeString();
 				
+				$row['order_type'] = $orderService->setOrderType($row);
+				
 				['id' => $id, 'date_msc' => $dateMsc] = Order::create($row);
 				
 				$row['id'] = $id;

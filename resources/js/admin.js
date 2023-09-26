@@ -108,10 +108,13 @@ $(function() {
 					}
 				}
 				
+				$(item).trigger('setSetting', item);
+				
 			}).catch(err => {
 				if (axios.isCancel(err)) {
 					console.log('Request canceled');
 				} else {
+					console.log(err);
 					$.notify('Ошибка сохранения данных', 'error');
 				}
 			});

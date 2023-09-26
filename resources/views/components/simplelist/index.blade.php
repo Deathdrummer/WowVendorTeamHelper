@@ -9,6 +9,7 @@
 	'setting'   => false,
 	'onRemove'	=> false,
 	'onСreate'	=> false,
+	'onSave'	=> false,
 ])
 
 
@@ -161,14 +162,22 @@
 		listId = '#{{$id}}',
 		addRowAction = '{{$id}}AddRow',
 		removeRowAction = '{{$id}}RemoveRow',
-		onRemoveFunc = '{{$onRemove}}',
-		onCreateFunc = '{{$onСreate}}';
-	
+		onCreateFunc = '{{$onCreate}}',
+		onSaveFunc = '{{$onSave}}',
+		onRemoveFunc = '{{$onRemove}}';
+		
 	
 	$(listId).ddrInputs('change', (input) => {
 		$(input).closest('tr').find('button[new]').removeAttrib('new');
+		
 	});
 	
+	$(listId).on('setSetting', (e, item) => {
+		const tr = $(item).closest('[index]');
+		if (onSaveFunc) {
+			$[onSaveFunc](item, tr, Number($(tr).attr('index')));
+		}
+	});
 	
 	$[addRowAction] = (btn, listSelector, fields, options, setting, group) => {
 		
@@ -251,7 +260,7 @@
 						
 						if (data) {
 							if (onRemoveFunc) {
-								$[onRemoveFunc]($(btn).closest('tr'), () => {
+								$[onRemoveFunc]($(btn).closest('tr'), () => { // функция done вызывается отдельно для того, чтобы успеть провзаимодействовать с DOM удаляемой строки перед ее удалением
 									if (hasRows) $(btn).closest('tr').remove();
 									else $(btn).closest('tbody').empty();
 									$.notify('Запись успешно удалена!');

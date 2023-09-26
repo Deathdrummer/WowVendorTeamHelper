@@ -8,7 +8,8 @@
 					<li class="ddrtabsnav__item ddrtabsnav__item_active" ddrtabsitem="sectionsTab1">Простые списки</li>
 					<li class="ddrtabsnav__item" ddrtabsitem="sectionsTab2">Составные списки</li>
 					<li class="ddrtabsnav__item" ddrtabsitem="sectionsTab3">Статусы заказов</li>
-					<li class="ddrtabsnav__item" ddrtabsitem="sectionsTab4">Уведомеления Slack</li>
+					<li class="ddrtabsnav__item" ddrtabsitem="sectionsTab4">Типы заказов</li>
+					<li class="ddrtabsnav__item" ddrtabsitem="sectionsTab5">Уведомеления Slack</li>
 				</ul>
 			</div>
 			
@@ -17,7 +18,7 @@
 				<div class="ddrtabscontent__item ddrtabscontent__item_visible" ddrtabscontentitem="sectionsTab1">
 					
 					<div class="row g-10">
-						<div class="col-4">
+						<div class="col-5">
 							<x-card
 								loading
 								ready
@@ -26,48 +27,53 @@
 								>
 								<x-simplelist
 									setting="timezones"
-									fieldset="ID:w4rem|number|id|1,Временная зона:w10rem|text|timezone,Смещение от МСК:w8rem|number|shift,Формат 24 ч.:w7rem|checkbox|format_24"
-									{{-- options="name_type;foo:fooval,bar:barval|name_radio;foo:rool,bar:tool" --}}
+									fieldset="ID:w4rem|number|id|1,Временная зона:w10rem|text|timezone,Регион:w10rem|select|region,Смещение от МСК:w8rem|number|shift,Формат 24 ч.:w7rem|checkbox|format_24"
+									options="region;setting::regions,id,title"
 									{{-- onRemove="removeCustomerAction" --}}
 									group="small"
 								 />
 							</x-card>
 						</div>
 						
-						<div class="col-4">
-							<x-card
-								loading
-								ready
-								title="Регионы"
-								desc=""
-								>
-								<x-simplelist
-									setting="regions"
-									fieldset="ID:w4rem|number|id|1,Название|text|title"
-									{{-- options="name_type;foo:fooval,bar:barval|name_radio;foo:rool,bar:tool" --}}
-									{{-- onRemove="removeCustomerAction" --}}
-									group="small"
-								 />
-							</x-card>
+						<div class="col">
+							<div class="row row-cols-2">
+								<div class="col">
+									<x-card
+										loading
+										ready
+										title="Регионы"
+										desc=""
+										>
+										<x-simplelist
+											setting="regions"
+											fieldset="ID:w6rem|number|id|1,Название|text|title"
+											rool="test"
+											{{-- onSave="onSaveRegion" --}}
+											{{-- options="name_type;foo:fooval,bar:barval|name_radio;foo:rool,bar:tool" --}}
+											{{-- onRemove="removeCustomerAction" --}}
+											group="small"
+										 />
+									</x-card>
+								</div>
+								<div class="col">
+									<x-card
+										loading
+										ready
+										title="Сложности"
+										desc=""
+										>
+										<x-simplelist
+											setting="difficulties"
+											fieldset="ID:w6rem|number|id|1,Название|text|title"
+											{{-- options="name_type;foo:fooval,bar:barval|name_radio;foo:rool,bar:tool" --}}
+											{{-- onRemove="removeCustomerAction" --}}
+											group="small"
+										 />
+									</x-card>
+								</div>
+							</div>
 						</div>
-						
-						<div class="col-4">
-							<x-card
-								loading
-								ready
-								title="Сложности"
-								desc=""
-								>
-								<x-simplelist
-									setting="difficulties"
-									fieldset="ID:w4rem|number|id|1,Название|text|title"
-									{{-- options="name_type;foo:fooval,bar:barval|name_radio;foo:rool,bar:tool" --}}
-									{{-- onRemove="removeCustomerAction" --}}
-									group="small"
-								 />
-							</x-card>
-						</div>
-					</div>
+					</div>	
 				</div>
 				
 				
@@ -185,6 +191,23 @@
 				</div>
 				
 				<div class="ddrtabscontent__item" ddrtabscontentitem="sectionsTab4">
+					<x-card
+						loading
+						ready
+						title="Типы заказов"
+						desc="Паттерны для поиска типа заказа в теле заказа"
+						>
+						<x-simplelist
+							setting="orders_types"
+							fieldset="ID:w7rem|number|id|1,Название типа заказа:w30rem|text|title,Совпадения:w30rem|textarea|matches,Исключения:w30rem|textarea|exceptions"
+							{{-- options="name_type;foo:fooval,bar:barval|name_radio;foo:rool,bar:tool" --}}
+							{{-- onRemove="removeCustomerAction" --}}
+							group="normal"
+						 />
+					</x-card>
+				</div>
+				
+				<div class="ddrtabscontent__item" ddrtabscontentitem="sectionsTab5">
 					
 					<code class="d-block mb2rem">
 						<strong>Подстановка данных</strong>
@@ -314,6 +337,7 @@
 	
 	staticsCrud();
 	eventsTypesCrud();
+	
 	
 	
 	

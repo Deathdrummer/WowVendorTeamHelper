@@ -84,7 +84,6 @@ export default class DdrInputs {
 		if (!this.inputs || optionsData === null) return false;
 		
 		if (Array.isArray(optionsData)) {
-			
 			let options = [];
 			$.each(optionsData, function(key, {value = '', title = null, defaultSelected = false, selected = false, disabled = false}) {
 				if (!value && !title) return false;

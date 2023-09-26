@@ -1,15 +1,18 @@
 <?php namespace App\View\Components;
 
+use App\Traits\Settingable;
 use Illuminate\View\Component;
 
 class Simplelist extends Component {
+	use Settingable;
     
 	public $fieldsToButton;
 	public $fields = [];
 	public $titles = [];
 	public $stringOptions = null;
 	public $options = [];
-	
+	public $onRemove = null;
+	public $onCreate = null;
 	
 	
 	/**
@@ -17,7 +20,7 @@ class Simplelist extends Component {
      *
      * @return void
      */
-    public function __construct(?string $fieldset = null, ?string $options = null) {
+    public function __construct(?string $fieldset = null, ?string $options = null, ?string $onCreate = null, ?string $onRemove = null) {
 		if (!$fieldset) return false;
 		
 		if (!$fieldsData = array_filter(splitString($fieldset, ','))) return false;
@@ -45,6 +48,8 @@ class Simplelist extends Component {
 		$this->fields = $fields;
 		$this->titles = $titles;
 		$this->fieldsToButton = implode('|', $fieldsToBtn);
+		$this->onCreate = $onCreate;
+		$this->onRemove = $onRemove;
 		
 		$this->setDataToSelect($options);
     }
@@ -84,11 +89,20 @@ class Simplelist extends Component {
 		$allOpsData = [];
 		foreach ($opsData as $ops) {
 			[$name, $values] = splitString($ops, ';');
-			$opsValues = splitString($values, ',');
 			
-			foreach ($opsValues as $optVal) {
-				$o = splitString($optVal, ':');
-				$allOpsData[$name][$o[0]] = $o[1] ?? $o[0];
+			if (preg_match('/\bsetting::([\w\,]+)\b/', $values, $matches)) {
+				$setting = $matches[1] ?? false;
+				$params = explode(',', $setting);
+				$opsValues = $this->getSettings(...$params);
+				foreach ($opsValues as $val => $title) {
+					$allOpsData[$name][$val] = $title ?? $val;
+				}
+			} else {
+				$opsValues = splitString($values, ',');
+				foreach ($opsValues as $optVal) {
+					$o = splitString($optVal, ':');
+					$allOpsData[$name][$o[0]] = $o[1] ?? $o[0];
+				}
 			}
 		}
 		
