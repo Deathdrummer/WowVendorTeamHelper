@@ -389,6 +389,7 @@ class OrderService {
 			}
 			
 			logger($stat ? 'stat true' : 'stat false');
+			logger((int)$row['id'] ?? 'null');
 			
 			if ($stat) return (int)$row['id'] ?? null;
 		}
