@@ -362,8 +362,8 @@ class OrderService {
 		$patterns = $this->getSettings('orders_types');
 		
 		foreach ($patterns as $row) {
-			$matches = explode("\n", $row['matches'] ?? null);
-			$exceptions = explode("\n", $row['exceptions'] ?? null);
+			$matches = isset($row['matches']) ? explode("\n", $row['matches']) : false;
+			$exceptions = isset($row['exceptions']) ? explode("\n", $row['exceptions']) : false;
 			$stat = true;
 			
 			if ($matches) {
