@@ -368,14 +368,16 @@ class OrderService {
 			$exceptions = explode("\n", $row['exceptions'] ?? '');
 			$stat = true;
 			
-			foreach ($matches as $match) {
-				if (strpos($rawData, trim($match)) === false) {
-					$stat = false;
-					break;
+			if ($matches) {
+					foreach ($matches as $match) {
+					if (strpos($rawData, trim($match)) === false) {
+						$stat = false;
+						break;
+					}
 				}
 			}
 			
-			if ($stat) {
+			if ($stat && $exceptions) {
 				foreach ($exceptions as $exception) {
 					if (strpos($rawData, trim($exception)) !== false) {
 						$stat = false;
