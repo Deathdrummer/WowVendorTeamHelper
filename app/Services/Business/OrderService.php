@@ -360,15 +360,11 @@ class OrderService {
 		if (!$rawData = $order['raw_data'] ?? false) return null;
 		
 		$patterns = $this->getSettings('orders_types');
-		logger($patterns);
 		
 		foreach ($patterns as $row) {
-			$matches = explode("\n", $row['matches'] ?? '');
-			$exceptions = explode("\n", $row['exceptions'] ?? '');
+			$matches = explode("\n", $row['matches'] ?? null);
+			$exceptions = explode("\n", $row['exceptions'] ?? null);
 			$stat = true;
-			
-			logger($matches);
-			logger($exceptions);
 			
 			if ($matches) {
 				foreach ($matches as $match) {
