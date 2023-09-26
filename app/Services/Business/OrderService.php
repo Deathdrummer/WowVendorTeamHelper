@@ -357,19 +357,21 @@ class OrderService {
 	public function setOrderType($order = null) {
 		if (!$order) return null;
 		
-		logger($order);
-		
 		if (!$rawData = $order['raw_data'] ?? false) return null;
 		
 		$patterns = $this->getSettings('orders_types');
+		logger($patterns);
 		
 		foreach ($patterns as $row) {
 			$matches = explode("\n", $row['matches'] ?? '');
 			$exceptions = explode("\n", $row['exceptions'] ?? '');
 			$stat = true;
 			
+			logger($matches);
+			logger($exceptions);
+			
 			if ($matches) {
-					foreach ($matches as $match) {
+				foreach ($matches as $match) {
 					if (strpos($rawData, trim($match)) === false) {
 						$stat = false;
 						break;
@@ -386,14 +388,12 @@ class OrderService {
 				}
 			}
 			
+			logger($stat ? 'stat true' : 'stat false');
+			
 			if ($stat) return (int)$row['id'] ?? null;
 		}
 		
 		return null;
-		
-		
-		
-		
 		
 	}
 	
