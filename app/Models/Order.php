@@ -56,9 +56,6 @@ class Order extends Model {
 		'created_at',
 		'updated_at',
     ];
-
-	
-	
 	
 	
 	
@@ -132,11 +129,14 @@ class Order extends Model {
 		$timestamp = $this->attributes['date'] ?? null;
 		
 		if (!$timezoneId || !$timestamp) return null;
-		
 		$timezones = $this->getSettings('timezones', 'id', 'shift');
 		$shift = (-1 * (int)$timezones[$timezoneId]);
 		
+		
+		
 		return DdrDateTime::shift($timestamp, $shift);
+		
+		
 		
 		/* return match(true) {
 			is_object($date)	=> DdrDateTime::shift($date, $shift),

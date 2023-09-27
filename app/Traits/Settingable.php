@@ -2,6 +2,7 @@
 
 use App\Services\Settings;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
 trait Settingable {
@@ -45,23 +46,28 @@ trait Settingable {
 	 * @return mixed
 	 */
 	public function getSettings($setting = null, ?string $key = null, ?string $value = null, $filter = null):mixed {
-		$this->_getSettings($setting, $key, $value, $filter);
-		
-		if (isset($key)) {
-			$k = splitString($setting, ':');
-			$key = array_pop($k);
-			return isset($this->settingsData[$key]) ? $this->settingsData[$key] : $this->settingsData;
-		} 
-		
-		if (!is_array($setting)) {
-			if (!Str::contains($setting, ':')) return isset($this->settingsData[$setting]) ? $this->settingsData[$setting] : $this->settingsData;
+		return Cache::remember(trim($setting.'-'.$key.'-'.$value.'-'.$filter, '-'), 3, function () use($setting, $key, $value, $filter) {
+			//logger(trim($setting.'-'.$key.'-'.$value.'-'.$filter, '-'));
+			$this->_getSettings($setting, $key, $value, $filter);
 			
-			$k = splitString($setting, ':');
-			$key = array_pop($k);
-			return isset($this->settingsData[$key]) ? $this->settingsData[$key] : $this->settingsData;
-		}
+			if (isset($key)) {
+				$k = splitString($setting, ':');
+				$key = array_pop($k);
+				return isset($this->settingsData[$key]) ? $this->settingsData[$key] : $this->settingsData;
+			} 
+			
+			if (!is_array($setting)) {
+				if (!Str::contains($setting, ':')) return isset($this->settingsData[$setting]) ? $this->settingsData[$setting] : $this->settingsData;
+				
+				$k = splitString($setting, ':');
+				$key = array_pop($k);
+				return isset($this->settingsData[$key]) ? $this->settingsData[$key] : $this->settingsData;
+			}
+			
+			return $this->settingsData;
+		});
 		
-		return $this->settingsData;
+		
 	}
 	
 	
