@@ -235,9 +235,6 @@ trait Settingable {
 			$filterValue = $f[1] ?? null;
 		}
 		
-		logger($filterKey);
-		logger($filterValue);
-		
 		$data = $data->filter(function ($value) use($filterKey, $filterValue) {
 			if (is_array($value) && $value[$filterKey] == $filterValue) return true;
 			elseif (!is_array($value) && $value == $filterKey) return true;
