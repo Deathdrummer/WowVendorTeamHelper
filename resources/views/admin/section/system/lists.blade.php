@@ -27,7 +27,7 @@
 								>
 								<x-simplelist
 									setting="timezones"
-									fieldset="ID:w4rem|number|id|1,Временная зона:w10rem|text|timezone,Регион:w10rem|select|region,Смещение от МСК:w8rem|number|shift,Формат 24 ч.:w7rem|checkbox|format_24"
+									fieldset="ID:w4rem|number|id|1,Временная зона:w10rem|text|timezone,Регион:w10rem|select|region,Смещение от МСК:w10rem|number|shift,Формат 24 ч.:w8rem|checkbox|format_24"
 									options="region;setting::regions,id,title"
 									{{-- onRemove="removeCustomerAction" --}}
 									group="small"
@@ -200,7 +200,7 @@
 						>
 						<x-simplelist
 							setting="orders_types"
-							fieldset="ID:w7rem|number|id|1,Название типа заказа:w30rem|text|title,Совпадения:w30rem|textarea|matches,Исключения:w30rem|textarea|exceptions"
+							fieldset="ID:w7rem|number|id|1,Название типа заказа:w30rem|text|title,Цвет:w6rem|color|color,Совпадения:w30rem|textarea|matches,Исключения:w30rem|textarea|exceptions"
 							{{-- options="name_type;foo:fooval,bar:barval|name_radio;foo:rool,bar:tool" --}}
 							{{-- onRemove="removeCustomerAction" --}}
 							group="normal"
