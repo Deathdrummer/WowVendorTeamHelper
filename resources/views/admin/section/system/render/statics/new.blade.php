@@ -4,6 +4,9 @@
 			<x-input name="title" class="w100"  placeholder="Название команды" />
 		</x-table.td>
 		<x-table.td>
+			<x-input type="color" name="color" class="w100" />
+		</x-table.td>
+		<x-table.td>
 			<x-select
 				name="region_id"
 				class="w100"

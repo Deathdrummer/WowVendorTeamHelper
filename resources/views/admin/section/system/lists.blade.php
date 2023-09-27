@@ -96,6 +96,7 @@
 									<x-table.head>
 										<x-table.tr noborder>
 											<x-table.td class="w-auto" noborder><strong>Название</strong></x-table.td>
+											<x-table.td class="w5rem" noborder><strong>Цвет</strong></x-table.td>
 											<x-table.td class="w10rem" noborder><strong>Регион</strong></x-table.td>
 											<x-table.td class="w9rem" noborder><strong>Действия</strong></x-table.td>
 										</x-table.tr>

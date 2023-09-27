@@ -13,6 +13,7 @@ return new class extends Migration
         Schema::create('commands', function (Blueprint $table) {
             $table->id();
 			$table->string('title')->nullable();
+			$table->string('color', 9)->nullable();
             $table->unsignedInteger('region_id')->nullable()->comment('информация берется из простого списка "регионы"');
 			$table->unsignedInteger('_sort')->default(0);
         });

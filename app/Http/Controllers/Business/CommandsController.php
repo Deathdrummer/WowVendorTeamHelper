@@ -137,6 +137,7 @@ class CommandsController extends Controller {
 		$validFields = $request->validate([
 			'region_id'	=> 'required|numeric|nullable',
 			'title'		=> 'required|string',
+			'color'		=> 'required|string',
 			'_sort'		=> 'exclude|regex:/[0-9]+/',
 		]);
 		
@@ -199,6 +200,7 @@ class CommandsController extends Controller {
 		$validFields = $request->validate([
 			'region_id'	=> 'required|numeric|nullable',
 			'title'		=> 'required|string',
+			'color'		=> 'required|string',
 			'views'		=> 'required|string|exclude'
 		]);
 		

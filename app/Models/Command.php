@@ -7,9 +7,6 @@ class Command extends Model {
     use HasFactory/*, Collectionable, Dateable, Settingable, Filterable */;
 	
 	
-	
-	
-	
 	/**
      * Таблица
 	 *
@@ -29,6 +26,7 @@ class Command extends Model {
 	
 	protected $fillable = [
 		'title',
+		'color',
 		'region_id',
 		'_sort',
     ];

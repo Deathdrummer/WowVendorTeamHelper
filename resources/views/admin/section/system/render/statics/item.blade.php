@@ -4,6 +4,9 @@
 			<x-input name="title" value="{{$title ?? '-'}}" class="w100"  placeholder="Название команды" />
 		</x-table.td>
 		<x-table.td>
+			<x-input type="color" name="color" value="{{$color ?? '-'}}" class="w100" />
+		</x-table.td>
+		<x-table.td>
 			<x-select
 				name="region_id"
 				class="w100"
