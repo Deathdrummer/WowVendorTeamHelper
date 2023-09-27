@@ -9,11 +9,11 @@
 			<div class="row gx-20">
 				<div class="col-auto">
 					<p class="color-gray-600 fz12px mb3px">Номер заказа:</p>
-					<x-input name="order" value="{{$order ?? null}}" class="w14rem" placeholder="Номер заказа" />
+					<x-input name="order" value="{{$order ?? null}}" class="w10rem" placeholder="&, #" />
 				</div>
 				<div class="col-auto">
 					<p class="color-gray-600 fz12px mb3px">Тип заказа:</p>
-					<x-select name="order_type" :options="$ordersTypes" value="{{$order_type ?? null}}" empty="" choose="Не выбран" choose-empty class="w14rem" />
+					<x-select name="order_type" :options="$ordersTypes" value="{{$order_type ?? null}}" empty="" choose="Не выбран" choose-empty class="w16rem" />
 				</div>
 				<div class="col-auto">
 					<p class="color-gray-600 fz12px mb3px">Стоимость @symbal(dollar):</p>

@@ -266,7 +266,7 @@ export async function timesheetCrud(periodId = null, listType = null, buildOrder
 				method: 'get',
 				params: {timesheet_id, views: 'admin.section.system.render.orders', action: 'new'},
 				title: 'Новый заказ', // заголовок
-				width: 600, // ширина окна
+				width: 700, // ширина окна
 				disabledButtons: true,
 				buttons: ['ui.close', {action: 'timesheetAddOrder', title: 'Добавить'}],
 			});
