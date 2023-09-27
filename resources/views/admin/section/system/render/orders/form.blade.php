@@ -12,6 +12,10 @@
 					<x-input name="order" value="{{$order ?? null}}" class="w14rem" placeholder="Номер заказа" />
 				</div>
 				<div class="col-auto">
+					<p class="color-gray-600 fz12px mb3px">Тип заказа:</p>
+					<x-select name="order_type" :options="$ordersTypes" value="{{$order_type ?? null}}" empty="" choose="Не выбран" choose-empty class="w14rem" />
+				</div>
+				<div class="col-auto">
 					<p class="color-gray-600 fz12px mb3px">Стоимость @symbal(dollar):</p>
 					<x-input name="price" value="{{$price ?? null}}" class="w10rem" id="orderFormPrice" placeholder="Стоимость" />
 				</div>

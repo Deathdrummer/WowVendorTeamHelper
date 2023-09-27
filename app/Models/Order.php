@@ -39,7 +39,7 @@ class Order extends Model {
      *
      * @var array
      */
-    protected $appends = ['date_msc'];
+    protected $appends = ['date_msc', 'order_type_title'];
 	
 	
 	protected $fillable = [
@@ -142,7 +142,7 @@ class Order extends Model {
 	* @param 
 	* @return 
 	*/
-	public function getOrderTypeAttribute() {
+	public function getOrderTypeTitleAttribute() {
 		$orderType = $this->attributes['order_type'] ?? null;
 		$orderTypesData = $this->getSettings('orders_types', 'id', 'title', ['id' => $orderType]);
 		return $orderTypesData[$orderType] ?? null;

@@ -569,10 +569,12 @@ class OrdersController extends Controller {
 		$commandData = $timesheet->command->toArray();
 		$timezone = $timezones[$commandData['region_id']];
 		
+		$ordersTypes = $this->getSettings('orders_types', 'id', 'title');
+		
 		$date = $timesheet->datetime;
 		$action = 'new';
 		
-		return response()->view($viewPath.'.form', compact('date', 'timezone', 'timezones', 'action'));
+		return response()->view($viewPath.'.form', compact('date', 'timezone', 'timezones', 'ordersTypes', 'action'));
 	}
 	
 	
@@ -592,9 +594,11 @@ class OrdersController extends Controller {
 		
 		$order = Order::find($ordertId)->toArray();
 		
+		$ordersTypes = $this->getSettings('orders_types', 'id', 'title');
+		
 		$order['action'] = 'edit';
 		
-		return response()->view($viewPath.'.form', [...$order]);
+		return response()->view($viewPath.'.form', [...$order, 'ordersTypes' => $ordersTypes]);
 	}
 	
 	
@@ -619,6 +623,7 @@ class OrdersController extends Controller {
 			'timezone_id' 	=> 'required|numeric',
 			'date' 			=> 'required|date',
 			'order' 		=> 'required|string',
+			'order_type' 	=> 'required|numeric',
 			'price' 		=> 'required|decimal:0,2',
 			'server_name' 	=> 'required|string',
 			'raw_data' 		=> 'required|string',
@@ -654,7 +659,7 @@ class OrdersController extends Controller {
 	
 	
 	
-	/**
+	/** Обновить заказ в событии
 	 * @param 
 	 * @return 
 	 */
@@ -663,6 +668,7 @@ class OrdersController extends Controller {
 			'order_id' 		=> 'required|numeric|exclude',
 			'timesheet_id'	=> 'required|numeric|exclude',
 			'order' 		=> 'required|string',
+			'order_type' 	=> 'required|numeric',
 			'price' 		=> 'required|decimal:0,2',
 			'server_name' 	=> 'required|string',
 			'raw_data' 		=> 'required|string',

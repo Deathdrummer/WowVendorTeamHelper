@@ -66,8 +66,6 @@ trait Settingable {
 			
 			return $this->settingsData;
 		});
-		
-		
 	}
 	
 	

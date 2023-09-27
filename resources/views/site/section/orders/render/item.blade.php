@@ -51,7 +51,7 @@
 	</div>
 	<div class="col-auto">
 		<div class="order__block order__ordertype">
-			<p>{{$order_type ?? null}}</p>
+			<p>{{$order_type_title ?? null}}</p>
 		</div>
 	</div>
 	<div class="col">
