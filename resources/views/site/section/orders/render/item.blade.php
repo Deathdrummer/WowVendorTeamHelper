@@ -49,6 +49,11 @@
 			</div>
 		</div>
 	</div>
+	<div class="col-auto">
+		<div class="order__block order__ordertype">
+			<p>{{$order_type ?? null}}</p>
+		</div>
+	</div>
 	<div class="col">
 		<div class="order__block">
 			<p class="order__content">{{$raw_data ?? 'нет данных'}}</p>

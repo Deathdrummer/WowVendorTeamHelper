@@ -132,20 +132,21 @@ class Order extends Model {
 		$timezones = $this->getSettings('timezones', 'id', 'shift');
 		$shift = (-1 * (int)$timezones[$timezoneId]);
 		
-		
-		
 		return DdrDateTime::shift($timestamp, $shift);
-		
-		
-		
-		/* return match(true) {
-			is_object($date)	=> DdrDateTime::shift($date, $shift),
-			is_string($date)	=> DdrDateTime::buildTimestamp($date, ['shift' => $shift])
-		}; */
     }
 	
 	
 	
+	/**
+	* Добавить к выдаче тип заказа
+	* @param 
+	* @return 
+	*/
+	public function getOrderTypeAttribute() {
+		$orderType = $this->attributes['order_type'] ?? null;
+		$orderTypesData = $this->getSettings('orders_types', 'id', 'title', ['id' => $orderType]);
+		return $orderTypesData[$orderType] ?? null;
+	}
 	
 	
 	

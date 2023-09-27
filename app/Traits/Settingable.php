@@ -46,7 +46,7 @@ trait Settingable {
 	 * @return mixed
 	 */
 	public function getSettings($setting = null, ?string $key = null, ?string $value = null, $filter = null):mixed {
-		return Cache::remember(trim($setting.'-'.$key.'-'.$value.'-'.$filter, '-'), 3, function () use($setting, $key, $value, $filter) {
+		return Cache::remember(trim($setting.'-'.$key.'-'.$value.'-'.(is_array($filter) ? key($filter).':'.current($filter) : $filter), '-'), 3, function () use($setting, $key, $value, $filter) {
 			//logger(trim($setting.'-'.$key.'-'.$value.'-'.$filter, '-'));
 			$this->_getSettings($setting, $key, $value, $filter);
 			
@@ -234,6 +234,9 @@ trait Settingable {
 			$filterKey = $f[0] ?? null;
 			$filterValue = $f[1] ?? null;
 		}
+		
+		logger($filterKey);
+		logger($filterValue);
 		
 		$data = $data->filter(function ($value) use($filterKey, $filterValue) {
 			if (is_array($value) && $value[$filterKey] == $filterValue) return true;
