@@ -9,7 +9,11 @@ export async function getLastTimesheetPeriods(cb = null, choosedPeriod = null, s
 		return;
 	}
 	
-	$('#lastTimesheetPeriodsPlacer').html(data);
+	if ($('#lastTimesheetPeriodsBlock').find('#lastTimesheetPeriodsPlacer').length) {
+		$('#lastTimesheetPeriodsPlacer').html(data);
+	} else {
+		$('#lastTimesheetPeriodsBlock').prepend(`<div id="lastTimesheetPeriodsPlacer">${data}</div>`);
+	}
 	
 	callFunc(cb);
 }
