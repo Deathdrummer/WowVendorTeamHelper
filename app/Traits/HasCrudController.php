@@ -85,7 +85,6 @@ trait HasCrudController {
 				return false;
 			}
 			
-			
 			$dataFromSettings->each(function ($settingValue, $settingKey) use($keyedSettings) {
 				$settingValue = collect($settingValue);
 				[

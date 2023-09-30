@@ -63,21 +63,36 @@
 	
 	
 	
-	
-	
-	<x-chooser variant="neutral" size="normal" px="20" py="5" class="mb1rem" id="listTypeChooser" hidden>
-		<x-chooser.item
-			action="setListTypeAction:actual"
-			active
-			listtypechooser="actual"
-			>Актуальные
-		</x-chooser.item>
-		<x-chooser.item
-			action="setListTypeAction:past"
-			listtypechooser="past"
-			>Прошедшие
-		</x-chooser.item>
-	</x-chooser>
+	<div class="row justify-content-between minh3rem-8px">
+		<div class="col-auto">
+			<x-chooser variant="neutral" size="normal" px="20" py="5" class="mb1rem" id="regionChooser" hidden>
+				@forelse($setting['regions'] as $regionId => $regionTitle)
+					<x-chooser.item
+						action="setRegionAction:{{$regionId}}"
+						active="{{$loop->first}}"
+						regionchooser="{{$regionId}}"
+						>{{$regionTitle ?? '-'}}</x-chooser.item>
+				@empty
+					<p>-</p>
+				@endforelse
+			</x-chooser>
+		</div>
+		<div class="col-auto">
+			<x-chooser variant="neutral" size="normal" px="20" py="5" class="mb1rem" id="listTypeChooser" hidden>
+				<x-chooser.item
+					action="setListTypeAction:actual"
+					active
+					listtypechooser="actual"
+					>Актуальные
+				</x-chooser.item>
+				<x-chooser.item
+					action="setListTypeAction:past"
+					listtypechooser="past"
+					>Прошедшие
+				</x-chooser.item>
+			</x-chooser>
+		</div>
+	</div>
 	
 	
 	<div id="timesheetContainer" class="timesheetcontainer pt2rem"><p class="color-gray-400 fz16px noselect text-center">Выберите период</p></div>
@@ -94,6 +109,7 @@
 <script type="module">
 	
 	const listType = ref(ddrStore('listType') || 'actual');
+	const regionId = ref(ddrStore('eventsRegion') || Number($('#regionChooser').find('[regionchooser]').attr('regionchooser')));
 	const timesheetCrudList = ref(null);
 	const choosedPeriod = ref(ddrStore('choosedPeriod'));
 	
@@ -121,7 +137,7 @@
 	
 	$('#openTimesheetPeriodsBtn').ddrInputs('enable');
 	$.openTimesheetPeriodsWin = async () => {
-		timesheetPeriodsCrud(getLastTimesheetPeriods, timesheetCrud, listType, timesheetCrudList, choosedPeriod);
+		timesheetPeriodsCrud(getLastTimesheetPeriods, timesheetCrud, listType, regionId, timesheetCrudList, choosedPeriod);
 	}
 	
 	
@@ -138,7 +154,7 @@
 		choosedPeriod.value = periodId;
 		ddrStore('choosedPeriod', periodId);
 		
-		timesheetCrud(periodId, listType, buildOrdersTable, (list) => {
+		timesheetCrud(periodId, listType, regionId, buildOrdersTable, (list) => {
 			timesheetCrudList.value = list;
 			isBuildesPeriod = false;
 			periodsBlockWait.destroy();
@@ -158,15 +174,32 @@
 	
 	$.setListTypeAction = (btn, isActive, type) => {
 		if (isActive) return;
+		setListTypeAction('listtype', type)
+	}
+	
+	$.setRegionAction = (btn, isActive, type) => {
+		if (isActive) return;
+		setListTypeAction('region', type)
+	}
+	
+	
+	function setListTypeAction(type = 'listtype', val = null) {
+		if (!val) return false;
 		
 		const timesheetContainerWait = $('#timesheetContainer').ddrWait({
 			iconHeight: '50px',
 			text: 'Загрузка записей...'
 		});
 		
-		listType.value = type;
-		ddrStore('listType', type);
-		timesheetCrudList.value({list_type: listType.value}, () => {
+		if (type == 'listtype') {
+			listType.value = val;
+			ddrStore('listType', val);
+		} else if (type == 'region') {
+			regionId.value = val;
+			ddrStore('eventsRegion', val);
+		}
+		
+		timesheetCrudList.value({list_type: listType.value, region_id: regionId.value}, () => {
 			$('#timesheetTable').blockTable('buildTable');
 			timesheetContainerWait.destroy();
 		});
@@ -324,10 +357,13 @@
 	
 	// Автовыбор предыдущего выбранного периода
 	if (choosedPeriod.value) {
-		timesheetCrud(choosedPeriod.value, listType, buildOrdersTable, (list) => {
+		timesheetCrud(choosedPeriod.value, listType, regionId, buildOrdersTable, (list) => {
 			timesheetCrudList.value = list;
 			$('#listTypeChooser').find(`[listtypechooser]`).removeClass('chooser__item_active');
 			$('#listTypeChooser').find(`[listtypechooser="${listType.value}"]`).addClass('chooser__item_active');
+			
+			$('#regionChooser').find(`[regionchooser]`).removeClass('chooser__item_active');
+			$('#regionChooser').find(`[regionchooser="${regionId.value}"]`).addClass('chooser__item_active');
 		});
 	}
 	

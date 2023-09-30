@@ -279,7 +279,7 @@ class OrderService {
 	public function setRawDataHistory($orderId = null, $data = null) {
 		if (is_null($orderId)) return false;
 		
-		$diffData = diffStrings($data['data'] ?? '', $data['updated'] ?? '');
+		if (!$diffData = diffStrings($data['data'] ?? '', $data['updated'] ?? '')) return false;
 		
 		$guard = getGuard();
 		

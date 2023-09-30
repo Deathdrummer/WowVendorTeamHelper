@@ -3,26 +3,26 @@
 use App\Models\Setting;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 
 class Settings {
 	
-	
-	
-	
 	/**
 	 * @param string  $key
-	 * @return Collection|string|bool
+	 * @return Collection|string|bool|null
 	 */
 	public function get(?string $key = null, $default = null): Collection|string|bool|null {
 		if (!$key) return false;
-		['key' => $keyToFind, 'path' => $path] = $this->parseKey($key);
-		
-		if (!$row = Setting::where('key', $keyToFind)->first()) return $default;
-		$value = $row->value;
-		
-		if (is_null($path)) return is_array($value) ? collect($value) : $value;
-		if (!$result = data_get($value, $path)) return $default;
-		return is_array($result) ? collect($result) : $result;
+		return Cache::remember('get-'.$key, 3, function () use($key, $default) {
+			['key' => $keyToFind, 'path' => $path] = $this->parseKey($key);
+			
+			if (!$row = Setting::where('key', $keyToFind)->first()) return $default;
+			$value = $row->value;
+			
+			if (is_null($path)) return is_array($value) ? collect($value) : $value;
+			if (!$result = data_get($value, $path)) return $default;
+			return is_array($result) ? collect($result) : $result;
+		});
 	}
 	
 	
@@ -31,25 +31,53 @@ class Settings {
 	
 	/**
 	 * @param array|string  $key
-	 * @param array|string ...$keys
 	 * @return Collection|array
 	 */
-	public function getMany(array|string $key, array|string ...$keys): Collection|array|null {
-		if (!$key) return false;
+	public function getMany(): Collection|array|null {
+		$args = func_get_args();
+		if (!$args) return false;
 		
-		$keys = collect([]);
-		foreach (func_get_args() as $arg) {
-			if (is_array($arg)) $keys->push(...$arg);
-			else $keys->push($arg);
-		}
+		if (is_array($args[0]) && count($args) == 1) $args = [...$args[0]];
 		
-		$settingsData = collect([]);
-		foreach (Setting::lazy() as $setting) {
-			if ($keys->search($setting->key) !== false) {
-				$settingsData->put($setting->key, $setting->value);
+		return Cache::remember('getMany-'.argsToStr($args), 3, function () use($args) {
+			$keysRaw = []; $keysToSearch = [];
+			foreach ($args as $arg) {
+				$splitArg = explode(':', $arg);
+				$keysToSearch[] = is_array($splitArg) ? $splitArg[0] : $arg;
+				if (strpos($arg, ':')) $keysRaw[$splitArg[0]] = $arg;
 			}
-		}
-		return $settingsData;
+			
+			$settingsData = Setting::whereIn('key', $keysToSearch)->get()->mapWithKeys(function ($item) use($keysRaw) {
+				if (isset($keysRaw[$item['key']])) {
+					$splitArg = ddrSplit($keysRaw[$item['key']], ':', ',');
+					$keyField = $splitArg[1][0] ?? false;
+					$valueField = $splitArg[1][1] ?? false;
+					
+					$values = [];
+					
+					if (!$valueField) {
+						foreach ($item['value'] as $row) {
+							$values[] = $row[$keyField];
+						}
+					} else {
+						foreach ($item['value'] as $row) {
+							if (!isset($row[$keyField]) || !isset($row[$valueField])) continue;
+							$values[$row[$keyField]] = $row[$valueField];
+						}
+					}
+					
+					return [$item['key'] => $values];
+				}
+				
+				return [$item['key'] => $item['value']];
+			});
+			
+
+			//logger($args);
+
+			
+			return collect($settingsData);
+		});
 	}
 	
 	
@@ -60,14 +88,15 @@ class Settings {
 	 */
 	public function getGroup($group = null) {
 		if (!$group) return false;
-		
-		if (!$data = Setting::where('group', $group)->get()) return false;
-		
-		$data = $data->mapWithKeys(function ($item, $key) {
-			return [$item['key'] => $item['value']];
+		return Cache::remember('getGroup-'.$group, 3, function () use($group) {
+			if (!$data = Setting::where('group', $group)->get()) return false;
+			
+			$data = $data->mapWithKeys(function ($item, $key) {
+				return [$item['key'] => $item['value']];
+			});
+			
+			return $data->all();
 		});
-		
-		return $data->all();
 	}
 	
 	
@@ -77,12 +106,13 @@ class Settings {
 	 * @return Collection
 	 */
 	public function getAll() {
-		if (!$result = Setting::all()) return false;
-		
-		$data = $result->mapWithKeys(function ($item, $key) {
-		    return [$item['key'] => $item['value']];
+		return Cache::remember('getAllSettings', 3, function () {
+			if (!$result = Setting::all()) return false;
+			$data = $result->mapWithKeys(function ($item, $key) {
+				return [$item['key'] => $item['value']];
+			});
+			return $data->all();
 		});
-		return $data->all();
 	}
 	
 	

@@ -35,6 +35,7 @@ class AdminSection extends Model {
 		'page_title',
 		'title',
 		'visible',
+		'settings',
 		'nav'
 	];
 	
@@ -99,6 +100,29 @@ class AdminSection extends Model {
 		$value = isJson($value) ? json_decode($value, true, JSON_PRETTY_PRINT) : $value;
 		$lang = App::currentLocale();
 		return $value[$lang] ?? null;
+	}
+	
+	
+	
+	
+	
+	/**
+	 * @param string  $value
+	 * @return 
+	 */
+	public function setSettingsAttribute($value) {
+		$this->attributes['value'] = is_array($value) ? json_encode($value, JSON_UNESCAPED_UNICODE) : $value;
+	}
+	
+	
+	/**
+     * 
+     *
+     * @param string  $value
+     * @return string
+     */
+    public function getSettingsAttribute($value) {
+		return isJson($value) ? json_decode($value, true) : $value;
 	}
 	
 	

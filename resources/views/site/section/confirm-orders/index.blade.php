@@ -62,7 +62,7 @@
 	});
 	
 	await getOrders('actual');
-	$('#listTypeChooser').removeAttrib('hidden');
+	$('#listTypeChooser, #regionChooser').removeAttrib('hidden');
 	
 	listTypeBlockWait.destroy();
 	
@@ -71,7 +71,7 @@
 	$.setListTypeAction = async (btn, isActive, type) => {
 		if (isActive) return false;
 		
-		$('#listTypeChooser').setAttrib('disabled');
+		$('#listTypeChooser, #regionChooser').setAttrib('disabled');
 		const listTypeBlockWait = $('#confirmOrdersBlock').ddrWait({
 			iconHeight: '30px',
 			bgColor: '#f8f9fbbd'
@@ -79,7 +79,7 @@
 		
 		await getOrders(type);
 		
-		$('#listTypeChooser').removeAttrib('disabled');
+		$('#listTypeChooser, #regionChooser').removeAttrib('disabled');
 		listTypeBlockWait.destroy();
 	}
 	

@@ -1,7 +1,6 @@
 <?php namespace App\Http\Controllers\Business;
 
 use App\Actions\GetUserSetting;
-use App\Actions\LogEventAction;
 use App\Actions\UpdateModelAction;
 use App\Exports\EventsExport;
 use App\Helpers\DdrDateTime;
@@ -69,18 +68,29 @@ class TimesheetController extends Controller {
 			'views'		=> $viewPath,
 			'period_id'	=> $periodId,
 			'list_type'	=> $listType,
+			'region_id'	=> $regionId,
 		] = $request->validate([
 			'views'		=> 'required|string',
 			'period_id'	=> 'required|numeric',
 			'list_type'	=> 'required|string',
+			'region_id'	=> 'required|numeric',
 			'search'	=> 'exclude|nullable|string',
 		]);
+		
+		
 		
 		$search = $request->input('search');
 		
 		if (!$viewPath) return response()->json(['no_view' => true]);
 		
 		$timesheetToPastHours = $this->settings->get('timesheet.to_past_hours', 0);
+		
+		$timezonesRegions = $this->settings->get('timezones')->filter(fn($row) => $row['region'] == $regionId)->map(function($row) {
+			return $row['id'];
+		});
+		
+		$commandsIds = Command::whereIn('region_id', $timezonesRegions)->get()->pluck('id');
+		
 		
 		$list = Timesheet::withCount(['orders AS orders_count' => function($query) use($search) {
 				$query->where('order', 'LIKE', '%'.$search.'%');
@@ -92,7 +102,9 @@ class TimesheetController extends Controller {
 				} elseif ($listType == 'past') {
 					$query->where('datetime', '<', now()->addHours(-1 * $timesheetToPastHours));
 				}
-			})->when($search, function($query) use($search) {
+			})
+			->whereIn('command_id', $commandsIds)
+			->when($search, function($query) use($search) {
 				$query->whereHas('orders', function($q) use($search) {
 					$q->where('order', 'LIKE', '%'.$search.'%');
 				});
@@ -102,7 +114,6 @@ class TimesheetController extends Controller {
 			})
 			->orderBy('datetime', $listType == 'actual' ? 'ASC' : 'DESC')
 			->get();
-		
 		
 		
 		$this->_buildDataFromSettings();

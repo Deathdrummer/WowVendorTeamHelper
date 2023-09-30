@@ -668,7 +668,7 @@ class OrdersController extends Controller {
 			'order_id' 		=> 'required|numeric|exclude',
 			'timesheet_id'	=> 'required|numeric|exclude',
 			'order' 		=> 'required|string',
-			'order_type' 	=> 'required|numeric',
+			'order_type' 	=> 'numeric|nullable',
 			'price' 		=> 'required|decimal:0,2',
 			'server_name' 	=> 'required|string',
 			'raw_data' 		=> 'required|string',

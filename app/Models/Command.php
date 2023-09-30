@@ -23,6 +23,16 @@ class Command extends Model {
 	public $timestamps = false;
 	
 	
+	/**
+     * Атрибуты, которые должны быть типизированы. (Конвертация полей при добавлении и получении)
+	 *
+     * @var array
+     */
+	protected $casts = [
+        'region_id' => 'integer',
+    ];
+	
+	
 	
 	protected $fillable = [
 		'title',

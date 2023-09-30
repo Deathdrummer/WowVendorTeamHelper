@@ -19,6 +19,7 @@ return new class extends Migration {
 			$table->integer('parent_id')->default(0);
 			$table->boolean('nav')->default(false);
 			$table->boolean('visible')->default(false);
+			$table->json('settings')->nullable();
 			$table->bigInteger('_sort')->default(0);
         });
     }

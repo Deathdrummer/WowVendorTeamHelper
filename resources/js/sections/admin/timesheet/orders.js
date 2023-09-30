@@ -45,7 +45,7 @@ export async function buildOrdersTable(row = null, timesheetId = null, cb = null
 			method: 'get',
 			params: {order_id: orderId, views: 'admin.section.system.render.orders', action: 'edit'},
 			title: `Редактировать заказ <span class="color-gray">${orderNumber}</span>`, // заголовок
-			width: 600, // ширина окна
+			width: 700, // ширина окна
 			disabledButtons: true,
 			buttons: ['ui.close', {action: 'timesheetUpdateOrder', title: 'Обновить'}],
 		});

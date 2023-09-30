@@ -35,6 +35,7 @@ class Section extends Model {
 		'page_title',
 		'title',
 		'visible',
+		'settings',
 		'nav'
 	];
 	

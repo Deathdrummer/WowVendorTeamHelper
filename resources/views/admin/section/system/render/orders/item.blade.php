@@ -28,6 +28,12 @@
 	</x-table.td>
 	@endcando
 	
+	@cando('tip-zakaza-(klient):site')
+		<x-table.td class="h-end">
+			<p class="fz12px preline"><span ordertype>{{$order_type_title ?? '-'}}</p>
+		</x-table.td>
+	@endcando
+	
 	@cando('dannye-(klient):site')
 		<x-table.td>
 			@if($rawDataHistory ?? false)

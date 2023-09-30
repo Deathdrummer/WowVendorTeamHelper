@@ -46,7 +46,10 @@ trait Settingable {
 	 * @return mixed
 	 */
 	public function getSettings($setting = null, ?string $key = null, ?string $value = null, $filter = null):mixed {
-		return Cache::remember(trim($setting.'-'.$key.'-'.$value.'-'.(is_array($filter) ? key($filter).':'.current($filter) : $filter), '-'), 3, function () use($setting, $key, $value, $filter) {
+		
+		//trim($setting.'-'.$key.'-'.$value.'-'.(is_array($filter) ? key($filter).':'.current($filter) : $filter), '-')
+		
+		return Cache::remember('getSettings-'.argsToStr(func_get_args()), 3, function () use($setting, $key, $value, $filter) {
 			//logger(trim($setting.'-'.$key.'-'.$value.'-'.$filter, '-'));
 			$this->_getSettings($setting, $key, $value, $filter);
 			

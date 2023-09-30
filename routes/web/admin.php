@@ -148,8 +148,9 @@ Route::middleware(['lang'])->get('/{section?}', function (Request $request, $sec
 Route::middleware(['lang', 'auth:admin', 'isajax:admin'])->post('/get_section', function (Request $request, Settings $settings) {
 	$section = $request->input('section');
 	$pageTitle = [];
+	$sectionModel = AdminSection::where('section', $section)->first();
 	
-	if (!AdminSection::where('section', $section)->count()) {
+	if (!$sectionModel) {
 		return response()
 				->view('admin.section.error', ['title' => __('custom.no_section_title'), 'message' => __('custom.no_section_message')], 200)
 				->header('X-Page-Title', '');
@@ -161,19 +162,13 @@ Route::middleware(['lang', 'auth:admin', 'isajax:admin'])->post('/get_section', 
 			->header('X-Page-Title', ''/* urlencode(__('custom.denied_section_header_title')) */);
 	}
 	
-	
-	//$settingsData = $settings->getGroup($section ?: 'common') ?: [];
-	
 	$sectionPath = $section;
 	
 	$rootSection = explode('.', $sectionPath);
 	if (count($rootSection) > 1) {
-		$pageData = AdminSection::select('page_title')
-			->where('section', $rootSection)->first();
-		$pageTitle[] = $pageData['page_title'];
+		$pageData = AdminSection::select('page_title')->where('section', $rootSection)->first();
+		$pageTitle[] = $pageData?->page_title ?? null;
 	}
-	
-	
 	
 	if (!View::exists('admin.section.'.$section)) {
 		$sectionPath = match (true) {
@@ -190,17 +185,12 @@ Route::middleware(['lang', 'auth:admin', 'isajax:admin'])->post('/get_section', 
 		}
 	} 
 	
+	$pageTitle[] = $sectionModel ? $sectionModel?->page_title : null; /* urlencode(__('custom.no_section_header_title')) */
 	
-	$page = AdminSection::select('page_title')
-		->where('section', str_replace([
-			'.index','.default',$section.'.'.$section],
-			['','',$section],
-			$sectionPath))
-		->first();
+	// в таблице admin_sections прописывается массив тех настроек, что нужно подгрузить
+	$settingsData = $sectionModel?->settings ? ($settings->getMany($sectionModel?->settings)->toArray() ?: []) : []; 
 	
-	$pageTitle[] = $page ? $page->page_title : null; /* urlencode(__('custom.no_section_header_title')) */
-	
-	return response()->view('admin.section.'.$sectionPath, []/* $settingsData */, 200)->header('X-Page-Title', json_encode($pageTitle));
+	return response()->view('admin.section.'.$sectionPath, ['setting' => $settingsData]/* $settingsData */, 200)->header('X-Page-Title', json_encode($pageTitle));
 });
 
 

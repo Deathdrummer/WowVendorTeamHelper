@@ -9,6 +9,82 @@ use Symfony\Component\Mime\Encoder\IdnAddressEncoder;
 
 
 
+if (! function_exists('ddrSplit')) {
+	function ddrSplit($string = null, ...$separators) {
+		$seps = [...$separators];
+		
+		if (! function_exists('runRegSplit')) {
+			function runRegSplit($str, $separator = null) {
+				$separator = is_array($separator) ? implode('|', $separator) : $separator;
+				if (strpos($str, $separator) === false) return [$str];
+				return preg_split('/\s*['.$separator.']\s*/', $str);
+			};
+		}
+		
+		if (! function_exists('clearData')) {
+			function clearData($strItem = null) {
+				if (is_null($strItem)) return $strItem;
+				$strItem = trim($strItem);
+				return is_numeric($strItem) ? (int)$strItem : (is_float($strItem) ? (float)$strItem : $strItem);
+			};
+		}
+		
+		if (! function_exists('splitRecursive')) {
+			function splitRecursive($str, $seps, $iter = 0) {
+				if ($iter + 1 > count($seps)) {
+					return clearData($str);
+				}
+				
+				$res = runRegSplit($str, $seps[$iter++]);
+				
+				if (count($res) == 1) {
+					return clearData($res[0]);
+				} 
+				
+				$result = [];
+				foreach ($res as $k => $r) $result[] = splitRecursive($r, $seps, $iter);
+				return $result;
+			};
+		}
+		
+		return splitRecursive($string, $seps);
+	}
+}
+
+
+
+
+
+
+
+
+
+
+if (! function_exists('argsToStr')) {
+	/**
+     * Формирует строку из переданных аргументов
+     *
+     * @param  mixed  $args
+     * @param  string|array  $slug
+     * @return string
+     */
+	function argsToStr($args = null, $slug = '-') {
+		if (!$args) return false;
+		if (is_array($args)) {
+			$it = new RecursiveIteratorIterator(new RecursiveArrayIterator($args));
+			$flat = [];	
+			foreach($it as $v) {
+				$flat[] = $v;
+			}
+			$args = $flat;
+		}
+		return implode($slug, (array)$args) ?? false;
+	}
+}
+
+
+
+
 if (! function_exists('eventLog')) {
 	function eventLog() {
 		return app()->make(EventLogService::class);
@@ -20,6 +96,13 @@ if (! function_exists('eventLog')) {
 
 
 if (! function_exists('diffStrings')) {
+	/**
+     * Сравнивает двве строки и возвращает разницу
+     *
+     * @param  string  $old
+     * @param  string  $new
+     * @return string
+     */
 	function diff($old, $new) {
 		$matrix = array();
 		$maxlen = 0;
@@ -42,7 +125,8 @@ if (! function_exists('diffStrings')) {
 			diff(array_slice($old, $omax + $maxlen), array_slice($new, $nmax + $maxlen)));
 	}
 	
-	function diffStrings($old, $new) {
+	function diffStrings($old = null, $new = null) {
+		if (!$new) return '';
 		$ret = '';
 		$diff = diff(preg_split("/[\s]+/", $old), preg_split("/[\s]+/", $new));
 		foreach($diff as $k){

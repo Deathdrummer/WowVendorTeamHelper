@@ -177,7 +177,7 @@ export async function timesheetPeriodsCrud(getLastTimesheetPeriods = null, times
 									
 									if (choosedPeriod.value == id) {
 										$('#timesheetContainer').html('<p class="color-gray-400 fz16px noselect text-center">Выберите период</p>');
-										$('#listTypeChooser').setAttrib('hidden');
+										$('#listTypeChooser, #regionChooser').setAttrib('hidden');
 										$('#newTimesheetEventBtn, #importTimesheetEventsBtn, #exportOrdersBtn').setAttrib('hidden');
 										ddrStore('choosedPeriod', false);
 									}

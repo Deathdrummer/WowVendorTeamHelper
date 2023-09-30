@@ -1,7 +1,7 @@
 const viewsPath = 'admin.section.system.render.timesheet';
 	
 
-export async function timesheetCrud(periodId = null, listType = null, buildOrdersTable = null, cb = null) {
+export async function timesheetCrud(periodId = null, listType = null, regionId = null, buildOrdersTable = null, cb = null) {
 	const timesheetContainerWait = $('#timesheetContainer').ddrWait({
 		iconHeight: '50px',
 		text: 'Загрузка записей...'
@@ -27,7 +27,7 @@ export async function timesheetCrud(periodId = null, listType = null, buildOrder
 		itemToIndex: '[ddrtabletr]',
 		route: 'crud/timesheet',
 		params: {
-			list: {period_id: periodId, list_type: listType.value, search},
+			list: {period_id: periodId, list_type: listType.value, region_id: regionId.value, search},
 			//create: {period_id: periodId},
 			store: {timesheet_period_id: periodId},
 			edit: {period_id: periodId},
@@ -50,7 +50,7 @@ export async function timesheetCrud(periodId = null, listType = null, buildOrder
 		callFunc(cb, list);
 		
 		
-		$('#listTypeChooser').removeAttrib('hidden');
+		$('#listTypeChooser, #regionChooser').removeAttrib('hidden');
 		
 		$('#timesheetTable').blockTable('buildTable');
 		//wait(false);
@@ -123,7 +123,7 @@ export async function timesheetCrud(periodId = null, listType = null, buildOrder
 					} 
 					
 					if (data) {
-						list({list_type: listType.value}, () => {
+						list({list_type: listType.value, region_id: regionId.value}, () => {
 							$('#timesheetTable').blockTable('buildTable');
 							$.notify('Запись успешно добавлена!');
 							
@@ -201,7 +201,7 @@ export async function timesheetCrud(periodId = null, listType = null, buildOrder
 					} 
 					
 					if (data) {
-						list({list_type: listType.value}, () => {
+						list({list_type: listType.value, region_id: regionId.value}, () => {
 							$('#timesheetTable').blockTable('buildTable');
 							$.notify('Запись успешно изменена!');
 							close();
@@ -396,7 +396,7 @@ export async function timesheetCrud(periodId = null, listType = null, buildOrder
 					return;
 				}
 				
-				list({list_type: listType.value}, () => {
+				list({list_type: listType.value, region_id: regionId.value}, () => {
 					$('#timesheetTable').blockTable('buildTable');
 					$.notify('События успешно импортированы!');
 					incrementLastPeriodCount(periodId, data);

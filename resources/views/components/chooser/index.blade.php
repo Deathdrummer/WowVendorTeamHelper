@@ -3,6 +3,7 @@
 	'many'  	=> null,
 	'disabled'  => null,
 	'group'     => null,
+	'size'		=> null,
 	//'variant'   => $groupVariant,
 	//'rounded'   => $groupRounded,
 	//'px'        => $groupPx,
@@ -11,6 +12,10 @@
 	'gx'    	=> 0,
 	'hidden'	=> false
 ])
+
+@php
+	$group = $group ?? $size;
+@endphp
 
 
 <div
