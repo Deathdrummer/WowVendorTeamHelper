@@ -20,7 +20,9 @@
 	
 	<div class="col-auto" teleport="#headerTeleport2">
 		<div class="header__block">
-			<div id="lastTimesheetPeriodsBlock" class="ml3rem minw-4rem maxw-35rem h6rem pt10px pb10px pr10px"></div>
+			<div id="lastTimesheetPeriodsBlock" class="ml3rem minw-4rem maxw-35rem h6rem pt10px pb10px pr10px">
+				<div id="lastTimesheetPeriodsPlacer"></div>
+			</div>
 		</div>
 	</div>
 	
@@ -137,7 +139,7 @@
 	
 	$('#openTimesheetPeriodsBtn').ddrInputs('enable');
 	$.openTimesheetPeriodsWin = async () => {
-		timesheetPeriodsCrud(getLastTimesheetPeriods, timesheetCrud, listType, regionId, timesheetCrudList, choosedPeriod);
+		timesheetPeriodsCrud(getLastTimesheetPeriods, timesheetCrud, listType, regionId, timesheetCrudList, choosedPeriod, lastTimesheetPeriodsWaitBlock);
 	}
 	
 	

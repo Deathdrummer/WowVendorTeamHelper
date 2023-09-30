@@ -1,7 +1,7 @@
-export async function getLastTimesheetPeriods(cb = null, choosedPeriod = null) {
+export async function getLastTimesheetPeriods(cb = null, choosedPeriod = null, search = null) {
 	const viewsPath = 'admin.section.system.render.timesheet_periods';
 	
-	const {data, error, status, headers} = await axios.get('crud/timesheet_periods/last_periods', {params: {views: viewsPath, choosed_period: choosedPeriod?.value}});
+	const {data, error, status, headers} = await axios.get('crud/timesheet_periods/last_periods', {params: {views: viewsPath, choosed_period: choosedPeriod?.value, search}});
 	
 	if (error) {
 		console.log(error);
@@ -9,7 +9,7 @@ export async function getLastTimesheetPeriods(cb = null, choosedPeriod = null) {
 		return;
 	}
 	
-	$('#lastTimesheetPeriodsBlock').html(data);
+	$('#lastTimesheetPeriodsPlacer').html(data);
 	
 	callFunc(cb);
 }

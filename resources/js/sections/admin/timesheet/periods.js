@@ -1,8 +1,7 @@
 const viewsPath = 'admin.section.system.render.timesheet_periods';
 	
 
-export async function timesheetPeriodsCrud(getLastTimesheetPeriods = null, timesheetCrud = null, listType = null, timesheetCrudList = null, choosedPeriod = null) {
-	
+export async function timesheetPeriodsCrud(getLastTimesheetPeriods = null, timesheetCrud = null, listType = null, regionId = null, timesheetCrudList = null, choosedPeriod = null, lastTimesheetPeriodsWaitBlock = null) {
 	const {
 		state, // isClosed
 		popper,
@@ -78,6 +77,7 @@ export async function timesheetPeriodsCrud(getLastTimesheetPeriods = null, times
 		
 		
 		$.timesheetPeriodsWinBuild = (btn, periodId) => {
+			lastTimesheetPeriodsWaitBlock.on();
 			$('#lastTimesheetPeriodsBlock').find('li').removeClass('active');
 			$('#newTimesheetEventBtn, #importTimesheetEventsBtn, #exportOrdersBtn').setAttrib('hidden');
 			choosedPeriod.value = periodId;
@@ -86,8 +86,9 @@ export async function timesheetPeriodsCrud(getLastTimesheetPeriods = null, times
 			if (_.isFunction(timesheetCrud)) {
 				//timesheetCrud(periodId, listType);
 				let buildOrdersTable = null;
-				timesheetCrud(periodId, listType, buildOrdersTable, (list) => {
+				timesheetCrud(periodId, listType, regionId, buildOrdersTable, (list) => {
 					timesheetCrudList.value = list;
+					lastTimesheetPeriodsWaitBlock.off();
 				});
 			}
 			

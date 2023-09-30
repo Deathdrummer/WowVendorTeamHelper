@@ -20,7 +20,9 @@
 	
 	<div class="col-auto" teleport="#headerTeleport2">
 		<div class="header__block">
-			<div id="lastTimesheetPeriodsBlock" class="ml3rem minw-4rem maxw-35rem h6rem pt10px pb10px pr10px"></div>
+			<div id="lastTimesheetPeriodsBlock" class="ml3rem minw-4rem maxw-35rem h6rem pt10px pb10px pr10px">
+				<div id="lastTimesheetPeriodsPlacer"></div>
+			</div>
 			
 			<div class="ml3rem">
 				<x-input
@@ -119,19 +121,18 @@
 		showStatusesTooltip
 	} = await loadSectionScripts({section: 'timesheet', guard: 'admin'});
 	
-
 	
 	
 	const lastTimesheetPeriodsWaitBlock = $('#lastTimesheetPeriodsBlock').ddrWait({
 		iconHeight: '26px',
 	});
 	
-
+	
 	
 	
 	$('#openTimesheetPeriodsBtn').ddrInputs('enable');
 	$.openTimesheetPeriodsWin = async () => {
-		timesheetPeriodsCrud(getLastTimesheetPeriods, timesheetCrud, listType, regionId, timesheetCrudList, choosedPeriod);
+		timesheetPeriodsCrud(getLastTimesheetPeriods, timesheetCrud, listType, regionId, timesheetCrudList, choosedPeriod, lastTimesheetPeriodsWaitBlock);
 	}
 	
 	
@@ -285,9 +286,14 @@
 		
 		//console.log(icon);
 		//const str = event?.target?.value || null;
+		lastTimesheetPeriodsWaitBlock.on();
 		buildTimesheet(() => {
 			$(inp).ddrInputs('enable');
 			$(inp).focus();
+			getLastTimesheetPeriods(() => {
+				lastTimesheetPeriodsWaitBlock.off();
+				if (choosedPeriod.value) $('#lastTimesheetPeriodsBlock').find(`[timesheetperiod="${choosedPeriod.value}"]`).addClass('active');
+			}, choosedPeriod, searchStr);
 		});
 	}, 300);
 	
@@ -300,9 +306,14 @@
 			
 			$('#searchOrdersField').ddrInputs('value', false);
 			searchStr = '';
+			lastTimesheetPeriodsWaitBlock.on();
 			buildTimesheet(() => {
 				$('#searchOrdersField').ddrInputs('enable');
 				$('#searchOrdersField').ddrInputs('state', 'clear');
+				getLastTimesheetPeriods(() => {
+					lastTimesheetPeriodsWaitBlock.off();
+					if (choosedPeriod.value) $('#lastTimesheetPeriodsBlock').find(`[timesheetperiod="${choosedPeriod.value}"]`).addClass('active');
+				}, choosedPeriod);
 			});
 			
 		} else {

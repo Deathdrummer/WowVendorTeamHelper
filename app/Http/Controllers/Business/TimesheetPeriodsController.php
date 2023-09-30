@@ -88,21 +88,31 @@ class TimesheetPeriodsController extends Controller {
 	 */
 	public function last_periods(Request $request) {
 		[
-			'views'				=> $viewPath,
+			'views'		=> $viewPath
 		] = $request->validate([
-			'views'				=> 'required|string',
+			'views'		=> 'required|string'
 		]);
+		
+		$search = $request->input('search');
 		
 		if (!$viewPath) return response()->json(['no_view' => true]);
 		
-		$list = TimesheetPeriod::withCount(['timesheet_items'])
+		$list = TimesheetPeriod::withCount(['timesheet_items' => function($query) use($search) {
+				$query->when($search, function ($q) use($search) {
+					$q->whereHas('orders', function($sq) use($search) {
+						$sq->where('order', 'LIKE', '%'.$search.'%');
+					});
+				});
+				
+			}])
 			->orderBy('_sort', 'DESC')
 			->limit(5)
 			->get();
-		
+			
+	
 		$choosedPeriod = $request->input('choosed_period');
 		
-		return $this->view($viewPath.'.last_periods', compact('list', 'choosedPeriod'));
+		return $this->view($viewPath.'.last_periods', compact('list', 'choosedPeriod', 'search'));
 	}
 	
 	

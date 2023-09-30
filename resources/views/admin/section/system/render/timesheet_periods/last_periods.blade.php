@@ -16,13 +16,22 @@
 					'mr15px' => !$loop->first,
 					'noselect',
 					'active' => $item['id'] == $choosedPeriod ?? null,
+					'disabled' => $search && !($item['timesheet_items_count'] ?? 0),
 				])
 				onclick="$.timesheetPeriodsBuild(this, {{$item['id'] ?? null}})"
 				timesheetperiod="{{$item['id'] ?? null}}"
 				title="{{$item['title'] ?? ''}}"
 				>
 				<p class="fz14px lh90 text-center">{{$item['title'] ?? ''}}</p>
-				<small class="counter" timesheetperiodscounter>{{$item['timesheet_items_count'] ?? 0}}</small>
+				@if(!$search || ($search && $item['timesheet_items_count'] ?? 0))
+					<small
+						@class([
+							'counter',
+							'counter-searched'	=> $search
+						])
+						timesheetperiodscounter
+						>{{$item['timesheet_items_count'] ?? 0}}</small>
+				@endif
 			</li>
 		@endforeach
 	</ul>
