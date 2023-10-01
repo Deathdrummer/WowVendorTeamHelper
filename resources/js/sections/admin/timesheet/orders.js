@@ -90,25 +90,14 @@ export async function buildOrdersTable(row = null, timesheetId = null, cb = null
 				if (server_name) $(orderRow).find('[orderservername]').text(server_name);
 				if (link) $(orderRow).find('[orderlink]').setAttrib('onclick', `$.openLink(this, '${link}')`);
 				
+				
 				if (raw_data) {
 					if (rawDataHistory == 1) {
-						$(orderRow).find('[orderrawdata]').replaceWith('<div class="d-flex justify-content-between align-items-center"> \
-							<div class="mr5px scrollblock scrollblock-light minh-1rem-4px maxh3rem-1px w100">\
-								<p class="fz12px lh90 preline" orderrawdata="">'+raw_data+'</p>\
-							</div>\
-							<div class="align-self-center">\
-								<i\
-									class="fa-solid fa-fw fa-pen-to-square fz18px pointer color-green color-green-pointer color-green-active"\
-									onclick="$.openRawDataHistoryWin(this, '+orderId+', \''+order+'\')"\
-									orderrawcounter\
-									title="Изменений: '+rawDataHistory+'"></i>\
-							</div>\
-						</div>');
-					
+						$(orderRow).find('[orderrawhistory]').removeAttrib('hidden');
 					} else {
 						$(orderRow).find('[orderrawdata]').text(raw_data);
-						$(orderRow).find('[orderrawcounter]').attr('title', 'Изменений: '+rawDataHistory);
 					}
+					$(orderRow).find('[orderrawcounter]').attr('title', 'Изменений: '+rawDataHistory);
 				} 
 				
 				close();

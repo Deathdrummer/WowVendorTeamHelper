@@ -31,7 +31,7 @@ Route::get('orders_set_types', function(Request $request, OrderService $orderSer
 	   $orderType = $orderService->setOrderType($order);
 	   DB::table('orders')->where('id', $order->id)->update(['order_type' => $orderType]);
     });
-})->whereIn('all', [1, 0]);
+});
 
 
 
