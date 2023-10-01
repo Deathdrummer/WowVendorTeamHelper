@@ -15,7 +15,8 @@
 					'pointer',
 					'mr15px' => !$loop->first,
 					'noselect',
-					'active' => $item['id'] == $choosedPeriod ?? null,
+					'active' => $item['id'] == ($choosedPeriod ?? null) && ($item['timesheet_items_count'] ?? 0) > 0,
+					'active-empty' => $item['id'] == ($choosedPeriod ?? null) && ($item['timesheet_items_count'] ?? 0) == 0,
 					'disabled' => $search && !($item['timesheet_items_count'] ?? 0),
 				])
 				onclick="$.timesheetPeriodsBuild(this, {{$item['id'] ?? null}}, {{($item['timesheet_items_count'] ?? 0) ? 1 : 0}})"

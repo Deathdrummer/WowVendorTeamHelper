@@ -1396,13 +1396,23 @@ section
 		&.active
 			cursor: default
 			pointer-events: none
-			background: #28cbcf
-			border-color: #28cbcf
+			
+			&:not(.active-empty)
+				background: #28cbcf
+				border-color: #28cbcf
 			
 			p
 				color: #fff !important
 			
-		&.disabled
+			&-empty
+				pointer-events: none
+				background: #ebf5e6
+				border-color: #d5e3cf
+				
+				p
+					color: #b8cbae !important
+			
+		&.disabled:not(.active-empty)
 			pointer-events: none
 			border-color: #e5e5e5 !important
 			

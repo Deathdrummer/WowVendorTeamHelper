@@ -352,7 +352,7 @@
 	getLastTimesheetPeriods((periodsCounts) => {
 		if (periodsCounts[choosedPeriod.value]) {
 			$('#searchOrdersField').ddrInputs('enable');
-		} else {
+		} else if (!$('#searchOrdersField').val()) {
 			$('#searchOrdersField').ddrInputs('disable');
 		}
 		lastTimesheetPeriodsWaitBlock.off();

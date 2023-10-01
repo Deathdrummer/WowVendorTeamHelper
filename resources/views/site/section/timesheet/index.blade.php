@@ -253,7 +253,7 @@
 	getLastTimesheetPeriods((periodsCounts) => {
 		if (periodsCounts[choosedPeriod.value]) {
 			$('#searchOrdersField').ddrInputs('enable');
-		} else {
+		} else if (!$('#searchOrdersField').val()) {
 			$('#searchOrdersField').ddrInputs('disable');
 		}
 		
@@ -297,11 +297,11 @@
 			getLastTimesheetPeriods((periodsCounts) => {
 				if (periodsCounts[choosedPeriod.value]) {
 					$('#searchOrdersField').ddrInputs('enable');
-				} else {
+				} else if (!$('#searchOrdersField').val()) {
 					$('#searchOrdersField').ddrInputs('disable');
 				}
 				lastTimesheetPeriodsWaitBlock.off();
-				if (choosedPeriod.value) $('#lastTimesheetPeriodsBlock').find(`[timesheetperiod="${choosedPeriod.value}"]`).addClass('active');
+				//if (choosedPeriod.value) $('#lastTimesheetPeriodsBlock').find(`[timesheetperiod="${choosedPeriod.value}"]`).addClass('active');
 			}, choosedPeriod, searchStr);
 		});
 	}, 300);
@@ -322,11 +322,11 @@
 				getLastTimesheetPeriods((periodsCounts) => {
 					if (periodsCounts[choosedPeriod.value]) {
 						$('#searchOrdersField').ddrInputs('enable');
-					} else {
+					} else if (!$('#searchOrdersField').val()) {
 						$('#searchOrdersField').ddrInputs('disable');
 					}
 					lastTimesheetPeriodsWaitBlock.off();
-					if (choosedPeriod.value) $('#lastTimesheetPeriodsBlock').find(`[timesheetperiod="${choosedPeriod.value}"]`).addClass('active');
+					//if (choosedPeriod.value) $('#lastTimesheetPeriodsBlock').find(`[timesheetperiod="${choosedPeriod.value}"]`).addClass('active');
 				}, choosedPeriod);
 			});
 			

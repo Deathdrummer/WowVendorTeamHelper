@@ -150,7 +150,7 @@ export async function timesheetPeriodsCrud(getLastTimesheetPeriods = null, times
 					getLastTimesheetPeriods((periodsCounts) => {
 						if (periodsCounts[choosedPeriod.value]) {
 							$('#searchOrdersField').ddrInputs('enable');
-						} else {
+						} else if (!$('#searchOrdersField').val()) {
 							$('#searchOrdersField').ddrInputs('disable');
 						}
 						lastTimesheetPeriodsWaitBlock.destroy();
@@ -193,7 +193,7 @@ export async function timesheetPeriodsCrud(getLastTimesheetPeriods = null, times
 									getLastTimesheetPeriods((periodsCounts) => {
 										if (periodsCounts[choosedPeriod.value]) {
 											$('#searchOrdersField').ddrInputs('enable');
-										} else {
+										} else if (!$('#searchOrdersField').val()) {
 											$('#searchOrdersField').ddrInputs('disable');
 										}
 										wait(false);
