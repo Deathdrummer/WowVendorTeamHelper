@@ -8,6 +8,7 @@ export async function getLastTimesheetPeriods(cb = null, choosedPeriod = null, s
 		$.notify(error?.message, 'error');
 		return;
 	}
+	const periodsCounts = JSON.parse(headers['periods_counts'] || [], true);
 	
 	if ($('#lastTimesheetPeriodsBlock').find('#lastTimesheetPeriodsPlacer').length) {
 		$('#lastTimesheetPeriodsPlacer').html(data);
@@ -15,5 +16,5 @@ export async function getLastTimesheetPeriods(cb = null, choosedPeriod = null, s
 		$('#lastTimesheetPeriodsBlock').prepend(`<div id="lastTimesheetPeriodsPlacer">${data}</div>`);
 	}
 	
-	callFunc(cb);
+	callFunc(cb, periodsCounts);
 }

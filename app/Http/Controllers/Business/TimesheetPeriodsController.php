@@ -108,11 +108,14 @@ class TimesheetPeriodsController extends Controller {
 			->orderBy('_sort', 'DESC')
 			->limit(5)
 			->get();
-			
-	
+		
+		$periodsTsCounts = $list->pluck('timesheet_items_count', 'id')->mapWithKeys(function($count, $id) {
+			return [(int)$id => !!$count];
+		});
+		
 		$choosedPeriod = $request->input('choosed_period');
 		
-		return $this->view($viewPath.'.last_periods', compact('list', 'choosedPeriod', 'search'));
+		return $this->view($viewPath.'.last_periods', compact('list', 'choosedPeriod', 'search'), [], ['periods_counts' => $periodsTsCounts]);
 	}
 	
 	

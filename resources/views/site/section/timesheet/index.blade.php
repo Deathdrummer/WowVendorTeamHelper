@@ -135,12 +135,12 @@
 	
 	
 	let isBuildesPeriod = false;
-	$.timesheetPeriodsBuild = (btn, periodId) => {
+	$.timesheetPeriodsBuild = (btn, periodId, hasEvents) => {
 		if ($(btn).hasClass('active') || isBuildesPeriod) return;
-		let periodsBlockWait = $('#lastTimesheetPeriodsBlock').ddrWait({
+		/*let periodsBlockWait = $('#lastTimesheetPeriodsBlock').ddrWait({
 			iconHeight: '25px',
 			bgColor: '#ffffffdd'
-		});
+		});*/
 		isBuildesPeriod = true;
 		$('#newTimesheetEventBtn').setAttrib('hidden');
 		$('#lastTimesheetPeriodsBlock').find('li').removeClass('active');
@@ -151,8 +151,8 @@
 		timesheetCrud(periodId, listType, regionId, buildOrdersTable, (list) => {
 			timesheetCrudList.value = list;
 			isBuildesPeriod = false;
-			periodsBlockWait.destroy();
-			$('#searchOrdersField').ddrInputs('enable');
+			//periodsBlockWait.destroy();
+			if (hasEvents) $('#searchOrdersField').ddrInputs('enable');
 		});
 		$(btn).addClass('active');
 	}
@@ -250,7 +250,13 @@
 	
 	
 	
-	getLastTimesheetPeriods(() => {
+	getLastTimesheetPeriods((periodsCounts) => {
+		if (periodsCounts[choosedPeriod.value]) {
+			$('#searchOrdersField').ddrInputs('enable');
+		} else {
+			$('#searchOrdersField').ddrInputs('disable');
+		}
+		
 		lastTimesheetPeriodsWaitBlock.off();
 		if (choosedPeriod.value) $('#lastTimesheetPeriodsBlock').find(`[timesheetperiod="${choosedPeriod.value}"]`).addClass('active');
 	});
@@ -288,7 +294,12 @@
 		buildTimesheet(() => {
 			$(inp).ddrInputs('enable');
 			$(inp).focus();
-			getLastTimesheetPeriods(() => {
+			getLastTimesheetPeriods((periodsCounts) => {
+				if (periodsCounts[choosedPeriod.value]) {
+					$('#searchOrdersField').ddrInputs('enable');
+				} else {
+					$('#searchOrdersField').ddrInputs('disable');
+				}
 				lastTimesheetPeriodsWaitBlock.off();
 				if (choosedPeriod.value) $('#lastTimesheetPeriodsBlock').find(`[timesheetperiod="${choosedPeriod.value}"]`).addClass('active');
 			}, choosedPeriod, searchStr);
@@ -308,7 +319,12 @@
 			buildTimesheet(() => {
 				$('#searchOrdersField').ddrInputs('enable');
 				$('#searchOrdersField').ddrInputs('state', 'clear');
-				getLastTimesheetPeriods(() => {
+				getLastTimesheetPeriods((periodsCounts) => {
+					if (periodsCounts[choosedPeriod.value]) {
+						$('#searchOrdersField').ddrInputs('enable');
+					} else {
+						$('#searchOrdersField').ddrInputs('disable');
+					}
 					lastTimesheetPeriodsWaitBlock.off();
 					if (choosedPeriod.value) $('#lastTimesheetPeriodsBlock').find(`[timesheetperiod="${choosedPeriod.value}"]`).addClass('active');
 				}, choosedPeriod);

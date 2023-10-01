@@ -349,7 +349,12 @@
 	
 	
 	
-	getLastTimesheetPeriods(() => {
+	getLastTimesheetPeriods((periodsCounts) => {
+		if (periodsCounts[choosedPeriod.value]) {
+			$('#searchOrdersField').ddrInputs('enable');
+		} else {
+			$('#searchOrdersField').ddrInputs('disable');
+		}
 		lastTimesheetPeriodsWaitBlock.off();
 		if (choosedPeriod.value) $('#lastTimesheetPeriodsBlock').find(`[timesheetperiod="${choosedPeriod.value}"]`).addClass('active');
 	});

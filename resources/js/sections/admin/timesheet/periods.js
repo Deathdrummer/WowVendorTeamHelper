@@ -76,12 +76,13 @@ export async function timesheetPeriodsCrud(getLastTimesheetPeriods = null, times
 		
 		
 		
-		$.timesheetPeriodsWinBuild = (btn, periodId) => {
+		$.timesheetPeriodsWinBuild = (btn, periodId, hasEvents) => {
 			lastTimesheetPeriodsWaitBlock.on();
 			$('#lastTimesheetPeriodsBlock').find('li').removeClass('active');
 			$('#newTimesheetEventBtn, #importTimesheetEventsBtn, #exportOrdersBtn').setAttrib('hidden');
 			choosedPeriod.value = periodId;
 			ddrStore('choosedPeriod', periodId);
+			$('#searchOrdersField').ddrInputs('disable');
 			
 			if (_.isFunction(timesheetCrud)) {
 				//timesheetCrud(periodId, listType);
@@ -89,6 +90,7 @@ export async function timesheetPeriodsCrud(getLastTimesheetPeriods = null, times
 				timesheetCrud(periodId, listType, regionId, buildOrdersTable, (list) => {
 					timesheetCrudList.value = list;
 					lastTimesheetPeriodsWaitBlock.off();
+					if (hasEvents) $('#searchOrdersField').ddrInputs('enable');
 				});
 			}
 			
@@ -145,7 +147,12 @@ export async function timesheetPeriodsCrud(getLastTimesheetPeriods = null, times
 					$.notify('Запись успешно сохранена!');
 					$('#timesheetPeriodsTable').blockTable('buildTable');
 					
-					getLastTimesheetPeriods(() => {
+					getLastTimesheetPeriods((periodsCounts) => {
+						if (periodsCounts[choosedPeriod.value]) {
+							$('#searchOrdersField').ddrInputs('enable');
+						} else {
+							$('#searchOrdersField').ddrInputs('disable');
+						}
 						lastTimesheetPeriodsWaitBlock.destroy();
 					}, choosedPeriod);
 				}
@@ -183,7 +190,12 @@ export async function timesheetPeriodsCrud(getLastTimesheetPeriods = null, times
 										ddrStore('choosedPeriod', false);
 									}
 									
-									getLastTimesheetPeriods(() => {
+									getLastTimesheetPeriods((periodsCounts) => {
+										if (periodsCounts[choosedPeriod.value]) {
+											$('#searchOrdersField').ddrInputs('enable');
+										} else {
+											$('#searchOrdersField').ddrInputs('disable');
+										}
 										wait(false);
 									}, choosedPeriod);
 									

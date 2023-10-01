@@ -18,7 +18,7 @@
 					'active' => $item['id'] == $choosedPeriod ?? null,
 					'disabled' => $search && !($item['timesheet_items_count'] ?? 0),
 				])
-				onclick="$.timesheetPeriodsBuild(this, {{$item['id'] ?? null}})"
+				onclick="$.timesheetPeriodsBuild(this, {{$item['id'] ?? null}}, {{($item['timesheet_items_count'] ?? 0) ? 1 : 0}})"
 				timesheetperiod="{{$item['id'] ?? null}}"
 				title="{{$item['title'] ?? ''}}"
 				>
