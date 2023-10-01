@@ -31,10 +31,15 @@
 									setting="orders.per_page"
 								/>
 							</div>
+							<div class="col">
+								<p class="mb1rem">Присвоить типы заказов</p>
+								<x-button size="normal" variant="light" setorderstypes action="setOrdersTypes:empty">Заказам без типов</x-button>
+								<x-button size="normal" variant="light" setorderstypes action="setOrdersTypes">Всем заказам</x-button>
+							</div>
 						</div>
 					</div>
 					
-					<div class="ddrtabscontent__item ddrtabscontent__item_visible" ddrtabscontentitem="sectionsTab2">
+					<div class="ddrtabscontent__item" ddrtabscontentitem="sectionsTab2">
 						<div class="row row-cols-1 gy-20">
 							<div class="col">
 								<p class="mb1rem">Отправка в прошедшие спустя часов:</p>
@@ -100,3 +105,34 @@
 		</x-card>
 	</x-settings>
 </section>
+
+
+
+
+
+
+<script type="module">
+	$.setOrdersTypes = async (btn, type = null) => {
+		
+		$('[setorderstypes]').not(btn).ddrInputs('disable');
+		
+		const empty = type == 'empty' ? 1 : 0
+		const btnWait = $(btn).ddrWait({
+			iconHeight: '20px',
+			bgColor: '#e9e9e9d4'
+		});
+		
+		const {data, error, status, headers} = await ddrQuery.get('orders_set_types', {empty});
+		
+		btnWait.destroy();
+		$('[setorderstypes]').not(btn).ddrInputs('enable');
+		
+		if (error) {
+			console.log(error);
+			$.notify(error?.message, 'error');
+			return;
+		}
+		
+		$.notify('Присвоение прошло успешно!');		
+	}
+</script>

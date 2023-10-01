@@ -4,20 +4,34 @@ use App\Http\Controllers\Business\OrdersController;
 use App\Http\Controllers\SlackController;
 use App\Http\Controllers\UserController;
 use App\Http\Requests\Auth\UserEmailVerificationRequest;
+use App\Models\Order;
 use App\Models\Section;
 use App\Models\User;
+use App\Services\Business\OrderService;
 use App\Services\Settings;
-use App\Traits\Settingable;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Str;
 
+
+
+
+
+Route::get('orders_set_types', function(Request $request, OrderService $orderService) {
+	Order::when($request->empty, function($query) {
+		$query->whereNull('order_type');
+	})->lazyById()->each(function (Order $order) use($orderService) {
+	   $orderType = $orderService->setOrderType($order);
+	   DB::table('orders')->where('id', $order->id)->update(['order_type' => $orderType]);
+    });
+})->whereIn('all', [1, 0]);
 
 
 
@@ -331,7 +345,6 @@ Route::prefix('client')->middleware(['lang', 'isajax:site'])->group(function() {
 	Route::get('orders/relocate/get_timesheets', [OrdersController::class, 'get_relocate_timesheets_client']);
 	Route::post('orders/relocate', [OrdersController::class, 'set_relocate_client']);
 });
-
 
 
 
