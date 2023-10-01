@@ -47,7 +47,7 @@ class OrdersController extends Controller {
 		];
 		
 		$timezones = $this->getSettings('timezones', 'id');
-		$status = $request->input('status', 1);
+		$status = $request->input('status', 'new');
 		
 		$itemView = $this->renderPath.'.item';
 		return $this->renderWithHeaders('list', compact('orders', 'itemView', 'timezones', 'status'), $headers);
@@ -296,6 +296,56 @@ class OrdersController extends Controller {
 		
 		return response()->json($res);
 	}
+	
+	
+	
+	
+	
+	
+	/** Форма отправки заказа в лист ожидания
+	 * @param 
+	 * @return 
+	 */
+	public function to_necro_list_form(Request $request) {
+		[
+			'views'	=> $viewPath,
+		] = $request->validate([
+			'views'	=> 'required|string',
+		]);
+
+		return $this->render($viewPath);
+	}
+	
+	
+	
+	/** Отправить заказ в лист ожидания
+	 * @param 
+	 * @return 
+	 */
+	public function to_necro_list(Request $request, AddOrderCommentAction $addOrderComment) {
+		[
+			'order_id'	=> $orderId,
+			'message'	=> $message,
+		] = $request->validate([
+			'order_id'	=> 'required|numeric',
+			'message'	=> 'string|nullable',
+		]);
+		
+		$order = Order::find($orderId);
+		$order->fill(['status' => OrderStatus::necro]);
+		eventLog()->orderToWaitlList($order);
+		$res = $order->save();
+		
+		// отправить коммент
+		if ($message) {
+			$addOrderComment($orderId, $message);
+		}
+		
+		return response()->json($res);
+	}
+	
+	
+	
 	
 	
 	

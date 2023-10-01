@@ -169,11 +169,12 @@ class Order extends Model {
 	
 	/* 
 	Статусы
-		новый new: 0
-		ожидание wait: -1
-		отмененcancel: -2
-		готов ready: 1 
-		доп. ран doprun: 2
+		новый 		new: 	0
+		ожидание 	wait: 	-1
+		отменен 	cancel: -2
+		некрота 	necro: 	-3
+		готов 		ready: 	1 
+		доп. ран 	doprun:	2
 	*/
 	/**
      * Вывести с определенным статусом

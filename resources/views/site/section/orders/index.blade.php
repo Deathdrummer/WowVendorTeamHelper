@@ -13,21 +13,18 @@
 						class="mb1rem"
 						>
 						<x-chooser.item
-							id="chooserAll"
-								action="getOrdersAction:new"
-								active>
-								Выходящие
-						</x-chooser.item>
+							action="getOrdersAction:new"
+							active
+							>Выходящие</x-chooser.item>
 						<x-chooser.item
-							id="chooserAll"
-								action="getOrdersAction:wait">
-								Лист ожидания
-						</x-chooser.item>
+							action="getOrdersAction:wait"
+							>Лист ожидания</x-chooser.item>
 						<x-chooser.item
-							id="chooserAll"
-								action="getOrdersAction:cancel">
-								Отмененные
-						</x-chooser.item>
+							action="getOrdersAction:cancel"
+							>Отмененные</x-chooser.item>
+						<x-chooser.item
+							action="getOrdersAction:necro"
+							>Некрота</x-chooser.item>
 					</x-chooser>
 				</div>
 				<div class="col">
@@ -247,12 +244,57 @@
 			if (data) {
 				const row = $(btn).closest('[order]');
 				$(row).remove();
-				$.notify('Заказ успешно перенесен!');
+				$.notify('Заказ успешно перенесен в лист ожидания!');
 				close();
 			}
 		}
 	}
 	
+	
+	
+	
+	
+	$.toNecroListBtn = async (btn, order_id = null) => {
+		if (_.isNull(order_id)) return;
+		
+		const views = 'movelist_form';
+		
+		const {
+			popper,
+			wait,
+			close,
+		} = await ddrPopup({
+			url: 'client/orders/to_necro_list',
+			params: {views},
+			method: 'get',
+			title: 'В некроту',
+			width: 400, // ширина окна
+			buttons: ['ui.cancel', {title: 'Перенести', variant: 'green', action: 'toNecroListAction'}],
+			centerMode: true, // контент по центру
+		});
+		
+		
+		$.toNecroListAction = async (__) => {
+			wait();
+			
+			const message = $(popper).find('#comment').val();
+			
+			const {data, error, status, headers} = await ddrQuery.post('client/orders/to_necro_list', {order_id, message});
+			
+			if (error) {
+				$.notify(error?.message, 'error');
+				wait(false);
+				return false;
+			}
+			
+			if (data) {
+				const row = $(btn).closest('[order]');
+				$(row).remove();
+				$.notify('Заказ успешно перенесен в некроту!');
+				close();
+			}
+		}
+	}
 	
 	
 	
