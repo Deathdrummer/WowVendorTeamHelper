@@ -309,6 +309,8 @@ class OrderService {
 	public function setStatus($orderId = null, $timesheetId = null, $status = null) {
 		if (is_null($orderId) || is_null($status)) return false;
 		
+		$isHashOrder = false;
+		
 		$stat = OrderStatus::fromKey($status);
 		
 		$order = Order::find($orderId);
