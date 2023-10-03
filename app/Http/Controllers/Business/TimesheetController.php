@@ -510,9 +510,28 @@ class TimesheetController extends Controller {
 					$buildData[$day][$orderRow['order_type'] ?? 0]['all'] = 0;
 				}
 				$buildData[$day][$orderRow['order_type'] ?? 0]['all'] += 1;
+				
+				
+				
+				// Сумма всех дней
+				if (!isset($buildData['all'][$orderRow['order_type'] ?? 0]['commands'][$row['command_id'] ?? '-'])) {
+					$buildData['all'][$orderRow['order_type'] ?? 0]['commands'][$row['command_id'] ?? '-'] = 0;
+				}
+				$buildData['all'][$orderRow['order_type'] ?? 0]['commands'][$row['command_id'] ?? '-'] += 1;
+				
+				if (!isset($buildData['all'][$orderRow['order_type'] ?? 0]['regions'][$map['commands'][$row['command_id'] ?? '-']['region_id']])) {
+					$buildData['all'][$orderRow['order_type'] ?? 0]['regions'][$map['commands'][$row['command_id'] ?? '-']['region_id']] = 0;
+				}
+				$buildData['all'][$orderRow['order_type'] ?? 0]['regions'][$map['commands'][$row['command_id'] ?? '-']['region_id']] += 1;
+				
+				if (!isset($buildData['all'][$orderRow['order_type'] ?? 0]['all'])) {
+					$buildData['all'][$orderRow['order_type'] ?? 0]['all'] = 0;
+				}
+				$buildData['all'][$orderRow['order_type'] ?? 0]['all'] += 1;
 			}
 			
 			
+			ksort($buildData);
 			
 			//$buildData[$day][$row['command_id'] ?? '-'] = $ordersData;
 		}

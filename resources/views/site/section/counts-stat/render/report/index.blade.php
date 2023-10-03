@@ -25,9 +25,14 @@
 	</x-table.head>
 	<x-table.body>
 		@foreach($buildData as $day => $ordersTypesData)
+			@if($day == 'all')
+				<x-table.tr class="clear h2rem">
+					<x-table.td></x-table.td>
+				</x-table.tr>
+			@endif
 			<x-table.tr class="clear">
 				<x-table.td class="v-start">
-					<p class="mt9px">{{$day}}</p>
+					<p class="mt9px">{!!$day == 'all' ? '<strong>Итог</strong>' : $day!!}</p>
 				</x-table.td>
 				<x-table.td class="p-0">
 					<x-table class="w100" scrolled="false" noborder>
@@ -48,14 +53,18 @@
 							@foreach($ordersTypesData as $orderTypeId => $commandsCounts)
 								<x-table.tr class="h4rem clear">
 									@foreach($map['commands'] as $cId => $cData)
-										<x-table.td class="w7rem h-center" style="background-color: {{$cData['color'] ?? null}}">
+										<x-table.td class="w7rem h-center" style="background-color: {{$day != 'all' ? ($cData['color'] ?? null) : '#ffefb7'}}">
 											<p class="fz12px text-center" invert-color>{{$commandsCounts['commands'][$cId] ?? '-'}}</p>
 										</x-table.td>
 									@endforeach
 									@foreach($map['regions'] as $rId => $rTitle)
-										<x-table.td class="w7rem h-center"><strong class="fz12px text-center">{{$commandsCounts['regions'][$rId] ?? '-'}}</strong></x-table.td>
+										<x-table.td class="w7rem h-center" style="background-color: {{$day == 'all' ? '#ffefb7' : ''}}">
+											<strong class="fz12px text-center">{{$commandsCounts['regions'][$rId] ?? '-'}}</strong>
+										</x-table.td>
 									@endforeach
-									<x-table.td class="w7rem h-center"><strong class="fz12px text-center">{{$commandsCounts['all'] ?? '-'}}</strong></x-table.td>
+									<x-table.td class="w7rem h-center" style="background-color: {{$day == 'all' ? '#ffefb7' : ''}}">
+										<strong class="fz12px text-center">{{$commandsCounts['all'] ?? '-'}}</strong>
+									</x-table.td>
 									<x-table.td class="w-spacer"></x-table.td>
 								</x-table.tr>
 							@endforeach
