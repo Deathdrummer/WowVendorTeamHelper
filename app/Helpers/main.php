@@ -1,9 +1,59 @@
 <?php
 
+use App\Helpers\DdrDateTime;
 use App\Services\EventLogService;
+use Carbon\Carbon;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Symfony\Component\Mime\Encoder\IdnAddressEncoder;
+
+
+
+
+
+if (! function_exists('toLog')) {
+	/**
+	* DDR Логгер
+	*
+	* @param  mixed  $message
+	* @param  array  $context
+	* @return mixed
+	*/
+	function toLog($message = null, $params = []):mixed {
+		if (is_null($message)) {
+			return app('log');
+		}
+		
+		if (is_array($message)) {
+			$humanDate = $params['humandate'] ?? false;
+			if (! function_exists('arrayWalkRecursive')) {
+					function arrayWalkRecursive(&$mess, $humanDate) {
+					array_walk_recursive($mess, function (&$item, $key) use($humanDate) {
+						if ($item instanceof Carbon) {
+							if ($humanDate) {
+								$item = DdrDateTime::date($item, ['shift' => '-']).' в '.DdrDateTime::time($item, ['shift' => '-']).' [Carbon]';
+							} else {
+								$item = DdrDateTime::shift($item, 'UTC').' [Carbon]';
+							}
+						} elseif ($item instanceof Illuminate\Support\Collection) {
+							$item = $item->toArray();
+							$item = arrayWalkRecursive($item, $humanDate);
+						}
+					});
+					return $mess;
+				}
+			}
+			
+			arrayWalkRecursive($message, $humanDate);
+		}
+		
+		return app('log')->debug($message, $params['context'] ?? []);
+	}
+}
+
+
+
+
 
 
 

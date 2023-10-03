@@ -1,10 +1,12 @@
-<div class="d-flex justify-content-end mb2rem">
-	<x-button
-		variant="blue"
-		size="small"
-		action="timesheetPeriodsAddBtnAction"
-		>Добавить период</x-button>
-</div>
+@unless($ordersCountsStat)
+	<div class="d-flex justify-content-end mb2rem">
+		<x-button
+			variant="blue"
+			size="small"
+			action="timesheetPeriodsAddBtnAction"
+			>Добавить период</x-button>
+	</div>
+@endif
 
 <x-table class="w100" id="timesheetPeriodsTable" noborder scrolled="60vh">
 	<x-table.head>

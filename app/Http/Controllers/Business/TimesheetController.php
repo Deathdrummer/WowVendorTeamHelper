@@ -9,6 +9,7 @@ use App\Http\Requests\ImportTimesheetEventsRequest;
 use App\Models\Command;
 use App\Models\EventType;
 use App\Models\Timesheet;
+use App\Models\TimesheetPeriod;
 use App\Services\Settings;
 use App\Traits\HasCrudController;
 use Illuminate\Http\Request;
@@ -448,6 +449,62 @@ class TimesheetController extends Controller {
 		
 		return response()->json($res);
 	}
+	
+	
+	
+	
+	
+	
+	
+	/**
+	* 
+	* @param 
+	* @return 
+	*/
+	public function orders_counts_stat(Request $request, Settings $settingsService) {
+		[
+			'period_id'	=> $periodId,
+			'views'		=> $viewPath,
+		] = $request->validate([
+			'views'		=> 'required|string',
+			'period_id'	=> 'required|numeric',
+		]);
+		
+		$periodTitle = TimesheetPeriod::find($periodId)->title;
+		$commands = Command::all()->pluck('title', 'id')->toArray();
+		$ordersTypes = $settingsService->get('orders_types')->pluck('title', 'id')->toArray();
+		
+		
+		$tsData = Timesheet::period($periodId)
+			->with('orders')
+			->lazy();
+		
+		$buildData = []; 
+		foreach ($tsData as $row) {
+			$day = $row['datetime']?->format('Y-m-d');
+			
+			$ordersData = [];
+			foreach ($row['orders']?->lazy() as $orderRow) {
+				//if (!isset($ordersData[$orderRow['order_type']])) $ordersData[$orderRow['order_type'] ?? 0] = 0;
+				//$ordersData[$orderRow['order_type'] ?? 0] += 1;
+				if (!isset($buildData[$day][$orderRow['order_type'] ?? 0][$row['command_id'] ?? '-'])) $buildData[$day][$orderRow['order_type'] ?? 0][$row['command_id'] ?? '-'] = 0;
+				$buildData[$day][$orderRow['order_type'] ?? 0][$row['command_id'] ?? '-'] += 1;
+			}
+			
+			
+			
+			//$buildData[$day][$row['command_id'] ?? '-'] = $ordersData;
+		}
+		
+		toLog($buildData);
+		
+		return response(view($viewPath.'.index', compact('buildData', 'periodTitle', 'commands', 'ordersTypes')));
+	}
+	
+	
+	
+	
+	
 	
 	
 	

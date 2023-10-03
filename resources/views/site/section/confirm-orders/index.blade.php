@@ -1,5 +1,4 @@
 <section>
-	
 	<div class="row justify-content-between mb1rem">
 		<div class="col-auto">
 			<x-chooser
@@ -35,7 +34,6 @@
 			</x-button>
 		</div>
 	</div>
-		
 	
 	<div id="confirmOrdersBlock" class="mt2rem minh7rem"></div>
 </section>

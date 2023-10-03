@@ -153,5 +153,12 @@ class Timesheet extends Model {
 	}
 	
 	
-	
+	/**
+     * Получить 
+     * @param $stat - new wait cancel ready doprun
+     * @return Carbon|null
+     */
+	public function scopePeriod($query, $periodId = null) {
+		return $query->where('timesheet_period_id', $periodId);
+	}
 }

@@ -108,10 +108,11 @@
 
 <script type="module">
 	
+	const sectionName = location.pathname.replace('/', '');
 	const listType = ref(ddrStore('listType') || 'actual');
 	const regionId = ref(ddrStore('eventsRegion') || Number($('#regionChooser').find('[regionchooser]').attr('regionchooser')));
 	const timesheetCrudList = ref(null);
-	const choosedPeriod = ref(ddrStore('choosedPeriod'));
+	const choosedPeriod = ref(ddrStore(`${sectionName}-choosedPeriod`));
 	
 	const {
 		timesheetCrud,
@@ -152,7 +153,7 @@
 		$('#newTimesheetEventBtn, #importTimesheetEventsBtn, #exportOrdersBtn').setAttrib('hidden');
 		$('#lastTimesheetPeriodsBlock').find('li').removeClass('active');
 		choosedPeriod.value = periodId;
-		ddrStore('choosedPeriod', periodId);
+		ddrStore(`${sectionName}-choosedPeriod`, periodId);
 		
 		timesheetCrud(periodId, listType, regionId, buildOrdersTable, (list) => {
 			timesheetCrudList.value = list;

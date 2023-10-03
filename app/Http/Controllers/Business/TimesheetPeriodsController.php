@@ -60,9 +60,11 @@ class TimesheetPeriodsController extends Controller {
      */
     public function index(Request $request) {
 		[
-			'views'		=> $viewPath,
+			'views'					=> $viewPath,
+			'orders_counts_stat'	=> $ordersCountsStat,
 		] = $request->validate([
-			'views'		=> 'required|string',
+			'views'					=> 'required|string',
+			'orders_counts_stat'	=> 'boolean|nullable',
 		]);
 		
 		if (!$viewPath) return response()->json(['no_view' => true]);
@@ -73,7 +75,7 @@ class TimesheetPeriodsController extends Controller {
 		
 		$itemView = $viewPath.'.item';
 		
-		return $this->viewWithLastSortIndex(TimesheetPeriod::class, $viewPath.'.list', compact('list', 'itemView'), '_sort');
+		return $this->viewWithLastSortIndex(TimesheetPeriod::class, $viewPath.'.list', compact('list', 'itemView', 'ordersCountsStat'), '_sort');
     }
 	
 	
@@ -88,9 +90,11 @@ class TimesheetPeriodsController extends Controller {
 	 */
 	public function last_periods(Request $request) {
 		[
-			'views'		=> $viewPath
+			'only_has_events'	=> $onlyHasHvents,
+			'views'				=> $viewPath,
 		] = $request->validate([
-			'views'		=> 'required|string'
+			'only_has_events'	=> 'required|boolean',
+			'views'				=> 'required|string',
 		]);
 		
 		$search = $request->input('search');
@@ -104,7 +108,9 @@ class TimesheetPeriodsController extends Controller {
 					});
 				});
 				
-			}])
+			}])->when($onlyHasHvents, function($hasEventsQuery) {
+				$hasEventsQuery->whereHas('timesheet_items');
+			})
 			->orderBy('_sort', 'DESC')
 			->limit(5)
 			->get();
@@ -136,14 +142,18 @@ class TimesheetPeriodsController extends Controller {
 	 */
 	public function init(Request $request) {
 		[
-			'views'		=> $viewPath,
+			'orders_counts_stat'	=> $ordersCountsStat,
+			'views'					=> $viewPath,
 		] = $request->validate([
-			'views'		=> 'required|string',
+			'orders_counts_stat'	=> 'boolean|nullable',
+			'views'					=> 'required|string',
 		]);
+		
+		$ordersCountsStat = $request->input('orders_counts_stat');
 		
 		if (!$viewPath) return response()->json(['no_view' => true]);
 		
-		return $this->view($viewPath.'.init');
+		return $this->view($viewPath.'.init', compact('ordersCountsStat'));
 	}
 	
 	
@@ -191,6 +201,8 @@ class TimesheetPeriodsController extends Controller {
 		if (!$viewPath) return response()->json(['no_view' => true]);
 		if (!$item = $this->_storeRequest($request)) return response()->json(false);
 		
+		$item['ordersCountsStat'] = $request->input('orders_counts_stat');
+		
 		//$this->_buildDataFromSettings();
 		return $this->view($viewPath.'.item', $item);
     }
@@ -201,8 +213,9 @@ class TimesheetPeriodsController extends Controller {
 		if (!$request) return false;
 		
 		$validFields = $request->validate([
-			'title'		=> 'required|string',
-			'_sort'		=> 'exclude|regex:/[0-9]+/',
+			'title'					=> 'required|string',
+			'orders_counts_stat'	=> 'exclude|boolean|nullable',
+			'_sort'					=> 'exclude|regex:/[0-9]+/',
 		]);
 		
 		if (!isset($request['_sort'])) {

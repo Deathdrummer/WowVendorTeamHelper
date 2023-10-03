@@ -1,16 +1,9 @@
-const viewsPath = 'admin.section.system.render.timesheet_periods';
-	
-
 export async function timesheetPeriodsCrud(getLastTimesheetPeriods = null, timesheetCrud = null, listType = null, regionId = null, timesheetCrudList = null, choosedPeriod = null, lastTimesheetPeriodsWaitBlock = null) {
+	const viewsPath = 'admin.section.system.render.timesheet_periods';
+	const sectionName = location.pathname.replace('/', '');
+	
 	const {
-		state, // isClosed
-		popper,
 		wait,
-		setTitle,
-		setButtons,
-		loadData,
-		setHtml,
-		setLHtml,
 		dialog,
 		close,
 		query,
@@ -21,37 +14,23 @@ export async function timesheetPeriodsCrud(getLastTimesheetPeriods = null, times
 	} = await ddrPopup({
 		url: 'crud/timesheet_periods/init',
 		method: 'get',
-		params: {views: viewsPath},
+		params: {views: viewsPath, orders_counts_stat: ['counts-stat'].includes(sectionName) ? 1 : 0},
 		title: 'Периоды расписания',
 		width: 600,
-		//frameOnly, // Загрузить только каркас
-		//html, // контент
-		//lhtml, // контент из языковых файлов
 		buttons: ['ui.close'/*, {action: 'tesTest', title: 'Просто кнопка'}*/],
-		//buttonsAlign, // выравнивание вправо
-		//disabledButtons, // при старте все кнопки кроме закрытия будут disabled
-		//closeByBackdrop, // Закрывать окно только по кнопкам [ddrpopupclose]
-		//changeWidthAnimationDuration, // ms
-		//buttonsGroup, // группа для кнопок
-		//winClass: 'h60vh', // добавить класс к модальному окну
-		//centerMode, // контент по центру
-		//topClose // верхняя кнопка закрыть
 	});
 	
 	wait();
-	
-
-	
 	
 	$.ddrCRUD({
 		container: '#timesheetPeriodsList',
 		itemToIndex: '[ddrtabletr]',
 		route: 'crud/timesheet_periods',
 		params: {
-			//list: {archive: 0/*department_id: deptId*/},
-			//create: {guard: 'admin'},
+			list: {orders_counts_stat: ['counts-stat'].includes(sectionName) ? 1 : 0},
+			//create: {orders_counts_stat: ['counts-stat'].includes(sectionName) ? 1 : 0},
 			//edit: {guard: 'admin'}
-			//store: {department_id: deptId},
+			store: {orders_counts_stat: ['counts-stat'].includes(sectionName) ? 1 : 0},
 		},
 		viewsPath,
 	}).then(({error, list, changeInputs, create, store, storeWithShow, edit, update, destroy, query, getParams, abort, remove}) => {
@@ -74,14 +53,12 @@ export async function timesheetPeriodsCrud(getLastTimesheetPeriods = null, times
 		
 		//$('#contractAddBtn').ddrInputs('enable');
 		
-		
-		
 		$.timesheetPeriodsWinBuild = (btn, periodId, hasEvents) => {
 			lastTimesheetPeriodsWaitBlock.on();
 			$('#lastTimesheetPeriodsBlock').find('li').removeClass('active');
 			$('#newTimesheetEventBtn, #importTimesheetEventsBtn, #exportOrdersBtn').setAttrib('hidden');
 			choosedPeriod.value = periodId;
-			ddrStore('choosedPeriod', periodId);
+			ddrStore(`${sectionName}-choosedPeriod`, periodId);
 			$('#searchOrdersField').ddrInputs('disable');
 			
 			if (_.isFunction(timesheetCrud)) {
@@ -187,7 +164,7 @@ export async function timesheetPeriodsCrud(getLastTimesheetPeriods = null, times
 										$('#timesheetContainer').html('<p class="color-gray-400 fz16px noselect text-center">Выберите период</p>');
 										$('#listTypeChooser, #regionChooser').setAttrib('hidden');
 										$('#newTimesheetEventBtn, #importTimesheetEventsBtn, #exportOrdersBtn').setAttrib('hidden');
-										ddrStore('choosedPeriod', false);
+										ddrStore(`${sectionName}-choosedPeriod`, false);
 									}
 									
 									getLastTimesheetPeriods((periodsCounts) => {
@@ -216,5 +193,5 @@ export async function timesheetPeriodsCrud(getLastTimesheetPeriods = null, times
 	
 	});
 	
-	
+	return {wait, close};
 }
