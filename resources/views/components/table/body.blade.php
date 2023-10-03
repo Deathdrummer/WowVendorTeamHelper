@@ -10,10 +10,10 @@
 <div
 	{{$attributes->class([
 		'ddrtable__body',
-		'ddrtable__body_scrolled' 	=> $scrollstart || $scrollend || $scrolled,
+		'ddrtable__body_scrolled' 	=> $scrollstart || $scrollend || bringTypes($scrolled),
 		'ddrtable__body_hidescroll' => $hidescroll
 	])}}
-	@if($scrolled)style="max-height: {{$scrolled}};"@endif
+	@if(bringTypes($scrolled))style="max-height: {{$scrolled}};"@endif
 	role="rowgroup"
 	ddrtablebody
 	{{$scrollsync}}

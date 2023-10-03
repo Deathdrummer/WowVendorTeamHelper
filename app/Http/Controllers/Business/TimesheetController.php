@@ -475,7 +475,9 @@ class TimesheetController extends Controller {
 			return [$row['id'] => $row];
 		})->toArray();
 		$map['regions'] = $settingsService->get('regions')->pluck('title', 'id')->toArray();
-		$ordersTypes = $settingsService->get('orders_types')->pluck('title', 'id')->toArray();
+		$ordersTypes = $settingsService->get('orders_types')->mapWithKeys(function($row) {
+			return [$row['id'] => $row];
+		})->toArray();
 		
 		//toLog($map);
 		

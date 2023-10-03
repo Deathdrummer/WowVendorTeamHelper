@@ -10,12 +10,13 @@
 
 
 <div
+
 	{{$attributes->class([
 		'ddrtable',
 	])}}
 	id="{{$id}}"
 	ddrtable
-	@if($scrolled)scrolled @endif
+	@if(bringTypes($scrolled))scrolled @endif
 	@if($scrollsync)scrollsync="{{$scrollsync}}" @endif
 	role="table"
 	>
