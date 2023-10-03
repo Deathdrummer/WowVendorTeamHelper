@@ -47,7 +47,7 @@
 	const listType = ref(ddrStore('listType') || 'actual');
 	const regionId = ref(ddrStore('eventsRegion') || Number($('#regionChooser').find('[regionchooser]').attr('regionchooser')));
 	const timesheetCrudList = ref(null);
-	const choosedPeriod = ref(ddrStore(`${sectionName}-choosedPeriod`));
+	const choosedPeriod = ref(null); // ref(ddrStore(`${sectionName}-choosedPeriod`));
 	let periodsWinFuncs;
 	
 	
@@ -108,8 +108,6 @@
 	
 	
 	
-	
-	
 	getLastTimesheetPeriods((periodsCounts) => {
 		if (periodsCounts[choosedPeriod.value]) {
 			$('#searchOrdersField').ddrInputs('enable');
@@ -120,12 +118,6 @@
 		lastTimesheetPeriodsWaitBlock.off();
 		if (choosedPeriod.value) $('#lastTimesheetPeriodsBlock').find(`[timesheetperiod="${choosedPeriod.value}"]`).addClass('active');
 	});
-	
-	
-	
-	
-	
-	
 	
 	
 </script>
