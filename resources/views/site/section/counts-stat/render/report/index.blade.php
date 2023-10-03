@@ -20,7 +20,7 @@
 		@foreach($buildData as $day => $ordersTypesData)
 			<x-table.tr>
 				<x-table.td class="v-start">
-					<p class="mt13px">{{$day}}</p>
+					<p class="mt9px">{{$day}}</p>
 				</x-table.td>
 				<x-table.td class="p-0">
 					<x-table class="w100" noborder>
