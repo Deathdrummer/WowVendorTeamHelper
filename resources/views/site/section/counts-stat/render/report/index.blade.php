@@ -13,7 +13,8 @@
 							@foreach($map['regions'] as $rId => $rTitle)
 								<x-table.td class="w7rem h-center"><strong class="fz12px text-center">{{$rTitle}}</strong></x-table.td>
 							@endforeach
-							<x-table.td class="w7rem h-center"><strong class="fz12px text-center">all</strong></x-table.td>
+							<x-table.td class="w7rem h-center"><strong class="fz12px text-center">ALL</strong></x-table.td>
+							<x-table.td class="w-spacer"></x-table.td>
 						</x-table.tr>
 					</x-table.body>
 				</x-table>
@@ -43,12 +44,13 @@
 							@foreach($ordersTypesData as $orderTypeId => $commandsCounts)
 								<x-table.tr class="h4rem clear">
 									@foreach($map['commands'] as $cId => $cData)
-										<x-table.td class="w7rem h-center"><strong class="fz12px text-center">{{$commandsCounts['commands'][$cId] ?? '-'}}</strong></x-table.td>
+										<x-table.td class="w7rem h-center"><p class="fz12px text-center">{{$commandsCounts['commands'][$cId] ?? '-'}}</p></x-table.td>
 									@endforeach
 									@foreach($map['regions'] as $rId => $rTitle)
 										<x-table.td class="w7rem h-center"><strong class="fz12px text-center">{{$commandsCounts['regions'][$rId] ?? '-'}}</strong></x-table.td>
 									@endforeach
 									<x-table.td class="w7rem h-center"><strong class="fz12px text-center">{{$commandsCounts['all'] ?? '-'}}</strong></x-table.td>
+									<x-table.td class="w-spacer"></x-table.td>
 								</x-table.tr>
 							@endforeach
 						</x-table.body>
