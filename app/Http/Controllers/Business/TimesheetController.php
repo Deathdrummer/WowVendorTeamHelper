@@ -2,6 +2,7 @@
 
 use App\Actions\GetUserSetting;
 use App\Actions\UpdateModelAction;
+use App\Enums\OrderStatus;
 use App\Exports\EventsExport;
 use App\Helpers\DdrDateTime;
 use App\Http\Controllers\Controller;
@@ -482,7 +483,9 @@ class TimesheetController extends Controller {
 		//toLog($map);
 		
 		$tsData = Timesheet::period($periodId)
-			->with('orders')
+			->with('orders', function($query) {
+				$query->where('status', OrderStatus::ready);
+			})
 			->lazy();
 		
 		$buildData = []; 
