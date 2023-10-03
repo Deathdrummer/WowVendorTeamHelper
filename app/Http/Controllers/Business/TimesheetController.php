@@ -471,9 +471,13 @@ class TimesheetController extends Controller {
 		]);
 		
 		$periodTitle = TimesheetPeriod::find($periodId)->title;
-		$commands = Command::all()->pluck('title', 'id')->toArray();
+		$map['commands'] = Command::all()->mapWithKeys(function($row) {
+			return [$row['id'] => $row];
+		})->toArray();
+		$map['regions'] = $settingsService->get('regions')->pluck('title', 'id')->toArray();
 		$ordersTypes = $settingsService->get('orders_types')->pluck('title', 'id')->toArray();
 		
+		//toLog($map);
 		
 		$tsData = Timesheet::period($periodId)
 			->with('orders')
@@ -487,8 +491,20 @@ class TimesheetController extends Controller {
 			foreach ($row['orders']?->lazy() as $orderRow) {
 				//if (!isset($ordersData[$orderRow['order_type']])) $ordersData[$orderRow['order_type'] ?? 0] = 0;
 				//$ordersData[$orderRow['order_type'] ?? 0] += 1;
-				if (!isset($buildData[$day][$orderRow['order_type'] ?? 0][$row['command_id'] ?? '-'])) $buildData[$day][$orderRow['order_type'] ?? 0][$row['command_id'] ?? '-'] = 0;
-				$buildData[$day][$orderRow['order_type'] ?? 0][$row['command_id'] ?? '-'] += 1;
+				if (!isset($buildData[$day][$orderRow['order_type'] ?? 0]['commands'][$row['command_id'] ?? '-'])) {
+					$buildData[$day][$orderRow['order_type'] ?? 0]['commands'][$row['command_id'] ?? '-'] = 0;
+				}
+				$buildData[$day][$orderRow['order_type'] ?? 0]['commands'][$row['command_id'] ?? '-'] += 1;
+				
+				if (!isset($buildData[$day][$orderRow['order_type'] ?? 0]['regions'][$map['commands'][$row['command_id'] ?? '-']['region_id']])) {
+					$buildData[$day][$orderRow['order_type'] ?? 0]['regions'][$map['commands'][$row['command_id'] ?? '-']['region_id']] = 0;
+				}
+				$buildData[$day][$orderRow['order_type'] ?? 0]['regions'][$map['commands'][$row['command_id'] ?? '-']['region_id']] += 1;
+				
+				if (!isset($buildData[$day][$orderRow['order_type'] ?? 0]['all'])) {
+					$buildData[$day][$orderRow['order_type'] ?? 0]['all'] = 0;
+				}
+				$buildData[$day][$orderRow['order_type'] ?? 0]['all'] += 1;
 			}
 			
 			
@@ -498,7 +514,7 @@ class TimesheetController extends Controller {
 		
 		toLog($buildData);
 		
-		return response(view($viewPath.'.index', compact('buildData', 'periodTitle', 'commands', 'ordersTypes')));
+		return response(view($viewPath.'.index', compact('buildData', 'periodTitle', 'map', 'ordersTypes')));
 	}
 	
 	
