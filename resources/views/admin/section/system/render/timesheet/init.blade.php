@@ -4,6 +4,7 @@
 			<x-table.td class="w20rem" noborder><strong>Дата (МСК)</strong></x-table.td>
 			<x-table.td class="w20rem" noborder><strong>Время (МСК / ОРИГ)</strong></x-table.td>
 			<x-table.td class="w-auto" noborder><strong>Название команды</strong></x-table.td>
+			<x-table.td class="w8rem" noborder><strong>Сумма</strong></x-table.td>
 			<x-table.td class="w30rem" noborder><strong>Комментарий</strong></x-table.td>
 			<x-table.td class="w30rem" noborder><strong>Тип события</strong></x-table.td>
 			<x-table.td class="w7rem" noborder><strong>Кол-во заказов</strong></x-table.td>

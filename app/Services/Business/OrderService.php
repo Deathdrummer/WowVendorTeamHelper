@@ -6,6 +6,7 @@ use App\Http\Filters\OrderFilter;
 use App\Models\Order;
 use App\Models\OrderRawDataHistory;
 use App\Models\Timesheet;
+use App\Models\TimesheetOrder;
 use App\Traits\Settingable;
 use Carbon\Carbon;
 use App\Traits\HasPaginator;
@@ -102,13 +103,18 @@ class OrderService {
 			})
 			->get();
 		
-		//logger($list->toArray());
 		
+		$doprunOrders = $this->_getOrdersDopruns($timesheetId);
 		$statuses = OrderStatus::asFlippedArray();
 
-		return $list->map(function($row) use($statuses) {
+		return $list->map(function($row) use($statuses, $doprunOrders) {
 			$row['status'] = $row->pivot->doprun ? $statuses[OrderStatus::doprun] : ($statuses[$row['status']] ?? 0);
 			$row['timesheet_id'] = $row->pivot->timesheet_id;
+			
+			if (in_array($row['id'], array_keys($doprunOrders))) {
+				$row['price'] = round((float)$row['price'] / (int)($doprunOrders[$row['id']] ?? 1), 2);
+			}
+			
 			return $row;
 		});
 	}
@@ -322,7 +328,7 @@ class OrderService {
 			$timesheet->orders()->detach($orderId);
 			eventLog()->orderDetach($order, $timesheetId, $status);
 		} else {
-			$timesheet->orders()->updateExistingPivot($orderId, ['doprun' => null]);
+			//$timesheet->orders()->updateExistingPivot($orderId, ['doprun' => null]);
 			
 			if ($status == 'ready') {
 				$now = DdrDateTime::now();
@@ -448,6 +454,41 @@ class OrderService {
 	
 	
 	
+	
+	
+	
+	/**
+	* 
+	* @param 
+	* @return 
+	*/
+	private function _getOrdersDopruns($timesheetId = null) {
+		if (!$timesheetId) return false;
+		$doprunOrders = [];
+		TimesheetOrder::whereIn('timesheet_order.order_id', function($builder) use($timesheetId) {
+			$builder->select('timesheet_order.order_id')->from('timesheet_order')->where('timesheet_order.timesheet_id', $timesheetId);
+			//$builder->select('timesheet_order.order_id')->from('timesheet_order')->where('timesheet_order.timesheet_id', $timesheetId);
+		})
+		->where('doprun', 1)
+		->get()
+		->each(function($row) use(&$doprunOrders) {
+			if (!isset($doprunOrders[$row['order_id']])) $doprunOrders[$row['order_id']] = 0;
+			$doprunOrders[$row['order_id']] += 1;
+		});
+		return $doprunOrders;
+	}
+	
+	
+	
+	
+	/**
+	* 
+	* @param 
+	* @return 
+	*/
+	public static function getOrdersDopruns($timesheetId = null) {
+		return (new OrderService)->_getOrdersDopruns($timesheetId);
+	}
 	
 	
 	

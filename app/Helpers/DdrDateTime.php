@@ -11,6 +11,8 @@ class DdrDateTime {
 	 * @return string
 	 */
     public static function date($timestamp = null, $params = []):string {
+		if (!$timestamp) return null;
+		
 		extract($params);
 		
 		$locale = $locale ?? App::currentLocale();
@@ -52,6 +54,8 @@ class DdrDateTime {
 	 * @return string
 	 */
 	 public static function time($timestamp = null, $params = []):string {
+		if (!$timestamp) return null;
+		
 		extract($params);
 		
 		$locale = $locale ?? App::currentLocale();
@@ -97,6 +101,8 @@ class DdrDateTime {
 	 * @return Carbon
 	 */
 	public static function buildTimestamp($date = null, $time = null, $params = []):Carbon {
+		if (!$date) return null;
+		
 		if (is_array($time) && empty($params)) {
 			$params = $time;
 			$time = null;
@@ -137,6 +143,8 @@ class DdrDateTime {
 	 * @return Carbon
 	 */
 	public static function shift($timestamp = null, $shift = null):Carbon {
+		if (!$timestamp) return null;
+		
 		$buildShift = match(true) {
 			($shift ?? null) == 'UTC'		=> (-1 * config('app.shift_hours', 0)), // так как мы ориентируемся на UTC - от указанной даты мы наоборот, отномаем смещение
 			($shift ?? null) == 'TZ'		=> config('app.shift_hours', 0),
@@ -175,6 +183,8 @@ class DdrDateTime {
 	 * @return Carbon|string
 	 */
 	static private function buildCarbon($params = []):Carbon|string {
+		if (!$params) return null;
+		
 		extract($params);
 		
 		$carbon = match(true) {

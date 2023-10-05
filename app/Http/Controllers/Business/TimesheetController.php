@@ -10,7 +10,9 @@ use App\Http\Requests\ImportTimesheetEventsRequest;
 use App\Models\Command;
 use App\Models\EventType;
 use App\Models\Timesheet;
+use App\Models\TimesheetOrder;
 use App\Models\TimesheetPeriod;
+use App\Services\Business\OrderService;
 use App\Services\Settings;
 use App\Traits\HasCrudController;
 use Illuminate\Http\Request;
@@ -68,7 +70,7 @@ class TimesheetController extends Controller {
     public function index(Request $request, GetUserSetting $getUserSetting) {
 		[
 			'views'		=> $viewPath,
-			'period_id'	=> $periodId,
+			'period_id'	=> $tsPeriodId,
 			'list_type'	=> $listType,
 			'region_id'	=> $regionId,
 		] = $request->validate([
@@ -78,7 +80,6 @@ class TimesheetController extends Controller {
 			'region_id'	=> 'required|numeric',
 			'search'	=> 'exclude|nullable|string',
 		]);
-		
 		
 		
 		$search = $request->input('search');
@@ -94,10 +95,24 @@ class TimesheetController extends Controller {
 		$commandsIds = Command::whereIn('region_id', $timezonesRegions)->get()->pluck('id');
 		
 		
+		
 		$list = Timesheet::withCount(['orders AS orders_count' => function($query) use($search) {
 				$query->where('order', 'LIKE', '%'.$search.'%');
 			}])
-			->where('timesheet_period_id', $periodId)
+			->with(['orders' => function ($query) use($tsPeriodId) {
+				$query->where('status', 1)
+					->whereNotIn('orders.id', function($builder) use($tsPeriodId) {
+						$builder->select('confirmed_orders.order_id')
+							->from('confirmed_orders')
+							->where('confirmed_orders.confirm', 0)
+							->whereIn('confirmed_orders.timesheet_id', function($builder) use($tsPeriodId) {
+								$builder->select('timesheet.id')
+									->from('timesheet')
+									->where('timesheet.timesheet_period_id', $tsPeriodId);
+							});
+					});
+			}])
+			->where('timesheet_period_id', $tsPeriodId)
 			->where(function($query) use($listType, $timesheetToPastHours) {
 				if ($listType == 'actual') {
 					$query->where('datetime', '>=', now()->addHours(-1 * $timesheetToPastHours));
@@ -116,6 +131,27 @@ class TimesheetController extends Controller {
 			})
 			->orderBy('datetime', $listType == 'actual' ? 'ASC' : 'DESC')
 			->get();
+		
+		
+		if ($list) {
+			$doprunOrders = [];
+			$timesheets = Timesheet::where('timesheet_period_id', $tsPeriodId)->get()->pluck('id');
+			foreach ($timesheets as $ts) $doprunOrders[$ts] = OrderService::getOrdersDopruns($ts);
+			
+			$list = $list->each(function(&$tsRow) use($doprunOrders) {
+				$tsRow->orders_sum_price = 0;
+				if ($tsRow->orders) {
+					$tsRow->orders->each(function(&$oRow) use($doprunOrders, $tsRow) {
+						if (isset($doprunOrders[$tsRow->id][$oRow->id])) {
+							$tsRow->orders_sum_price += round($oRow->price / $doprunOrders[$tsRow->id][$oRow->id] ?? 1, 2);
+						} else {
+							$tsRow->orders_sum_price += $oRow->price;
+						}
+					});
+					unset($tsRow->orders);
+				}
+			});
+		}
 		
 		
 		$this->_buildDataFromSettings();
@@ -535,8 +571,6 @@ class TimesheetController extends Controller {
 			
 			//$buildData[$day][$row['command_id'] ?? '-'] = $ordersData;
 		}
-		
-		toLog($buildData);
 		
 		return response(view($viewPath.'.index', compact('buildData', 'periodTitle', 'map', 'ordersTypes')));
 	}

@@ -64,8 +64,8 @@ class SendSlackMessageAction {
 		
 		$orderData = $order;
 		
-		$rawData = $orderData->raw_data;
-		$timezone = $timezones[$orderData->timezone_id];
+		$rawData = $orderData->raw_data ?? '---';;
+		$timezone = $timezones[$orderData->timezone_id] ?? '---';
 		$status = OrderStatus::fromValue($orderData->status)->key;
 		$order = $orderData?->order ?? '---';
 		$price = $orderData?->price ?? '---';
