@@ -8,9 +8,9 @@ class DdrDateTime {
 	/** Вывести дату в ЧПУ формате: 12 июля 2023 г.
 	 * @param timestamp $timestamp
 	 * @param array $shift, $locale, $isoFormat
-	 * @return string
+	 * @return string|null
 	 */
-    public static function date($timestamp = null, $params = []):string {
+    public static function date($timestamp = null, $params = []):string|null {
 		if (!$timestamp) return null;
 		
 		extract($params);
@@ -51,9 +51,9 @@ class DdrDateTime {
 	/** Вывести время
 	 * @param timestamp $timestamp
 	 * @param array $shift, $locale, $format
-	 * @return string
+	 * @return string|null
 	 */
-	 public static function time($timestamp = null, $params = []):string {
+	 public static function time($timestamp = null, $params = []):string|null {
 		if (!$timestamp) return null;
 		
 		extract($params);
@@ -98,9 +98,9 @@ class DdrDateTime {
 	 * @param string $date
 	 * @param string|array $time
 	 * @param array $shift
-	 * @return Carbon
+	 * @return Carbon|null
 	 */
-	public static function buildTimestamp($date = null, $time = null, $params = []):Carbon {
+	public static function buildTimestamp($date = null, $time = null, $params = []):Carbon|null {
 		if (!$date) return null;
 		
 		if (is_array($time) && empty($params)) {
@@ -140,9 +140,9 @@ class DdrDateTime {
 	/** Сместить время объекта Carbon
 	 * @param Carbon|string $timestamp
 	 * @param integer $shift - UTC, TZ, [значение]
-	 * @return Carbon
+	 * @return Carbon|null
 	 */
-	public static function shift($timestamp = null, $shift = null):Carbon {
+	public static function shift($timestamp = null, $shift = null):Carbon|null {
 		if (!$timestamp) return null;
 		
 		$buildShift = match(true) {
@@ -180,9 +180,9 @@ class DdrDateTime {
 	
 	/**
 	 * @param array $timestamp, $shift, $locale, $format, $isoFormat
-	 * @return Carbon|string
+	 * @return Carbon|string|null
 	 */
-	static private function buildCarbon($params = []):Carbon|string {
+	static private function buildCarbon($params = []):Carbon|string|null {
 		if (!$params) return null;
 		
 		extract($params);

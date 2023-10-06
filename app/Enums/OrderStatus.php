@@ -8,7 +8,7 @@ final class OrderStatus extends Enum {
 	const new		= 0;
 	const wait		= -1;
 	const cancel	= -2;
-	const necro		= -3;
 	const ready		= 1;
 	const doprun	= 2;
+	const necro		= -3;
 }

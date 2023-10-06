@@ -95,7 +95,6 @@ class TimesheetController extends Controller {
 		$commandsIds = Command::whereIn('region_id', $timezonesRegions)->get()->pluck('id');
 		
 		
-		
 		$list = Timesheet::withCount(['orders AS orders_count' => function($query) use($search) {
 				$query->where('order', 'LIKE', '%'.$search.'%');
 			}])

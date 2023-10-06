@@ -18,6 +18,7 @@ return new class extends Migration
 			$table->foreign('order_id')->references('id')->on('orders')->onDelete('cascade');
 			
 			$table->unsignedInteger('doprun')->nullable();
+			$table->unsignedInteger('cloned')->nullable();
 			//$table->boolean('viewed')->default(false)->comment('Договор просмотрен');
 			//$table->boolean('pinned')->default(false)->comment('Договор закреплен');
         });

@@ -6,6 +6,7 @@ use App\Exports\Sheets\EventTypeSheet;
 use App\Helpers\DdrDateTime;
 use App\Models\Order;
 use App\Models\Timesheet;
+use App\Models\TimesheetOrder;
 use Carbon\Carbon;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
@@ -65,29 +66,69 @@ class EventsExport implements WithMultipleSheets {
 			
 			$data = Timesheet::where('timesheet_period_id', $periodId)->with('orders')->with('command')->get();
 			
+			
+			
+			$timesheetIds = $data->pluck('id');
+			$doprunOrders = [];
+			TimesheetOrder::whereIn('timesheet_order.order_id', function($builder) use($timesheetIds) {
+				$builder->select('timesheet_order.order_id')->from('timesheet_order')->whereIn('timesheet_order.timesheet_id', $timesheetIds);
+			})
+			->where('doprun', 1)
+			->get()
+			->each(function($row) use(&$doprunOrders) {
+				if (!isset($doprunOrders[$row['order_id']])) $doprunOrders[$row['order_id']] = 0;
+				$doprunOrders[$row['order_id']] += 1;
+			});
+			
+			
+			$pricessMap = [];
+			foreach ($data->toArray() as $ts) {
+				$totalSum = [];
+				foreach ($ts['orders'] as $k => $order) {
+					$status = $order['status'] ?? 0;
+					$isDopRun = !!($order['pivot']['doprun'] ?? false);
+					if (!isset($totalSum[$status])) $totalSum[$status] = 0;
+					if ($isDopRun) {
+						if (!isset($totalSum[OrderStatus::doprun])) $totalSum[OrderStatus::doprun] = 0;
+						$totalSum[OrderStatus::doprun] += (float)($order['price'] ?? 0) / (int)($doprunOrders[$order['id']] ?? 1);
+					} 
+					$totalSum[$status] += (float)($order['price'] ?? 0) / (int)($doprunOrders[$order['id']] ?? 1);
+				}
+				
+				$pricessMap[$ts['id']] = $totalSum;
+			}
+			
+			
 			$buildData = [];
 			foreach ($data->toArray() as $ts) {
 				$hasDopRun = false;
+				
 				foreach ($ts['orders'] as $k => $order) {
 					//if ($k == 0) $buildData[$order['status']][$k] = [];
 					$command = $k == 0 ? $ts['command']['title'] : null;
 					
-					$isDopRun = $order['pivot']['doprun'];
+					$isDopRun = !!($order['pivot']['doprun'] ?? false);
+					$isCloned = !!($order['pivot']['cloned'] ?? false);
 					$status = $order['status'] ?? 0;
-					$hasDopRun = !!$isDopRun;
 					
+					$hasDopRun = !$hasDopRun ? $isDopRun : $hasDopRun;
 					
-					$buildData[$status][] = [
-						$command,
-						$order['order'],
-						$order['raw_data'],
-						Carbon::parse($order['date_add'] ?? $order['created_at'])->format('Y-m-d H:i'),
-						$order['last_comment']['message'] ?? '',
-					];
+					if (!$isCloned) {
+						$buildData[$status][] = [
+							$command,
+							$k == 0 ? ($pricessMap[$ts['id']][$status].' $' ?? '') : '',
+							$order['order'],
+							$order['raw_data'],
+							Carbon::parse($order['date_add'] ?? $order['created_at'])->format('Y-m-d H:i'),
+							$order['last_comment']['message'] ?? '',
+						];
+					}
+					
 					
 					if ($isDopRun) {
 						$buildData[OrderStatus::doprun][] = [
 							$command,
+							$k == 0 ? ($pricessMap[$ts['id']][OrderStatus::doprun].' $' ?? '') : '',
 							$order['order'],
 							$order['raw_data'],
 							Carbon::parse($order['date_add'] ?? $order['created_at'])->format('Y-m-d H:i'),
@@ -96,10 +137,11 @@ class EventsExport implements WithMultipleSheets {
 					}
 					
 					if ($k + 1 == count($ts['orders'])) {
-						$buildData[$status][] = ['','','','',];
+						$buildData[$status][] = ['','','','',''];
+						if ($isDopRun) $buildData[OrderStatus::doprun][] = ['','','','',''];
 						
 						if ($hasDopRun) {
-							$buildData[OrderStatus::doprun][] = ['','','','',];
+							$buildData[OrderStatus::doprun][] = ['','','','','',];
 							$hasDopRun = false;
 						}
 					}

@@ -3,15 +3,15 @@
 use App\Traits\Settingable;
 use Maatwebsite\Excel\Concerns\FromArray;
 
-use Maatwebsite\Excel\Concerns\WithColumnWidths;
+//use Maatwebsite\Excel\Concerns\WithColumnWidths;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
-use PhpOffice\PhpSpreadsheet\Style\Style;
-use PhpOffice\PhpSpreadsheet\Style\Color;
-use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
-use PhpOffice\PhpSpreadsheet\Style\Border;
-use Maatwebsite\Excel\Concerns\WithDefaultStyles;
+//use PhpOffice\PhpSpreadsheet\Style\Style;
+//use PhpOffice\PhpSpreadsheet\Style\Color;
+//use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
+//use PhpOffice\PhpSpreadsheet\Style\Border;
+//use Maatwebsite\Excel\Concerns\WithDefaultStyles;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
-use Maatwebsite\Excel\Concerns\WithBackgroundColor;
+//use Maatwebsite\Excel\Concerns\WithBackgroundColor;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use Maatwebsite\Excel\Events\AfterSheet;
@@ -40,6 +40,7 @@ class DdrSheet extends \PhpOffice\PhpSpreadsheet\Cell\StringValueBinder implemen
 		// Выписываются все поля, что могут быть использованы и задаются настройки для каждого поля
 		$this->columsData = [
 			'command'		=> ['name' => 'Команда', 'width' => 15, 'horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_TOP, 'type' => 'text'],
+			'price'			=> ['name' => 'Общая сумма', 'width' => 12, 'horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_TOP, 'type' => 'number'],
 			'order'			=> ['name' => 'Номер заказа', 'width' => 10, 'horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_TOP, 'type' => 'number'],
 			'raw_data'		=> ['name' => 'Тело заказа', 'width' => 90, 'horizontal' => Alignment::HORIZONTAL_LEFT, 'vertical' => Alignment::VERTICAL_TOP, 'wrap' => true, 'type' => 'text'],
 			'date'			=> ['name' => 'Дата поступления заказа', 'width' => 24, 'horizontal' => Alignment::HORIZONTAL_LEFT, 'vertical' => Alignment::VERTICAL_TOP, 'wrap' => true, 'type' => 'text'],
@@ -49,6 +50,7 @@ class DdrSheet extends \PhpOffice\PhpSpreadsheet\Cell\StringValueBinder implemen
 		// Какие столцы выводить в таблице (если в 2 и более строк - то указывать в виде массивов)
 		$this->useColums = [
 			'command',
+			'price',
 			'order',
 			'raw_data',
 			'date',
@@ -68,7 +70,7 @@ class DdrSheet extends \PhpOffice\PhpSpreadsheet\Cell\StringValueBinder implemen
 	public function properties(): array {
         return [
             'creator'        => 'WowVendorTeamHelper',
-            'title'          => 'WowVendorTeamHelper договоры',
+            'title'          => 'WowVendorTeamHelper заказы',
             'description'    => 'WowVendorTeamHelper список заказов',
             'company'        => 'WowVendorTeamHelper',
         ];
@@ -97,7 +99,6 @@ class DdrSheet extends \PhpOffice\PhpSpreadsheet\Cell\StringValueBinder implemen
     * @return \Illuminate\Support\Array
     */
     public function array():array {
-		
 		$colsNames = [];
 		foreach ($this->useColums as $row => $colOrRow) {
 			if (is_array($colOrRow)) {

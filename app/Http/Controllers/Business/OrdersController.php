@@ -1088,7 +1088,7 @@ class OrdersController extends Controller {
 	 */
 	private function _cloneOrder($orderId = null, $timesheetId = null, $choosedTimesheetId = null) {
 		$choosedTimesheet = Timesheet::find($choosedTimesheetId);
-		$choosedSync = $choosedTimesheet->orders()->syncWithoutDetaching([$orderId => ['doprun' => 1]]);
+		$choosedSync = $choosedTimesheet->orders()->syncWithoutDetaching([$orderId => ['doprun' => 1, 'cloned' => 1]]);
 		
 		if ($choosedSync['attached']) {
 			$timesheet = Timesheet::find($timesheetId);

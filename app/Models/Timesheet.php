@@ -86,7 +86,7 @@ class Timesheet extends Model {
 			'id')
 			->as('pivot')
 			->with('lastComment')
-			->withPivot('doprun')
+			->withPivot('doprun', 'cloned')
 			->using(TimesheetOrder::class);
 	}
 	
