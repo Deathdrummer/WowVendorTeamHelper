@@ -43,16 +43,16 @@ class AccountingController extends Controller {
 		$map = [];
 		$data->each(function($row) use(&$map) {
 			if (!isset($map[$row['command_id']][$row['timesheet_period_id']])) $map[$row['command_id']][$row['timesheet_period_id']] = 0;
-			$map[$row['command_id']][$row['timesheet_period_id']] += $row->orders->sum('price');
+			$map[$row['command_id']][$row['timesheet_period_id']] += (float)$row->orders->sum('price');
 			
 			if (!isset($map[$row['command_id']]['all'])) $map[$row['command_id']]['all'] = 0;
-			$map[$row['command_id']]['all'] += $row->orders->sum('price');
+			$map[$row['command_id']]['all'] += (float)$row->orders->sum('price');
 			
 			if (!isset($map['periods'][$row['timesheet_period_id']])) $map['periods'][$row['timesheet_period_id']] = 0;
-			$map['periods'][$row['timesheet_period_id']] += $row->orders->sum('price');
+			$map['periods'][$row['timesheet_period_id']] += (float)$row->orders->sum('price');
 			
 			if (!isset($map['total'])) $map['total'] = 0;
-			$map['total'] += $row->orders->sum('price');
+			$map['total'] += (float)$row->orders->sum('price');
 		});
 		
 		$commands = Command::whereIn('id', array_keys($map))->get()->pluck('title', 'id');
