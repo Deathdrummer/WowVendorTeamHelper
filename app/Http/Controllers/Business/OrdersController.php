@@ -211,7 +211,7 @@ class OrdersController extends Controller {
 			return response()->json(false);
 		}
 		
-		return response()->json($response && $sendMassResp);
+		return response()->json($response && $sendMassResp== 'ok');
 	}
 	
 	
@@ -483,7 +483,6 @@ class OrdersController extends Controller {
 		$timesheet = Timesheet::find($timesheetId);
 		//$timesheet->orders()->detach([$orderId]);
 		$sync = $timesheet->orders()->syncWithoutDetaching($orderId);
-		
 		if (!count($sync['attached'])) return response()->json(false);
 		
 		// менять статус на новый

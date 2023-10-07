@@ -284,7 +284,7 @@ class EventLogService {
 		$timesheetPeriod = TimesheetPeriod::find($timesheet?->timesheet_period_id);
 		
 		$timezone = $this->getTimezone($order?->timezone_id);
-		$dateMsc = DdrDateTime::shift($order?->date, (-1 * $timezone['shift']));
+		$dateMsc = $timezone ? DdrDateTime::shift($order?->date, (-1 * $timezone['shift'])) : null;
 		
 		$oldData = $order?->getRawOriginal() ?? null;
 		$orderStatuses = $this->getSettings('order_statuses');
@@ -299,7 +299,7 @@ class EventLogService {
 			'link' => ['data' => $order?->link ?? '-', 'title' => 'Ссылка'],
 			'date' => ['data' => $order?->date ?? '-', 'title' => 'Дата и время ориг.', 'meta' => ['date' => 1]],
 			'date_msc' => ['data' => $dateMsc, 'title' => 'Дата и время МСК', 'meta' => ['date' => 1]],
-			'timezone' => ['data' => $timezone['timezone'], 'title' => 'Временная зона'],
+			'timezone' => ['data' => $timezone['timezone'] ?? '-', 'title' => 'Временная зона'],
 			'old_status' => ['data' => $oldStatus, 'title' => 'Предыдущий статус'],
 			
 			'command' => ['data' => $command?->title ?? '-', 'title' => 'Команда', 'sort' => 10],
@@ -612,6 +612,7 @@ class EventLogService {
 	* @return 
 	*/
 	private function getTimezone($timezoneId = null) {
+		if (!$timezoneId) return null;
 		$timezones = $this->getSettings('timezones', 'id', null, ['id' => $timezoneId]);
 		return $timezones[$timezoneId] ?? false;
 	}

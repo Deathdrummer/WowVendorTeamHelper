@@ -20,7 +20,6 @@ export async function confirmOrder(btn, id) {
 
 
 export async function confirmAllOrders(btn) {
-	
 	const {
 		wait,
 		close,
@@ -46,16 +45,13 @@ export async function confirmAllOrders(btn) {
 		if (data) {
 			$('#confirmOrdersBlock').html('<p class="color-gray-400 text-center mt2rem fz14px">Нет заказов</p>');
 			$.notify('Все заказы успешно подтвеждены!');
+			$(btn).remove();
 			close();
 		} else {
-			$.notify('Ошибка! Заказы не подтвежден!', 'error');
+			$.notify('Ошибка! Заказы не подтвеждены!', 'error');
 			close();
 		}
-	}
-	
-	
-	
-		
+	}	
 }
 
 
