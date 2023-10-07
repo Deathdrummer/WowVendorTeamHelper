@@ -3,6 +3,7 @@
 use App\Helpers\DdrDateTime;
 use App\Services\EventLogService;
 use Carbon\Carbon;
+use Faker\Core\Number;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Symfony\Component\Mime\Encoder\IdnAddressEncoder;
@@ -38,6 +39,8 @@ if (! function_exists('toLog')) {
 						} elseif ($item instanceof Illuminate\Support\Collection) {
 							$item = $item->toArray();
 							$item = arrayWalkRecursive($item, $humanDate);
+						} elseif (is_numeric($item)) {
+							//$item = strpos($item, '.') !== false ? (float)$item : (int)$item;
 						}
 					});
 					return $mess;

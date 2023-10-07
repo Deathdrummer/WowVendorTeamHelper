@@ -24,9 +24,9 @@
 	</div>
 	
 	
-	
-	<div id="ordersCountsStatBlock" class="minh7rem"></div>
+	<div id="accountingBlock" class="minh7rem"></div>
 </section>
+
 
 
 
@@ -35,7 +35,7 @@
 
 <script type="module">
 	const sectionName = location.pathname.replace('/', '');
-	const viewsPath = 'site.section.counts-stat.render.report';
+	const viewsPath = 'admin.section.system.render.accounting';
 	const choosedPeriod = ref(null); // ref(ddrStore(`${sectionName}-choosedPeriod`));
 	let periodsWinFuncs;
 	
@@ -59,6 +59,13 @@
 	
 	
 	
+	
+	
+	
+	
+	
+	
+	
 	let isBuildesPeriod = false;
 	$.timesheetPeriodsBuild = async (btn, periodId) => {
 		if ($(btn).hasClass('active') || isBuildesPeriod) return;
@@ -69,13 +76,13 @@
 		$('#lastTimesheetPeriodsBlock').find(`[timesheetperiod="${periodId}"]`).addClass('active');
 		periodsWinFuncs?.close();
 		
-		const timesheetPeriodsBuildWait = $('#ordersCountsStatBlock').ddrWait({
+		const timesheetPeriodsBuildWait = $('#accountingBlock').ddrWait({
 			iconHeight: '30px'
 		});
 		
-		const {data, error, status, headers} = await ddrQuery.get('crud/timesheet/orders_counts_stat', {views: viewsPath, period_id: periodId});
+		const {data, error, status, headers} = await ddrQuery.get('crud/accounting', {views: viewsPath, periods_ids: [periodId]});
 		
-		$('#ordersCountsStatBlock').html(data);
+		$('#accountingBlock').html(data);
 		
 		timesheetPeriodsBuildWait.destroy();
 		
@@ -83,6 +90,41 @@
 		isBuildesPeriod = false;
 		
 		$(btn).addClass('active');
+	}
+	
+	
+	
+	
+	$.accountingBuild = async (btn) =>{
+		const choosedChecks = $(periodsWinFuncs?.popper).find('[accountingperiod]:checked');
+		
+		const choosedPeriods = [];
+		for (const check of choosedChecks) {
+			choosedPeriods.push(Number($(check).attr('accountingperiod')));
+		}
+		
+		const timesheetPeriodsBuildWait = $('#accountingBlock').ddrWait({
+			iconHeight: '30px'
+		});
+		
+		const {data, error, status, headers} = await ddrQuery.get('crud/accounting', {views: viewsPath, periods_ids: choosedPeriods});
+		
+		if (error) {
+			console.log(error);
+			$.notify(error?.message, 'error');
+			return;
+		}
+		
+		
+		$('#accountingBlock').html(data);
+		
+		timesheetPeriodsBuildWait.destroy();
+		
+		periodsWinFuncs?.close();
+		console.log(choosedPeriods);
+		
+		//for item of choosedPeriods
+		//console.log(choosedPeriods);
 	}
 	
 	

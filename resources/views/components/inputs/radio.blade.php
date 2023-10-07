@@ -25,7 +25,7 @@
 <div {{$attributes->class(['radio', $group.'-radio' => $group, ($group ? $group.'-' : '').'radio_checked' => ($checked ?: $isChecked($settings, $setting))])}}>
 	<input
 		type="radio"
-		{{$clearAttr($attributes->whereStartsWith('ddr-'), 'ddr-', '')}}
+		{{$clearAttr($attributes->whereStartsWith('input-'), 'input-', '')}}
 		@if($name || $setting)name="{{$name ?: $setting}}" @endif
 		@if($value)value="{{$value}}" @endif
 		@if($setting)oninput="$.{{$action}}(this, '{{$setting}}')" @endif

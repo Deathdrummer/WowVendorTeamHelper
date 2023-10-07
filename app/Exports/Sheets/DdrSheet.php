@@ -78,20 +78,12 @@ class DdrSheet extends \PhpOffice\PhpSpreadsheet\Cell\StringValueBinder implemen
 	
 	
 	
-	
 	/** Задать наазвание вкладки
      * @return string
      */
     public function title():string {
         return $this->listName;
     }
-	
-	
-	
-	
-	
-	
-
 	
 	
 	
@@ -110,16 +102,11 @@ class DdrSheet extends \PhpOffice\PhpSpreadsheet\Cell\StringValueBinder implemen
 			}
 		}
 		
-		
 		return [
 			$colsNames,
 			$this->orders,
 		];
     }
-	
-	
-	
-	
 	
 	
 	
@@ -133,6 +120,7 @@ class DdrSheet extends \PhpOffice\PhpSpreadsheet\Cell\StringValueBinder implemen
     }
 	
 	
+	
 	/**
      * @return void
      */
@@ -140,11 +128,6 @@ class DdrSheet extends \PhpOffice\PhpSpreadsheet\Cell\StringValueBinder implemen
         $workSheet = $event->sheet->getDelegate();
 		$workSheet->freezePane('A'.self::$freezeRows+1); # Указать до какой строки (не включительно) заморозить
     }
-	
-	
-	
-	
-	
 	
 	
 	
@@ -162,7 +145,6 @@ class DdrSheet extends \PhpOffice\PhpSpreadsheet\Cell\StringValueBinder implemen
 				$sheet->mergeCells($mergeCol);
 			}
 		}
-		
 		
 		
 		// global
@@ -252,7 +234,6 @@ class DdrSheet extends \PhpOffice\PhpSpreadsheet\Cell\StringValueBinder implemen
 		for ($row = $this->getUseColumsRowsCount(); $row <= $lastRow; $row++) {
 			$sheet->getRowDimension($row)->setRowHeight($this->contentRowsHeight);
 		}
-		
 		
 		return [
 			1	=>	['fill' => [

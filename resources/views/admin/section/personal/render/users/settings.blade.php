@@ -29,7 +29,7 @@
 								<x-checkbox
 									size="normal"
 									name="commands"
-									ddr-data="terterte"
+									input-data="terterte"
 									:value="$command['id']"
 									checked="{{in_array($command['id'], $userCommands ?? [])}}"
 									/>

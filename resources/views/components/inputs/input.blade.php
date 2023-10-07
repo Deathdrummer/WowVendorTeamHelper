@@ -56,7 +56,7 @@
 	@endif
 	
 	<input
-		{{$clearAttr($attributes->whereStartsWith('ddr-'), 'ddr-', '')}}
+		{{$clearAttr($attributes->whereStartsWith('input-'), 'input-', '')}}
 		@if($inpclass)class="{{$inpclass}}" @endif
 		type="{{$type}}"
 		@if($name)name="{{$name}}" @endif

@@ -52,7 +52,7 @@ choose-empty - разрешить выбирать пункт [не выбран
 			'select-noemptyval'	=> !$emptyHasValue
 		])
 		@if($name)name="{{$name}}" @endif
-		{{$clearAttr($attributes->whereStartsWith('ddr-'), 'ddr-', '')}}
+		{{$clearAttr($attributes->whereStartsWith('input-'), 'input-', '')}}
 		id="{{$id}}"
 		@isset($group)inpgroup="{{$group}}" @endisset
 		@if($disabled || !$enabled)disabled @endif

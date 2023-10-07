@@ -66,8 +66,6 @@ class EventsExport implements WithMultipleSheets {
 			
 			$data = Timesheet::where('timesheet_period_id', $periodId)->with('orders')->with('command')->get();
 			
-			
-			
 			$timesheetIds = $data->pluck('id');
 			$doprunOrders = [];
 			TimesheetOrder::whereIn('timesheet_order.order_id', function($builder) use($timesheetIds) {
@@ -160,7 +158,6 @@ class EventsExport implements WithMultipleSheets {
 				$status = OrderStatus::fromKey($statName)->value;
 				$sheets[] = new DdrSheet($buildData[$status] ?? [], $listName);
 			}
-			
 		}
 
         return $sheets;

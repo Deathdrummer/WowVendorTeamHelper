@@ -28,7 +28,7 @@
 	])}}>
 	
 	<input
-		{{$clearAttr($attributes->whereStartsWith('ddr-'), 'ddr-', '')}}
+		{{$clearAttr($attributes->whereStartsWith('input-'), 'input-', '')}}
 		type="checkbox"
 		@if($name)name="{{$name}}" @endif
 		@if($setting)oninput="$.setSetting(this, '{{$setting}}')" @endif

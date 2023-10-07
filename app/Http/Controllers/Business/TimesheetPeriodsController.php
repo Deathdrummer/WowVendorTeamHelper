@@ -62,9 +62,11 @@ class TimesheetPeriodsController extends Controller {
 		[
 			'views'					=> $viewPath,
 			'orders_counts_stat'	=> $ordersCountsStat,
+			'accounting'			=> $accounting,
 		] = $request->validate([
 			'views'					=> 'required|string',
 			'orders_counts_stat'	=> 'boolean|nullable',
+			'accounting'			=> 'boolean|nullable',
 		]);
 		
 		if (!$viewPath) return response()->json(['no_view' => true]);
@@ -75,7 +77,7 @@ class TimesheetPeriodsController extends Controller {
 		
 		$itemView = $viewPath.'.item';
 		
-		return $this->viewWithLastSortIndex(TimesheetPeriod::class, $viewPath.'.list', compact('list', 'itemView', 'ordersCountsStat'), '_sort');
+		return $this->viewWithLastSortIndex(TimesheetPeriod::class, $viewPath.'.list', compact('list', 'itemView', 'ordersCountsStat', 'accounting'), '_sort');
     }
 	
 	
@@ -142,18 +144,21 @@ class TimesheetPeriodsController extends Controller {
 	 */
 	public function init(Request $request) {
 		[
-			'orders_counts_stat'	=> $ordersCountsStat,
+			//'orders_counts_stat'	=> $ordersCountsStat,
+			//'accounting'			=> $accounting,
 			'views'					=> $viewPath,
 		] = $request->validate([
-			'orders_counts_stat'	=> 'boolean|nullable',
+			//'orders_counts_stat'	=> 'boolean|nullable',
+			//'accounting'			=> 'boolean|nullable',
 			'views'					=> 'required|string',
 		]);
 		
 		$ordersCountsStat = $request->input('orders_counts_stat');
+		$accounting = $request->input('accounting');
 		
 		if (!$viewPath) return response()->json(['no_view' => true]);
 		
-		return $this->view($viewPath.'.init', compact('ordersCountsStat'));
+		return $this->view($viewPath.'.init', compact('ordersCountsStat', 'accounting'));
 	}
 	
 	
@@ -202,6 +207,7 @@ class TimesheetPeriodsController extends Controller {
 		if (!$item = $this->_storeRequest($request)) return response()->json(false);
 		
 		$item['ordersCountsStat'] = $request->input('orders_counts_stat');
+		$item['accounting'] = $request->input('accounting');
 		
 		//$this->_buildDataFromSettings();
 		return $this->view($viewPath.'.item', $item);
@@ -215,6 +221,7 @@ class TimesheetPeriodsController extends Controller {
 		$validFields = $request->validate([
 			'title'					=> 'required|string',
 			'orders_counts_stat'	=> 'exclude|boolean|nullable',
+			'accounting'			=> 'exclude|boolean|nullable',
 			'_sort'					=> 'exclude|regex:/[0-9]+/',
 		]);
 		

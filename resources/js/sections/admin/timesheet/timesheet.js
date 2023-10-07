@@ -470,7 +470,6 @@ export async function timesheetCrud(periodId = null, listType = null, regionId =
 			
 			
 			$.setTimesheetExport = async () => {
-				
 				const formBlock = $(`[exportordersform="${activeTab}"]`);
 				let stat = true;
 				let filename;
@@ -498,7 +497,6 @@ export async function timesheetCrud(periodId = null, listType = null, regionId =
 					const periodName = $(`[timesheetperiod="${periodId}"]`).attr('title');
 					filename = 'Данные за период: '+periodName;
 				}
-				
 				
 				
 				wait();

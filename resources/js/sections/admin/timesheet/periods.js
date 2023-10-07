@@ -2,7 +2,14 @@ export async function timesheetPeriodsCrud(getLastTimesheetPeriods = null, times
 	const viewsPath = 'admin.section.system.render.timesheet_periods';
 	const sectionName = location.pathname.replace('/', '');
 	
+	const buttons = [];
+	if (strpos(sectionName, 'accounting')) {
+		buttons.push({id: 'accountingBuildBtn', action: 'accountingBuild', variant: 'yellow', title: 'Сформировать отчет', disabled: 1});
+	}
+	
+	
 	const {
+		popper,
 		wait,
 		dialog,
 		close,
@@ -17,7 +24,7 @@ export async function timesheetPeriodsCrud(getLastTimesheetPeriods = null, times
 		params: {views: viewsPath, orders_counts_stat: ['counts-stat'].includes(sectionName) ? 1 : 0},
 		title: 'Периоды расписания',
 		width: 600,
-		buttons: ['ui.close'/*, {action: 'tesTest', title: 'Просто кнопка'}*/],
+		buttons: ['ui.close', ...buttons],
 	});
 	
 	wait();
@@ -27,10 +34,10 @@ export async function timesheetPeriodsCrud(getLastTimesheetPeriods = null, times
 		itemToIndex: '[ddrtabletr]',
 		route: 'crud/timesheet_periods',
 		params: {
-			list: {orders_counts_stat: ['counts-stat'].includes(sectionName) ? 1 : 0},
+			list: {orders_counts_stat: ['counts-stat'].includes(sectionName) ? 1 : 0, accounting: strpos(sectionName, 'accounting') ? 1 : 0},
 			//create: {orders_counts_stat: ['counts-stat'].includes(sectionName) ? 1 : 0},
 			//edit: {guard: 'admin'}
-			store: {orders_counts_stat: ['counts-stat'].includes(sectionName) ? 1 : 0},
+			store: {orders_counts_stat: ['counts-stat'].includes(sectionName) ? 1 : 0, accounting: strpos(sectionName, 'accounting') ? 1 : 0},
 		},
 		viewsPath,
 	}).then(({error, list, changeInputs, create, store, storeWithShow, edit, update, destroy, query, getParams, abort, remove}) => {
@@ -47,7 +54,16 @@ export async function timesheetPeriodsCrud(getLastTimesheetPeriods = null, times
 		$('#timesheetPeriodsTable').blockTable('buildTable');
 		//wait(false);
 		//enableButtons(true);
-		changeInputs({'[save], [update]': 'enable'});
+		changeInputs({'[save], [update]': 'enable', '[accountingperiod]': function(item) {
+			let checkedCount = $(popper).find('[accountingperiod]:checked').length;
+			$('#accountingBuildBtn').ddrInputs(checkedCount == 0 ? 'disable' : 'enable');
+		}});
+		
+		
+		
+		
+		
+		
 		
 		
 		
@@ -193,5 +209,5 @@ export async function timesheetPeriodsCrud(getLastTimesheetPeriods = null, times
 	
 	});
 	
-	return {wait, close};
+	return {popper, wait, close};
 }

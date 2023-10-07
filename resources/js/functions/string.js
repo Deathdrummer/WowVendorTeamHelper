@@ -1,3 +1,12 @@
+window.strpos = function(haystack, needle, offset) {
+	var i = (haystack+'').indexOf(needle, (offset || 0));
+	return i === -1 ? false : i;
+}
+
+
+
+
+
 window.pregSplit = function(str = null, separator = null) {
 	if (!_.isString(str)) return;
 	

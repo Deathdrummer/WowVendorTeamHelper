@@ -8,8 +8,8 @@
 		</x-table.td>
 		<x-table.td
 			@class([
-				'h-end' => !$ordersCountsStat,
-				'h-center' => $ordersCountsStat,
+				'h-end' => !$ordersCountsStat && !$accounting,
+				'h-center' => $ordersCountsStat || $accounting,
 			])
 			>
 			<x-buttons-group group="small" w="3rem">
@@ -20,6 +20,16 @@
 						disabled="{{!($timesheet_items_count ?? false)}}"
 						title="Сформировать отчет"
 						><i class="fa-solid fa-fw fa-chart-column"></i></x-button>
+				@elseif($accounting)
+					<x-checkbox
+						input-accountingperiod="{{$id}}"
+						/>
+					{{-- <x-button
+						variant="yellow"
+						action="timesheetPeriodsBuild:{{$id}}"
+						disabled="{{!($timesheet_items_count ?? false)}}"
+						title="Сформировать отчет"
+						><i class="fa-solid fa-fw fa-chart-column"></i></x-button> --}}
 				@else
 					<x-button
 						variant="purple"
