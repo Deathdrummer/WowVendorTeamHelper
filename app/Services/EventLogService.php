@@ -126,7 +126,7 @@ class EventLogService {
 		$eventType = $this->getTsEventType($timesheet?->event_type_id);
 		$timesheetPeriod = TimesheetPeriod::find($timesheet?->timesheet_period_id);
 		$timezone = $this->getTimezone($order?->timezone_id);
-		$dateMsc = DdrDateTime::shift($order?->date, (-1 * $timezone['shift']));
+		$dateMsc = $timezone ? DdrDateTime::shift($order?->date, (-1 * $timezone['shift'])) : null;
 		
 		//$timezone?->format_24
 		
@@ -139,7 +139,7 @@ class EventLogService {
 			'link' => ['data' => $order?->link ?? '-', 'title' => 'Ссылка'],
 			'date' => ['data' => $order?->date ?? '-', 'title' => 'Дата и время ориг.', 'meta' => ['date' => 1]],
 			'date_msc' => ['data' => $dateMsc, 'title' => 'Дата и время МСК', 'meta' => ['date' => 1]],
-			'timezone' => ['data' => $timezone['timezone'], 'title' => 'Временная зона'],
+			'timezone' => ['data' => $timezone['timezone'] ?? '-', 'title' => 'Временная зона'],
 			
 			'command' => ['data' => $command?->title ?? '-', 'title' => 'Команда'],
 			'timesheet_period' => ['data' => $timesheetPeriod?->title ?? '-', 'title' => 'Период'],
@@ -185,7 +185,7 @@ class EventLogService {
 			'link' => $buildFields('link', 'Ссылка'),
 			'date' => $buildFields('date', 'Дата и время ориг.'),
 			'date_msc' => $buildFields('date', function($orig, $upd) use($order) {
-				$timezoneId = $order?->timezone_id ?? null;
+				if (!$timezoneId = $order?->timezone_id) return null;
 				$timezones = $this->getSettings('timezones', 'id', 'shift');
 				$shift = (-1 * (int)$timezones[$timezoneId]);
 				
@@ -216,7 +216,7 @@ class EventLogService {
 	*/
 	public function orderToWaitlList(Order $order) {
 		$timezone = $this->getTimezone($order?->timezone_id);
-		$dateMsc = DdrDateTime::shift($order?->date, (-1 * $timezone['shift']));
+		$dateMsc = $timezone ? DdrDateTime::shift($order?->date, (-1 * $timezone['shift'])) : null;
 		$oldData = $order?->getRawOriginal() ?? null;
 		
 		$orderStatuses = $this->getSettings('order_statuses');
@@ -232,7 +232,7 @@ class EventLogService {
 			'link' => ['data' => $order?->link ?? '-', 'title' => 'Ссылка'],
 			'date' => ['data' => $order?->date ?? '-', 'title' => 'Дата и время ориг.', 'meta' => ['date' => 1]],
 			'date_msc' => ['data' => $dateMsc, 'title' => 'Дата и время МСК', 'meta' => ['date' => 1]],
-			'timezone' => ['data' => $timezone['timezone'], 'title' => 'Временная зона'],
+			'timezone' => ['data' => $timezone['timezone'] ?? '-', 'title' => 'Временная зона'],
 			'old_status' => ['data' => $oldStatus, 'title' => 'Предыдущий статус'],
 		];
 		
@@ -248,7 +248,7 @@ class EventLogService {
 	*/
 	public function orderToCancelList(Order $order) {
 		$timezone = $this->getTimezone($order?->timezone_id);
-		$dateMsc = DdrDateTime::shift($order?->date, (-1 * $timezone['shift']));
+		$dateMsc = $timezone ? DdrDateTime::shift($order?->date, (-1 * $timezone['shift'])) : null;
 		
 		$oldData = $order?->getRawOriginal() ?? null;
 		$orderStatuses = $this->getSettings('order_statuses');
@@ -263,7 +263,7 @@ class EventLogService {
 			'link' => ['data' => $order?->link ?? '-', 'title' => 'Ссылка'],
 			'date' => ['data' => $order?->date ?? '-', 'title' => 'Дата и время ориг.', 'meta' => ['date' => 1]],
 			'date_msc' => ['data' => $dateMsc, 'title' => 'Дата и время МСК', 'meta' => ['date' => 1]],
-			'timezone' => ['data' => $timezone['timezone'], 'title' => 'Временная зона'],
+			'timezone' => ['data' => $timezone['timezone'] ?? '-', 'title' => 'Временная зона'],
 			'old_status' => ['data' => $oldStatus, 'title' => 'Предыдущий статус'],
 		];
 		
@@ -334,7 +334,7 @@ class EventLogService {
 		$newEventType = $this->getTsEventType($newTimesheet?->event_type_id);
 		
 		$timezone = $this->getTimezone($order?->timezone_id);
-		$dateMsc = DdrDateTime::shift($order?->date, (-1 * $timezone['shift']));
+		$dateMsc = $timezone ? DdrDateTime::shift($order?->date, (-1 * $timezone['shift'])) : null;
 		
 		$orderStatuses = $this->getSettings('order_statuses');
 		$isConfirmed = ConfirmedOrder::where('order_id', $order?->id)->count();
@@ -350,7 +350,7 @@ class EventLogService {
 			'link' => ['data' => $order?->link ?? '-', 'title' => 'Ссылка'],
 			'date' => ['data' => $order?->date ?? '-', 'title' => 'Дата и время ориг.', 'meta' => ['date' => 1]],
 			'date_msc' => ['data' => $dateMsc, 'title' => 'Дата и время МСК', 'meta' => ['date' => 1]],
-			'timezone' => ['data' => $timezone['timezone'], 'title' => 'Временная зона'],
+			'timezone' => ['data' => $timezone['timezone'] ?? '-', 'title' => 'Временная зона'],
 			'statuses' => ['data' => $oldStatus, 'title' => 'Статус заказа'],
 			
 			'command' => ['data' => $oldCommand?->title ?? '-', 'updated' => $newCommand?->title ?? '-', 'title' => 'Команда', 'sort' => 10],
@@ -385,7 +385,7 @@ class EventLogService {
 		$newEventType = $this->getTsEventType($newTimesheet?->event_type_id);
 		
 		$timezone = $this->getTimezone($order?->timezone_id);
-		$dateMsc = DdrDateTime::shift($order?->date, (-1 * $timezone['shift']));
+		$dateMsc = $timezone ? DdrDateTime::shift($order?->date, (-1 * $timezone['shift'])) : null;
 		
 		$info = [
 			'id' => ['data' => $order?->id ?? '-', 'title' => 'ID заказа'],
@@ -396,7 +396,7 @@ class EventLogService {
 			'link' => ['data' => $order?->link ?? '-', 'title' => 'Ссылка'],
 			'date' => ['data' => $order?->date ?? '-', 'title' => 'Дата и время ориг.', 'meta' => ['date' => 1]],
 			'date_msc' => ['data' => $dateMsc, 'title' => 'Дата и время МСК', 'meta' => ['date' => 1]],
-			'timezone' => ['data' => $timezone['timezone'], 'title' => 'Временная зона'],
+			'timezone' => ['data' => $timezone['timezone'] ?? '-', 'title' => 'Временная зона'],
 			
 			'command' => ['data' => $oldCommand?->title ?? '-', 'updated' => $newCommand?->title ?? '-', 'title' => 'Команда', 'sort' => 10],
 			'timesheet_period' => ['data' => $oldTimesheetPeriod?->title ?? '-', 'title' => 'Период'],
@@ -422,7 +422,7 @@ class EventLogService {
 		$timesheetPeriod = TimesheetPeriod::find($timesheet?->timesheet_period_id);
 		
 		$timezone = $this->getTimezone($order?->timezone_id);
-		$dateMsc = DdrDateTime::shift($order?->date, (-1 * $timezone['shift']));
+		$dateMsc = $timezone ? DdrDateTime::shift($order?->date, (-1 * $timezone['shift'])) : null;
 		
 		
 		$info = [
@@ -434,7 +434,7 @@ class EventLogService {
 			'link' => ['data' => $order?->link ?? '-', 'title' => 'Ссылка'],
 			'date' => ['data' => $order?->date ?? '-', 'title' => 'Дата и время ориг.', 'meta' => ['date' => 1]],
 			'date_msc' => ['data' => $dateMsc, 'title' => 'Дата и время МСК', 'meta' => ['date' => 1]],
-			'timezone' => ['data' => $timezone['timezone'], 'title' => 'Временная зона'],
+			'timezone' => ['data' => $timezone['timezone'] ?? '-', 'title' => 'Временная зона'],
 			
 			'from' => ['data' => $from['name'] ?? $from['pseudoname'], 'title' => 'Отправил на проверку'],
 			
@@ -464,7 +464,7 @@ class EventLogService {
 		$timesheetPeriod = TimesheetPeriod::find($timesheet?->timesheet_period_id);
 		
 		$timezone = $this->getTimezone($order?->timezone_id);
-		$dateMsc = DdrDateTime::shift($order?->date, (-1 * $timezone['shift']));
+		$dateMsc = $timezone ? DdrDateTime::shift($order?->date, (-1 * $timezone['shift'])) : null;
 		
 		
 		$info = [
@@ -476,7 +476,7 @@ class EventLogService {
 			'link' => ['data' => $order?->link ?? '-', 'title' => 'Ссылка'],
 			'date' => ['data' => $order?->date ?? '-', 'title' => 'Дата и время ориг.', 'meta' => ['date' => 1]],
 			'date_msc' => ['data' => $dateMsc, 'title' => 'Дата и время МСК', 'meta' => ['date' => 1]],
-			'timezone' => ['data' => $timezone['timezone'], 'title' => 'Временная зона'],
+			'timezone' => ['data' => $timezone['timezone'] ?? '-', 'title' => 'Временная зона'],
 			
 			'from' => ['data' => $from['name'] ?? $from['pseudoname'], 'updated' => $confirmedFrom['name'] ?? $confirmedFrom['pseudoname'], 'title' => 'Кем создан / подтвержден'],
 			
@@ -520,7 +520,7 @@ class EventLogService {
 	*/
 	public function orderRemoveFromConfirmed(Order $order) {
 		$timezone = $this->getTimezone($order?->timezone_id);
-		$dateMsc = DdrDateTime::shift($order?->date, (-1 * $timezone['shift']));
+		$dateMsc = $timezone ? DdrDateTime::shift($order?->date, (-1 * $timezone['shift'])) : null;
 		
 		$info = [
 			'id' => ['data' => $order?->id ?? '-', 'title' => 'ID заказа'],
@@ -531,7 +531,7 @@ class EventLogService {
 			'link' => ['data' => $order?->link ?? '-', 'title' => 'Ссылка'],
 			'date' => ['data' => $order?->date ?? '-', 'title' => 'Дата и время ориг.', 'meta' => ['date' => 1]],
 			'date_msc' => ['data' => $dateMsc, 'title' => 'Дата и время МСК', 'meta' => ['date' => 1]],
-			'timezone' => ['data' => $timezone['timezone'], 'title' => 'Временная зона'],
+			'timezone' => ['data' => $timezone['timezone'] ?? '-', 'title' => 'Временная зона'],
 		];
 		
 		$this->sendToEventLog(LogEventsGroups::orders, LogEventsTypes::orderRemoveFromConfirmed, $info);
@@ -553,7 +553,7 @@ class EventLogService {
 		$timesheetPeriod = TimesheetPeriod::find($timesheet?->timesheet_period_id);
 		
 		$timezone = $this->getTimezone($order?->timezone_id);
-		$dateMsc = DdrDateTime::shift($order?->date, (-1 * $timezone['shift']));
+		$dateMsc = $timezone ? DdrDateTime::shift($order?->date, (-1 * $timezone['shift'])) : null;
 		
 		$oldData = $order?->getRawOriginal() ?? null;
 		$orderStatuses = $this->getSettings('order_statuses');
@@ -570,7 +570,7 @@ class EventLogService {
 			'link' => ['data' => $order?->link ?? '-', 'title' => 'Ссылка'],
 			'date' => ['data' => $order?->date ?? '-', 'title' => 'Дата и время ориг.', 'meta' => ['date' => 1]],
 			'date_msc' => ['data' => $dateMsc, 'title' => 'Дата и время МСК', 'meta' => ['date' => 1]],
-			'timezone' => ['data' => $timezone['timezone'], 'title' => 'Временная зона'],
+			'timezone' => ['data' => $timezone['timezone'] ?? '-', 'title' => 'Временная зона'],
 			'status' => ['data' => $oldStatus, 'title' => 'Предыдущий статус'],
 			'new_status' => ['data' => $orderStatuses[$status]['name'] ?? '-', 'title' => 'Новый статус'],
 			
