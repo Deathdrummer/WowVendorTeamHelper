@@ -115,16 +115,11 @@
 			return;
 		}
 		
-		
 		$('#accountingBlock').html(data);
 		
 		timesheetPeriodsBuildWait.destroy();
-		
+		$('#lastTimesheetPeriodsBlock').find('li').removeClass('active');
 		periodsWinFuncs?.close();
-		console.log(choosedPeriods);
-		
-		//for item of choosedPeriods
-		//console.log(choosedPeriods);
 	}
 	
 	
