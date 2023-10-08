@@ -41,7 +41,7 @@
 				</x-table.td>
 			@endforeach
 			<x-table.td class="w-auto"></x-table.td>
-			<x-table.td class="w10rem h-center"><strong>{{$test['total']}} @symbal(dollar)</strong></x-table.td>
+			<x-table.td class="w15rem h-center"><strong>{{$test['total']}} @symbal(dollar)</strong></x-table.td>
 		</x-table.tr>
 			
 	</x-table.foot>
