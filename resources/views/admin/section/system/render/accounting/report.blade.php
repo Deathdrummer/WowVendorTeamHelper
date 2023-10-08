@@ -7,7 +7,7 @@
 				<x-table.td class="w10rem h-center"><strong>{{$pTitle}}</strong></x-table.td>
 			@endforeach
 			<x-table.td class="w-auto"></x-table.td>
-			<x-table.td class="w10rem h-center"><strong>Итого</strong></x-table.td>
+			<x-table.td class="w15rem h-center"><strong>Итого по периодам</strong></x-table.td>
 		</x-table.tr>
 	</x-table.head>
 	<x-table.body>
@@ -30,7 +30,7 @@
 	</x-table.body>
 	<x-table.foot>
 		<x-table.tr class="h5rem">
-			<x-table.td class="w16rem h-end"><strong>Итого по периодам</strong></x-table.td>
+			<x-table.td class="w16rem h-end"><strong>Итого по командам</strong></x-table.td>
 			@foreach($allPeriods as $pId => $pTitle)
 				<x-table.td class="w10rem h-center">
 					@isset($test['periods'][$pId])
