@@ -15,7 +15,7 @@
 			<x-table.tr class="h3rem">
 				<x-table.td class="h-end"><strong>{{$cTitle}}</strong></x-table.td>
 				@foreach($allPeriods as $pId => $pTitle)
-					<x-table.td class="h-center">
+					<x-table.td class="h-end">
 						@isset($test[$cId][$pId])
 							<p>{{$test[$cId][$pId]}} @symbal(dollar)</p>
 						@else
@@ -24,7 +24,7 @@
 					</x-table.td>
 				@endforeach
 				<x-table.td class="w-auto"></x-table.td>
-				<x-table.td class="h-center"><strong>{{$test[$cId]['all'] ?? '-'}} @symbal(dollar)</strong></x-table.td>
+				<x-table.td class="h-end"><strong>{{$test[$cId]['all'] ?? '-'}} @symbal(dollar)</strong></x-table.td>
 			</x-table.tr>
 		@endforeach
 	</x-table.body>
@@ -32,7 +32,7 @@
 		<x-table.tr class="h5rem">
 			<x-table.td class="w16rem h-end"><strong>Итого по командам</strong></x-table.td>
 			@foreach($allPeriods as $pId => $pTitle)
-				<x-table.td class="w10rem h-center">
+				<x-table.td class="w10rem h-end">
 					@isset($test['periods'][$pId])
 						<strong>{{$test['periods'][$pId]}} @symbal(dollar)</strong>
 					@else
@@ -41,7 +41,7 @@
 				</x-table.td>
 			@endforeach
 			<x-table.td class="w-auto"></x-table.td>
-			<x-table.td class="w15rem h-center"><strong>{{$test['total']}} @symbal(dollar)</strong></x-table.td>
+			<x-table.td class="w15rem h-end"><strong>{{$test['total']}} @symbal(dollar)</strong></x-table.td>
 		</x-table.tr>
 			
 	</x-table.foot>
