@@ -505,7 +505,7 @@ export async function showStatusesTooltip(btn = null, orderId = null, timesheetI
 		placement: 'left-start',
 		tag: 'noscroll',
 		minWidth: '150px',
-		minHeight: '120px',
+		minHeight: '32px',
 		wait: {
 			iconHeight: '40px'
 		},
