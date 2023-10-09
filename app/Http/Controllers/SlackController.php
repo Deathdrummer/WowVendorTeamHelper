@@ -67,6 +67,7 @@ class SlackController extends Controller {
 		]);
 		
 		$notifyButtons = $this->getSettings('slack_notifies', 'id', null, 'id:'.$id);
+		
 		if (!$data = $notifyButtons[$id] ?? null) return response()->json(false);
 		
 		$response = $sendMessage([
@@ -74,6 +75,8 @@ class SlackController extends Controller {
 			'webhook' => $data['webhook'] ?? null,
 			'message' => $data['message'] ?? null,
 		]);
+		
+		sleep((int)($data['timeout'] ?? 0));
 		
 		return response()->json($response);
 	}

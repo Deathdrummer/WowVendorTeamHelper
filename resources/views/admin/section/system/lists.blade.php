@@ -227,7 +227,7 @@
 					
 					<x-simplelist
 						setting="slack_notifies"
-						fieldset="ID:w6rem|number|id|1,Название уведомеления:w20rem|text|title,Цвет кнопки:w20rem|select|color,Иконка:w15rem|text|icon,Вебхук:w30rem|textarea|webhook,Сообщение:w30rem|textarea|message"
+						fieldset="ID:w6rem|number|id|1,Название уведомеления:w20rem|text|title,Цвет кнопки:w20rem|select|color,Иконка:w15rem|text|icon,Тайаут (сек):w7rem|number|timeout,Вебхук:w30rem|textarea|webhook,Сообщение:w30rem|textarea|message"
 						options="color;light:Светлая,dark:Темная,gray:Серая,neutral:Нейтральная,orange:Оранжевая,yellow:Желтая,purple:Фиолетовая,red:Красная,green:Зеленая,blue:Синяя"
 						{{-- onRemove="removeCustomerAction" --}}
 						group="small"
