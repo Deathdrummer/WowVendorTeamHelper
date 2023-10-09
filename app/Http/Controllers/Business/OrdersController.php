@@ -718,6 +718,7 @@ class OrdersController extends Controller {
 			'timesheet_id'	=> 'required|numeric|exclude',
 			'order' 		=> 'required|string',
 			'order_type' 	=> 'numeric|nullable',
+			'ot_orig' 		=> 'numeric|nullable|exclude',
 			'price' 		=> 'required|decimal:0,2',
 			'server_name' 	=> 'required|string',
 			'raw_data' 		=> 'required|string',
@@ -726,6 +727,10 @@ class OrdersController extends Controller {
 		
 		$orderId = $request->input('order_id');
 		$timesheetId = $request->input('timesheet_id');
+		
+		if ($request->input('ot_orig') != $formData['order_type']) {
+			$formData['ot_changed'] = true;
+		}
 		
 		$order = Order::find($orderId);
 		$order->fill($formData);
