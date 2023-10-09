@@ -200,7 +200,7 @@
 						>
 						<x-simplelist
 							setting="orders_types"
-							fieldset="ID:w7rem|number|id|1,Название типа заказа:w30rem|text|title,Цвет:w6rem|color|color,Совпадения:w30rem|textarea|matches,Исключения:w30rem|textarea|exceptions"
+							fieldset="ID:w7rem|number|id|1,Название типа заказа:w30rem|text|title,Цвет:w6rem|color|color,Совпадения:w30rem|textarea|matches,Исключения:w30rem|textarea|exceptions,Сорт:w7rem|number|sort"
 							{{-- options="name_type;foo:fooval,bar:barval|name_radio;foo:rool,bar:tool" --}}
 							{{-- onRemove="removeCustomerAction" --}}
 							group="normal"

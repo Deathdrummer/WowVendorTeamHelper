@@ -82,10 +82,10 @@ class OrderService {
 	 * @return Collection|null
 	 */
 	public function getToTimesheetList($timesheetId = null, $search = null):Collection|null {
+		$ordersTypesSorts = $this->getSettings('orders_types', 'sort', 'id');
+		
 		$list = Timesheet::find($timesheetId)
-			->orders(function($query) use($search) {
-				$query->where('order', 'LIKE', '%'.$search.'%');
-			})
+			->orders()
 			/* ->withExists(['has_confirm_orders as is_confirmed' => function($q) use($timesheetId) { // это если нужно задать для конкретного заказа а для допранов - нет
 				$q->where('confirmed_orders.timesheet_id', $timesheetId);
 			}]) */
@@ -101,7 +101,10 @@ class OrderService {
 			->when($search, function ($query) use ($search) {
 				return $query->where('order', 'LIKE', '%'.$search.'%');
 			})
-			->get();
+			->get()
+			->sortBy(function (Order $order) use($ordersTypesSorts) {
+				return $ordersTypesSorts[$order['order_type']] ?? 0;
+			});
 		
 		
 		$doprunOrders = $this->_getOrdersDopruns($timesheetId);
