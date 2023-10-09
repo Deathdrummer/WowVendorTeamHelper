@@ -572,11 +572,15 @@ class OrdersController extends Controller {
 		
 		$notifyButtons = $this->getSettings('slack_notifies');
 		
+		$orderStatusesSettings = $this->getSettingsCollect('order_statuses');
+		$canAnySetStat = auth('site')->user()->canany([...array_values($orderStatusesSettings->map(fn($stat, $statName) => $statName.'-status:site')->toArray())]);
+		
 		$statusesSettings = $this->getSettings('order_statuses');
 		$timezones = $this->getSettings('timezones', 'id');
 		$itemView = $viewPath.'.item';
 		
-		return response()->view($viewPath.'.list', compact('list', 'itemView', 'timezones', 'statusesSettings', 'showType', 'notifyButtons'));
+		
+		return response()->view($viewPath.'.list', compact('list', 'itemView', 'timezones', 'statusesSettings', 'showType', 'notifyButtons', 'canAnySetStat'));
 	}
 	
 	

@@ -123,7 +123,16 @@
 		@elseif($confirm)
 			<i class="fa-regular fa-fw fa-circle-check color-green fz18px" title="Подтвержден"></i>
 		@else
-			<div class="d-inline-flex align-items-center pointer" onclick="$.openStatusesTooltip(this, {{$id}}, {{$timesheet_id}}, '{{$status}}')">
+		
+		
+			<div
+				@class([
+					'd-inline-flex',
+					'align-items-center',
+					'pointer' => $canAnySetStat,
+				])
+				@if($canAnySetStat)onclick="$.openStatusesTooltip(this, {{$id}}, {{$timesheet_id}}, '{{$status}}')" @endif
+				>
 				@if($showType['color'] ?? false)
 					<div
 						class="w2rem h2rem border-rounded-circle"
