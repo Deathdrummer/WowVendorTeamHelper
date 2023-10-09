@@ -860,18 +860,25 @@ class OrdersController extends Controller {
 	 * @param 
 	 * @return 
 	 */
-	public function set_status(Request $request) {
+	public function set_status(Request $request, AddOrderCommentAction $addOrderComment) {
 		[
 			'order_id'		=> $orderId,
 			'timesheet_id'	=> $timesheetId,
 			'status'		=> $status,
+			'message'		=> $message,
 		] = $request->validate([
 			'order_id'		=> 'required|numeric',
 			'timesheet_id'	=> 'required|numeric',
 			'status'		=> 'required|string',
+			'message'		=> 'string|nullable',
 		]);
 		
 		if (!$setStatRes = $this->orderService->setStatus($orderId, $timesheetId, $status)) return response()->json(false);
+		
+		// отправить коммент
+		if ($message) {
+			$addOrderComment($orderId, $message);
+		}
 		
 		$orderStatusesSettings = $this->getSettingsCollect("order_statuses.{$status}");
 		

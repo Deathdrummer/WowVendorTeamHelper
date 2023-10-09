@@ -539,61 +539,88 @@ export async function showStatusesTooltip(btn = null, orderId = null, timesheetI
 			bgColor: '#ffffffa1'
 		});
 		
-		const {data, error, headers} = await ddrQuery.post('crud/orders/set_status', {order_id: orderId, timesheet_id: timesheetId, status});
-		
 		ttWait.destroy();
 		statusesTooltip.destroy();
- 	
-	 	if (error) {
-			console.log(error);
-			$.notify(error?.message, 'error');
-			return;
-		}
 		
-		if (data) {
-			if (['wait', 'cancel'].includes(status)) {
-				let hasRows = !!$(ref).closest('[ddrtabletr]').siblings('[ddrtabletr]').length;
-				
-				decrementTimesheetCount(btn);
-				
-				if (hasRows) $(ref).closest('[ddrtabletr]').remove();
-				else $(ref).closest('[ddrtable]').replaceWith('<p class="color-gray-400 text-center mt2rem fz14px">Нет заказов</p>');
-				
-				let listNames = {
-					wait: 'лист ожидания',
-					cancel: 'отмененные',
-				};
-				
-				$.notify(`Заказ успешно отвязан и перенесен в ${listNames[status]}`);
-				
-			} else if (status == 'ready') {
-				if (data?.isHash) {
-					$(btn).replaceWith('<i class="fa-regular fa-fw fa-circle-check color-green fz18px" title="Подтвержден"></i>');
-					$.notify(`Заказ успешно подтвержден!`);
-				} else {
-					$(btn).replaceWith('<i class="fa-regular fa-fw fa-clock color-gray fz18px" title="На подтверждении"></i>');
-					$.notify(`Заказ отправлен на подтверждение!`);
-				}
-			} else {
-				const {name, icon, color} = data;
-				const statBlock = $(btn);
-				
-				if (name) {
-					$(statBlock).find('[rowstatustext]').text(name);
-				}
-				
-				if (color) {
-					$(statBlock).find('[rowstatuscolor]').css('background-color', `${color}`);
-				}
-				
-				if (icon) {
-					$(statBlock).find('[rowstatusicon]').setAttrib('class', `fa-solid fa-fw fa-${icon}`);
-					if (color) $(statBlock).find('[rowstatusicon]').css('color', `${color}`);
-				}
-				
-				changeOnclickAttr(statBlock, stat, status);
+		let title;
+		if (status == 'wait') title = 'В лист ожидания';
+		else if (status == 'cancel')  title = 'В отмененные';
+		
+		const {
+			popper,
+			wait,
+			close,
+		} = await ddrPopup({
+			url: 'client/orders/to_cancel_list',
+			params: {views: 'movelist_form'},
+			method: 'get',
+			title,
+			width: 400, // ширина окна
+			buttons: ['ui.cancel', {title: 'Перенести', variant: 'green', action: 'setStatusAction'}],
+			centerMode: true, // контент по центру
+		});
+		
+		$.setStatusAction = async (__) => {
+			wait();
+			
+			const message = $(popper).find('#comment').val();
+			
+			const {data, error, headers} = await ddrQuery.post('crud/orders/set_status', {order_id: orderId, timesheet_id: timesheetId, message, status});
+			
+		 	if (error) {
+				console.log(error);
+				$.notify(error?.message, 'error');
+				return;
 			}
-		}
+			
+			if (data) {
+				if (['wait', 'cancel'].includes(status)) {
+					let hasRows = !!$(ref).closest('[ddrtabletr]').siblings('[ddrtabletr]').length;
+					
+					decrementTimesheetCount(btn);
+					
+					if (hasRows) $(ref).closest('[ddrtabletr]').remove();
+					else $(ref).closest('[ddrtable]').replaceWith('<p class="color-gray-400 text-center mt2rem fz14px">Нет заказов</p>');
+					
+					let listNames = {
+						wait: 'лист ожидания',
+						cancel: 'отмененные',
+					};
+					
+					$.notify(`Заказ успешно отвязан и перенесен в ${listNames[status]}`);
+					
+				} else if (status == 'ready') {
+					if (data?.isHash) {
+						$(btn).replaceWith('<i class="fa-regular fa-fw fa-circle-check color-green fz18px" title="Подтвержден"></i>');
+						$.notify(`Заказ успешно подтвержден!`);
+					} else {
+						$(btn).replaceWith('<i class="fa-regular fa-fw fa-clock color-gray fz18px" title="На подтверждении"></i>');
+						$.notify(`Заказ отправлен на подтверждение!`);
+					}
+				} else {
+					const {name, icon, color} = data;
+					const statBlock = $(btn);
+					
+					if (name) {
+						$(statBlock).find('[rowstatustext]').text(name);
+					}
+					
+					if (color) {
+						$(statBlock).find('[rowstatuscolor]').css('background-color', `${color}`);
+					}
+					
+					if (icon) {
+						$(statBlock).find('[rowstatusicon]').setAttrib('class', `fa-solid fa-fw fa-${icon}`);
+						if (color) $(statBlock).find('[rowstatusicon]').css('color', `${color}`);
+					}
+					
+					changeOnclickAttr(statBlock, stat, status);
+				}
+				
+				close();
+			}
+		};
+		
 	}
 	
 }
