@@ -13,7 +13,7 @@
 				</div>
 				<div class="col-auto">
 					<p class="color-gray-600 fz12px mb3px">Тип заказа:</p>
-					@if(isset($order_type) && $ot_changed)
+					@if(isset($order_type) && $ot_changed ?? false)
 						<div
 							class="d-flex align-items-center h2rem-8px w16rem"
 							{!!($order_type_title ?? true) ? 'title="Тип заказа присвоен, но отсутствует в списке"' : ''!!}>
@@ -21,7 +21,7 @@
 								class="color-gray-600 fz14px lh80"
 								>{{$order_type_title ?? '?'}}</strong>
 						</div>
-					@elseif(!$ot_changed)
+					@elseif(!($ot_changed ?? false))
 						<input type="hidden" name="ot_orig" value="{{$order_type ?? null}}">
 						<x-select name="order_type" :options="$ordersTypes" value="{{$order_type ?? null}}" empty="" choose="Не выбран" choose-empty class="w16rem" />
 					@endif
