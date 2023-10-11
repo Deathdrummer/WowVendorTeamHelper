@@ -41,34 +41,35 @@ class ImportTimesheetEventsRequest extends FormRequest {
 		
 		if (!$rows = array_filter(splitString($fileData, "\n"))) return false;
 		
-		$settings = app()->make(Settings::class);
+		//$settings = app()->make(Settings::class);
 		
-		$difficulties = $settings->get('difficulties')?->mapWithKeys(function ($item, $key) {
+		/* $difficulties = $settings->get('difficulties')?->mapWithKeys(function ($item, $key) {
     		return [$item['id'] => $item['title']];
-		})->toArray();
+		})->toArray(); */
 		
-		$eventsTypes = EventType::get()?->mapWithKeys(function ($item, $key) use($difficulties) {
-			return [$item['id'] => $item['title'].'-'.$difficulties[$item['difficult_id']]];
+		$eventsTypesIds = EventType::get()?->mapWithKeys(function ($item, $key) /* use($difficulties) */ {
+			return [$item['id'] => $item['title']/* .'-'.$difficulties[$item['difficult_id']] */];
 		})->flip()->toArray();
 		
-		$commands = Command::get()?->mapWithKeys(function ($item, $key)  {
+		$commandsIds = Command::get()?->mapWithKeys(function ($item, $key)  {
     		return [$item['id'] => $item['title']];
 		})->flip()->toArray();
 		
 		$maxSort = Timesheet::max('_sort');
 		
+		
 		$importData = [];
 		foreach($rows as $k => $row) {
 			$splitRow = preg_split('/\s+/', $row); 
 			
-			if (count($splitRow) == 4) [$date, $time, $eventTypeId, $commandId] = $splitRow;
+			if (count($splitRow) == 4) [$date, $time, $eventTypeText, $commandText] = $splitRow;
 			else continue;
 			
-			if (!isset($commands[$commandId]) || !isset($eventsTypes[$eventTypeId])) continue;
-			
+			if (!isset($commandsIds[$commandText]) || !isset($eventsTypesIds[$eventTypeText])) continue;
+
 			$importData[] = [
-				'command_id' 			=> $commands[$commandId],
-				'event_type_id' 		=> $eventsTypes[$eventTypeId],
+				'command_id' 			=> $commandsIds[$commandText],
+				'event_type_id' 		=> $eventsTypesIds[$eventTypeText],
 				'timesheet_period_id' 	=> (int)$this->period_id,
 				'datetime' 				=> DdrDateTime::buildTimestamp($date, $time, ['shift' => true]),
 				'_sort'					=> ++$maxSort,
