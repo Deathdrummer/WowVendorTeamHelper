@@ -405,14 +405,18 @@ class OrdersController extends Controller {
 	 */
 	public function relocate_client(Request $request) {
 		[
-			'views'			=> $viewPath,
+			'order_id'	=> $orderId,
+			'views'		=> $viewPath,
 		] = $request->validate([
-			'views'			=> 'required|string',
+			'order_id'	=> 'required|numeric',
+			'views'		=> 'required|string',
 		]);
+		
+		$rawData = Order::find($orderId)?->raw_data;
 		
 		$regions = $this->getSettings('regions', 'id', 'title');
 		
-		return response()->view($viewPath.'.form', compact('regions'));
+		return response()->view($viewPath.'.form', compact('regions', 'rawData'));
 	}
 	
 	
@@ -437,7 +441,6 @@ class OrdersController extends Controller {
 			'period'	=> 'string|nullable',
 			'order_id'	=> 'required|numeric',
 		]);
-		
 		
 		if (!$order = Order::find($orderId)) return response()->json(false);
 		
@@ -921,19 +924,21 @@ class OrdersController extends Controller {
 	public function relocate(Request $request) {
 		[
 			'views'			=> $viewPath,
-			//'order_id'		=> $orderId,
+			'order_id'		=> $orderId,
 			//'timesheet_id'	=> $timesheetId,
 			'type'			=> $type,
 		] = $request->validate([
 			'views'			=> 'required|string',
-			//'order_id'		=> 'required|numeric',
+			'order_id'		=> 'required|numeric',
 			//'timesheet_id'	=> 'required|numeric',
 			'type'			=> 'required|string',
 		]);
 		
+		$rawData = Order::find($orderId)?->raw_data;
+		
 		$regions = $this->getSettings('regions', 'id', 'title');
 		
-		return response()->view($viewPath.'.form', compact('type', 'regions'));
+		return response()->view($viewPath.'.form', compact('type', 'regions', 'rawData'));
 	}
 	
 	
@@ -960,7 +965,6 @@ class OrdersController extends Controller {
 			'timesheet_id'	=> 'required|numeric',
 			'type'			=> 'required|string',
 		]);
-		
 		
 		$timezones = $this->getSettingsCollect('timezones')->where('region', $regionId)->pluck('id')->toArray();
 		$commandsIds = Command::whereIn('region_id', $timezones)->get()->pluck('id');

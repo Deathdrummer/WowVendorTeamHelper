@@ -1,5 +1,9 @@
 <x-input-group size="small">
 	
+	@isset($rawData)
+		<p class="mb2rem color-gray-600 select-text code">{{$rawData}}</p>
+	@endisset
+	
 	<div class="row row-cols-1 gy-20 mb2rem">
 		<div class="col">
 			<p class="color-gray-500 fz14px mb3px">Выбрать дату:</p>
@@ -48,7 +52,7 @@
 			
 			
 			<p class="color-gray-500 fz14px mb3px">Выбрать событие:</p>
-			<x-table class="w100" scrolled="68vh" noborder>
+			<x-table class="w100" scrolled="calc(100vh - 600px)" noborder>
 				<x-table.head>
 					<x-table.tr>
 						<x-table.td class="w13rem" noborder><strong class="fz12px">Дата (МСК)</strong></x-table.td>
@@ -58,7 +62,7 @@
 						<x-table.td class="w6rem" noborder><strong class="fz12px">Кол-во заказов</strong></x-table.td>
 					</x-table.tr>
 				</x-table.head>
-				<x-table.body class="minh-4rem" emptytext="Нет событий"></x-table.body>
+				<x-table.body class="minh-10rem" emptytext="Нет событий"></x-table.body>
 			</x-table>
 		</div>
 		

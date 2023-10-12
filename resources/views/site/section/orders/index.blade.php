@@ -416,8 +416,8 @@
 			
 			const d = new Date(date);
 			let buildedDate = new Date(d.getFullYear(), d.getMonth(), d.getDate(), 0, 0, 0);
-			isLoading = true;
 			
+			isLoading = true;
 			const {data, error, status, headers, abort} = await ddrQuery.get('client/orders/relocate/get_timesheets', {date: buildedDate, region_id, period, order_id, views}, {abortContr});
 			isLoading = false;
 			
@@ -452,17 +452,16 @@
 			period = tp;
 			
 			if (period == 'past') {
-				calendarObj.setDate();
-				calendarObj.setMax(new Date(Date.now()));
-				calendarObj.setMin(null);
-				calendarObj.setDate(initDate);
-				
-				date = new Date(initDate.setHours(23, 59, 59, 999));
-			} else if (period == 'actual') {
-				calendarObj.setDate(new Date(Date.now()));
-				calendarObj.setMax(null);
-				calendarObj.setMin(new Date(Date.now()));
 				date = new Date(Date.now());
+				calendarObj.setMin(null);
+				calendarObj.setDate(date);
+				calendarObj.setMax(new Date(Date.now()));
+				
+			} else if (period == 'actual') {
+				date = new Date(Date.now());
+				calendarObj.setMax(null);
+				calendarObj.setDate(date);
+				calendarObj.setMin(new Date(Date.now()));
 			} 
 			
 			await loadTimesheets(date, regionId, period);

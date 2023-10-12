@@ -140,7 +140,7 @@ export async function buildOrdersTable(row = null, timesheetId = null, cb = null
 		} = await ddrPopup({
 			url: 'crud/orders/relocate',
 			method: 'get',
-			params: {timesheet_id: timesheetId, type, views},
+			params: {timesheet_id: timesheetId, order_id: orderId, type, views},
 			title: `${action} <span class="color-gray">${orderNumber}</span>`, // заголовок
 			width: 700, // ширина окна
 			disabledButtons: true,
@@ -190,8 +190,12 @@ export async function buildOrdersTable(row = null, timesheetId = null, cb = null
 		
 		async function getTsEvents(date, region_id, period) {
 			const ddrtableWait = $(popper).find('[ddrtable]').blockTable('wait');
+			
+			const d = new Date(date);
+			let buildedDate = new Date(d.getFullYear(), d.getMonth(), d.getDate(), 0, 0, 0);
+			
 			isLoading = true;
-			const {data, error, status, headers} = await ddrQuery.get('crud/orders/relocate/get_timesheets', {timesheet_id: timesheetId, date, region_id, period, type, views}, {abortContr});
+			const {data, error, status, headers} = await ddrQuery.get('crud/orders/relocate/get_timesheets', {timesheet_id: timesheetId, date: buildedDate, region_id, period, type, views}, {abortContr});
 			isLoading = false;
 			
 			if (error) {
@@ -225,18 +229,17 @@ export async function buildOrdersTable(row = null, timesheetId = null, cb = null
 			period = tp;
 			
 			if (period == 'past') {
-				calendarObj.setDate();
-				calendarObj.setMax(new Date(Date.now()));
+				date = new Date(Date.now());
 				calendarObj.setMin(null);
 				calendarObj.setDate(date);
+				calendarObj.setMax(new Date(Date.now()));
 				
-				date = new Date(date.setHours(23, 59, 59, 999));
 			} else if (period == 'actual') {
-				calendarObj.setDate(new Date(Date.now()));
-				calendarObj.setMax(null);
-				calendarObj.setMin(new Date(Date.now()));
 				date = new Date(Date.now());
-			} 
+				calendarObj.setMax(null);
+				calendarObj.setDate(date);
+				calendarObj.setMin(new Date(Date.now()));
+			}
 			
 			getTsEvents(date, regionId, period);
 		}

@@ -152,6 +152,8 @@ class Timesheet extends Model {
 		$dateStart = DdrDateTime::buildTimestamp($date, null, ['shift' => '+']);
 		$dateEnd = $dateStart?->copy()?->addHours(23)?->addMinutes(59)?->addSeconds(59);
 		
+		//$choosedDay = $dateStart?->day;
+		//$nowDay = now()->day;
 		return $query->whereBetween('datetime', [now(), $dateEnd]);
 	}
 	

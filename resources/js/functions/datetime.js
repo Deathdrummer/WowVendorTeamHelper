@@ -1,3 +1,10 @@
+window.dateUTC = function(incomingDate = null) {
+	let dtLocal = incomingDate || new Date();
+	return new Date(dtLocal.toISOString().split('Z')[0]);
+}
+
+
+
 window.calendar = function(calendarId = null, params = {}) {
 	if (_.isNull(calendarId)) return;
 	
