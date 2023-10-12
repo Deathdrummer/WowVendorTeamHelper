@@ -28,6 +28,7 @@
 		chooseritem
 		onclick="$.{{getActionFuncName($action)}}(this, this.classList.contains('chooser__item_active'){{buildActionParams($action)}})"
 		{{-- {{$attributes->filter(fn ($value, $key) => $key !== 'class')}} --}}
+		@if($active)active @endif
 		>
 		<span>{{$slot}}</span>
 	</div>     

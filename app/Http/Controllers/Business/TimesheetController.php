@@ -385,9 +385,7 @@ class TimesheetController extends Controller {
 	*/
 	public function import_events(ImportTimesheetEventsRequest $request) {
 		$request->validated();
-		
 		$res = $request->importEvents();
-
 		return response()->json($res);
 	}
 	

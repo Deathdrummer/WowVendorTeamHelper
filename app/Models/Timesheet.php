@@ -147,10 +147,36 @@ class Timesheet extends Model {
      * @return Carbon|null
      */
 	public function scopeFuture($query, $date = null) {
-		$dateEnd = Carbon::create($date)->addHours(23)->addMinutes(59);
-		if ($date) return $query->whereBetween('datetime', [$date, $dateEnd])->where('datetime', '>=', now());
-		return $query->where('datetime', '>=', now());
+		if (!$date) return $query->whereBetween('datetime', [now()->startOfDay(), now()->endOfDay()]);
+		
+		$dateStart = DdrDateTime::buildTimestamp($date, null, ['shift' => '+']);
+		$dateEnd = $dateStart?->copy()?->addHours(23)?->addMinutes(59)?->addSeconds(59);
+		
+		return $query->whereBetween('datetime', [now(), $dateEnd]);
 	}
+	
+	
+	
+	/**
+     * Получить 
+     * @param $stat - new wait cancel ready doprun
+     * @return Carbon|null
+     */
+	public function scopePast($query, $date = null) {
+		if (!$date) return $query->where('datetime', '<', now());
+		
+		$dateStart = DdrDateTime::buildTimestamp($date, null, ['shift' => '+']);
+		
+		$choosedDay = $dateStart?->day;
+		$nowDay = now()->day;
+		
+		if ($choosedDay == $nowDay) return $query->whereBetween('datetime', [$dateStart, now()]);
+		
+		$dateEnd = $dateStart?->copy()?->endOfDay();
+		return $query->whereBetween('datetime', [$dateStart, $dateEnd]);
+	}
+	
+	
 	
 	
 	/**

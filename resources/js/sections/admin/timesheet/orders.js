@@ -149,6 +149,9 @@ export async function buildOrdersTable(row = null, timesheetId = null, cb = null
 		
 		enableButtons(true);
 		
+		let regionId = $('#toTSRegionsChuser').find('[regionid][active]').attr('regionid');
+		let period = $('#toTimesheetActualPast').find('[period][active]').attr('period');
+		
 		onClose(() => {
 			calendarObj?.remove();
 			abortContr?.abort();
@@ -158,12 +161,17 @@ export async function buildOrdersTable(row = null, timesheetId = null, cb = null
 		
 		let isLoading = false;
 		
-		getTsEvents(new Date());
+		let date = new Date(Date.now());
+		
+		getTsEvents(new Date(), regionId, period);
+		
+		
 		
 		calendarObj = calendar('relocateOrderCalendar', {
-			initDate: 'now',
-			async onSelect(instance, date) {
-				if (!date) return;
+			initDate: date,
+			minDate: date,
+			async onSelect(instance, d) {
+				if (!d) return;
 				
 				abortContr = new AbortController();
 				
@@ -172,17 +180,18 @@ export async function buildOrdersTable(row = null, timesheetId = null, cb = null
 					isLoading = false;
 				} 
 				
-				getTsEvents(date);
+				date = d;
+				getTsEvents(date, regionId, period);
 				
 				choosedTimesheetId = null;
 			}
 		});
 		
 		
-		async function getTsEvents(date) {
+		async function getTsEvents(date, region_id, period) {
 			const ddrtableWait = $(popper).find('[ddrtable]').blockTable('wait');
 			isLoading = true;
-			const {data, error, status, headers} = await ddrQuery.get('crud/orders/relocate/get_timesheets', {timesheet_id: timesheetId, date, type, views}, {abortContr});
+			const {data, error, status, headers} = await ddrQuery.get('crud/orders/relocate/get_timesheets', {timesheet_id: timesheetId, date, region_id, period, type, views}, {abortContr});
 			isLoading = false;
 			
 			if (error) {
@@ -199,6 +208,42 @@ export async function buildOrdersTable(row = null, timesheetId = null, cb = null
 		/*$.relocateOrderChooseDate = async (instance, date) => {
 			
 		}*/
+		
+		
+		
+		$.toTimesheetChooseRegion = async (btn, isActive, regId = null) => {
+			if (isActive) return false;
+			if (!regId) return false;
+			regionId = regId;
+			getTsEvents(date, regionId, period);
+		}
+		
+		
+		$.toTimesheetChooseActualPast = async (btn, isActive, tp = null) => {
+			if (isActive) return false;
+			if (!tp) return false;
+			period = tp;
+			
+			if (period == 'past') {
+				calendarObj.setDate();
+				calendarObj.setMax(new Date(Date.now()));
+				calendarObj.setMin(null);
+				calendarObj.setDate(date);
+				
+				date = new Date(date.setHours(23, 59, 59, 999));
+			} else if (period == 'actual') {
+				calendarObj.setDate(new Date(Date.now()));
+				calendarObj.setMax(null);
+				calendarObj.setMin(new Date(Date.now()));
+				date = new Date(Date.now());
+			} 
+			
+			getTsEvents(date, regionId, period);
+		}
+		
+		
+		
+		
 		
 		
 		$.relocateOrderClearDate = () => {

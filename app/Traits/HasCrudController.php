@@ -168,7 +168,8 @@ trait HasCrudController {
 			});
 		}  elseif ($key && $value) {
 			$data = $data->mapWithKeys(function ($item) use($key, $value) {
-				return [$item[$key] => $item[$value]];
+				if (!($item[$key] ?? false)) return null;
+				return [$item[$key] => $item[$value] ?? null];
 			});
 		}
 		return $data;

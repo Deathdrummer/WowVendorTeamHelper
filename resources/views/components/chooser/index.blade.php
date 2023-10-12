@@ -48,8 +48,10 @@
 		$(chooser).find('[chooseritem]').on(tapEvent, function(e) {
 			if ($(this).hasClass('chooser__item_active')) {
 				$(this).removeClass('chooser__item_active');
+				$(this).removeAttrib('active');
 			} else {
 				$(this).addClass('chooser__item_active');
+				$(this).setAttrib('active');
 			}
 		});
 		
@@ -61,7 +63,9 @@
 			}
 			
 			$(chooser).find('[chooseritem].chooser__item_active').removeClass('chooser__item_active');
+			$(chooser).find('[chooseritem][active]').removeAttrib('active');
 			$(this).addClass('chooser__item_active');
+			$(this).setAttrib('active');
 		});
 	}
 	

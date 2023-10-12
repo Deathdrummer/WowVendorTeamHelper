@@ -398,8 +398,8 @@ export async function timesheetCrud(periodId = null, listType = null, regionId =
 				
 				list({list_type: listType.value, region_id: regionId.value}, () => {
 					$('#timesheetTable').blockTable('buildTable');
-					$.notify('События успешно импортированы!');
-					incrementLastPeriodCount(periodId, data);
+					$.notify(`Импортировано ${data?.imported} из ${data?.total} строк`);
+					incrementLastPeriodCount(periodId, data?.imported);
 					close();
 				});
 				

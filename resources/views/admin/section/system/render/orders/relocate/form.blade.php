@@ -10,12 +10,52 @@
 		</div>
 		 --}}
 		
-		 <div class="col">
+		<div class="col">
 			<p class="color-gray-500 fz14px mb3px">Выбрать дату:</p>
 			<input type="hidden" id="relocateOrderCalendar" />
 		</div>
 		
 		<div class="col">
+			<div class="row justify-content-between">
+				<div class="col-auto">
+					<x-chooser
+						variant="neutral"
+						px="10"
+						id="toTSRegionsChuser"
+						class="mb1rem"
+						>
+						@foreach($regions as $rId => $rTitle)
+							<x-chooser.item
+								action="toTimesheetChooseRegion:{{$rId}}"
+								regionid="{{$rId}}"
+								active="{{$loop->first}}"
+								>{{$rTitle}}</x-chooser.item>
+						@endforeach
+					</x-chooser>
+				</div>
+				<div class="col-auto">
+					<x-chooser
+						variant="neutral"
+						px="10"
+						id="toTimesheetActualPast"
+						class="mb1rem"
+						>
+						<x-chooser.item
+							action="toTimesheetChooseActualPast:actual"
+							period="actual"
+							active
+							title="Актуальные"
+							>Акт.</x-chooser.item>
+						<x-chooser.item
+							action="toTimesheetChooseActualPast:past"
+							period="past"
+							title="Прошедшие"
+							>Прош.</x-chooser.item>
+					</x-chooser>
+				</div>
+			</div>
+			
+			
 			<p class="color-gray-500 fz14px mb3px">Выбрать событие:</p>
 			<x-table class="w100" scrolled="68vh" noborder>
 				<x-table.head>

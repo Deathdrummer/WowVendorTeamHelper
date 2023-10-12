@@ -1,8 +1,10 @@
 window.calendar = function(calendarId = null, params = {}) {
 	if (_.isNull(calendarId)) return;
 	
-	const {initDate, onShow, onSelect, formatter} = _.assign({
+	const {initDate, minDate, maxDate, onShow, onSelect, formatter} = _.assign({
 		initDate: null, // год месяц день
+		maxDate: null, // год месяц день
+		minDate: null, // год месяц день
 		onShow: null,
 		onSelect: null,
 		formatter: null,
@@ -18,8 +20,9 @@ window.calendar = function(calendarId = null, params = {}) {
 		customDays: ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'],
 		customMonths: ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'],
 		dateSelected: initDate ? (initDate instanceof Date ? initDate : (initDate == 'now' ? new Date(Date.now()) : new Date(initDate))) : null,
-		
-		onShow: ({calendar}) => {
+		minDate,
+		maxDate,
+		onShow: ({calendar, setMin, setMax, setDate}) => {
 			$(calendar).parent('.qs-datepicker-container').css({
 				'box-shadow': 'none',
 				'position': 'static',
@@ -30,7 +33,9 @@ window.calendar = function(calendarId = null, params = {}) {
 				'position': 'relative',
 			});
 			
-			callFunc(onShow, calendar);
+			//console.log(setMin);
+			
+			callFunc(onShow, calendar, {setMin, setMax, setDate});
 		    // Do stuff when the calendar is shown.
 		    // You have access to the datepicker instance for convenience.
 		},

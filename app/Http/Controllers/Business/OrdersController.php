@@ -410,8 +410,9 @@ class OrdersController extends Controller {
 			'views'			=> 'required|string',
 		]);
 		
+		$regions = $this->getSettings('regions', 'id', 'title');
 		
-		return response()->view($viewPath.'.form');
+		return response()->view($viewPath.'.form', compact('regions'));
 	}
 	
 	
@@ -426,12 +427,17 @@ class OrdersController extends Controller {
 		[
 			'views'		=> $viewPath,
 			'date'		=> $date,
+			'region_id'	=> $regionId,
+			'period'	=> $period,
 			'order_id'	=> $orderId,
 		] = $request->validate([
 			'views'		=> 'required|string',
 			'date'		=> 'required|date',
+			'region_id'	=> 'numeric|nullable',
+			'period'	=> 'string|nullable',
 			'order_id'	=> 'required|numeric',
 		]);
+		
 		
 		if (!$order = Order::find($orderId)) return response()->json(false);
 		
@@ -439,10 +445,22 @@ class OrdersController extends Controller {
 		
 		$timesheet = Timesheet::where('datetime', DdrDateTime::shift($orderDate, 'UTC'))->first();
 		
-		$timesheets = Timesheet::future($date)
-			->withCount('orders AS orders_count')
+		
+		$timezones = $this->getSettingsCollect('timezones')->where('region', $regionId)->pluck('id')->toArray();
+		
+		$commandsIds = Command::whereIn('region_id', $timezones)->get()->pluck('id');
+		
+		$tsQuery = match($period) {
+			'actual'	=> Timesheet::future($date),
+			'past'		=> Timesheet::past($date),
+			default		=> Timesheet::future($date),
+		};
+		
+		$timesheets = $tsQuery->withCount('orders AS orders_count')
+			->whereIn('command_id', $commandsIds)
 			->orderBy('datetime', 'ASC')
 			->get();
+		
 		
 		$difficulties = $this->getSettingsCollect('difficulties')->mapWithKeys(function ($item, $key) {
     		return [$item['id'] => $item['title']];
@@ -913,7 +931,9 @@ class OrdersController extends Controller {
 			'type'			=> 'required|string',
 		]);
 		
-		return response()->view($viewPath.'.form', compact('type'));
+		$regions = $this->getSettings('regions', 'id', 'title');
+		
+		return response()->view($viewPath.'.form', compact('type', 'regions'));
 	}
 	
 	
@@ -928,21 +948,35 @@ class OrdersController extends Controller {
 		[
 			'views'			=> $viewPath,
 			'date'			=> $date,
+			'region_id'		=> $regionId,
+			'period'		=> $period,
 			'timesheet_id'	=> $timesheetId,
 			'type'			=> $type,
 		] = $request->validate([
 			'views'			=> 'required|string',
 			'date'			=> 'required|date',
+			'region_id'		=> 'numeric|nullable',
+			'period'		=> 'string|nullable',
 			'timesheet_id'	=> 'required|numeric',
 			'type'			=> 'required|string',
 		]);
 		
 		
-		$timesheets = Timesheet::future($date)
+		$timezones = $this->getSettingsCollect('timezones')->where('region', $regionId)->pluck('id')->toArray();
+		$commandsIds = Command::whereIn('region_id', $timezones)->get()->pluck('id');
+		
+		$tsQuery = match($period) {
+			'actual'	=> Timesheet::future($date),
+			'past'		=> Timesheet::past($date),
+			default		=> Timesheet::future($date),
+		};
+		
+		$timesheets = $tsQuery->withCount('orders AS orders_count')
+			->whereIn('command_id', $commandsIds)
 			->whereNot('id', $timesheetId)
-			->withCount('orders AS orders_count')
 			->orderBy('datetime', 'ASC')
 			->get();
+		
 		
 		$difficulties = $this->getSettingsCollect('difficulties')->mapWithKeys(function ($item, $key) {
     		return [$item['id'] => $item['title']];

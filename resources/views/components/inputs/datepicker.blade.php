@@ -41,6 +41,7 @@ $('#exportOrdersDateFrom').on('datepickerinit', (target, dp) => {
 		type="text"
 		date
 		id="{{$id}}"
+		{{str_replace(['"', 'input-'], ['', ''], $attributes->whereStartsWith('input-'))}}
 		placeholder="{{$placeholder}}"
 		autocomplete="off"
 		{{$setInpGroup()}}

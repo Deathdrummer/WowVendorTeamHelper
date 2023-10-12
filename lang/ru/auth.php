@@ -37,7 +37,7 @@ return [
 	'popup_disagree_btn'    => 'Не согласен',
 	
 	'reg_success_title'		=> 'Поздравляем!',
-	'reg_success_text'		=> 'Вы успешно зарегистрировались2!',
+	'reg_success_text'		=> 'Вы успешно зарегистрировались!',
 	
 
 

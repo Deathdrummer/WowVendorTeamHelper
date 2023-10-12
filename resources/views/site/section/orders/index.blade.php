@@ -376,23 +376,34 @@
 			buttons: ['ui.close', {action: 'relocateOrderAction', title: 'Привязать'}],
 		});
 		
+		let regionId = $('#toTSRegionsChuser').find('[regionid][active]').attr('regionid');
+		let period = $('#toTimesheetActualPast').find('[period][active]').attr('period');
+		
 		onClose(() => {
 			calendarObj?.remove();
 		});
 		
-		await loadTimesheets(date);
+		await loadTimesheets(date, regionId, period);
 		
 		enableButtons(true);
 		
+		const initDate = date ? new Date(date) : new Date(Date.now());
+				
 		calendarObj = calendar('relocateOrderCalendar', {
-			initDate: date ? new Date(date) : 'now',
-			async onSelect(instance, date) {
-				if (!date) return;
-				await loadTimesheets(date);
-			}
+			initDate,
+			minDate: initDate,
+			async onSelect(instance, choosedDate) {
+				if (!choosedDate) return;
+				date = choosedDate;
+				await loadTimesheets(date, regionId, period);
+			},
 		});
 		
-		async function loadTimesheets(date = null) {
+		
+		
+		
+		
+		async function loadTimesheets(date = null, region_id = null, period = null) {
 			if (_.isNull(date)) return;
 			const ddrtableWait = $(popper).find('[ddrtable]').blockTable('wait');
 			
@@ -405,9 +416,9 @@
 			
 			const d = new Date(date);
 			let buildedDate = new Date(d.getFullYear(), d.getMonth(), d.getDate(), 0, 0, 0);
-			
 			isLoading = true;
-			const {data, error, status, headers, abort} = await ddrQuery.get('client/orders/relocate/get_timesheets', {date: buildedDate, order_id, views}, {abortContr});
+			
+			const {data, error, status, headers, abort} = await ddrQuery.get('client/orders/relocate/get_timesheets', {date: buildedDate, region_id, period, order_id, views}, {abortContr});
 			isLoading = false;
 			
 			if (abort) return;
@@ -426,8 +437,41 @@
 		}
 		
 		
+		
+		$.toTimesheetChooseRegion = async (btn, isActive, regId = null) => {
+			if (isActive) return false;
+			if (!regId) return false;
+			regionId = regId;
+			await loadTimesheets(date, regionId, period);
+		}
+		
+		
+		$.toTimesheetChooseActualPast = async (btn, isActive, tp = null) => {
+			if (isActive) return false;
+			if (!tp) return false;
+			period = tp;
+			
+			if (period == 'past') {
+				calendarObj.setDate();
+				calendarObj.setMax(new Date(Date.now()));
+				calendarObj.setMin(null);
+				calendarObj.setDate(initDate);
+				
+				date = new Date(initDate.setHours(23, 59, 59, 999));
+			} else if (period == 'actual') {
+				calendarObj.setDate(new Date(Date.now()));
+				calendarObj.setMax(null);
+				calendarObj.setMin(new Date(Date.now()));
+				date = new Date(Date.now());
+			} 
+			
+			await loadTimesheets(date, regionId, period);
+		}
+		
+		
+		
 		$.relocateOrderChooseTs = (row, isActive, tsId = null) => {
-			if (isActive) return false
+			if (isActive) return false;
 			$(row).closest('[ddrtablebody]').find('[ddrtabletr].active').removeClass('active');
 			$(row).addClass('active');
 			$(popper).find('[name="timesheet_id"]').val(tsId || null);
