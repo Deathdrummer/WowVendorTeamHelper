@@ -25,13 +25,15 @@
 	<x-table.td>
 		<p>{{$data['commands'][$command_id]['title'] ?? '-'}}</p>
 	</x-table.td>
-	<x-table.td class="h-center">
-		@if($orders_sum_price)
-			<p orderssum>{{$orders_sum_price}} @symbal(rub)</p>
-		@else
-			<p class="color-gray-600">-</p>
-		@endif
-	</x-table.td>
+	@if(getGuard() == 'admin' || (getGuard() == 'site' && auth('site')->user()->can('events-show-price:site')))
+		<x-table.td class="h-center">
+			@if($orders_sum_price)
+				<p orderssum>{{$orders_sum_price}} @symbal(dollar)</p>
+			@else
+				<p class="color-gray-600">-</p>
+			@endif
+		</x-table.td>
+	@endif
 	<x-table.td>
 		<div class="d-flex justify-content-between align-items-center" ordercommentblock>
 			<div class="mr5px scrollblock scrollblock-light minh-1rem-4px maxh3rem-1px w100" rowcomment>

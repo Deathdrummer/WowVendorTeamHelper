@@ -14,7 +14,11 @@
 					<td>
 						@if($row['data'] ?? null)
 							@if($row['meta']['symbal'] ?? false)
-								<p>{{$row['data']}} @symbal(rub)</p>
+								@if ($row['meta']['symbal'] == 'rub')
+									<p>{{$row['data']}} @symbal(rub)</p>
+								@elseif ($row['meta']['symbal'] == 'dollar')
+									<p>{{$row['data']}} @symbal(dollar)</p>
+								@endif
 							@elseif($row['meta']['date'] ?? false)
 								<p class="fz12px">{{DdrDateTime::date($row['data'] ?? null, ['shift' => '-'])}} в {{DdrDateTime::time($row['data'] ?? null, ['shift' => '-'])}}</p>
 							@else
@@ -25,7 +29,11 @@
 					<td>
 						@if($row['updated'] ?? null)
 							@if($row['meta']['symbal'] ?? false)
-								<p>{{$row['updated']}} @symbal(rub)</p>
+								@if ($row['meta']['symbal'] == 'rub')
+									<p>{{$row['data']}} @symbal(rub)</p>
+								@elseif ($row['meta']['symbal'] == 'dollar')
+									<p>{{$row['data']}} @symbal(dollar)</p>
+								@endif
 							@elseif($row['meta']['date'] ?? false)
 								<p class="fz12px">{{DdrDateTime::date($row['updated'] ?? null, ['shift' => '-'])}} в {{DdrDateTime::time($row['updated'] ?? null, ['shift' => '-'])}}</p>
 							@else
@@ -52,7 +60,11 @@
 					<td>
 						@if($row['data'] ?? null)
 							@if($row['meta']['symbal'] ?? false)
-								<p>{{$row['data']}} @symbal(rub)</p>
+								@if ($row['meta']['symbal'] == 'rub')
+									<p>{{$row['data']}} @symbal(rub)</p>
+								@elseif ($row['meta']['symbal'] == 'dollar')
+									<p>{{$row['data']}} @symbal(dollar)</p>
+								@endif
 							@elseif($row['meta']['date'] ?? false)
 								<p class="fz12px">{{DdrDateTime::date($row['data'] ?? null)}} в {{DdrDateTime::time($row['data'] ?? null)}}</p>
 							@else

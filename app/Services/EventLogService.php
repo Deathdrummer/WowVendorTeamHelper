@@ -133,7 +133,7 @@ class EventLogService {
 		$info = [
 			'id' => ['data' => $order?->id ?? '-', 'title' => 'ID заказа'],
 			'order' => ['data' => $order?->order ?? '-', 'title' => 'Номер заказа'],
-			'price' => ['data' => number_format($order?->price, 2, '.', ' ')  ?? '-', 'title' => 'Стоимость', 'meta' => ['symbal' => 1]],
+			'price' => ['data' => number_format($order?->price, 2, '.', ' ')  ?? '-', 'title' => 'Стоимость', 'meta' => ['symbal' => 'dollar']],
 			'server_name' => ['data' => $order?->server_name ?? '-', 'title' => 'Инвайт'],
 			'raw_data' => ['data' => $order?->raw_data ?? '-', 'title' => 'Данные'],
 			'link' => ['data' => $order?->link ?? '-', 'title' => 'Ссылка'],
@@ -177,7 +177,7 @@ class EventLogService {
 			'price' => $buildFields('price', function($orig, $upd) {
 				$row['data'] = number_format($orig, 2, '.', ' ');
 				if ($upd) $row['updated'] = number_format($upd, 2, '.', ' ');
-				$row['meta'] = ['symbal' => 1];
+				$row['meta'] = ['symbal' => 'dollar'];
 				return $row;
 			}, 'Стоимость'),
 			'server_name' => $buildFields('server_name', 'Инвайт'),
@@ -226,7 +226,7 @@ class EventLogService {
 		$info = [
 			'id' => ['data' => $order?->id ?? '-', 'title' => 'ID заказа'],
 			'order' => ['data' => $order?->order ?? '-', 'title' => 'Номер заказа'],
-			'price' => ['data' => number_format($order?->price, 2, '.', ' ')  ?? '-', 'title' => 'Стоимость', 'meta' => ['symbal' => 1]],
+			'price' => ['data' => number_format($order?->price, 2, '.', ' ')  ?? '-', 'title' => 'Стоимость', 'meta' => ['symbal' => 'dollar']],
 			'server_name' => ['data' => $order?->server_name ?? '-', 'title' => 'Инвайт'],
 			'raw_data' => ['data' => $order?->raw_data ?? '-', 'title' => 'Данные'],
 			'link' => ['data' => $order?->link ?? '-', 'title' => 'Ссылка'],
@@ -257,7 +257,7 @@ class EventLogService {
 		$info = [
 			'id' => ['data' => $order?->id ?? '-', 'title' => 'ID заказа'],
 			'order' => ['data' => $order?->order ?? '-', 'title' => 'Номер заказа'],
-			'price' => ['data' => number_format($order?->price, 2, '.', ' ')  ?? '-', 'title' => 'Стоимость', 'meta' => ['symbal' => 1]],
+			'price' => ['data' => number_format($order?->price, 2, '.', ' ')  ?? '-', 'title' => 'Стоимость', 'meta' => ['symbal' => 'dollar']],
 			'server_name' => ['data' => $order?->server_name ?? '-', 'title' => 'Инвайт'],
 			'raw_data' => ['data' => $order?->raw_data ?? '-', 'title' => 'Данные'],
 			'link' => ['data' => $order?->link ?? '-', 'title' => 'Ссылка'],
@@ -293,7 +293,7 @@ class EventLogService {
 		$info = [
 			'id' => ['data' => $order?->id ?? '-', 'title' => 'ID заказа'],
 			'order' => ['data' => $order?->order ?? '-', 'title' => 'Номер заказа'],
-			'price' => ['data' => number_format($order?->price, 2, '.', ' ')  ?? '-', 'title' => 'Стоимость', 'meta' => ['symbal' => 1]],
+			'price' => ['data' => number_format($order?->price, 2, '.', ' ')  ?? '-', 'title' => 'Стоимость', 'meta' => ['symbal' => 'dollar']],
 			'server_name' => ['data' => $order?->server_name ?? '-', 'title' => 'Инвайт'],
 			'raw_data' => ['data' => $order?->raw_data ?? '-', 'title' => 'Данные'],
 			'link' => ['data' => $order?->link ?? '-', 'title' => 'Ссылка'],
@@ -344,7 +344,7 @@ class EventLogService {
 		$info = [
 			'id' => ['data' => $order?->id ?? '-', 'title' => 'ID заказа'],
 			'order' => ['data' => $order?->order ?? '-', 'title' => 'Номер заказа'],
-			'price' => ['data' => number_format($order?->price, 2, '.', ' ')  ?? '-', 'title' => 'Стоимость', 'meta' => ['symbal' => 1]],
+			'price' => ['data' => number_format($order?->price, 2, '.', ' ')  ?? '-', 'title' => 'Стоимость', 'meta' => ['symbal' => 'dollar']],
 			'server_name' => ['data' => $order?->server_name ?? '-', 'title' => 'Инвайт'],
 			'raw_data' => ['data' => $order?->raw_data ?? '-', 'title' => 'Данные'],
 			'link' => ['data' => $order?->link ?? '-', 'title' => 'Ссылка'],
@@ -390,7 +390,7 @@ class EventLogService {
 		$info = [
 			'id' => ['data' => $order?->id ?? '-', 'title' => 'ID заказа'],
 			'order' => ['data' => $order?->order ?? '-', 'title' => 'Номер заказа'],
-			'price' => ['data' => number_format($order?->price, 2, '.', ' ')  ?? '-', 'title' => 'Стоимость', 'meta' => ['symbal' => 1]],
+			'price' => ['data' => number_format($order?->price, 2, '.', ' ')  ?? '-', 'title' => 'Стоимость', 'meta' => ['symbal' => 'dollar']],
 			'server_name' => ['data' => $order?->server_name ?? '-', 'title' => 'Инвайт'],
 			'raw_data' => ['data' => $order?->raw_data ?? '-', 'title' => 'Данные'],
 			'link' => ['data' => $order?->link ?? '-', 'title' => 'Ссылка'],
@@ -428,7 +428,7 @@ class EventLogService {
 		$info = [
 			'id' => ['data' => $order?->id ?? '-', 'title' => 'ID заказа'],
 			'order' => ['data' => $order?->order ?? '-', 'title' => 'Номер заказа'],
-			'price' => ['data' => number_format($order?->price, 2, '.', ' ')  ?? '-', 'title' => 'Стоимость', 'meta' => ['symbal' => 1]],
+			'price' => ['data' => number_format($order?->price, 2, '.', ' ')  ?? '-', 'title' => 'Стоимость', 'meta' => ['symbal' => 'dollar']],
 			'server_name' => ['data' => $order?->server_name ?? '-', 'title' => 'Инвайт'],
 			'raw_data' => ['data' => $order?->raw_data ?? '-', 'title' => 'Данные'],
 			'link' => ['data' => $order?->link ?? '-', 'title' => 'Ссылка'],
@@ -470,7 +470,7 @@ class EventLogService {
 		$info = [
 			'id' => ['data' => $order?->id ?? '-', 'title' => 'ID заказа'],
 			'order' => ['data' => $order?->order ?? '-', 'title' => 'Номер заказа'],
-			'price' => ['data' => number_format($order?->price, 2, '.', ' ')  ?? '-', 'title' => 'Стоимость', 'meta' => ['symbal' => 1]],
+			'price' => ['data' => number_format($order?->price, 2, '.', ' ')  ?? '-', 'title' => 'Стоимость', 'meta' => ['symbal' => 'dollar']],
 			'server_name' => ['data' => $order?->server_name ?? '-', 'title' => 'Инвайт'],
 			'raw_data' => ['data' => $order?->raw_data ?? '-', 'title' => 'Данные'],
 			'link' => ['data' => $order?->link ?? '-', 'title' => 'Ссылка'],
@@ -525,7 +525,7 @@ class EventLogService {
 		$info = [
 			'id' => ['data' => $order?->id ?? '-', 'title' => 'ID заказа'],
 			'order' => ['data' => $order?->order ?? '-', 'title' => 'Номер заказа'],
-			'price' => ['data' => number_format($order?->price, 2, '.', ' ')  ?? '-', 'title' => 'Стоимость', 'meta' => ['symbal' => 1]],
+			'price' => ['data' => number_format($order?->price, 2, '.', ' ')  ?? '-', 'title' => 'Стоимость', 'meta' => ['symbal' => 'dollar']],
 			'server_name' => ['data' => $order?->server_name ?? '-', 'title' => 'Инвайт'],
 			'raw_data' => ['data' => $order?->raw_data ?? '-', 'title' => 'Данные'],
 			'link' => ['data' => $order?->link ?? '-', 'title' => 'Ссылка'],
@@ -564,7 +564,7 @@ class EventLogService {
 		$info = [
 			'id' => ['data' => $order?->id ?? '-', 'title' => 'ID заказа'],
 			'order' => ['data' => $order?->order ?? '-', 'title' => 'Номер заказа'],
-			'price' => ['data' => number_format($order?->price, 2, '.', ' ')  ?? '-', 'title' => 'Стоимость', 'meta' => ['symbal' => 1]],
+			'price' => ['data' => number_format($order?->price, 2, '.', ' ')  ?? '-', 'title' => 'Стоимость', 'meta' => ['symbal' => 'dollar']],
 			'server_name' => ['data' => $order?->server_name ?? '-', 'title' => 'Инвайт'],
 			'raw_data' => ['data' => $order?->raw_data ?? '-', 'title' => 'Данные'],
 			'link' => ['data' => $order?->link ?? '-', 'title' => 'Ссылка'],
