@@ -106,7 +106,7 @@
 		</div>
 	</div>
 	<div class="col-auto">
-		<div class="order__block{{$status == \App\Enums\OrderStatus::necro ? ' order__block-noborder' : ''}}">
+		<div class="order__block{{-- {{$status == \App\Enums\OrderStatus::necro ? ' order__block-noborder' : ''}} --}}">
 			{{-- <a target="_blank" href="{{$link ?? '#'}}">{{$link ?? 'Нет ссылки'}}</a> --}}
 			<x-button
 				class="order__link"
@@ -121,7 +121,7 @@
 			</x-button>
 		</div>
 	</div>
-	@if($status != \App\Enums\OrderStatus::necro)
+	
 		<div class="col-auto">
 			<div class="order__block order__block-noborder">
 				<x-buttons-group class="order__right" size="small">
@@ -131,12 +131,16 @@
 					@elseif($status == \App\Enums\OrderStatus::wait)
 						<x-button w="50px" action="toCancelListBtn:{{$id ?? null}}" variant="red" title="В отмененные"><i class="fa-solid fa-fw fa-ban"></i></x-button>
 						<x-button w="50px" action="toNecroListBtn:{{$id ?? null}}" variant="dark" title="В некроту"><i class="fa-solid fa-fw fa-skull"></i></x-button>
-					@elseif($status == \App\Enums\OrderStatus::cancel)	
+					@elseif($status == \App\Enums\OrderStatus::cancel)
+					@elseif($status == \App\Enums\OrderStatus::necro)
+						<x-button w="50px" action="toWaitListBtn:{{$id ?? null}}" variant="blue" title="В лист ожидания"><i class="fa-solid fa-fw fa-hourglass-half"></i></x-button>
 					@endif
 					
-					<x-button w="50px" variant="green" action="toTimesheetBtn:{{$id ?? null}},{{$date_msc ?? null}},{{$order ?? '-'}}" title="Привязать заказ к событию"><i class="fa-solid fa-fw fa-angles-right"></i></x-button>
+					@if($status != \App\Enums\OrderStatus::necro)
+						<x-button w="50px" variant="green" action="toTimesheetBtn:{{$id ?? null}},{{$date_msc ?? null}},{{$order ?? '-'}}" title="Привязать заказ к событию"><i class="fa-solid fa-fw fa-angles-right"></i></x-button>
+					@endif
 				</x-buttons-group>
 			</div>
 		</div>
-	@endif
+	
 </li>

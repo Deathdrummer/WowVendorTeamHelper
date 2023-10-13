@@ -266,7 +266,7 @@ class OrdersController extends Controller {
 			'views'	=> 'required|string',
 		]);
 
-		return $this->render($viewPath);
+		return $this->render($viewPath, ['listType' => 'лист ожидания']);
 	}
 	
 	
@@ -313,7 +313,7 @@ class OrdersController extends Controller {
 			'views'	=> 'required|string',
 		]);
 
-		return $this->render($viewPath);
+		return $this->render($viewPath, ['listType' => 'некроту']);
 	}
 	
 	
@@ -364,7 +364,7 @@ class OrdersController extends Controller {
 			'views'	=> 'required|string',
 		]);
 
-		return $this->render($viewPath);
+		return $this->render($viewPath, ['listType' => 'отмененные']);
 	}
 	
 	
