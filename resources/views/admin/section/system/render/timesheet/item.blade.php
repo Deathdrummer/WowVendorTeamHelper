@@ -62,9 +62,17 @@
 	</x-table.td>
 	<x-table.td class="h-center" timesheetrulesblock>
 		<x-buttons-group group="small" w="3rem" gx="5">
-			<x-button variant="green" action="timesheetNewOrder:{{$id}}" title="Добавить заказ"><i class="fa-solid fa-fw fa-plus"></i></x-button>
-			<x-button variant="blue" action="timesheetEdit:{{$id}}" title="Изменить"><i class="fa-solid fa-fw fa-pen-to-square"></i></x-button>
-			<x-button variant="red" action="timesheetRemove:{{$id}}" title="Удалить"><i class="fa-solid fa-fw fa-trash-can"></i></x-button>
+			@if(getGuard() == 'admin' || (getGuard() == 'site' && auth('site')->user()->can('timesheet-new-order-button:site')))
+				<x-button variant="green" action="timesheetNewOrder:{{$id}}" title="Добавить заказ"><i class="fa-solid fa-fw fa-plus"></i></x-button>
+			@endif
+			
+			@if(getGuard() == 'admin' || (getGuard() == 'site' && auth('site')->user()->can('timesheet-edit-button:site')))
+				<x-button variant="blue" action="timesheetEdit:{{$id}}" title="Изменить"><i class="fa-solid fa-fw fa-pen-to-square"></i></x-button>
+			@endif
+			
+			@if(getGuard() == 'admin' || (getGuard() == 'site' && auth('site')->user()->can('timesheet-remove-button:site')))
+				<x-button variant="red" action="timesheetRemove:{{$id}}" title="Удалить"><i class="fa-solid fa-fw fa-trash-can"></i></x-button>
+			@endif
 		</x-buttons-group>
 	</x-table.td>
 </x-table.tr>
