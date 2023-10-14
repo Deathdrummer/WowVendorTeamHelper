@@ -1,22 +1,23 @@
 <section>
 	
-	<div class="col-auto" teleport="#headerTeleport1">
-		<div class="header__block">
-			<div>
-				<x-button
-					size="large"
-					variant="neutral"
-					action="openTimesheetPeriodsWin"
-					title="Периоды расписания"
-					id="openTimesheetPeriodsBtn"
-					disabled
-					>
-					<i class="fa-solid fa-fw fa-list-ul"></i>
-				</x-button>
+	@cando('timesheet-periods-button:site')
+		<div class="col-auto" teleport="#headerTeleport1">
+			<div class="header__block">
+				<div>
+					<x-button
+						size="large"
+						variant="neutral"
+						action="openTimesheetPeriodsWin"
+						title="Периоды расписания"
+						id="openTimesheetPeriodsBtn"
+						disabled
+						>
+						<i class="fa-solid fa-fw fa-list-ul"></i>
+					</x-button>
+				</div>
 			</div>
 		</div>
-	</div>
-	
+	@endcando
 	
 	<div class="col-auto" teleport="#headerTeleport2">
 		<div class="header__block">
@@ -37,24 +38,24 @@
 		</div>
 	</div>
 	
-	
-	<div class="col-auto ms-auto" teleport="#headerTeleport3">
-		<div class="header__block">
-			<div>
-				<x-button
-					size="large"
-					variant="green"
-					action="newTimesheetEventAction"
-					hidden
-					title="Добавить событие"
-					id="newTimesheetEventBtn"
-					>
-					<i class="fa-solid fa-fw fa-plus"></i>
-				</x-button>
+	@cando('timesheet-add-button:site')
+		<div class="col-auto ms-auto" teleport="#headerTeleport3">
+			<div class="header__block">
+				<div>
+					<x-button
+						size="large"
+						variant="green"
+						action="newTimesheetEventAction"
+						hidden
+						title="Добавить событие"
+						id="newTimesheetEventBtn"
+						>
+						<i class="fa-solid fa-fw fa-plus"></i>
+					</x-button>
+				</div>
 			</div>
 		</div>
-	</div>
-	
+	@endcando
 	
 	
 	<div class="row justify-content-between minh3rem-8px">
