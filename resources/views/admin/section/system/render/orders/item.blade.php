@@ -100,6 +100,7 @@
 						<x-button
 							action="slackNotifyAction:{{$button['id'] ?? null}},{{$id}}"
 							variant="{{$button['color'] ?? 'neutral'}}"
+							enabled="{{getGuard() == 'admin' || !isset($button['permission']) || (getGuard() == 'site' && auth('site')->user()->can($button['permission']))}}"
 							title="{{$button['title'] ?? ''}}"
 							>
 							<i class="fa-solid fa-fw fa-{{$button['icon'] ?? 'check'}}"></i>
@@ -109,9 +110,6 @@
 			</x-table.td>
 		@endif
 	@endcando
-	
-	
-	
 	
 	@cando('status-(klient):site')
 	<x-table.td @class([

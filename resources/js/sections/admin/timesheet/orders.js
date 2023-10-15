@@ -591,28 +591,41 @@ export async function showStatusesTooltip(btn = null, orderId = null, timesheetI
 		statusesTooltip.destroy();
 		
 		let title;
+		let message = null;
 		if (status == 'wait') title = 'В лист ожидания';
 		else if (status == 'cancel')  title = 'В отмененные';
 		
-		const {
-			popper,
-			wait,
-			close,
-		} = await ddrPopup({
-			url: 'client/orders/to_cancel_list',
-			params: {views: 'movelist_form'},
-			method: 'get',
-			title,
-			width: 400, // ширина окна
-			buttons: ['ui.cancel', {title: 'Перенести', variant: 'green', action: 'setStatusAction'}],
-			centerMode: true, // контент по центру
-		});
+		if (['wait', 'cancel'].includes(status)) {
+			const {
+				popper,
+				wait,
+				close,
+			} = await ddrPopup({
+				url: 'client/orders/to_cancel_list',
+				params: {views: 'movelist_form'},
+				method: 'get',
+				title,
+				width: 400, // ширина окна
+				buttons: ['ui.cancel', {title: 'Перенести', variant: 'green', action: 'setStatusAction'}],
+				centerMode: true, // контент по центру
+			});
+			
+			$.setStatusAction = async (__) => {
+				wait();
+				
+				message = $(popper).find('#comment').val();
+				
+				await setStatusFunc(() => {
+					close();
+				})
+			};
+		} else {
+			await setStatusFunc();
+		}
+			
 		
-		$.setStatusAction = async (__) => {
-			wait();
-			
-			const message = $(popper).find('#comment').val();
-			
+		
+		async function setStatusFunc(cb = null) {
 			const {data, error, headers} = await ddrQuery.post('crud/orders/set_status', {order_id: orderId, timesheet_id: timesheetId, message, status});
 			
 		 	if (error) {
@@ -665,9 +678,10 @@ export async function showStatusesTooltip(btn = null, orderId = null, timesheetI
 					changeOnclickAttr(statBlock, stat, status);
 				}
 				
-				close();
+				callFunc(cb);
 			}
-		};
+		}
+		
 		
 	}
 	
