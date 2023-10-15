@@ -187,8 +187,12 @@ Route::middleware(['lang', 'auth:admin', 'isajax:admin'])->post('/get_section', 
 	
 	$pageTitle[] = $sectionModel ? $sectionModel?->page_title : null; /* urlencode(__('custom.no_section_header_title')) */
 	
+	// Добавить доп. подгрузку настроек. ключ: название секции, значение: массив настроек, которые нужно подгрузить
+	$addictSettings = ['system.timesheet' => ['timezones']];
+	
+	
 	// в таблице admin_sections прописывается массив тех настроек, что нужно подгрузить
-	$settingsData = $sectionModel?->settings ? ($settings->getMany($sectionModel?->settings)->toArray() ?: []) : []; 
+	$settingsData = $sectionModel?->settings ? ($settings->getMany([...$sectionModel?->settings, ...($addictSettings[$section] ?? [])])->toArray() ?: []) : []; 
 	
 	return response()->view('admin.section.'.$sectionPath, ['setting' => $settingsData]/* $settingsData */, 200)->header('X-Page-Title', json_encode($pageTitle));
 });

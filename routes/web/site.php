@@ -4,6 +4,7 @@ use App\Http\Controllers\Business\OrdersController;
 use App\Http\Controllers\SlackController;
 use App\Http\Controllers\UserController;
 use App\Http\Requests\Auth\UserEmailVerificationRequest;
+use App\Models\Command;
 use App\Models\Order;
 use App\Models\Section;
 use App\Models\User;
@@ -255,18 +256,42 @@ Route::middleware(['lang', 'auth:site', 'isajax:site'])->post('/get_section', fu
 			$sectionPath))
 		->first();
 	
+	
+	// Добавить доп. подгрузку настроек. ключ: название секции, значение: массив настроек, которые нужно подгрузить
+	$addictSettings = ['timesheet' => ['timezones']];
+	
+	
 	// в таблице user_sections прописывается массив тех настроек, что нужно подгрузить
-	$settingsData = $page['settings'] ? ($settings->getMany($page['settings'])->toArray() ?: []) : []; 
+	$settingsData = $page['settings'] ? ($settings->getMany([...$page['settings'], ...($addictSettings[$section] ?? [])])->toArray() ?: []) : []; 
 	
 	$pageTitle[] = $page ? $page->page_title : null; /* urlencode(__('custom.no_section_header_title')) */
 	
 	$user = Auth::guard('site')->user();
 	
+	
 	// Сюда добавляюся любые данные пользователя
 	$data = [
-		'user' 			=> $user,
-		'setting' 		=> $settingsData
+		'user' 				=> $user,
+		'setting' 			=> $settingsData
 	];
+	
+	
+	
+	if ($section == 'timesheet') {
+		if ($user->cannot('razreshit-vse-komandy:site')) {
+			$userSettings = $user?->settings;
+			$regions = Command::whereIn('id', $userSettings['commands'] ?? [])->pluck('region_id')->toArray(); // id => region_id
+			if (($settingsData['timezones'] ?? null) && $regions) {
+				$acceptRegions = [];
+				foreach ($settingsData['timezones'] as $item) {
+					if (in_array($item['id'], $regions)) {
+						$acceptRegions[] = $item['region'];
+					}
+				}
+				$data['accept_regions'] = $acceptRegions;
+			}
+		}	
+	}
 	
 	return response()->view('site.section.'.$sectionPath, $data/* сюда данные */, 200)->header('X-Page-Title', json_encode($pageTitle));
 });

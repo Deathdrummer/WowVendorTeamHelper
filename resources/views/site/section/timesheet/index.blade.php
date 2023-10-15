@@ -62,6 +62,7 @@
 		<div class="col-auto">
 			<x-chooser variant="neutral" size="normal" px="20" py="5" class="mb1rem" id="regionChooser" hidden>
 				@forelse($setting['regions'] as $regionId => $regionTitle)
+					@if(isset($accept_regions) && !in_array($regionId, $accept_regions)) @continue @endif
 					<x-chooser.item
 						action="setRegionAction:{{$regionId}}"
 						active="{{$loop->first}}"
