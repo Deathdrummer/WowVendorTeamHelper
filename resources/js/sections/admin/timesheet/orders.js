@@ -152,6 +152,9 @@ export async function buildOrdersTable(row = null, timesheetId = null, cb = null
 		let regionId = $('#toTSRegionsChuser').find('[regionid][active]').attr('regionid');
 		let period = $('#toTimesheetActualPast').find('[period][active]').attr('period');
 		
+		
+		console.log(regionId);
+		
 		onClose(() => {
 			calendarObj?.remove();
 			abortContr?.abort();

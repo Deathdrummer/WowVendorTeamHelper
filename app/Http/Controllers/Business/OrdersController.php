@@ -934,11 +934,21 @@ class OrdersController extends Controller {
 			'type'			=> 'required|string',
 		]);
 		
-		$rawData = Order::find($orderId)?->raw_data;
+		
+		$order = Order::find($orderId);
+		
+		$rawData = $order?->raw_data;
+		
+		$timezoneId =  $order?->timezone_id;
+		
+		$timezones = $this->getSettings('timezones', null, null, ['id' => $timezoneId]);
+		
+		$regionId = reset($timezones)['region'];
 		
 		$regions = $this->getSettings('regions', 'id', 'title');
 		
-		return response()->view($viewPath.'.form', compact('type', 'regions', 'rawData'));
+		
+		return response()->view($viewPath.'.form', compact('type', 'regions', 'regionId', 'rawData'));
 	}
 	
 	

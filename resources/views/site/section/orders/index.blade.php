@@ -15,7 +15,7 @@
 						<x-chooser.item
 							action="getOrdersAction:new"
 							active
-							>Выходящие</x-chooser.item>
+							>Входящие</x-chooser.item>
 						<x-chooser.item
 							action="getOrdersAction:wait"
 							>Лист ожидания</x-chooser.item>
@@ -512,111 +512,6 @@
 	$.openCommentsWin = (btn, orderId, orderName) => {
 		orderCommentsChat(orderId, orderName, btn);
 	}
-	
-		
-	
-	
-	/*$.relocateTimesheetOrder = async (btn, orderId = null, timesheetId = null, orderNumber = null, type = 'move') => {
-		if (_.isNull(orderId) || _.isNull(timesheetId)) return false;
-		
-		let action;
-		switch(type) {
-			case 'move':  // if (x === 'value1')
-				action = 'Перенести заказ';
-				break;
-
-			case 'clone':  // if (x === 'value2')
-				action = 'Допран заказа';
-				break;
-
-			default:
-				action = '...';
-				break;
-		}	
-		const views = 'admin.section.system.render.orders.relocate';
-		const {
-			popper,
-			wait,
-			setHtml,
-			close,
-			enableButtons,
-		} = await ddrPopup({
-			url: 'crud/orders/relocate',
-			method: 'get',
-			params: {timesheet_id: timesheetId, type, views},
-			title: `${action} <span class="color-gray">${orderNumber}</span>`, // заголовок
-			width: 700, // ширина окна
-			disabledButtons: true,
-			buttons: ['ui.close', {action: 'relocateOrderAction', title: action}],
-		});
-		
-		enableButtons(true);
-		
-		let choosedTimesheetId = null;
-		
-		$.relocateOrderChooseDate = async (instance, date) => {
-			const ddrtableWait = $(popper).find('[ddrtable]').blockTable('wait');
-			
-			const {data, error, status, headers} = await ddrQuery.get('crud/orders/relocate/get_timesheets', {timesheet_id: timesheetId, date, type, views});
-			
-			if (error) {
-				console.log(error);
-				$.notify(error?.message, 'error');
-				return;
-			}
-			
-			ddrtableWait.destroy();
-			
-			$(popper).find('[ddrtable]').blockTable('setdData', data);
-			
-			choosedTimesheetId = null;
-		}
-		
-		
-		$.relocateOrderClearDate = () => {
-			$(popper).find('[ddrtable]').blockTable('clear');
-		}
-		
-		
-		$.relocateOrderChooseTs = (row, isActive, tsId = null) => {
-			if (isActive) return false
-			$(row).closest('[ddrtablebody]').find('[ddrtabletr].active').removeClass('active');
-			$(row).addClass('active');
-			choosedTimesheetId = tsId;
-		}
-		
-		
-		
-		$.relocateOrderAction = async () => {
-			wait();
-			const formData = $(popper).ddrForm({order_id: orderId, timesheet_id: timesheetId, choosed_timesheet_id: choosedTimesheetId});
-			
-			const {data, error, status, headers} = await ddrQuery.post('crud/orders/relocate', formData);
-			
-			if (error) {
-				console.log(error);
-				$.notify(error?.message, 'error');
-				wait(false);
-				return;
-			}
-			
-			if (data == 'moved') {
-				$.notify(`Заказ «${orderNumber}» успешно перенесен!`);
-				_buildOrdersTable();
-			} else if (data == 'cloned') {
-				$.notify(`Заказ «${orderNumber}» успешно склонирован с новым статусом «Доп. ран»!`);
-				_buildOrdersTable();
-			} else if (data == 'updated') {
-				$.notify(`Заказ «${orderNumber}» уже существует в выбранном событии! Обновился только статус!`, 'gray');
-			} else {
-				$.notify(`Заказ «${orderNumber}» со статусом «Доп. ран» уже существует в выбранном событии!`, 'gray');
-			}
-			
-			close();
-		}
-		
-	}*/
-	
 	
 	
 	
