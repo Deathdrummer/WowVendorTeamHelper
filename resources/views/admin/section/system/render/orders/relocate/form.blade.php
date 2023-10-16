@@ -32,7 +32,7 @@
 							<x-chooser.item
 								action="toTimesheetChooseRegion:{{$rId}}"
 								regionid="{{$rId}}"
-								active="{{$regionId == $rId}}"
+								active="{{$regionId ? $rId == $regionId : $loop->first}}"
 								>{{$rTitle}}</x-chooser.item>
 						@endforeach
 					</x-chooser>

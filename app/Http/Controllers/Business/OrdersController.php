@@ -412,11 +412,21 @@ class OrdersController extends Controller {
 			'views'		=> 'required|string',
 		]);
 		
-		$rawData = Order::find($orderId)?->raw_data;
+
+		$order = Order::find($orderId);
+		
+		$rawData = $order?->raw_data;
+		
+		$regionId = null;
+		$timezone = $this->_parseTimezone($rawData);
+		if ($timezone) {
+			$timezones = $this->getSettings('timezones', null, null, ['timezone' => $timezone]);
+			$regionId = reset($timezones)['region'];
+		}
 		
 		$regions = $this->getSettings('regions', 'id', 'title');
 		
-		return response()->view($viewPath.'.form', compact('regions', 'rawData'));
+		return response()->view($viewPath.'.form', compact('regions', 'regionId', 'rawData'));
 	}
 	
 	
@@ -939,11 +949,12 @@ class OrdersController extends Controller {
 		
 		$rawData = $order?->raw_data;
 		
-		$timezoneId =  $order?->timezone_id;
-		
-		$timezones = $this->getSettings('timezones', null, null, ['id' => $timezoneId]);
-		
-		$regionId = reset($timezones)['region'];
+		$regionId = null;
+		$timezone = $this->_parseTimezone($rawData);
+		if ($timezone) {
+			$timezones = $this->getSettings('timezones', null, null, ['timezone' => $timezone]);
+			$regionId = reset($timezones)['region'];
+		}
 		
 		$regions = $this->getSettings('regions', 'id', 'title');
 		
@@ -1114,6 +1125,24 @@ class OrdersController extends Controller {
 	
 	
 	//------------------------------------------------------------------------------------------------------------------
+	
+	
+	
+	
+	
+	/**
+	* 
+	* @param string|null $orderRawData
+	* @return string|null timezone
+	*/
+	private function _parseTimezone(?string $orderRawData = null) {
+		if (!$orderRawData) return null;
+		preg_match('/\B\(\w{2,3} (\d{1,2}) (\w{2,3}) @ (\d{1,2}:\d{1,2}) (\w{0,2}?)\s*(\w{2,4})\)\B/', $orderRawData, $matches);
+		if (!$matches) return null;
+		return $matches[5] ?? null;
+	}
+	
+	
 	
 	
 
