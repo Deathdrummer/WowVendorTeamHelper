@@ -3,6 +3,34 @@ window.dateUTC = function(incomingDate = null) {
 	return new Date(dtLocal.toISOString().split('Z')[0]);
 }
 
+window.dateStartOfDay = function(d = null) {
+	if (d instanceof Date == false) d = new Date(d);
+	return new Date(d.getFullYear(), d.getMonth(), d.getDate(), 0, 0, 0, 0);
+}
+
+window.dateEndOfDay = function(d = null) {
+	if (d instanceof Date == false) d = new Date(d);
+	return new Date(d.getFullYear(), d.getMonth(), d.getDate(), 23, 59, 59, 999);
+}
+
+
+window.dateToTimestamp = function(date = null, options = {}) {
+	if (!date || date == 'now') date = new Date(Date.now());
+	if (date instanceof Date == false) date = new Date(date);
+	
+	
+	const y = date?.getFullYear(),
+		m = addZero(date?.getMonth() + 1),
+		d = addZero(date?.getDate()),
+		h = addZero(date?.getHours()),
+		min = addZero(date?.getMinutes()),
+		s = addZero(date?.getSeconds());
+	
+	if (options?.correct == 'startOfDay') return y+'-'+m+'-'+d+' 00:00:00';
+	if (options?.correct == 'endOfDay') return y+'-'+m+'-'+d+' 23:59:59:999';
+	return y+'-'+m+'-'+d+' '+h+':'+min+':'+s;
+}
+
 
 
 window.calendar = function(calendarId = null, params = {}) {

@@ -387,8 +387,7 @@
 		
 		enableButtons(true);
 		
-		const initDate = date ? new Date(date) : new Date(Date.now());
-				
+		const initDate = date ? new Date(date) : new Date(Date.now());	
 		calendarObj = calendar('relocateOrderCalendar', {
 			initDate,
 			minDate: initDate,
@@ -414,11 +413,12 @@
 			
 			abortContr = new AbortController();
 			
-			const d = new Date(date);
-			let buildedDate = new Date(d.getFullYear(), d.getMonth(), d.getDate(), 0, 0, 0);
+			//const d = new Date(date);
+			//let buildedDate = dateStartOfDay(date);
+			date = dateToTimestamp(date, {correct: 'startOfDay'});
 			
 			isLoading = true;
-			const {data, error, status, headers, abort} = await ddrQuery.get('client/orders/relocate/get_timesheets', {date: buildedDate, region_id, period, order_id, views}, {abortContr});
+			const {data, error, status, headers, abort} = await ddrQuery.get('client/orders/relocate/get_timesheets', {date, region_id, period, order_id, views}, {abortContr});
 			isLoading = false;
 			
 			if (abort) return;

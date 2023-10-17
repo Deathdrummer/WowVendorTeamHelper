@@ -149,12 +149,10 @@ class Timesheet extends Model {
 	public function scopeFuture($query, $date = null) {
 		if (!$date) return $query->whereBetween('datetime', [now()->startOfDay(), now()->endOfDay()]);
 		
-		$dateStart = DdrDateTime::buildTimestamp($date, null, ['shift' => '+']);
+		$dateStart = DdrDateTime::buildTimestamp($date);
 		$dateEnd = $dateStart?->copy()?->addHours(23)?->addMinutes(59)?->addSeconds(59);
 		
-		//$choosedDay = $dateStart?->day;
-		//$nowDay = now()->day;
-		return $query->whereBetween('datetime', [now(), $dateEnd]);
+		return $query->whereBetween('datetime', [$dateStart, $dateEnd]);
 	}
 	
 	
@@ -167,7 +165,7 @@ class Timesheet extends Model {
 	public function scopePast($query, $date = null) {
 		if (!$date) return $query->where('datetime', '<', now());
 		
-		$dateStart = DdrDateTime::buildTimestamp($date, null, ['shift' => '+']);
+		$dateStart = DdrDateTime::buildTimestamp($date);
 		
 		$choosedDay = $dateStart?->day;
 		$nowDay = now()->day;
@@ -175,6 +173,7 @@ class Timesheet extends Model {
 		if ($choosedDay == $nowDay) return $query->whereBetween('datetime', [$dateStart, now()]);
 		
 		$dateEnd = $dateStart?->copy()?->endOfDay();
+		
 		return $query->whereBetween('datetime', [$dateStart, $dateEnd]);
 	}
 	

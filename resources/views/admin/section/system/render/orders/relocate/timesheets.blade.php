@@ -1,6 +1,12 @@
 @foreach($timesheets as ['id' => $id, 'datetime' => $datetime, 'command_id' => $command_id, 'event_type_id' => $event_type_id, 'orders_count' => $orders_count])
 	<x-table.tr
-		class="h3rem pointer noselect timesheetitem"
+		@class([
+			'h3rem',
+			'pointer',
+			'noselect',
+			'timesheetitem',
+			'active' => $orderDate == $datetime,
+		])
 		onmousedown="$.relocateOrderChooseTs(this, this.classList.contains('active'), {{$id}})"
 		>
 		<x-table.td>

@@ -191,11 +191,10 @@ export async function buildOrdersTable(row = null, timesheetId = null, cb = null
 		async function getTsEvents(date, region_id, period) {
 			const ddrtableWait = $(popper).find('[ddrtable]').blockTable('wait');
 			
-			const d = new Date(date);
-			let buildedDate = new Date(d.getFullYear(), d.getMonth(), d.getDate(), 0, 0, 0);
+			date = dateToTimestamp(date, {correct: 'startOfDay'});
 			
 			isLoading = true;
-			const {data, error, status, headers} = await ddrQuery.get('crud/orders/relocate/get_timesheets', {timesheet_id: timesheetId, date: buildedDate, region_id, period, type, views}, {abortContr});
+			const {data, error, status, headers} = await ddrQuery.get('crud/orders/relocate/get_timesheets', {timesheet_id: timesheetId, date, region_id, order_id: orderId, period, type, views}, {abortContr});
 			isLoading = false;
 			
 			if (error) {

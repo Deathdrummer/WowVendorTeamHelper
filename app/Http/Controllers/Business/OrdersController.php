@@ -456,12 +456,11 @@ class OrdersController extends Controller {
 		
 		$orderDate = $order?->date_msc;
 		
-		$timesheet = Timesheet::where('datetime', DdrDateTime::shift($orderDate, 'UTC'))->first();
-		
+		$timezonesIds = $this->getSettingsCollect('timezones', null, null, ['region' => $regionId])->pluck('id');
+		$commandsIds = Command::whereIn('region_id', $timezonesIds)->get()->pluck('id');
+		$timesheet = Timesheet::where('datetime', DdrDateTime::shift($orderDate, 'UTC'))->whereIn('command_id', $commandsIds)->first();
 		
 		$timezones = $this->getSettingsCollect('timezones')->where('region', $regionId)->pluck('id')->toArray();
-		
-		$commandsIds = Command::whereIn('region_id', $timezones)->get()->pluck('id');
 		
 		$tsQuery = match($period) {
 			'actual'	=> Timesheet::future($date),
@@ -975,6 +974,7 @@ class OrdersController extends Controller {
 			'views'			=> $viewPath,
 			'date'			=> $date,
 			'region_id'		=> $regionId,
+			'order_id'		=> $orderId,
 			'period'		=> $period,
 			'timesheet_id'	=> $timesheetId,
 			'type'			=> $type,
@@ -982,13 +982,20 @@ class OrdersController extends Controller {
 			'views'			=> 'required|string',
 			'date'			=> 'required|date',
 			'region_id'		=> 'numeric|nullable',
+			'order_id'		=> 'required|numeric',
 			'period'		=> 'string|nullable',
 			'timesheet_id'	=> 'required|numeric',
 			'type'			=> 'required|string',
 		]);
 		
+		if (!$order = Order::find($orderId)) return response()->json(false);
+		$orderDate = $order?->date_msc;
+		
 		$timezones = $this->getSettingsCollect('timezones')->where('region', $regionId)->pluck('id')->toArray();
 		$commandsIds = Command::whereIn('region_id', $timezones)->get()->pluck('id');
+		
+		$timesheet = Timesheet::where('datetime', DdrDateTime::shift($orderDate, 'UTC'))->whereIn('command_id', $commandsIds)->first();
+		
 		
 		$tsQuery = match($period) {
 			'actual'	=> Timesheet::future($date),
@@ -1015,7 +1022,9 @@ class OrdersController extends Controller {
     		return [$item['id'] => $item['title']];
 		})->toArray();
 		
-		return response()->view($viewPath.'.timesheets', compact('timesheets', 'type', 'commands', 'eventsTypes'));
+		$headers = ['x-timesheet-id' => $timesheet?->id];
+		
+		return response()->view($viewPath.'.timesheets', compact('timesheets', 'type', 'commands', 'eventsTypes', 'orderDate'))->withHeaders($headers);
 	}
 	
 	
