@@ -600,13 +600,18 @@ export async function showStatusesTooltip(btn = null, orderId = null, timesheetI
 		if (status == 'wait') title = 'В лист ожидания';
 		else if (status == 'cancel')  title = 'В отмененные';
 		
+		const url = {
+			wait: 'to_wait_list',
+			cancel: 'to_cancel_list',
+		};
+		
 		if (['wait', 'cancel'].includes(status)) {
 			const {
 				popper,
 				wait,
 				close,
 			} = await ddrPopup({
-				url: 'client/orders/to_cancel_list',
+				url: `client/orders/${url[status]}`,
 				params: {views: 'movelist_form'},
 				method: 'get',
 				title,

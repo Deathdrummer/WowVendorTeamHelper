@@ -1,6 +1,15 @@
 <x-table.tr class="h4rem">
 	<x-table.td class="h-center"><strong class="fz12px">{{$loop->index + 1}}</strong></x-table.td>
-	@cando('nomer-zakaza-(klient):site')<x-table.td><p class="fz12px"orderordernumber>{{$order}}</p></x-table.td> @endcando
+	@cando('nomer-zakaza-(klient):site')
+		<x-table.td>
+			<p
+				class="fz12px color-gray-500-hovered color-blue-active noselect pointer"
+				orderordernumber
+				onclick="$.copyToClipboard(event, '{{$order}}')"
+				title="Кликните для копирования"
+				>{{$order}}</p>
+		</x-table.td>
+	@endcando
 	
 	@cando('data-(klient):site')
 	<x-table.td>
@@ -38,7 +47,7 @@
 		<x-table.td>
 			<div class="d-flex justify-content-between align-items-center">
 				<div class="scrollblock scrollblock-light minh-1rem-4px maxh3rem-1px w100">
-					<p class="fz12px lh90 preline breakword" orderrawdata>{{$raw_data}}</p>
+					<p class="fz12px lh90 preline breakword" orderrawdata enablecontextmenu>{{$raw_data}}</p>
 				</div>
 				<div
 					class="align-self-center ml5px"
