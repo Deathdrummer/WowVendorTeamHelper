@@ -433,14 +433,14 @@ class OrdersController extends Controller {
 	
 	
 	
-	/**
+	/** Получить список событий для формы привязки заказа
 	 * @param 
 	 * @return 
 	 */
 	public function get_relocate_timesheets_client(Request $request) {
 		[
 			'views'		=> $viewPath,
-			'date'		=> $date,
+			'date'		=> $calendarDate,
 			'region_id'	=> $regionId,
 			'period'	=> $period,
 			'order_id'	=> $orderId,
@@ -452,27 +452,31 @@ class OrdersController extends Controller {
 			'order_id'	=> 'required|numeric',
 		]);
 		
+		
 		if (!$order = Order::find($orderId)) return response()->json(false);
 		
 		$orderDate = $order?->date_msc;
 		
 		$timezonesIds = $this->getSettingsCollect('timezones', null, null, ['region' => $regionId])->pluck('id');
 		$commandsIds = Command::whereIn('region_id', $timezonesIds)->get()->pluck('id');
-		$timesheet = Timesheet::where('datetime', DdrDateTime::shift($orderDate, 'UTC'))->whereIn('command_id', $commandsIds)->first();
 		
-		$timezones = $this->getSettingsCollect('timezones')->where('region', $regionId)->pluck('id')->toArray();
-		
-		$tsQuery = match($period) {
-			'actual'	=> Timesheet::future($date),
-			'past'		=> Timesheet::past($date),
-			default		=> Timesheet::future($date),
+		$tsQuery = function() use($period, $calendarDate, $orderDate) {
+			return match($period) {
+				'actual'	=> Timesheet::future($calendarDate, $orderDate),
+				'past'		=> Timesheet::past($calendarDate, $orderDate),
+				default		=> Timesheet::future($calendarDate, $orderDate),
+			};
 		};
 		
-		$timesheets = $tsQuery->withCount('orders AS orders_count')
+		$timesheet = $tsQuery()
+			->where('datetime', DdrDateTime::shift($orderDate, 'UTC'))
+			->whereIn('command_id', $commandsIds)
+			->first();
+		
+		$timesheets = $tsQuery()->withCount('orders AS orders_count')
 			->whereIn('command_id', $commandsIds)
 			->orderBy('datetime', 'ASC')
 			->get();
-		
 		
 		$difficulties = $this->getSettingsCollect('difficulties')->mapWithKeys(function ($item, $key) {
     		return [$item['id'] => $item['title']];
@@ -486,9 +490,10 @@ class OrdersController extends Controller {
     		return [$item['id'] => $item['title']];
 		})->toArray();
 		
+		$choosedTsId = $timesheet?->id;
+		$headers = ['x-timesheet-id' => $choosedTsId];
 		
-		$headers = ['x-timesheet-id' => $timesheet?->id];
-		return response()->view($viewPath.'.timesheets', compact('timesheets', 'commands', 'eventsTypes', 'orderDate'))->withHeaders($headers);
+		return response()->view($viewPath.'.timesheets', compact('timesheets', 'commands', 'eventsTypes', 'orderDate', 'choosedTsId'))->withHeaders($headers);
 	}
 	
 	
@@ -974,7 +979,6 @@ class OrdersController extends Controller {
 			'views'			=> $viewPath,
 			'date'			=> $date,
 			'region_id'		=> $regionId,
-			'order_id'		=> $orderId,
 			'period'		=> $period,
 			'timesheet_id'	=> $timesheetId,
 			'type'			=> $type,
@@ -982,20 +986,13 @@ class OrdersController extends Controller {
 			'views'			=> 'required|string',
 			'date'			=> 'required|date',
 			'region_id'		=> 'numeric|nullable',
-			'order_id'		=> 'required|numeric',
 			'period'		=> 'string|nullable',
 			'timesheet_id'	=> 'required|numeric',
 			'type'			=> 'required|string',
 		]);
 		
-		if (!$order = Order::find($orderId)) return response()->json(false);
-		$orderDate = $order?->date_msc;
-		
 		$timezones = $this->getSettingsCollect('timezones')->where('region', $regionId)->pluck('id')->toArray();
 		$commandsIds = Command::whereIn('region_id', $timezones)->get()->pluck('id');
-		
-		$timesheet = Timesheet::where('datetime', DdrDateTime::shift($orderDate, 'UTC'))->whereIn('command_id', $commandsIds)->first();
-		
 		
 		$tsQuery = match($period) {
 			'actual'	=> Timesheet::future($date),
@@ -1009,7 +1006,6 @@ class OrdersController extends Controller {
 			->orderBy('datetime', 'ASC')
 			->get();
 		
-		
 		$difficulties = $this->getSettingsCollect('difficulties')->mapWithKeys(function ($item, $key) {
     		return [$item['id'] => $item['title']];
 		})->toArray();
@@ -1022,9 +1018,7 @@ class OrdersController extends Controller {
     		return [$item['id'] => $item['title']];
 		})->toArray();
 		
-		$headers = ['x-timesheet-id' => $timesheet?->id];
-		
-		return response()->view($viewPath.'.timesheets', compact('timesheets', 'type', 'commands', 'eventsTypes', 'orderDate'))->withHeaders($headers);
+		return response()->view($viewPath.'.timesheets', compact('timesheets', 'type', 'commands', 'eventsTypes'));
 	}
 	
 	

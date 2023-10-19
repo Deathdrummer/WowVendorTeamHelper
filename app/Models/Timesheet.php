@@ -4,6 +4,7 @@ use App\Helpers\DdrDateTime;
 use App\Models\Traits\HasEvents;
 use App\Traits\Settingable;
 use Carbon\Carbon;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -142,39 +143,55 @@ class Timesheet extends Model {
 	
 
 	/**
-     * Получить 
-     * @param $stat - new wait cancel ready doprun
-     * @return Carbon|null
+     * Получить грядущие события с нижнми смешением по времени из настройки timesheet.attach_order_events_offset_hours
+     * @param $calendarDate дата календаря
+     * @param $orderDate дата заказа
+     * @return Builder
      */
-	public function scopeFuture($query, $date = null) {
-		if (!$date) return $query->whereBetween('datetime', [now()->startOfDay(), now()->endOfDay()]);
+	public function scopeFuture($query, $calendarDate = null, $orderDate = null):Builder  {
+		if (!$calendarDate && !$orderDate) return $query->whereBetween('datetime', [now()->startOfDay(), now()->endOfDay()]);
 		
-		$dateStart = DdrDateTime::buildTimestamp($date);
-		$dateEnd = $dateStart?->copy()?->addHours(23)?->addMinutes(59)?->addSeconds(59);
+		$timesheetOffsetHours = $this->getSettings('timesheet.attach_order_events_offset_hours') ?: 0;
 		
-		return $query->whereBetween('datetime', [$dateStart, $dateEnd]);
+		$orderDate = DdrDateTime::buildTimestamp($orderDate);
+		$calendarDate = DdrDateTime::buildTimestamp($calendarDate);
+		
+		$orderDay = $orderDate?->day;
+		$calendarDay = $calendarDate?->day;
+		$nowDay = now()?->day;
+		
+		$dateStart = $orderDay == $calendarDay ? DdrDateTime::shift($orderDate, 'UTC')?->addHours($timesheetOffsetHours) : ($calendarDay == $nowDay ? now()?->addHours($timesheetOffsetHours) : DdrDateTime::shift($calendarDate, 'UTC'));
+		
+		$dateEnd = $calendarDate?->copy()?->endOfDay();
+		
+		return $query->whereBetween('datetime', [$dateStart, DdrDateTime::shift($dateEnd, 'UTC')]);
 	}
 	
 	
 	
 	/**
-     * Получить 
-     * @param $stat - new wait cancel ready doprun
-     * @return Carbon|null
+     * Получить прошедшие события с верхним смешением по времени из настройки timesheet.attach_order_events_offset_hours 
+     * @param $calendarDate дата календаря
+     * @param $orderDate дата заказа
+     * @return Builder
      */
-	public function scopePast($query, $date = null) {
-		if (!$date) return $query->where('datetime', '<', now());
+	public function scopePast($query, $calendarDate = null, $orderDate = null):Builder {
+		if (!$calendarDate && !$orderDate) return $query->where('datetime', '<', now());
 		
-		$dateStart = DdrDateTime::buildTimestamp($date);
+		$timesheetOffsetHours = $this->getSettings('timesheet.attach_order_events_offset_hours') ?: 0;
 		
-		$choosedDay = $dateStart?->day;
-		$nowDay = now()->day;
+		$orderDate = DdrDateTime::buildTimestamp($orderDate);
+		$calendarDate = DdrDateTime::buildTimestamp($calendarDate);
 		
-		if ($choosedDay == $nowDay) return $query->whereBetween('datetime', [$dateStart, now()]);
+		$orderDay = $orderDate?->day;
+		$calendarDay = $calendarDate?->day;
+		$nowDay = now()?->day;
 		
-		$dateEnd = $dateStart?->copy()?->endOfDay();
+		$dateEnd = $orderDay == $calendarDay ? ($calendarDay != $nowDay ? DdrDateTime::shift($calendarDate?->endOfDay(), 'UTC') : $orderDate?->addHours($timesheetOffsetHours))  : ($calendarDay == $nowDay ? now()?->addHours($timesheetOffsetHours) : DdrDateTime::shift($calendarDate?->endOfDay(), 'UTC'));
 		
-		return $query->whereBetween('datetime', [$dateStart, $dateEnd]);
+		$dateStart = $dateEnd?->copy()?->startOfDay();
+		
+		return $query->whereBetween('datetime', [DdrDateTime::shift($dateStart, 'UTC'), $dateEnd]);
 	}
 	
 	

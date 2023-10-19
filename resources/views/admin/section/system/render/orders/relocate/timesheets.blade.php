@@ -5,7 +5,6 @@
 			'pointer',
 			'noselect',
 			'timesheetitem',
-			'active' => $orderDate == $datetime,
 		])
 		onmousedown="$.relocateOrderChooseTs(this, this.classList.contains('active'), {{$id}})"
 		>

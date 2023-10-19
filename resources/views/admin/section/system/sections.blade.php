@@ -54,6 +54,20 @@
 									setting="timesheet.to_past_hours"
 								/>
 							</div>
+							
+							<div class="col">
+								<p class="mb1rem">Поиск событий для привязки заказа со смещением часов:</p>
+								<x-input
+									type="number"
+									class="w7rem"
+									group="large"
+									label="часов"
+									min="-50"
+									max="50"
+									showrows
+									setting="timesheet.attach_order_events_offset_hours"
+								/>
+							</div>
 						</div>
 					</div>
 					

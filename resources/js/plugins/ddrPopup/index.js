@@ -158,7 +158,7 @@ window.ddrPopup = function(settings = {}, callback = false) {
 				$(ddrPopupSelector).trigger('ddrpopup:scrollstop');
 			});
 		},
-		disableButtons: function(buttonsSelectors = null, closeBtn = true) { // true|false|selectors  true|false
+		disableButtons: function(buttonsSelectors = null, closeBtn = true) { // true|false|close|selectors  true|false
 			let buttonsBlock = $(ddrPopupSelector).find('[ddrpopupbuttons]'),
 				topCloseBlock = $(ddrPopupSelector).find('[ddrpopupheader]');
 			

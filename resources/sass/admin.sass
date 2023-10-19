@@ -911,8 +911,15 @@ section
 
 .timesheetitem
 	+ddrActives((hover: (bg: #f0f5f9 !important, animate: 0.16s), active: (bg: #cae7fd !important)))
-
-
+	
+	&.active
+		cursor: default
+	
+	&.highlighting:not(.active)
+		background-color: #ecf6fd !important
+		
+		&:hover
+			background-color: #e1eff9 !important
 
 
 

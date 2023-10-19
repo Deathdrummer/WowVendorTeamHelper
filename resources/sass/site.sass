@@ -1206,6 +1206,15 @@ section
 
 .timesheetitem
 	+ddrActives((hover: (bg: #f0f5f9 !important, animate: 0.16s), active: (bg: #cae7fd !important)))
+	
+	&.active
+		cursor: default
+	
+	&.highlighting:not(.active)
+		background-color: #ecf6fd !important
+		
+		&:hover
+			background-color: #e1eff9 !important
 
 
 
@@ -1287,6 +1296,7 @@ section
 		padding-left: 8px
 		padding-right: 8px
 		
+		
 		&:not(.order__block-noborder)
 			&::after
 				content: ''
@@ -1331,6 +1341,11 @@ section
 
 	&__ordernumber
 		width: 70px
+		word-break: break-word
+		+scrollbar(#e6eaed, #bfcfdb, 2px)
+		overflow-y: auto
+		min-height: 15px
+		max-height: 100%
 		
 		p
 			font-size: 13px
@@ -1347,7 +1362,15 @@ section
 		height: 40px
 	
 	&__content
+		display: flex
+		align-items: center
 		font-size: 13px
+		vertical-align: middle
+		word-break: break-word
+		+scrollbar(#e6eaed, #bfcfdb, 2px)
+		overflow-y: auto
+		min-height: 50px
+		max-height: 100%
 	
 	//&__content
 	//	display: flex
@@ -1603,8 +1626,3 @@ section
 		margin-left: 4px
 
 
-
-
-
-.timesheetitem
-	+ddrActives((hover: (bg: #f0f5f9 !important, animate: 0.16s), active: (bg: #cae7fd !important)))

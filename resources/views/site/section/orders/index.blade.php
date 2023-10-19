@@ -365,6 +365,7 @@
 			setHtml,
 			close,
 			enableButtons,
+			disableButtons,
 			onClose,
 		} = await ddrPopup({
 			url: 'client/orders/relocate',
@@ -403,7 +404,6 @@
 		
 		
 		async function loadTimesheets(date = null, region_id = null, period = null) {
-			if (_.isNull(date)) return;
 			const ddrtableWait = $(popper).find('[ddrtable]').blockTable('wait');
 			
 			if (isLoading) {
@@ -415,6 +415,7 @@
 			
 			//const d = new Date(date);
 			//let buildedDate = dateStartOfDay(date);
+			if (_.isNull(date)) date = new Date(Date.now());
 			date = dateToTimestamp(date, {correct: 'startOfDay'});
 			
 			isLoading = true;
@@ -432,6 +433,12 @@
 			}
 			
 			$(popper).find('[ddrtable]').blockTable('setdData', data);
+			
+			if (headers['x-timesheet-id'] || null) {
+				enableButtons(null, true);
+			} else {
+				disableButtons(null, true);
+			}
 			
 			$(popper).find('[name="timesheet_id"]').val(headers['x-timesheet-id'] || null);
 		}
@@ -470,9 +477,10 @@
 		
 		
 		$.relocateOrderChooseTs = (row, isActive, tsId = null) => {
-			if (isActive) return false;
+			if (isActive || !tsId) return false;
 			$(row).closest('[ddrtablebody]').find('[ddrtabletr].active').removeClass('active');
 			$(row).addClass('active');
+			enableButtons(null, true);
 			$(popper).find('[name="timesheet_id"]').val(tsId || null);
 		}
 		

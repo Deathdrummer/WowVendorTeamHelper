@@ -137,6 +137,7 @@ export async function buildOrdersTable(row = null, timesheetId = null, cb = null
 			close,
 			onClose,
 			enableButtons,
+			disableButtons,
 		} = await ddrPopup({
 			url: 'crud/orders/relocate',
 			method: 'get',
@@ -147,7 +148,7 @@ export async function buildOrdersTable(row = null, timesheetId = null, cb = null
 			buttons: ['ui.close', {action: 'relocateOrderAction', title: action}],
 		});
 		
-		enableButtons(true);
+		enableButtons('close');
 		
 		let regionId = $('#toTSRegionsChuser').find('[regionid][active]').attr('regionid');
 		let period = $('#toTimesheetActualPast').find('[period][active]').attr('period');
@@ -163,8 +164,7 @@ export async function buildOrdersTable(row = null, timesheetId = null, cb = null
 		
 		let date = new Date(Date.now());
 		
-		getTsEvents(new Date(), regionId, period);
-		
+		getTsEvents(date, regionId, period);
 		
 		
 		calendarObj = calendar('relocateOrderCalendar', {
@@ -191,10 +191,13 @@ export async function buildOrdersTable(row = null, timesheetId = null, cb = null
 		async function getTsEvents(date, region_id, period) {
 			const ddrtableWait = $(popper).find('[ddrtable]').blockTable('wait');
 			
+			disableButtons(false);
+			
 			date = dateToTimestamp(date, {correct: 'startOfDay'});
 			
+			
 			isLoading = true;
-			const {data, error, status, headers} = await ddrQuery.get('crud/orders/relocate/get_timesheets', {timesheet_id: timesheetId, date, region_id, order_id: orderId, period, type, views}, {abortContr});
+			const {data, error, status, headers} = await ddrQuery.get('crud/orders/relocate/get_timesheets', {timesheet_id: timesheetId, date, region_id, period, type, views}, {abortContr});
 			isLoading = false;
 			
 			if (error) {
@@ -206,6 +209,8 @@ export async function buildOrdersTable(row = null, timesheetId = null, cb = null
 			ddrtableWait.destroy();
 			
 			$(popper).find('[ddrtable]').blockTable('setdData', data);
+			
+			
 		}
 		
 		/*$.relocateOrderChooseDate = async (instance, date) => {
@@ -254,7 +259,8 @@ export async function buildOrdersTable(row = null, timesheetId = null, cb = null
 		
 		
 		$.relocateOrderChooseTs = (row, isActive, tsId = null) => {
-			if (isActive) return false
+			if (isActive || !tsId) return false;
+			enableButtons(true);
 			$(row).closest('[ddrtablebody]').find('[ddrtabletr].active').removeClass('active');
 			$(row).addClass('active');
 			choosedTimesheetId = tsId;
