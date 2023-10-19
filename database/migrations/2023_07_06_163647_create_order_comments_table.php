@@ -19,7 +19,7 @@ return new class extends Migration {
 			
 			$table->unsignedInteger('user_type')->nullable()->default(1);
 			
-			$table->string('message')->nullable();
+			$table->text('message')->nullable();
             
 			$table->timestamps();
         });
