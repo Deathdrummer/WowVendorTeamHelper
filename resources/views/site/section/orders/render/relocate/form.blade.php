@@ -56,9 +56,10 @@
 				<x-table.head>
 					<x-table.tr>
 						<x-table.td class="w13rem" noborder><strong class="fz12px">Дата (МСК)</strong></x-table.td>
-						<x-table.td class="w9rem" noborder><strong class="fz12px">Время (МСК)</strong></x-table.td>
+						<x-table.td class="w6rem" noborder><strong class="fz12px">Время (МСК)</strong></x-table.td>
+						<x-table.td class="w6rem" noborder><strong class="fz12px">Время клиента</strong></x-table.td>
 						<x-table.td class="w-auto" noborder><strong class="fz12px">Название команды</strong></x-table.td>
-						<x-table.td class="w23rem" noborder><strong class="fz12px">Тип события</strong></x-table.td>
+						<x-table.td class="w22rem" noborder><strong class="fz12px">Тип события</strong></x-table.td>
 						<x-table.td class="w6rem" noborder><strong class="fz12px">Кол-во заказов</strong></x-table.td>
 					</x-table.tr>
 				</x-table.head>

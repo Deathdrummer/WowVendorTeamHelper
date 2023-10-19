@@ -455,6 +455,8 @@ class OrdersController extends Controller {
 		
 		if (!$order = Order::find($orderId)) return response()->json(false);
 		
+		$regionShiftHours = $this->getSettings('regions', 'id', 'shift', ['id' => $regionId])[$regionId] ?? 0;
+		
 		$orderDate = $order?->date_msc;
 		
 		$timezonesIds = $this->getSettingsCollect('timezones', null, null, ['region' => $regionId])->pluck('id');
@@ -493,7 +495,7 @@ class OrdersController extends Controller {
 		$choosedTsId = $timesheet?->id;
 		$headers = ['x-timesheet-id' => $choosedTsId];
 		
-		return response()->view($viewPath.'.timesheets', compact('timesheets', 'commands', 'eventsTypes', 'orderDate', 'choosedTsId'))->withHeaders($headers);
+		return response()->view($viewPath.'.timesheets', compact('timesheets', 'commands', 'eventsTypes', 'orderDate', 'choosedTsId', 'regionShiftHours'))->withHeaders($headers);
 	}
 	
 	
@@ -991,6 +993,8 @@ class OrdersController extends Controller {
 			'type'			=> 'required|string',
 		]);
 		
+		$regionShiftHours = $this->getSettings('regions', 'id', 'shift', ['id' => $regionId])[$regionId] ?? 0;
+		
 		$timezones = $this->getSettingsCollect('timezones')->where('region', $regionId)->pluck('id')->toArray();
 		$commandsIds = Command::whereIn('region_id', $timezones)->get()->pluck('id');
 		
@@ -1018,7 +1022,7 @@ class OrdersController extends Controller {
     		return [$item['id'] => $item['title']];
 		})->toArray();
 		
-		return response()->view($viewPath.'.timesheets', compact('timesheets', 'type', 'commands', 'eventsTypes'));
+		return response()->view($viewPath.'.timesheets', compact('timesheets', 'type', 'commands', 'eventsTypes', 'regionShiftHours'));
 	}
 	
 	

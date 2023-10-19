@@ -15,6 +15,9 @@
 			<p class="fz12px">{{DdrDateTime::time($datetime, ['format' => ['en' => 'h:i a']])}}</p>
 		</x-table.td>
 		<x-table.td>
+			<p class="fz12px">{{DdrDateTime::time($datetime?->addHours($regionShiftHours), ['format' => ['en' => 'h:i a']])}}</p>
+		</x-table.td>
+		<x-table.td>
 			<p class="fz12px">{{$commands[$command_id] ?? '-'}}</p>
 		</x-table.td>
 		<x-table.td>

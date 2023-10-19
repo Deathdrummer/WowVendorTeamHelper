@@ -46,7 +46,7 @@
 										>
 										<x-simplelist
 											setting="regions"
-											fieldset="ID:w6rem|number|id|1,Название|text|title"
+											fieldset="ID:w6rem|number|id|1,Название|text|title,Смещение от МСК:w10rem|number|shift"
 											rool="test"
 											{{-- onSave="onSaveRegion" --}}
 											{{-- options="name_type;foo:fooval,bar:barval|name_radio;foo:rool,bar:tool" --}}
