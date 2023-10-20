@@ -109,6 +109,7 @@
 						<x-button
 							action="slackNotifyAction:{{$button['id'] ?? null}},{{$id}}"
 							variant="{{$button['color'] ?? 'neutral'}}"
+							disabled="{{$is_hash_order ?? false}}"
 							enabled="{{getGuard() == 'admin' || !isset($button['permission']) || (getGuard() == 'site' && auth('site')->user()->can($button['permission']))}}"
 							title="{{$button['title'] ?? ''}}"
 							>

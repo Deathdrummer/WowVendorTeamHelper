@@ -10,7 +10,6 @@ use App\Http\Requests\ImportTimesheetEventsRequest;
 use App\Models\Command;
 use App\Models\EventType;
 use App\Models\Timesheet;
-use App\Models\TimesheetOrder;
 use App\Models\TimesheetPeriod;
 use App\Services\Business\OrderService;
 use App\Services\Settings;
@@ -69,20 +68,27 @@ class TimesheetController extends Controller {
      */
     public function index(Request $request, GetUserSetting $getUserSetting) {
 		[
-			'views'		=> $viewPath,
-			'period_id'	=> $tsPeriodId,
-			'list_type'	=> $listType,
-			'region_id'	=> $regionId,
+			'views'			=> $viewPath,
+			'period_id'		=> $tsPeriodId,
+			'list_type'		=> $listType,
+			'region_id'		=> $regionId,
 		] = $request->validate([
-			'views'		=> 'required|string',
-			'period_id'	=> 'required|numeric',
-			'list_type'	=> 'required|string',
-			'region_id'	=> 'required|numeric',
-			'search'	=> 'exclude|nullable|string',
+			'views'			=> 'required|string',
+			'period_id'		=> 'required|numeric',
+			'list_type'		=> 'required|string',
+			'region_id'		=> 'required|numeric',
+			'search'		=> 'exclude|nullable|string',
+			'command_id'	=> 'exclude|nullable|string',
 		]);
 		
 		
+		$timezones = $this->settings->get('timezones')->where('region', $regionId)->pluck('id')->toArray();
+		$regionCommands = Command::whereIn('region_id', $timezones)->get()->pluck('title', 'id');
+		
 		$search = $request->input('search');
+		$commandId = $request->input('command_id');
+		
+		toLog($commandId);
 		
 		if (!$viewPath) return response()->json(['no_view' => true]);
 		
@@ -120,6 +126,9 @@ class TimesheetController extends Controller {
 				}
 			})
 			->whereIn('command_id', $commandsIds)
+			->when($commandId, function($query) use($commandId) {
+				$query->where('command_id', $commandId);
+			})
 			->when($search, function($query) use($search) {
 				$query->whereHas('orders', function($q) use($search) {
 					$q->where('order', 'LIKE', '%'.$search.'%');
@@ -157,7 +166,7 @@ class TimesheetController extends Controller {
 		
 		$itemView = $viewPath.'.item';
 		
-		return $this->viewWithLastSortIndex(Timesheet::class, $viewPath.'.list', compact('list', 'itemView'), '_sort');
+		return $this->viewWithLastSortIndex(Timesheet::class, $viewPath.'.list', compact('list', 'itemView'), '_sort', ['x-region-commands' => $regionCommands]);
     }
 	
 	

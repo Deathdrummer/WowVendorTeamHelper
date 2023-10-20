@@ -26,7 +26,9 @@ $.ddrCRUD = function(settings = false) {
 		methods = {},
 		lastSortIndex = 0,
 		newItemIndex = 1,
-		abortCtrl;
+		abortCtrl,
+		getListHeaders = {},
+		getListHeadersFunc;
 	
 	
 	if (!container || !itemToIndex || !route || !viewsPath) {
@@ -34,13 +36,20 @@ $.ddrCRUD = function(settings = false) {
 	}
 	
 	// Дополнительные параметры для всех действий 
-	let {list: listParams, create: createParams, store: storeParams, edit: editParams, update: updateParams, destroy: destroyParams} = _.assign({
+	let {
+		list: listParams,
+		create: createParams,
+		store: storeParams,
+		edit: editParams,
+		update: updateParams,
+		destroy: destroyParams,
+	} = _.assign({
 		list: null,
 		create: null,
 		store: null,
 		edit: null,
 		update: null,
-		destroy: null
+		destroy: null,
 	}, params);
 	
 	
@@ -58,16 +67,28 @@ $.ddrCRUD = function(settings = false) {
 	
 	
 	
-	
-	
-	
-	
 	methods = {
 		viewsPath,
 		abort() {
 			abortCtrl.abort();
 		},
-		
+		// Вызывает коллбэк функцию при каждом получении записей
+		onGetList(cb = null) {
+			if (_.isNull(cb)) throw new Error('ddrCRUD -> onGetList! Ошибка! Не переданы параметры!');
+			getListHeadersFunc = cb;
+			cb({headers: getListHeaders});
+			//return testFunc(getListHeaders);
+		},
+		setParams(action = null, cb = null/* params = null, clear = false*/) {
+			if (_.isNull(action) || _.isNull(cb)) throw new Error('ddrCRUD -> setParams! Не переданы параметры!');
+			
+			if (action == 'list') listParams = cb(listParams);
+			else if (action == 'create') createParams = cb(createParams);
+			else if (action == 'store') storeParams = cb(storeParams);
+			else if (action == 'edit') editParams = cb(editParams);
+			else if (action == 'update') updateParams = cb(updateParams);
+			else if (action == 'destroy') destroyParams = cb(destroyParams);	
+		},
 		// можно указать непосредственно строку, 
 		// также, можно указать любой селектор в рамках удаляемой строки, например btn (селектор кнопки)
 		remove(selector = null) {
@@ -83,8 +104,6 @@ $.ddrCRUD = function(settings = false) {
 				$(container).empty();
 			}
 		},
-		
-		
 		// Педедается обект {селекторы: [функция или метод из ddrInputs]}
 		// прослушивается весь список, но изменения применяются в рамках одной записи
 		changeInputs(rules = {}) {
@@ -335,6 +354,9 @@ $.ddrCRUD = function(settings = false) {
 				console.log(error);
 			} else {
 				lastSortIndex = parseInt(headers['x-last-sort-index']);
+				getListHeaders = headers;
+				callFunc(getListHeadersFunc, {headers});
+				
 				if (init) {
 					if (data) $(container).html(data);
 					else $(container).empty();

@@ -195,6 +195,6 @@ class BlockTable {
 	
 	clear(selector = false) {
 		if (!selector) return false;
-		$(selector).find('[ddrtablebody]').empty();
+		$(selector).find('[ddrwaitwrapper]').remove();
 	}
 }

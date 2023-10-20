@@ -26,6 +26,15 @@ window.ringtone = function(url = null) {
 
 
 
+window.forEach = function(obj = null, cb = bull) {
+	if (_.isNull(obj)) return;
+	for (const [key, value] of Object.entries(obj)) {
+		callFunc(cb, key, value);
+	}
+}
+
+
+
 
 
 

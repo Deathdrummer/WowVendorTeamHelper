@@ -21,13 +21,14 @@ export async function timesheetCrud(periodId = null, listType = null, regionId =
 	
 	
 	const search = $('#searchOrdersField').val() || null;
+	let commandId = ddrStore(`timesheet-${regionId.value}`);
 	
 	$.ddrCRUD({
 		container: '#timesheetList',
 		itemToIndex: '[ddrtabletr]',
 		route: 'crud/timesheet',
 		params: {
-			list: {period_id: periodId, list_type: listType.value, region_id: regionId.value, search},
+			list: {period_id: periodId, list_type: listType.value, region_id: regionId.value, command_id: commandId, search},
 			//create: {period_id: periodId},
 			store: {timesheet_period_id: periodId},
 			edit: {period_id: periodId},
@@ -38,7 +39,21 @@ export async function timesheetCrud(periodId = null, listType = null, regionId =
 			period_id: periodId
 		},*/
 		viewsPath,
-	}).then(({error, list, changeInputs, create, store, storeWithShow, edit, update, destroy, query, getParams, abort, remove}) => {
+	}).then(({error, list, changeInputs, create, store, storeWithShow, edit, update, destroy, query, getParams, abort, remove, onGetList, setParams}) => {
+		
+		onGetList(({headers}) => {
+			let regionCommands = JSON.parse(headers['x-region-commands'] || []);
+			
+			let html = '<ul id="rooltest">';
+			for (const [key, value] of Object.entries(regionCommands)) {
+				html += `<li onclick="$.chooseTsCommand(this, ${key})">${value}</li>`;
+			}
+			html += '</ul>';
+			
+			$('[rool]').html(html);
+		});
+		
+		
 		
 		if (error) {
 			console.log(error.message);
@@ -137,6 +152,26 @@ export async function timesheetCrud(periodId = null, listType = null, regionId =
 		}
 		
 		
+		
+		
+		
+		
+		$.chooseTsCommand = (li, commandId) => {
+			const {destroy} = $('#timesheetContainer').ddrWait();
+			
+			ddrStore(`timesheet-${regionId.value}`, commandId);
+			
+			setParams('list', (params) => {
+				console.log(params);
+				params.command_id = commandId;
+				return params;
+			});
+			
+			list(() => {
+				$('#timesheetTable').blockTable('buildTable');
+				destroy();
+			});
+		}
 		
 		
 		

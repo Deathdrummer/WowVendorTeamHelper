@@ -60,7 +60,7 @@ $.fn.ddrWait = function(params = null) {
 		iconHtml = '<img src="'+loadingIcon+'" ddrwaiticon class="'+ddrwaitIcon+'">';
 	
 	$(block).addClass(ddrwaitwrapper);
-	$(block).append('<div class="'+ddrwaitBlock+' noselect" id="'+ddrwBId+'"'+(tag ? ' '+tag : '')+'><div class="'+ddrwaitContent+'" ddrwaitindicator>'+iconHtml+labelHtml+'</div></div>');
+	$(block).append('<div class="'+ddrwaitBlock+' ddrwaitwrapper noselect" id="'+ddrwBId+'"'+(tag ? ' '+tag : '')+'><div class="'+ddrwaitContent+'" ddrwaitindicator>'+iconHtml+labelHtml+'</div></div>');
 	if (isBtn) $(block).ddrInputs('disable');
 	
 	$('#'+ddrwBId).ready(() => {

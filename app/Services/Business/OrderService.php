@@ -114,6 +114,8 @@ class OrderService {
 			$row['status'] = $row->pivot->doprun ? $statuses[OrderStatus::doprun] : ($statuses[$row['status']] ?? 0);
 			$row['timesheet_id'] = $row->pivot->timesheet_id;
 			
+			$row['is_hash_order'] = strpos($row?->order, '#') !== false;
+			
 			if (in_array($row['id'], array_keys($doprunOrders))) {
 				$row['price'] = round((float)$row['price'] / (int)($doprunOrders[$row['id']] ?? 1), 2);
 			}

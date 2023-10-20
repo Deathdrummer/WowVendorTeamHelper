@@ -25,11 +25,12 @@ trait HasCrudController {
 	 * @param 
 	 * @return 
 	 */
-	protected function viewWithLastSortIndex(?string $model = null, $viewPath, $data = null, $sortField = '_sort') {
+	protected function viewWithLastSortIndex(?string $model = null, $viewPath, $data = null, $sortField = '_sort', $headers = []) {
 		if (!$model) return false;
 		$data['data'] = $this->data;
+		$headers = [...$headers, 'x-last-sort-index' => $this->_getLastSortIndex($model, $sortField)];
 		return response()->view($viewPath, $data)
-			->header('x-last-sort-index', $this->_getLastSortIndex($model, $sortField));
+			->withHeaders($headers);
 	}
 	
 	

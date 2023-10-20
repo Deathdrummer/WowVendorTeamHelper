@@ -3,7 +3,7 @@
 		<x-table.tr noborder>
 			<x-table.td class="w20rem" noborder><strong>Дата (МСК)</strong></x-table.td>
 			<x-table.td class="w20rem" noborder><strong>Время (МСК / ОРИГ)</strong></x-table.td>
-			<x-table.td class="w-auto" noborder><strong>Название команды</strong></x-table.td>
+			<x-table.td class="w-auto" noborder><strong rool>Название команды</strong></x-table.td>
 			@if(getGuard() == 'admin' || (getGuard() == 'site' && auth('site')->user()->can('events-show-price:site')))
 				<x-table.td class="w8rem" noborder><strong>Сумма</strong></x-table.td>
 			@endif
