@@ -10,6 +10,7 @@ use App\Models\Section;
 use App\Models\User;
 use App\Services\Business\OrderService;
 use App\Services\Settings;
+use Carbon\Carbon;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
@@ -18,7 +19,6 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Str;
 
@@ -36,6 +36,13 @@ Route::get('orders_set_types', function(Request $request, OrderService $orderSer
 });
 
 
+
+Route::get('orders_update_dates', function(Request $request) {
+	Order::lazyById()->each(function (Order $order) {
+		if (!$orderDate = $order?->date) return true;
+		DB::table('orders')->where('id', $order->id)->update(['date' => Carbon::parse($orderDate)]);
+    });
+});
 
 
 

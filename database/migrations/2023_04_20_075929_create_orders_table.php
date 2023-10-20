@@ -15,6 +15,7 @@ return new class extends Migration
 			$table->longText('raw_data');
             $table->string('order')->nullable();
             $table->unsignedInteger('order_type')->nullable();
+            $table->tinyInteger('ot_changed')->nullable()->comment('Изменен ли вручную тип заказа');
             $table->decimal('price', 10, 2)->nullable()->default(0);
             $table->string('server_name')->nullable();
             $table->string('link')->nullable();
