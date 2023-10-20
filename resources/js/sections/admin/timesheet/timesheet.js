@@ -41,9 +41,11 @@ export async function timesheetCrud(periodId = null, listType = null, regionId =
 		viewsPath,
 	}).then(({error, list, changeInputs, create, store, storeWithShow, edit, update, destroy, query, getParams, abort, remove, onGetList, setParams}) => {
 		
+		console.log('ddrcrud');
+		
 		onGetList(({headers}) => {
 			let regionCommands = JSON.parse(headers['x-region-commands'] || []);
-			
+			console.log('onGetList', commandId);
 			let html = '<ul id="rooltest">';
 			for (const [key, value] of Object.entries(regionCommands)) {
 				html += `<li onclick="$.chooseTsCommand(this, ${key})">${value}</li>`;

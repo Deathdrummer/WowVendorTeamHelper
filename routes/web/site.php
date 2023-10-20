@@ -7,6 +7,7 @@ use App\Http\Requests\Auth\UserEmailVerificationRequest;
 use App\Models\Command;
 use App\Models\Order;
 use App\Models\Section;
+use App\Models\Timesheet;
 use App\Models\User;
 use App\Services\Business\OrderService;
 use App\Services\Settings;
@@ -41,6 +42,15 @@ Route::get('orders_update_dates', function(Request $request) {
 	Order::lazyById()->each(function (Order $order) {
 		if (!$orderDate = $order?->date) return true;
 		DB::table('orders')->where('id', $order->id)->update(['date' => Carbon::parse($orderDate)]);
+    });
+});
+
+
+Route::get('ts_update_dates', function(Request $request) {
+	Timesheet::lazyById()->each(function (Timesheet $ts) {
+		if ($ts?->timesheet_period_id == 8) return true;
+		if (!$tsDate = $ts?->datetime) return true;
+		DB::table('timesheet')->where('id', $ts->id)->update(['datetime' => Carbon::parse($tsDate)]);
     });
 });
 
