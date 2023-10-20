@@ -120,20 +120,6 @@ class Order extends Model {
 	
 	
 	
-	
-	/**
-     * Добавить к выдаче время по МСК.
-     *
-     * @return Carbon|null
-     */
-    public function getDateAttribute():Carbon|null {
-		$timestamp = $this->attributes['date'] ?? null;
-		return DdrDateTime::shift($timestamp, 'TZ');
-    }
-	
-	
-	
-	
 	/**
      * Добавить к выдаче время по МСК.
      *
@@ -145,7 +131,7 @@ class Order extends Model {
 		
 		if (!$timezoneId || !$timestamp) return null;
 		$timezones = $this->getSettings('timezones', 'id', 'shift');
-		$shift = (-1 * (int)$timezones[$timezoneId]) + config('app.shift_hours', 0);
+		$shift = (-1 * (int)$timezones[$timezoneId]);
 		
 		return DdrDateTime::shift($timestamp, $shift);
     }
