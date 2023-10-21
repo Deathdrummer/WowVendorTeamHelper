@@ -21,14 +21,18 @@ export async function timesheetCrud(periodId = null, listType = null, regionId =
 	
 	
 	const search = $('#searchOrdersField').val() || null;
-	let commandId = ddrStore(`timesheet-${regionId.value}`);
+	
+	const choosedCommands = {};
+	
+	choosedCommands[regionId.value] = ddrStore(`timesheet-${regionId.value}`);
+	
 	
 	$.ddrCRUD({
 		container: '#timesheetList',
 		itemToIndex: '[ddrtabletr]',
 		route: 'crud/timesheet',
 		params: {
-			list: {period_id: periodId, list_type: listType.value, region_id: regionId.value, command_id: commandId, search},
+			list: {period_id: periodId, list_type: listType.value, region_id: regionId.value, command_id: choosedCommands[regionId.value], search},
 			//create: {period_id: periodId},
 			store: {timesheet_period_id: periodId},
 			edit: {period_id: periodId},
@@ -41,18 +45,30 @@ export async function timesheetCrud(periodId = null, listType = null, regionId =
 		viewsPath,
 	}).then(({error, list, changeInputs, create, store, storeWithShow, edit, update, destroy, query, getParams, abort, remove, onGetList, setParams}) => {
 		
-		console.log('ddrcrud');
-		
-		onGetList(({headers}) => {
-			let regionCommands = JSON.parse(headers['x-region-commands'] || []);
-			console.log('onGetList', commandId);
-			let html = '<ul id="rooltest">';
-			for (const [key, value] of Object.entries(regionCommands)) {
-				html += `<li onclick="$.chooseTsCommand(this, ${key})">${value}</li>`;
-			}
-			html += '</ul>';
-			
-			$('[rool]').html(html);
+		onGetList({
+			before() {
+				setParams('list', (params) => {
+					params.region_id = regionId.value;
+					params.command_id = ddrStore(`timesheet-${regionId.value}`);
+					return params;
+				});
+			},
+			after(headers) {
+				let regionCommands = JSON.parse(headers['x-region-commands'] || []);
+				
+				let html = '<div class="select small-select w100">';
+					html += '<select id="rooltest" oninput="$.chooseTsCommand(this)">';
+					let selectedAll = _.isNull(choosedCommands[regionId.value]) ? ' selected' : '';
+					html += `<option${selectedAll} value="">ВСЕ КОМАНДЫ</option>`;
+					
+					for (const [cmdId, cmdTitle] of Object.entries(regionCommands)) {
+						let selected = cmdId == choosedCommands[regionId.value] ? ' selected' : '';
+						html += `<option${selected} value="${cmdId}">${cmdTitle}</option>`;
+					}
+					html += '</select></div>';
+				
+				$('[tscommandshooser]').html(html);
+			},
 		});
 		
 		
@@ -158,14 +174,21 @@ export async function timesheetCrud(periodId = null, listType = null, regionId =
 		
 		
 		
-		$.chooseTsCommand = (li, commandId) => {
+		$.chooseTsCommand = (select) => {
+			
+			let cmdId = $(select).val();
+			
+			console.log(cmdId);
+			
+			/// cmdId
 			const {destroy} = $('#timesheetContainer').ddrWait();
 			
-			ddrStore(`timesheet-${regionId.value}`, commandId);
+			if (cmdId) ddrStore(`timesheet-${regionId.value}`, cmdId);
+			else ddrStore(`timesheet-${regionId.value}`, false);
+			choosedCommands[regionId.value] = cmdId || null;
 			
 			setParams('list', (params) => {
-				console.log(params);
-				params.command_id = commandId;
+				params.command_id = cmdId || null;
 				return params;
 			});
 			

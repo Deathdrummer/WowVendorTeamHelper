@@ -198,7 +198,11 @@
 			ddrStore('eventsRegion', val);
 		}
 		
-		timesheetCrudList.value({list_type: listType.value, region_id: regionId.value}, () => {
+		timesheetCrudList.value({
+			list_type: listType.value,
+			region_id: regionId.value,
+			command_id: ddrStore(`timesheet-${regionId.value}`)
+		}, () => {
 			$('#timesheetTable').blockTable('buildTable');
 			timesheetContainerWait.destroy();
 		});

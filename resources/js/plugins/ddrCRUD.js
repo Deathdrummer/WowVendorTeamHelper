@@ -28,7 +28,7 @@ $.ddrCRUD = function(settings = false) {
 		newItemIndex = 1,
 		abortCtrl,
 		getListHeaders = {},
-		getListHeadersFunc;
+		getListHeadersFunc = {};
 	
 	
 	if (!container || !itemToIndex || !route || !viewsPath) {
@@ -73,11 +73,10 @@ $.ddrCRUD = function(settings = false) {
 			abortCtrl.abort();
 		},
 		// Вызывает коллбэк функцию при каждом получении записей
-		onGetList(cb = null) {
-			if (_.isNull(cb)) throw new Error('ddrCRUD -> onGetList! Ошибка! Не переданы параметры!');
-			getListHeadersFunc = cb;
-			cb({headers: getListHeaders});
-			//return testFunc(getListHeaders);
+		onGetList(funcs = {}) {
+			if (_.isEmpty(funcs)) throw new Error('ddrCRUD -> onGetList! Ошибка! Не переданы параметры!');
+			getListHeadersFunc = funcs;
+			callFunc(funcs?.after, getListHeaders, true);
 		},
 		setParams(action = null, cb = null/* params = null, clear = false*/) {
 			if (_.isNull(action) || _.isNull(cb)) throw new Error('ddrCRUD -> setParams! Не переданы параметры!');
@@ -347,6 +346,8 @@ $.ddrCRUD = function(settings = false) {
 			});
 		}
 		
+		callFunc(getListHeadersFunc?.before);
+		
 		abortCtrl = new AbortController();
 		axiosQuery('get', _route(), params, 'text', abortCtrl).then(({data, error, status, headers}) => {
 			if (error) {
@@ -355,7 +356,7 @@ $.ddrCRUD = function(settings = false) {
 			} else {
 				lastSortIndex = parseInt(headers['x-last-sort-index']);
 				getListHeaders = headers;
-				callFunc(getListHeadersFunc, {headers});
+				callFunc(getListHeadersFunc?.after, headers);
 				
 				if (init) {
 					if (data) $(container).html(data);

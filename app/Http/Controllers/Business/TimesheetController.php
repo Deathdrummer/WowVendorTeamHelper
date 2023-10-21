@@ -81,6 +81,8 @@ class TimesheetController extends Controller {
 			'command_id'	=> 'exclude|nullable|string',
 		]);
 		
+		toLog($request->all());
+		
 		
 		$timezones = $this->settings->get('timezones')->where('region', $regionId)->pluck('id')->toArray();
 		$regionCommands = Command::whereIn('region_id', $timezones)->get()->pluck('title', 'id');
@@ -88,7 +90,7 @@ class TimesheetController extends Controller {
 		$search = $request->input('search');
 		$commandId = $request->input('command_id');
 		
-		toLog($commandId);
+		//toLog($regionId.' '.$commandId);
 		
 		if (!$viewPath) return response()->json(['no_view' => true]);
 		
@@ -140,6 +142,8 @@ class TimesheetController extends Controller {
 			->orderBy('datetime', $listType == 'actual' ? 'ASC' : 'DESC')
 			->get();
 		
+		
+		toLog($list);
 		
 		if ($list) {
 			$doprunOrders = [];
