@@ -19,12 +19,8 @@ export async function timesheetCrud(periodId = null, listType = null, regionId =
 	
 	timesheetContainerWait.destroy();
 	
-	
 	const search = $('#searchOrdersField').val() || null;
 	
-	const choosedCommands = {};
-	
-	choosedCommands[regionId.value] = ddrStore(`timesheet-${regionId.value}`);
 	
 	
 	$.ddrCRUD({
@@ -32,7 +28,7 @@ export async function timesheetCrud(periodId = null, listType = null, regionId =
 		itemToIndex: '[ddrtabletr]',
 		route: 'crud/timesheet',
 		params: {
-			list: {period_id: periodId, list_type: listType.value, region_id: regionId.value, command_id: choosedCommands[regionId.value], search},
+			list: {period_id: periodId, list_type: listType.value, region_id: regionId.value, command_id: _.get(ddrStore('timesheet-commands-filter'), regionId.value, null), search},
 			//create: {period_id: periodId},
 			store: {timesheet_period_id: periodId},
 			edit: {period_id: periodId},
@@ -49,7 +45,7 @@ export async function timesheetCrud(periodId = null, listType = null, regionId =
 			before() {
 				setParams('list', (params) => {
 					params.region_id = regionId.value;
-					params.command_id = ddrStore(`timesheet-${regionId.value}`);
+					params.command_id = _.get(ddrStore('timesheet-commands-filter'), regionId.value, null);
 					return params;
 				});
 			},
@@ -58,11 +54,11 @@ export async function timesheetCrud(periodId = null, listType = null, regionId =
 				
 				let html = '<div class="select small-select w100">';
 					html += '<select id="rooltest" oninput="$.chooseTsCommand(this)">';
-					let selectedAll = _.isNull(choosedCommands[regionId.value]) ? ' selected' : '';
+					let selectedAll = _.isNull(_.get(ddrStore('timesheet-commands-filter'), regionId.value, null)) ? ' selected' : '';
 					html += `<option${selectedAll} value="">ВСЕ КОМАНДЫ</option>`;
 					
 					for (const [cmdId, cmdTitle] of Object.entries(regionCommands)) {
-						let selected = cmdId == choosedCommands[regionId.value] ? ' selected' : '';
+						let selected = cmdId == _.get(ddrStore('timesheet-commands-filter'), regionId.value, null) ? ' selected' : '';
 						html += `<option${selected} value="${cmdId}">${cmdTitle}</option>`;
 					}
 					html += '</select></div>';
@@ -175,17 +171,12 @@ export async function timesheetCrud(periodId = null, listType = null, regionId =
 		
 		
 		$.chooseTsCommand = (select) => {
-			
 			let cmdId = $(select).val();
 			
-			console.log(cmdId);
-			
-			/// cmdId
 			const {destroy} = $('#timesheetContainer').ddrWait();
 			
-			if (cmdId) ddrStore(`timesheet-${regionId.value}`, cmdId);
-			else ddrStore(`timesheet-${regionId.value}`, false);
-			choosedCommands[regionId.value] = cmdId || null;
+			if (cmdId) ddrStore('timesheet-commands-filter', {[regionId.value]: cmdId}, true);
+			else ddrStore('timesheet-commands-filter', {[regionId.value]: null}, true);
 			
 			setParams('list', (params) => {
 				params.command_id = cmdId || null;

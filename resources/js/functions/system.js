@@ -35,6 +35,13 @@ window.forEach = function(obj = null, cb = bull) {
 
 
 
+window.strToType = function(data = null) {
+	if (_.isNull(data)) return data;
+	if (data == 'null') return null;
+	if (data == 'true') return true;
+	if (data == 'false') return false;
+	return data;
+}
 
 
 

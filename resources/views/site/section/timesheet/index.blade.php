@@ -201,7 +201,7 @@
 		timesheetCrudList.value({
 			list_type: listType.value,
 			region_id: regionId.value,
-			command_id: ddrStore(`timesheet-${regionId.value}`)
+			command_id: _.get(ddrStore('timesheet-commands-filter'), regionId.value, null),
 		}, () => {
 			$('#timesheetTable').blockTable('buildTable');
 			timesheetContainerWait.destroy();
