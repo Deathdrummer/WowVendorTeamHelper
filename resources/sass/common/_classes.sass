@@ -1481,11 +1481,12 @@ $bPoints: map-remove($grid-breakpoints, xs)
 	
 	&__track
 		display: inline-flex
+		min-width: 100%
 		justify-content: flex-start
 		flex-wrap: nowrap
 	
 	&__item
-		flex: 0 0 auto
+		flex: 1 0 100%
 		display: inline-block
 		
 		&:first-of-type
@@ -1721,6 +1722,7 @@ $tableColor: #efefef
 		
 		&.w-auto
 			//min-width: max-content
+			display: inline-table
 			flex: 1 1 auto
 			word-break: break-word
 			
