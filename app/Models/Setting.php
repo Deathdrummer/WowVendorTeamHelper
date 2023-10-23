@@ -76,7 +76,7 @@ class Setting extends Model {
 	 * @return 
 	 */
 	public function setValueAttribute($value) {
-		$this->attributes['value'] = is_array($value) ? json_encode($value) : $value;
+		$this->attributes['value'] = is_array($value) ? json_encode(array_values($value)) : $value;
 	}
 	
 	

@@ -10,7 +10,7 @@
 			<x-select
 				name="region_id"
 				class="w100"
-				:options="$data['timezones']"
+				:options="$data['timezones'] ?? []"
 				choose="Регион не выбран"
 				empty="Нет регионов"
 				value="{{$region_id}}"

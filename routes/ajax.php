@@ -5,6 +5,7 @@ use App\Http\Controllers\crud\Permissions;
 use App\Http\Controllers\crud\Roles;
 use App\Http\Controllers\crud\Users;
 use App\Http\Controllers\TabsController;
+use App\Traits\Settingable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -32,7 +33,6 @@ Route::controller(TabsController::class)->middleware(['lang'])->group(function()
 
 
 Route::middleware(['isajax:admin', 'lang'])->post('/simplelist', function(Request $request) {
-	
 	['id' => $id, 'row' => $row, 'fields' => $fieldsRaw, 'options' => $rawOptions, 'setting' => $setting, 'group' => $group] = $request->validate([
 		'id'		=> 'required|string',
 		'row'		=> 'required|numeric',
@@ -42,22 +42,32 @@ Route::middleware(['isajax:admin', 'lang'])->post('/simplelist', function(Reques
 		'group'		=> 'required|string',
 	]);
 	
-	
 	$options = [];
 	if ($rawOptions) {
-		$optionsString = str_replace('::', ',', htmlspecialchars_decode($rawOptions));	
+		$optionsString = str_replace('&&&', ',', htmlspecialchars_decode($rawOptions));	
 			
 		$opsData = splitString($optionsString, '|');
 		
 		foreach ($opsData as $ops) {
 			[$name, $values] = splitString($ops, ';');
-			$opsValues = splitString($values, ',');
 			
-			foreach ($opsValues as $optVal) {
-				//[$val, $title] = splitString($optVal, ':');
-				$o = splitString($optVal, ':');
-				
-				$options[$name][$o[0]] = $o[1] ?? $o[0];
+			if (preg_match('/\bsetting::([\w\,]+)\b/', $values, $matches)) {
+				$s = $matches[1] ?? false;
+				$params = explode(',', $s);
+				$opsValues = (new class { use Settingable; })->getSettings(...$params);
+				if ($opsValues) {
+					foreach ($opsValues as $val => $title) {
+						$options[$name][$val] = $title ?? $val;
+					}
+				}
+			} else {
+				$opsValues = splitString($values, ',');
+				if ($opsValues) {
+					foreach ($opsValues as $optVal) {
+						$o = splitString($optVal, ':');
+						$options[$name][$o[0]] = $o[1] ?? $o[0];
+					}
+				}
 			}
 		}
 	}

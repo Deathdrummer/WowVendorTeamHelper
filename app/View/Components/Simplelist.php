@@ -82,26 +82,33 @@ class Simplelist extends Component {
 	 */
 	public function setDataToSelect($options) {
 		if (!$options) return false;
-		$this->stringOptions = str_replace(',', '::', $options);
+		$this->stringOptions = str_replace(',', '&&&', $options);
 		
 		$opsData = splitString($options, '|');
 
 		$allOpsData = [];
-		foreach ($opsData as $ops) {
-			[$name, $values] = splitString($ops, ';');
-			
-			if (preg_match('/\bsetting::([\w\,]+)\b/', $values, $matches)) {
-				$setting = $matches[1] ?? false;
-				$params = explode(',', $setting);
-				$opsValues = $this->getSettings(...$params);
-				foreach ($opsValues as $val => $title) {
-					$allOpsData[$name][$val] = $title ?? $val;
-				}
-			} else {
-				$opsValues = splitString($values, ',');
-				foreach ($opsValues as $optVal) {
-					$o = splitString($optVal, ':');
-					$allOpsData[$name][$o[0]] = $o[1] ?? $o[0];
+		if ($opsData) {
+			foreach ($opsData as $ops) {
+				[$name, $values] = splitString($ops, ';');
+				
+				if (preg_match('/\bsetting::([\w\,]+)\b/', $values, $matches)) {
+					$setting = $matches[1] ?? false;
+					$params = explode(',', $setting);
+					$opsValues = $this->getSettings(...$params);
+					
+					if ($opsValues) {
+						foreach ($opsValues as $val => $title) {
+							$allOpsData[$name][$val] = $title ?? $val;
+						}
+					}
+				} else {
+					$opsValues = splitString($values, ',');
+					if ($opsValues) {
+						foreach ($opsValues as $optVal) {
+							$o = splitString($optVal, ':');
+							$allOpsData[$name][$o[0]] = $o[1] ?? $o[0];
+						}
+					}
 				}
 			}
 		}

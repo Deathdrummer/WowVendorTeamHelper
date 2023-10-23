@@ -59,7 +59,7 @@
 					new
 					variant="red"
 					class="w3rem"
-					action="{{$id}}RemoveRow:{{$setting}}.{{$row}}"
+					action="{{$id}}RemoveRow:{{$setting}}"
 					><i class="fa-solid fa-trash-can"></i></x-button>
 			</td>
 		@else

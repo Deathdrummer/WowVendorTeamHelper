@@ -141,6 +141,8 @@ class Settings {
 		
 		$settingValue = $setting->value;
 		
+		if (is_array($settingValue)) $settingValue = array_values($settingValue);
+		
 		if ($path) $setting->value = json_encode(data_set($settingValue, $path, $value), JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);
 		else $setting->value = is_array($value) ? json_encode($value, JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES) : $value;
 		if ($group) $setting->group = $group;
@@ -174,6 +176,8 @@ class Settings {
 			if (is_array($settingValue) && empty($settingValue)) {
 				return $setting->delete();
 			}
+			
+			if (is_array($settingValue)) $settingValue = array_values($settingValue);
 			
 			$setting->value = json_encode($settingValue, JSON_UNESCAPED_UNICODE);
 			return $setting->save();

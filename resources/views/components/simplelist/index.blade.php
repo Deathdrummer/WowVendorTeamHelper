@@ -130,7 +130,7 @@
 								<x-button
 									variant="red"
 									class="w3rem"
-									action="{{$id}}RemoveRow:{{$setting}}.{{$row}}"
+									action="{{$id}}RemoveRow:{{$setting}}"
 									title="Удалить"
 									><i class="fa-solid fa-trash-can"></i></x-button>									
 							</td>
@@ -230,6 +230,8 @@
 			//$.notify('Запись успешно удалена!');
 		} else {
 			
+			const rowIndex = $(btn).closest('tr').index();
+			
 			ddrPopup({
 				width: 400,
 				html: '<p class="color-red fz16px">Вы действительно хотите удалить запись</p>',
@@ -245,7 +247,7 @@
 					$(btn).closest('tr').find('input, textarea, select, button').ddrInputs('disable');
 					
 					axiosQuery('delete', 'api/settings', {
-						path: setting,
+						path: setting+'.'+rowIndex,
 					}, 'json').then(({data, error, status, headers}) => {
 						if (error) {
 							console.log(error);

@@ -514,15 +514,20 @@ class TimesheetController extends Controller {
 		]);
 		
 		$periodTitle = TimesheetPeriod::find($periodId)->title;
-		$map['commands'] = Command::all()->mapWithKeys(function($row) {
-			return [$row['id'] => $row];
-		})->toArray();
-		$map['regions'] = $settingsService->get('regions')->pluck('title', 'id')->toArray();
-		$ordersTypes = $settingsService->get('orders_types')->mapWithKeys(function($row) {
+		$map = [];
+		
+		$timezones = $settingsService->get('timezones')->pluck('region', 'id')->toArray();
+		$map['commands'] = Command::all()?->mapWithKeys(function($row) use($timezones) {
+			$row['region'] = (int)$timezones[$row['region_id']]; // здесь region - это EU US  и т.д. а $row['region_id'] - это  CET CEST EDT и т.д.
 			return [$row['id'] => $row];
 		})->toArray();
 		
-		//toLog($map);
+		$map['regions'] = $settingsService->get('regions')->pluck('title', 'id')->toArray();
+		
+		$ordersTypes = $settingsService->get('orders_types')?->mapWithKeys(function($row) {
+			return [$row['id'] => $row];
+		})->toArray();
+		
 		
 		$tsData = Timesheet::period($periodId)
 			->with('orders', function($query) {
@@ -543,10 +548,10 @@ class TimesheetController extends Controller {
 				}
 				$buildData[$day][$orderRow['order_type'] ?? 0]['commands'][$row['command_id'] ?? '-'] += 1;
 				
-				if (!isset($buildData[$day][$orderRow['order_type'] ?? 0]['regions'][$map['commands'][$row['command_id'] ?? '-']['region_id']])) {
-					$buildData[$day][$orderRow['order_type'] ?? 0]['regions'][$map['commands'][$row['command_id'] ?? '-']['region_id']] = 0;
+				if (!isset($buildData[$day][$orderRow['order_type'] ?? 0]['regions'][$map['commands'][$row['command_id'] ?? '-']['region']])) {
+					$buildData[$day][$orderRow['order_type'] ?? 0]['regions'][$map['commands'][$row['command_id'] ?? '-']['region']] = 0;
 				}
-				$buildData[$day][$orderRow['order_type'] ?? 0]['regions'][$map['commands'][$row['command_id'] ?? '-']['region_id']] += 1;
+				$buildData[$day][$orderRow['order_type'] ?? 0]['regions'][$map['commands'][$row['command_id'] ?? '-']['region']] += 1;
 				
 				if (!isset($buildData[$day][$orderRow['order_type'] ?? 0]['all'])) {
 					$buildData[$day][$orderRow['order_type'] ?? 0]['all'] = 0;
@@ -561,10 +566,10 @@ class TimesheetController extends Controller {
 				}
 				$buildData['all'][$orderRow['order_type'] ?? 0]['commands'][$row['command_id'] ?? '-'] += 1;
 				
-				if (!isset($buildData['all'][$orderRow['order_type'] ?? 0]['regions'][$map['commands'][$row['command_id'] ?? '-']['region_id']])) {
-					$buildData['all'][$orderRow['order_type'] ?? 0]['regions'][$map['commands'][$row['command_id'] ?? '-']['region_id']] = 0;
+				if (!isset($buildData['all'][$orderRow['order_type'] ?? 0]['regions'][$map['commands'][$row['command_id'] ?? '-']['region']])) {
+					$buildData['all'][$orderRow['order_type'] ?? 0]['regions'][$map['commands'][$row['command_id'] ?? '-']['region']] = 0;
 				}
-				$buildData['all'][$orderRow['order_type'] ?? 0]['regions'][$map['commands'][$row['command_id'] ?? '-']['region_id']] += 1;
+				$buildData['all'][$orderRow['order_type'] ?? 0]['regions'][$map['commands'][$row['command_id'] ?? '-']['region']] += 1;
 				
 				if (!isset($buildData['all'][$orderRow['order_type'] ?? 0]['all'])) {
 					$buildData['all'][$orderRow['order_type'] ?? 0]['all'] = 0;
@@ -572,10 +577,7 @@ class TimesheetController extends Controller {
 				$buildData['all'][$orderRow['order_type'] ?? 0]['all'] += 1;
 			}
 			
-			
 			ksort($buildData);
-			
-			//$buildData[$day][$row['command_id'] ?? '-'] = $ordersData;
 		}
 		
 		return response(view($viewPath.'.index', compact('buildData', 'periodTitle', 'map', 'ordersTypes')));

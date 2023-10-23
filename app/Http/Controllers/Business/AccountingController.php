@@ -25,8 +25,6 @@ class AccountingController extends Controller {
 		
 		$allPeriods = TimesheetPeriod::whereIn('id', $periodsIds)->pluck('title', 'id');
 		
-		
-		
 		$data = Timesheet::with(['orders' => function($q) {
 				$q->select('id', 'price');
 					/* ->where(function($v) {
@@ -38,8 +36,6 @@ class AccountingController extends Controller {
 			->whereIn('timesheet_period_id', $periodsIds)
 			->get();
 		
-		//toLog($data->toArray());
-
 		if (!$data) return response()->json(false);
 		
 		$timesheetCommand = $data->mapWithKeysMany(function($item) {
@@ -60,7 +56,6 @@ class AccountingController extends Controller {
 		});
 		
 		
-		
 		$map = [];
 		$data->each(function($row) use(&$map, $doprunOrders) {
 			$row->orders->each(function($order) use(&$map, $row, $doprunOrders) {
@@ -79,25 +74,20 @@ class AccountingController extends Controller {
 			
 		});
 		
-		//toLog($map);
-		
-		$test = [];
+		$report = [];
 		foreach ($map as $tsId => $periods) {
 			if (in_array($tsId, ['periods', 'total'])) {
-				$test[$tsId] = $periods;
+				$report[$tsId] = $periods;
 				continue;
 			}
 			foreach ($periods as $period => $sum) {
-				if (!isset($test[$timesheetCommand[$tsId]][$period])) $test[$timesheetCommand[$tsId]][$period] = 0;
-				$test[$timesheetCommand[$tsId]][$period] += $sum;
+				if (!isset($report[$timesheetCommand[$tsId]][$period])) $report[$timesheetCommand[$tsId]][$period] = 0;
+				$report[$timesheetCommand[$tsId]][$period] += $sum;
 			}
 		}
 		
-		//toLog($test);
+		$commands = Command::whereIn('id', array_keys($report))->get()->pluck('title', 'id');
 		
-		$commands = Command::whereIn('id', array_keys($test))->get()->pluck('title', 'id');
-		
-		return response(view($viewPath.'.report', compact('allPeriods', 'test', 'commands', 'timesheetCommand')));
+		return response(view($viewPath.'.report', compact('allPeriods', 'report', 'commands', 'timesheetCommand')));
 	}
-
 }

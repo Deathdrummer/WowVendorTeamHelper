@@ -27,7 +27,7 @@
 								>
 								<x-simplelist
 									setting="timezones"
-									fieldset="ID:w4rem|number|id|1,Временная зона:w10rem|text|timezone,Регион:w10rem|select|region,Смещение от МСК:w10rem|number|shift,Формат 24 ч.:w8rem|checkbox|format_24"
+									fieldset="ID:w6rem|number|id|1,Временная зона:w10rem|text|timezone,Регион:w10rem|select|region,Смещение от МСК:w10rem|number|shift,Формат 24 ч.:w8rem|checkbox|format_24"
 									options="region;setting::regions,id,title"
 									{{-- onRemove="removeCustomerAction" --}}
 									group="small"

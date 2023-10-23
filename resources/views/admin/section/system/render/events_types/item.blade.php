@@ -7,7 +7,7 @@
 			<x-select
 				name="difficult_id"
 				class="w100"
-				:options="$data['difficulties']"
+				:options="$data['difficulties'] ?? []"
 				choose="Сложность не выбрана"
 				empty="Нет сложностей"
 				value="{{$difficult_id}}"

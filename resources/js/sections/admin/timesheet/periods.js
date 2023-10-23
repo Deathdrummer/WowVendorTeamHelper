@@ -174,6 +174,11 @@ export async function timesheetPeriodsCrud(getLastTimesheetPeriods = null, times
 							destroy(id, function(stat) {
 								if (stat) {
 									remove(row);
+									
+									if (ddrStore(`${sectionName}-choosedPeriod`) == id) {
+										ddrStore(`${sectionName}-choosedPeriod`, false);
+									}
+									
 									$.notify('Период успешно удален!');
 									
 									if (choosedPeriod.value == id) {

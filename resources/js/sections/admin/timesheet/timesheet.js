@@ -22,6 +22,7 @@ export async function timesheetCrud(periodId = null, listType = null, regionId =
 	const search = $('#searchOrdersField').val() || null;
 	
 	
+	console.log(periodId);
 	
 	$.ddrCRUD({
 		container: '#timesheetList',
