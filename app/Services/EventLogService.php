@@ -309,7 +309,7 @@ class EventLogService {
 		];
 		
 		$this->sendToEventLog(LogEventsGroups::orders, LogEventsTypes::orderAttach, $info);
-		broadcast(new AttachOrderEvent($info))->toOthers();
+		broadcast(new AttachOrderEvent($info, $timesheet?->command_id))->toOthers();
 	}
 	
 	

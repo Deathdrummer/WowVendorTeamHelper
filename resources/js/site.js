@@ -71,12 +71,12 @@ $(function() {
 	
 	
 	//----------------------------------------------------------------------------------------- Прослушка
-	if (Echo.connector.channels['test_channel'] === undefined) {
+	if (Echo.connector.channels['notyfy_channel'] === undefined) {
 		listenTestChannel();
 	}
 	
 	function listenTestChannel() {
-		Echo.channel('test_channel').listen('.test', async ({data}) => {
+		Echo.channel('notyfy_channel').listen('.attachOrder', async ({data}) => {
 			console.log(data);
 			ringtone('notify2.mp3');
 		});

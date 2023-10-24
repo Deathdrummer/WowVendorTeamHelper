@@ -1,6 +1,6 @@
 <?php namespace App\Events;
 
-
+use App\Actions\GetUserSetting;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
@@ -12,14 +12,34 @@ class AttachOrderEvent implements ShouldBroadcastNow {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 	
 	private $data;
+	private $command;
     
 	
 	/**
      * Create a new event instance.
      */
-    public function __construct($data) {
+    public function __construct($data, $command) {
 		$this->data = $data;
+		$this->command = $command;
 	}
+	
+	
+	
+	/**
+	* Определить, условия трансляции события.
+	*
+	* @return bool
+	*/
+	public function broadcastWhen() {
+		$userSetting = app()->make(GetUserSetting::class);
+		if (!in_array($this->command, $userSetting('commands'))) return false;
+		return auth('site')->user()->can('notify-order-attached:site');
+	}
+
+
+
+
+
 
 
 
@@ -29,7 +49,7 @@ class AttachOrderEvent implements ShouldBroadcastNow {
      * @return array<int, \Illuminate\Broadcasting\Channel>
      */
     public function broadcastOn(): Channel {
-		return new Channel('test_channel');
+		return new Channel('notyfy_channel');
     }
 	
 	/**
@@ -38,7 +58,7 @@ class AttachOrderEvent implements ShouldBroadcastNow {
      * @return array<int, \Illuminate\Broadcasting\Channel>
      */
     public function broadcastAs(): string {
-		return 'test';
+		return 'attachOrder';
     }
 	
 	
@@ -50,5 +70,9 @@ class AttachOrderEvent implements ShouldBroadcastNow {
     public function broadcastWith(): array {
 		return ['data' => $this->data];
     }
+	
+	
+	
+	
 	
 }

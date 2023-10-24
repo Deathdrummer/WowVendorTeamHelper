@@ -20,9 +20,23 @@ class SendMessageEvent implements ShouldBroadcastNow {
     public function __construct($orders) {
 		$this->orders = $orders;
 	}
-
-
-
+	
+	
+	
+	/**
+	* Определить, условия трансляции события.
+	*
+	* @return bool
+	*/
+	public function broadcastWhen() {
+		return true;
+	}
+	
+	
+	
+	
+	
+	
     /**
      * Get the channels the event should broadcast on. (channel)
      *
