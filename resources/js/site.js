@@ -76,8 +76,8 @@ $(function() {
 	}
 	
 	function listenTestChannel() {
-		Echo.channel('notyfy_channel').listen('.attachOrder', async ({data}) => {
-			console.log(data);
+		Echo.channel('notyfy_channel').listen('.attachOrder', async ({action, info}) => {
+			console.log(action, info);
 			ringtone('notify2.mp3');
 		});
 	}

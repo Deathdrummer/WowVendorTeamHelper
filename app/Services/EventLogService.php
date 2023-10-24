@@ -309,7 +309,7 @@ class EventLogService {
 		];
 		
 		$this->sendToEventLog(LogEventsGroups::orders, LogEventsTypes::orderAttach, $info);
-		broadcast(new AttachOrderEvent($info, $timesheet?->command_id))->toOthers();
+		broadcast(new AttachOrderEvent('orderAttach', $info, $timesheet?->command_id))/* ->toOthers() */;
 	}
 	
 	
@@ -360,6 +360,7 @@ class EventLogService {
 		];
 		
 		$this->sendToEventLog(LogEventsGroups::orders, LogEventsTypes::orderMove, $info);
+		broadcast(new AttachOrderEvent('orderMove', $info, $newTimesheet?->command_id))/* ->toOthers() */;
 	}
 	
 	
@@ -405,6 +406,7 @@ class EventLogService {
 		];
 		
 		$this->sendToEventLog(LogEventsGroups::orders, LogEventsTypes::orderDoprun, $info);
+		broadcast(new AttachOrderEvent('orderDoprun', $info, $newTimesheet?->command_id))/* ->toOthers() */;
 	}
 	
 	

@@ -11,15 +11,17 @@ use Illuminate\Queue\SerializesModels;
 class AttachOrderEvent implements ShouldBroadcastNow {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 	
-	private $data;
+	private $action;
+	private $info;
 	private $command;
     
 	
 	/**
      * Create a new event instance.
      */
-    public function __construct($data, $command) {
-		$this->data = $data;
+    public function __construct($action, $info, $command) {
+		$this->action = $action;
+		$this->info = $info;
 		$this->command = $command;
 	}
 	
@@ -68,7 +70,10 @@ class AttachOrderEvent implements ShouldBroadcastNow {
      * @return array<int, \Illuminate\Broadcasting\Channel>
      */
     public function broadcastWith(): array {
-		return ['data' => $this->data];
+		return [
+			'action' => $this->action,
+			'info' => $this->info,
+		];
     }
 	
 	
