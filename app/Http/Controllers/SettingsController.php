@@ -1,5 +1,6 @@
 <?php namespace App\Http\Controllers;
 
+use App\Events\TestEvent;
 use App\Services\Settings;
 use Illuminate\Http\Request;
 

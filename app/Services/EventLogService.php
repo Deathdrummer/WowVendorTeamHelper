@@ -4,6 +4,7 @@ use App\Actions\LogEventAction;
 use App\Enums\LogEventsGroups;
 use App\Enums\LogEventsTypes;
 use App\Enums\OrderStatus;
+use App\Events\AttachOrderEvent;
 use App\Helpers\DdrDateTime;
 use App\Models\Command;
 use App\Models\ConfirmedOrder;
@@ -308,7 +309,7 @@ class EventLogService {
 		];
 		
 		$this->sendToEventLog(LogEventsGroups::orders, LogEventsTypes::orderAttach, $info);
-		
+		broadcast(new AttachOrderEvent($info))->toOthers();
 	}
 	
 	

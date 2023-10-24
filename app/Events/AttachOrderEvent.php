@@ -8,17 +8,17 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class SendMessageEvent implements ShouldBroadcastNow {
+class AttachOrderEvent implements ShouldBroadcastNow {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 	
-	private $orders;
+	private $data;
     
 	
 	/**
      * Create a new event instance.
      */
-    public function __construct($orders) {
-		$this->orders = $orders;
+    public function __construct($data) {
+		$this->data = $data;
 	}
 
 
@@ -29,7 +29,7 @@ class SendMessageEvent implements ShouldBroadcastNow {
      * @return array<int, \Illuminate\Broadcasting\Channel>
      */
     public function broadcastOn(): Channel {
-		return new Channel('send_message_channel');
+		return new Channel('test_channel');
     }
 	
 	/**
@@ -38,7 +38,7 @@ class SendMessageEvent implements ShouldBroadcastNow {
      * @return array<int, \Illuminate\Broadcasting\Channel>
      */
     public function broadcastAs(): string {
-		return 'incoming_orders';
+		return 'test';
     }
 	
 	
@@ -48,7 +48,7 @@ class SendMessageEvent implements ShouldBroadcastNow {
      * @return array<int, \Illuminate\Broadcasting\Channel>
      */
     public function broadcastWith(): array {
-		return ['orders' => $this->orders];
+		return ['data' => $this->data];
     }
 	
 }

@@ -69,4 +69,20 @@ $(function() {
 
 	
 	
+	
+	//----------------------------------------------------------------------------------------- Прослушка
+	if (Echo.connector.channels['test_channel'] === undefined) {
+		listenTestChannel();
+	}
+	
+	function listenTestChannel() {
+		Echo.channel('test_channel').listen('.test', async ({data}) => {
+			console.log(data);
+			ringtone('notify2.mp3');
+		});
+	}
+	
+	
+	
+	
 });
