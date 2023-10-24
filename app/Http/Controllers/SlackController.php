@@ -2,7 +2,9 @@
 
 use App\Actions\SendSlackMessageAction;
 use App\Events\SendMessageEvent;
+use App\Models\Command;
 use App\Models\Order;
+use App\Models\Timesheet;
 use App\Services\Business\OrderService;
 use App\Traits\Settingable;
 use Carbon\Carbon;
@@ -59,22 +61,55 @@ class SlackController extends Controller {
 	 */
 	public function send_message(Request $request, SendSlackMessageAction $sendMessage) {
 		[
-			'id'		=> $id,
-			'order_id'	=> $orderId,
+			'id'			=> $id,
+			'order_id'		=> $orderId,
+			'timesheet_id'	=> $timesheetId,
 		] = $request->validate([
-			'id'		=> 'required|numeric',
-			'order_id'	=> 'required|numeric',
+			'id'			=> 'required|numeric',
+			'order_id'		=> 'required|numeric',
+			'timesheet_id'	=> 'required|numeric',
 		]);
 		
 		$notifyButtons = $this->getSettings('slack_notifies', 'id', null, 'id:'.$id);
 		
+		
+		/* $data = $this->getSettings([[
+			'setting'	=> 'slack_notifies',
+			'key'		=> 'id',
+			'value'		=> null,
+			'filter'	=> 'id:'.$id
+		], [
+			'setting'	=> 
+			'key'		=> 
+			'value'		=> 	
+			'filter'	=> 
+		]]); */
+		
+		
 		if (!$data = $notifyButtons[$id] ?? null) return response()->json(false);
 		
-		$response = $sendMessage([
-			'order_id' => $orderId,
-			'webhook' => $data['webhook'] ?? null,
-			'message' => $data['message'] ?? null,
-		]);
+		
+		$webhooks = explode("\n", $data['webhook']);
+		if (!$webhooks) return response()->json(false);
+		
+		$timesheet = Timesheet::find($timesheetId);
+		$commands = Command::all()->pluck('id', 'title')->toArray();
+		
+		foreach ($webhooks as $webhook) {
+			$splitRow = preg_split('/\s+/', trim($webhook));
+			$webhook = isset($splitRow[1]) ? $splitRow[1] : ($splitRow[0] ?? null);
+			$command = isset($splitRow[1]) ? $commands[$splitRow[0]] : null;
+			
+			if (is_null($webhook) || (!is_null($command) && $timesheet?->command_id != $command) ) continue;
+			
+			$response = $sendMessage([
+				'order_id' => $orderId,
+				'webhook' => $webhook ?? null,
+				'message' => $data['message'] ?? null,
+			]);
+			
+			break;
+		}
 		
 		sleep((int)($data['timeout'] ?? 0));
 		

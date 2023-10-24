@@ -617,7 +617,7 @@ class OrdersController extends Controller {
 		$itemView = $viewPath.'.item';
 		
 		
-		return response()->view($viewPath.'.list', compact('list', 'itemView', 'timezones', 'statusesSettings', 'showType', 'notifyButtons', 'canAnySetStat'));
+		return response()->view($viewPath.'.list', compact('list', 'itemView', 'timezones', 'statusesSettings', 'showType', 'notifyButtons', 'canAnySetStat', 'timesheetId'));
 	}
 	
 	

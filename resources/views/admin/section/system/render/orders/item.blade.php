@@ -107,7 +107,7 @@
 				<x-buttons-group size="verysmall" gx="5">
 					@foreach($notifyButtons as $button)
 						<x-button
-							action="slackNotifyAction:{{$button['id'] ?? null}},{{$id}}"
+							action="slackNotifyAction:{{$button['id'] ?? null}},{{$id ?? null}},{{$timesheetId ?? null}}"
 							variant="{{$button['color'] ?? 'neutral'}}"
 							disabled="{{$is_hash_order ?? false}}"
 							enabled="{{getGuard() == 'admin' || !isset($button['permission']) || (getGuard() == 'site' && auth('site')->user()->can($button['permission']))}}"

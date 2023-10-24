@@ -424,13 +424,13 @@
 	
 	
 	
-	$.slackNotifyAction = async (btn, id, orderId) => {
+	$.slackNotifyAction = async (btn, id, orderId, timesheet_id) => {
 		const btnWait = $(btn).ddrWait({
 			iconHeight: '15px',
 			bgColor: '#f5f5f5b5',
 		});
 		
-		const {data, error, status, headers} = await ddrQuery.post('slack/send_message', {id, order_id: orderId});
+		const {data, error, status, headers} = await ddrQuery.post('slack/send_message', {id, order_id: orderId, timesheet_id});
 		
 		if (error) {
 			console.log(error);
