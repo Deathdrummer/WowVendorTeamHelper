@@ -15,7 +15,7 @@ window.ddrStore = function(key, value, append = false) {
 			data = strToType(data);
 			if (!_.isNull(data) && !isJson(data)) return;
 			data = isJson(data) ? JSON.parse(data) : (_.isArray(value) ? [] : {});
-			_.assign(data, value);
+			_.merge(data, value);
 			localStorage.setItem(key, JSON.stringify(data));
 		} else {
 			if (typeof value === 'object' && !_.isNull(value)) value = JSON.stringify(value);

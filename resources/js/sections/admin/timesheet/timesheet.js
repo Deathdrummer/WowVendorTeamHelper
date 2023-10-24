@@ -22,14 +22,19 @@ export async function timesheetCrud(periodId = null, listType = null, regionId =
 	const search = $('#searchOrdersField').val() || null;
 	
 	
-	console.log(periodId);
-	
 	$.ddrCRUD({
 		container: '#timesheetList',
 		itemToIndex: '[ddrtabletr]',
 		route: 'crud/timesheet',
 		params: {
-			list: {period_id: periodId, list_type: listType.value, region_id: regionId.value, command_id: _.get(ddrStore('timesheet-commands-filter'), regionId.value, null), search},
+			list: {
+				period_id: periodId,
+				list_type: listType.value,
+				region_id: regionId.value,
+				command_id: _.get(ddrStore('timesheet-commands-filter'), regionId.value+'.command', null),
+				event_type: _.get(ddrStore('timesheet-commands-filter'), regionId.value+'.eventtype', null),
+				search,
+			},
 			//create: {period_id: periodId},
 			store: {timesheet_period_id: periodId},
 			edit: {period_id: periodId},
@@ -46,25 +51,31 @@ export async function timesheetCrud(periodId = null, listType = null, regionId =
 			before() {
 				setParams('list', (params) => {
 					params.region_id = regionId.value;
-					params.command_id = _.get(ddrStore('timesheet-commands-filter'), regionId.value, null);
+					params.command_id = _.get(ddrStore('timesheet-commands-filter'), regionId.value+'.command', null);
+					params.event_type = _.get(ddrStore('timesheet-commands-filter'), regionId.value+'.eventtype', null);
 					return params;
 				});
 			},
 			after(headers) {
-				let regionCommands = JSON.parse(headers['x-region-commands'] || []);
+				buildColumnFilter('chooseTsCommand', 'command', '[tscommandschooser]', 'x-region-commands', 'ВСЕ КОМАНДЫ');
+				buildColumnFilter('chooseEventType', 'eventtype', '[eventstypesсhooser]', 'x-eventstypes', 'ВСЕ ТИПЫ');
 				
-				let html = '<div class="select small-select w100">';
-					html += '<select id="rooltest" oninput="$.chooseTsCommand(this)">';
-					let selectedAll = _.isNull(_.get(ddrStore('timesheet-commands-filter'), regionId.value, null)) ? ' selected' : '';
-					html += `<option${selectedAll} value="">ВСЕ КОМАНДЫ</option>`;
+				function buildColumnFilter(action = null, field = null, selector = null, data = null, allName = 'ВСЕ ЗАПИСИ') {
+					if (!field || !selector || !data) throw new Error('buildColumnFilter Ошибка! Переданы не все аргументы!');
+					let hData = JSON.parse(headers[data] || []);
+					let eTHtml = '<div class="select small-select w100">';
+						eTHtml += `<select id="rooltest" oninput="$.${action}(this)">`;
+						let selectedAll = _.isNull(_.get(ddrStore('timesheet-commands-filter'), regionId.value+'.'+field, null)) ? ' selected' : '';
+						eTHtml += `<option${selectedAll} value="">${allName}</option>`;
+						
+						for (const [cmdId, cmdTitle] of Object.entries(hData)) {
+							let selected = cmdId == _.get(ddrStore('timesheet-commands-filter'), regionId.value+'.'+field, null) ? ' selected' : '';
+							eTHtml += `<option${selected} value="${cmdId}">${cmdTitle}</option>`;
+						}
+						eTHtml += '</select></div>';
 					
-					for (const [cmdId, cmdTitle] of Object.entries(regionCommands)) {
-						let selected = cmdId == _.get(ddrStore('timesheet-commands-filter'), regionId.value, null) ? ' selected' : '';
-						html += `<option${selected} value="${cmdId}">${cmdTitle}</option>`;
-					}
-					html += '</select></div>';
-				
-				$('[tscommandshooser]').html(html);
+					$(selector).html(eTHtml);
+				}
 			},
 		});
 		
@@ -176,11 +187,32 @@ export async function timesheetCrud(periodId = null, listType = null, regionId =
 			
 			const {destroy} = $('#timesheetContainer').ddrWait();
 			
-			if (cmdId) ddrStore('timesheet-commands-filter', {[regionId.value]: cmdId}, true);
-			else ddrStore('timesheet-commands-filter', {[regionId.value]: null}, true);
+			if (cmdId) ddrStore('timesheet-commands-filter', {[regionId.value]: {command: cmdId}}, true);
+			else ddrStore('timesheet-commands-filter', {[regionId.value]: {command: null}}, true);
 			
 			setParams('list', (params) => {
 				params.command_id = cmdId || null;
+				return params;
+			});
+			
+			list(() => {
+				$('#timesheetTable').blockTable('buildTable');
+				destroy();
+			});
+		}
+		
+		
+		
+		$.chooseEventType = (select) => {
+			let evType = $(select).val();
+			
+			const {destroy} = $('#timesheetContainer').ddrWait();
+			
+			if (evType) ddrStore('timesheet-commands-filter', {[regionId.value]: {eventtype: evType}}, true);
+			else ddrStore('timesheet-commands-filter', {[regionId.value]: {eventtype: null}}, true);
+			
+			setParams('list', (params) => {
+				params.event_type = evType || null;
 				return params;
 			});
 			

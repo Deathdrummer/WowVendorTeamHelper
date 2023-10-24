@@ -78,15 +78,18 @@ class TimesheetController extends Controller {
 			'list_type'		=> 'required|string',
 			'region_id'		=> 'required|numeric',
 			'search'		=> 'exclude|nullable|string',
-			'command_id'	=> 'exclude|nullable|string',
+			'command_id'	=> 'exclude|nullable|numeric',
+			'event_type'	=> 'exclude|nullable|numeric',
 		]);
 		
 		
 		$timezones = $this->settings->get('timezones')->where('region', $regionId)->pluck('id')->toArray();
 		$regionCommands = Command::whereIn('region_id', $timezones)->get()->pluck('title', 'id');
+		$eventsTypes = EventType::all()->pluck('title', 'id');
 		
 		$search = $request->input('search');
 		$commandId = $request->input('command_id');
+		$eventType = $request->input('event_type');
 		
 		//toLog($regionId.' '.$commandId);
 		
@@ -129,6 +132,9 @@ class TimesheetController extends Controller {
 			->when($commandId, function($query) use($commandId) {
 				$query->where('command_id', $commandId);
 			})
+			->when($eventType, function($query) use($eventType) {
+				$query->where('event_type_id', $eventType);
+			})
 			->when($search, function($query) use($search) {
 				$query->whereHas('orders', function($q) use($search) {
 					$q->where('order', 'LIKE', '%'.$search.'%');
@@ -166,7 +172,7 @@ class TimesheetController extends Controller {
 		
 		$itemView = $viewPath.'.item';
 		
-		return $this->viewWithLastSortIndex(Timesheet::class, $viewPath.'.list', compact('list', 'itemView'), '_sort', ['x-region-commands' => $regionCommands]);
+		return $this->viewWithLastSortIndex(Timesheet::class, $viewPath.'.list', compact('list', 'itemView'), '_sort', ['x-region-commands' => $regionCommands, 'x-eventstypes' => $eventsTypes]);
     }
 	
 	
