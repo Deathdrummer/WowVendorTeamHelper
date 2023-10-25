@@ -9,6 +9,7 @@ use App\Services\Business\OrderService;
 use App\Traits\Settingable;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\RateLimiter;
 
 class SlackController extends Controller {
 	use Settingable;
@@ -59,7 +60,7 @@ class SlackController extends Controller {
 	 * @param 
 	 * @return 
 	 */
-	public function send_message(Request $request, SendSlackMessageAction $sendMessage) {
+	public function send_message(Request $request) {
 		[
 			'id'			=> $id,
 			'order_id'		=> $orderId,
@@ -71,27 +72,37 @@ class SlackController extends Controller {
 		]);
 		
 		$notifyButtons = $this->getSettings('slack_notifies', 'id', null, 'id:'.$id);
-		
-		
-		/* $data = $this->getSettings([[
-			'setting'	=> 'slack_notifies',
-			'key'		=> 'id',
-			'value'		=> null,
-			'filter'	=> 'id:'.$id
-		], [
-			'setting'	=> 
-			'key'		=> 
-			'value'		=> 	
-			'filter'	=> 
-		]]); */
-		
-		
 		if (!$data = $notifyButtons[$id] ?? null) return response()->json(false);
+		$response = null;
+		$executed = RateLimiter::attempt(
+			'send_message:'.$orderId,
+			$perMinute = 1,
+			function() use($data, $orderId, $timesheetId, &$response) {
+				$response = $this->_sendMessage($data, $orderId, $timesheetId);
+			},
+			$decayRate = (int)($data['timeout'] ?? 0),
+		);
 		
+		if (!$executed || !$response) return response()->json(false);
 		
+		$response['timeout'] = (int)($data['timeout'] ?? 0);
+		
+		return response()->json($response);
+	}
+	
+	
+	
+	
+	
+	/** Отправить сообщение в Slack
+	* @param 
+	* @return bool
+	*/
+	private function _sendMessage($data, $orderId, $timesheetId):bool {
 		$webhooks = explode("\n", $data['webhook']);
-		if (!$webhooks) return response()->json(false);
+		if (!$webhooks) return false;
 		
+		$sendMessage = app()->make(SendSlackMessageAction::class);
 		$timesheet = Timesheet::find($timesheetId);
 		$commands = Command::all()->pluck('id', 'title')->toArray();
 		
@@ -102,19 +113,14 @@ class SlackController extends Controller {
 			
 			if (is_null($webhook) || (!is_null($command) && $timesheet?->command_id != $command) ) continue;
 			
-			$response = $sendMessage([
+			return $sendMessage([
 				'order_id' => $orderId,
 				'webhook' => $webhook ?? null,
 				'message' => $data['message'] ?? null,
 			]);
-			
-			break;
 		}
 		
-		sleep((int)($data['timeout'] ?? 0));
-		
-		return response()->json($response);
+		return false;
 	}
-	
 
 }

@@ -340,11 +340,19 @@
 			return;
 		}
 		
-		if (data.status == 200) {
-			$.notify('Уведомление успешно отправлено!');
+		if (!data) {
+			$.notify('Невозможно отправить уведомление!', 'info');
+			btnWait.destroy();
+			return;
 		}
 		
-		btnWait.destroy();
+		
+		if (data.status == 200) {
+			$.notify('Уведомление успешно отправлено!');
+			setTimeout(() => {
+				btnWait.destroy();
+			}, (data?.timeout || 0) * 1000);
+		}
 	}
 	
 	
