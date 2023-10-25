@@ -110,7 +110,19 @@
 									<p class="color-gray-500 color-gray-600-hovered pointer color-green-active" onclick="$.copyToClipboard(event, '@{{date_msc}}')" title="Скопировать">@{{date_msc}} 		- Дата по МСК</p>
 								</code>
 							</div>
-							
+							<div class="col">
+								<p class="mb1rem">Количество записей подтвержденных заказов</p>
+								<x-input
+									type="number"
+									class="w8rem"
+									group="large"
+									label="записей"
+									min="3"
+									max="300"
+									showrows
+									setting="orders.confirm_past_limit"
+								/>
+							</div>
 						</div>
 					</div>
 				</div>

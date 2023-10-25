@@ -73,7 +73,7 @@ class SlackController extends Controller {
 		
 		$notifyButtons = $this->getSettings('slack_notifies', 'id', null, 'id:'.$id);
 		if (!$data = $notifyButtons[$id] ?? null) return response()->json(false);
-		$response = null;
+		$response = [];
 		$executed = RateLimiter::attempt(
 			'send_message:'.$orderId,
 			$perMinute = 1,

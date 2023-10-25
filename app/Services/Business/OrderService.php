@@ -144,7 +144,6 @@ class OrderService {
 			->with('lastComment', function($query) {
 				$query->with('author:id,name,pseudoname', 'adminauthor:id,name,pseudoname');
 			})
-			//->orderBy('datetime', 'desc')
 			->get()
 			->map(function($row) {
 				$timesheetToConfirm = $row->timesheet_to_confirm->first();

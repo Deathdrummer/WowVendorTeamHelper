@@ -237,7 +237,10 @@ class Order extends Model {
 					
 					$q->where('confirmed_orders.confirm', $confirm);
 				});
-        }, not: false);
+        }, not: false)->when($type == 'past', function($tq) use($type) {
+			$limit = $this->getSettings('orders.confirm_past_limit');
+			if ($limit) $tq->limit($limit);
+		});
 	}
 	
 	
