@@ -33,9 +33,21 @@ class AttachOrderEvent implements ShouldBroadcastNow {
 	* @return bool
 	*/
 	public function broadcastWhen() {
+		$user = auth('site')->user();
+		
+		$canAllCommands = $user?->can('razreshit-vse-komandy:site');
+		$canTakeNoifies = $user?->can('notify-order-attached:site');
+		
+		if (!$canTakeNoifies) return false;
+		
+		if ($canAllCommands) return true;
+
 		$userSetting = app()->make(GetUserSetting::class);
-		if (!in_array($this->command, $userSetting('commands'))) return false;
-		return auth('site')->user()->can('notify-order-attached:site');
+		$userCommands = $userSetting('commands') ?? [];
+		
+		if (in_array($this->command, $userCommands)) return true;
+		
+		return false;
 	}
 
 
