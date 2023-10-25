@@ -19,26 +19,41 @@ class SendSlackMessageAction {
 		$endpoint = $params['webhook'] ?? false;
 		if (!$endpoint) return response()->json(false);
 		
-		$timezones = $this->getSettings('timezones', 'id', 'timezone');
+		//$timezones = $this->getSettings('timezones', 'id', 'timezone');
+		
+		$settings = $this->getSettings([[
+			'setting'	=> 'timezones',
+			'key'		=> 'id',
+			'value'		=> 'timezone',
+		], [
+			'setting'	=> 'orders_types',
+			'key'		=> 'id',
+			'value'		=> 'title',
+		]]);
+		
+		$timezones = $settings['timezones'] ?? [];
+		$ordersTypes = $settings['orders_types'] ?? [];
 		
 		$orderData = Order::find($params['order_id']);
 		$message = $params['message'] ?? '';
 		
 		if (is_array($params['order_id'])) {
 			$messText = '';
-			$orderData->each(function($order) use(&$messText, $timezones, $message) {
+			$orderData->each(function($order) use(&$messText, $timezones, $ordersTypes, $message) {
 				$messText .= $this->buildMess([
-					'order' 	=> $order,
-					'message' 	=> $message,
-					'timezones' => $timezones,
+					'order' 		=> $order,
+					'message' 		=> $message,
+					'timezones' 	=> $timezones,
+					'ordersTypes' 	=> $ordersTypes,
 				]);
 				$messText .= "\n";
 			});
 		} else {
 			$messText = $this->buildMess([
-				'order' 	=> $orderData,
-				'message' 	=> $message,
-				'timezones' => $timezones,
+				'order' 		=> $orderData,
+				'message' 		=> $message,
+				'timezones' 	=> $timezones,
+				'ordersTypes' 	=> $ordersTypes,
 			]);
 		}
 		
@@ -68,6 +83,7 @@ class SendSlackMessageAction {
 		$timezone = $timezones[$orderData->timezone_id] ?? '---';
 		$status = OrderStatus::fromValue($orderData->status)->key;
 		$order = $orderData?->order ?? '---';
+		$orderType = $ordersTypes[$orderData->order_type] ?? '---';
 		$price = $orderData?->price ?? '---';
 		$serverName = $orderData?->server_name ?? '---';
 		$link = $orderData?->link ?? '---';
@@ -88,6 +104,7 @@ class SendSlackMessageAction {
 			'{{timezone}}' 		=> $timezone,
 			'{{status}}' 		=> $statuses[$status] ?? '-',
 			'{{order}}' 		=> $order,
+			'{{order_type}}'	=> $orderType,
 			'{{price}}' 		=> $price,
 			'{{server_name}}'	=> $serverName,
 			'{{link}}' 			=> $link,
