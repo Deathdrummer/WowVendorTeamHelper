@@ -85,7 +85,9 @@ class SlackController extends Controller {
 		
 		if (!$executed || !$response) return response()->json(false);
 		
+		toLog($response);
 		$response['timeout'] = (int)($data['timeout'] ?? 0);
+		toLog($response);
 		
 		return response()->json($response);
 	}
