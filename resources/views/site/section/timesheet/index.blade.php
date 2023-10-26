@@ -435,7 +435,6 @@
 		if (error) {
 			console.log(error);
 			$.notify(error?.message, 'error');
-			wait(false);
 			return;
 		}
 		
