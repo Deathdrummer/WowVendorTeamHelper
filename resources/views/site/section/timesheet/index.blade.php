@@ -446,7 +446,7 @@
 		}
 		
 		
-		if (data.status == 200) {
+		if (status == 200) {
 			$.notify('Уведомление успешно отправлено!');
 			setTimeout(() => {
 				btnWait.destroy();

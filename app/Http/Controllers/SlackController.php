@@ -73,7 +73,7 @@ class SlackController extends Controller {
 		
 		$notifyButtons = $this->getSettings('slack_notifies', 'id', null, 'id:'.$id);
 		if (!$data = $notifyButtons[$id] ?? null) return response()->json(false);
-		$response = [];
+		$response = false;
 		$executed = RateLimiter::attempt(
 			'send_message:'.$orderId,
 			$perMinute = 1,
@@ -85,11 +85,7 @@ class SlackController extends Controller {
 		
 		if (!$executed || !$response) return response()->json(false);
 		
-		toLog($response);
-		$response['timeout'] = (int)($data['timeout'] ?? 0);
-		toLog($response);
-		
-		return response()->json($response);
+		return response()->json(['timeout' => (int)($data['timeout'] ?? 0)]);
 	}
 	
 	
@@ -113,7 +109,7 @@ class SlackController extends Controller {
 			$webhook = isset($splitRow[1]) ? $splitRow[1] : ($splitRow[0] ?? null);
 			$command = isset($splitRow[1]) ? $commands[$splitRow[0]] : null;
 			
-			if (is_null($webhook) || (!is_null($command) && $timesheet?->command_id != $command) ) continue;
+			if (is_null($webhook) || (!is_null($command) && $timesheet?->command_id != $command)) continue;
 			
 			return $sendMessage([
 				'order_id' => $orderId,

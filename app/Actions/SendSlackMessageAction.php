@@ -128,12 +128,14 @@ class SendSlackMessageAction {
 	private function send($params = []) {
 		extract($params);
 		
-		return Curl::to($endpoint)
+		$resp = Curl::to($endpoint)
 			->withData(['payload' => json_encode(["text" => $message])])
 			->withHeaders(['Content-Type' => 'application/x-www-form-urlencoded'])
 			->withContentType('application/json')
 			//->returnResponseObject()
 			->post();
+		toLog($resp);
+		return !!($resp == 'ok');
 	}
 	
 	
