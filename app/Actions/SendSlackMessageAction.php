@@ -134,7 +134,7 @@ class SendSlackMessageAction {
 			->withContentType('application/json')
 			//->returnResponseObject()
 			->post();
-		toLog($resp);
+			
 		return !!($resp == 'ok');
 	}
 	
