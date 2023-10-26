@@ -1,6 +1,6 @@
 export async function confirmOrder(btn, id) {
 	const {data, error, status, headers} = await ddrQuery.put('crud/orders/confirm', {order_id: id});
-		
+	
 	if (error) {
 		console.log(error);
 		$.notify(error?.message, 'error');

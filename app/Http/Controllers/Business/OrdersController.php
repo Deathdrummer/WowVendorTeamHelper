@@ -159,7 +159,7 @@ class OrdersController extends Controller {
 		
 		// Доп. проверка отправки уведомления.
 		// Если не отправилось - то статус подтверждения отменяется
-		if ($sendMassResp !== 'ok') {
+		if (!$sendMassResp) {
 			$updateAction(ConfirmedOrder::class, ['order_id' => $orderId], ['confirmed_from_id' => null, 'confirm' => false, 'date_confirm' => null]);
 			return response()->json(false);
 		}
@@ -200,7 +200,7 @@ class OrdersController extends Controller {
 		
 		// Доп. проверка отправки уведомления.
 		// Если не отправилось - то статус подтверждения отменяется
-		if ($sendMassResp !== 'ok') {
+		if (!$sendMassResp) {
 			$toBackQuery = ConfirmedOrder::whereIn('order_id', $ordersIds);
 			$toBackQuery->update([
 				'confirmed_from_id' => null,

@@ -374,7 +374,7 @@
 			title: `Привязать заказ: <span class="color-gray">${orderNumber}</span> к событию`, // заголовок
 			width: 700, // ширина окна
 			disabledButtons: true,
-			buttons: ['ui.close', {action: 'relocateOrderAction', title: 'Привязать'}],
+			buttons: ['ui.close', {action: 'relocateOrderAction', title: 'Привязать'}, {action: 'relocateOrderFollowAction', title: 'Привязать и перейти'}],
 		});
 		
 		let regionId = $('#toTSRegionsChuser').find('[regionid][active]').attr('regionid');
@@ -386,7 +386,7 @@
 		
 		await loadTimesheets(date, regionId, period);
 		
-		enableButtons(true);
+		enableButtons('close');
 		
 		const initDate = date ? new Date(date) : new Date(Date.now());	
 		calendarObj = calendar('relocateOrderCalendar', {
@@ -486,6 +486,17 @@
 		
 		
 		$.relocateOrderAction = async () => {
+			await relocateOrder();
+			console.log(2);
+		}
+		
+		$.relocateOrderFollowAction = async () => {
+			await relocateOrder();
+		}
+		
+		
+		
+		async function relocateOrder() {
 			wait();
 			const formData = $(popper).ddrForm({order_id});
 			
@@ -510,7 +521,9 @@
 			}
 			
 			close();
+			console.log(1);
 		}
+		
 	}
 	
 	
