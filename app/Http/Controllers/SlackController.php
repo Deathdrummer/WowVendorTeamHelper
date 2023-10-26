@@ -75,7 +75,7 @@ class SlackController extends Controller {
 		if (!$data = $notifyButtons[$id] ?? null) return response()->json(false);
 		$response = false;
 		$executed = RateLimiter::attempt(
-			'send_message:'.$orderId,
+			'send_message:'.$orderId.'-'.$id,
 			$perMinute = 1,
 			function() use($data, $orderId, $timesheetId, &$response) {
 				$response = $this->_sendMessage($data, $orderId, $timesheetId);
