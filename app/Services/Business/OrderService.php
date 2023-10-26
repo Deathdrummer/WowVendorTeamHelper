@@ -27,7 +27,9 @@ class OrderService {
 			'search',
 		]);
 		
-		$perPage = $this->getSettings('orders.per_page');
+		
+		
+		$perPage = $this->getSettings('orders.per_page') ?? 20;
 		$currentPage = $request->input('current_page', 1);
 		
 		$orderFilter = app()->make(OrderFilter::class, compact('queryParams'));
