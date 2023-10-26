@@ -3,7 +3,7 @@
 		<x-table.head>
 			<x-table.tr class="h3rem">
 				<x-table.td class="w4rem h-center"><strong>№</strong></x-table.td>
-				@cando('nomer-zakaza-(klient):site')<x-table.td class="w8rem-4px"><strong>№ заказа</strong></x-table.td> @endcando
+				@cando('nomer-zakaza-(klient):site')<x-table.td class="w8rem-4px pointer color-neutral-hovered" onclick="$.copyOrdersColumn(this)"><strong>№ заказа</strong></x-table.td> @endcando
 				@cando('data-(klient):site')<x-table.td class="w19rem"><strong>Дата</strong></x-table.td> @endcando
 				@cando('tip-zakaza-(klient):site')<x-table.td class="w14rem"><strong>Тип заказа</strong></x-table.td> @endcando
 				@cando('dannye-(klient):site')<x-table.td class="w-auto"><strong>Данные</strong></x-table.td> @endcando
