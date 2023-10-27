@@ -41,7 +41,7 @@ class EventLogService {
 			'command_id' => ['data' => $command?->title ?? '-', 'title' => 'Команда'],
 			'timesheet_period_id' => ['data' => $timesheetPeriod?->title ?? '-', 'title' => 'Период'],
 			'event_type_id' => ['data' => $eventsTypes[$timesheet?->event_type_id] ?? '-', 'title' => 'Тип события'],
-			'datetime' => ['data' => $timesheet?->datetime ?? '-', 'title' => 'Дата и время', 'meta' => ['date' => 1]],
+			'datetime' => ['data' => $timesheet?->datetime ?? null, 'title' => 'Дата и время', 'meta' => ['date' => 1]],
 		];
 		
 		$this->sendToEventLog(LogEventsGroups::timesheets, LogEventsTypes::timesheetCreated, $info);
@@ -98,7 +98,7 @@ class EventLogService {
 			'command_id' => ['data' => $command?->title ?? '-', 'title' => 'Команда'],
 			'timesheet_period_id' => ['data' => $timesheetPeriod?->title ?? '-', 'title' => 'Период'],
 			'event_type_id' => ['data' => $eventsTypes[$timesheet?->event_type_id] ?? '-', 'title' => 'Тип события'],
-			'datetime' => ['data' => $timesheet?->datetime ?? '-', 'title' => 'Дата и время'],
+			'datetime' => ['data' => $timesheet?->datetime ?? null, 'title' => 'Дата и время'],
 		];
 		
 		$this->sendToEventLog(LogEventsGroups::timesheets, LogEventsTypes::timesheetRemoved, $info);
@@ -129,11 +129,10 @@ class EventLogService {
 		$timezone = $this->getTimezone($order?->timezone_id);
 		$dateMsc = $timezone ? DdrDateTime::shift($order?->date, (-1 * $timezone['shift'])) : null;
 		
-		//$timezone?->format_24
-		
 		$info = [
 			'id' => ['data' => $order?->id ?? '-', 'title' => 'ID заказа'],
 			'order' => ['data' => $order?->order ?? '-', 'title' => 'Номер заказа'],
+			'order_type' => ['data' => $order?->order_type_title ?? '-', 'title' => 'Тип заказа'],
 			'price' => ['data' => number_format($order?->price, 2, '.', ' ')  ?? '-', 'title' => 'Стоимость', 'meta' => ['symbal' => 'dollar']],
 			'server_name' => ['data' => $order?->server_name ?? '-', 'title' => 'Инвайт'],
 			'raw_data' => ['data' => $order?->raw_data ?? '-', 'title' => 'Данные'],
@@ -175,6 +174,7 @@ class EventLogService {
 		$info = [
 			'id' => $buildFields('id', 'ID заказа'),
 			'order' => $buildFields('order', 'Номер заказа'),
+			'order_type' => ['data' => $order?->order_type_title ?? '-', 'title' => 'Тип заказа'],
 			'price' => $buildFields('price', function($orig, $upd) {
 				$row['data'] = number_format($orig, 2, '.', ' ');
 				if ($upd) $row['updated'] = number_format($upd, 2, '.', ' ');
@@ -227,11 +227,12 @@ class EventLogService {
 		$info = [
 			'id' => ['data' => $order?->id ?? '-', 'title' => 'ID заказа'],
 			'order' => ['data' => $order?->order ?? '-', 'title' => 'Номер заказа'],
+			'order_type' => ['data' => $order?->order_type_title ?? '-', 'title' => 'Тип заказа'],
 			'price' => ['data' => number_format($order?->price, 2, '.', ' ')  ?? '-', 'title' => 'Стоимость', 'meta' => ['symbal' => 'dollar']],
 			'server_name' => ['data' => $order?->server_name ?? '-', 'title' => 'Инвайт'],
 			'raw_data' => ['data' => $order?->raw_data ?? '-', 'title' => 'Данные'],
 			'link' => ['data' => $order?->link ?? '-', 'title' => 'Ссылка'],
-			'date' => ['data' => $order?->date ?? '-', 'title' => 'Дата и время ориг.', 'meta' => ['date' => 1]],
+			'date' => ['data' => $order?->date ?? null, 'title' => 'Дата и время ориг.', 'meta' => ['date' => 1]],
 			'date_msc' => ['data' => $dateMsc, 'title' => 'Дата и время МСК', 'meta' => ['date' => 1]],
 			'timezone' => ['data' => $timezone['timezone'] ?? '-', 'title' => 'Временная зона'],
 			'old_status' => ['data' => $oldStatus, 'title' => 'Предыдущий статус'],
@@ -258,11 +259,12 @@ class EventLogService {
 		$info = [
 			'id' => ['data' => $order?->id ?? '-', 'title' => 'ID заказа'],
 			'order' => ['data' => $order?->order ?? '-', 'title' => 'Номер заказа'],
+			'order_type' => ['data' => $order?->order_type_title ?? '-', 'title' => 'Тип заказа'],
 			'price' => ['data' => number_format($order?->price, 2, '.', ' ')  ?? '-', 'title' => 'Стоимость', 'meta' => ['symbal' => 'dollar']],
 			'server_name' => ['data' => $order?->server_name ?? '-', 'title' => 'Инвайт'],
 			'raw_data' => ['data' => $order?->raw_data ?? '-', 'title' => 'Данные'],
 			'link' => ['data' => $order?->link ?? '-', 'title' => 'Ссылка'],
-			'date' => ['data' => $order?->date ?? '-', 'title' => 'Дата и время ориг.', 'meta' => ['date' => 1]],
+			'date' => ['data' => $order?->date ?? null, 'title' => 'Дата и время ориг.', 'meta' => ['date' => 1]],
 			'date_msc' => ['data' => $dateMsc, 'title' => 'Дата и время МСК', 'meta' => ['date' => 1]],
 			'timezone' => ['data' => $timezone['timezone'] ?? '-', 'title' => 'Временная зона'],
 			'old_status' => ['data' => $oldStatus, 'title' => 'Предыдущий статус'],
@@ -294,11 +296,12 @@ class EventLogService {
 		$info = [
 			'id' => ['data' => $order?->id ?? '-', 'title' => 'ID заказа'],
 			'order' => ['data' => $order?->order ?? '-', 'title' => 'Номер заказа'],
+			'order_type' => ['data' => $order?->order_type_title ?? '-', 'title' => 'Тип заказа'],
 			'price' => ['data' => number_format($order?->price, 2, '.', ' ')  ?? '-', 'title' => 'Стоимость', 'meta' => ['symbal' => 'dollar']],
 			'server_name' => ['data' => $order?->server_name ?? '-', 'title' => 'Инвайт'],
 			'raw_data' => ['data' => $order?->raw_data ?? '-', 'title' => 'Данные'],
 			'link' => ['data' => $order?->link ?? '-', 'title' => 'Ссылка'],
-			'date' => ['data' => $order?->date ?? '-', 'title' => 'Дата и время ориг.', 'meta' => ['date' => 1]],
+			'date' => ['data' => $order?->date ?? null, 'title' => 'Дата и время ориг.', 'meta' => ['date' => 1]],
 			'date_msc' => ['data' => $dateMsc, 'title' => 'Дата и время МСК', 'meta' => ['date' => 1]],
 			'timezone' => ['data' => $timezone['timezone'] ?? '-', 'title' => 'Временная зона'],
 			'old_status' => ['data' => $oldStatus, 'title' => 'Предыдущий статус'],
@@ -345,11 +348,12 @@ class EventLogService {
 		$info = [
 			'id' => ['data' => $order?->id ?? '-', 'title' => 'ID заказа'],
 			'order' => ['data' => $order?->order ?? '-', 'title' => 'Номер заказа'],
+			'order_type' => ['data' => $order?->order_type_title ?? '-', 'title' => 'Тип заказа'],
 			'price' => ['data' => number_format($order?->price, 2, '.', ' ')  ?? '-', 'title' => 'Стоимость', 'meta' => ['symbal' => 'dollar']],
 			'server_name' => ['data' => $order?->server_name ?? '-', 'title' => 'Инвайт'],
 			'raw_data' => ['data' => $order?->raw_data ?? '-', 'title' => 'Данные'],
 			'link' => ['data' => $order?->link ?? '-', 'title' => 'Ссылка'],
-			'date' => ['data' => $order?->date ?? '-', 'title' => 'Дата и время ориг.', 'meta' => ['date' => 1]],
+			'date' => ['data' => $order?->date ?? null, 'title' => 'Дата и время ориг.', 'meta' => ['date' => 1]],
 			'date_msc' => ['data' => $dateMsc, 'title' => 'Дата и время МСК', 'meta' => ['date' => 1]],
 			'timezone' => ['data' => $timezone['timezone'] ?? '-', 'title' => 'Временная зона'],
 			'statuses' => ['data' => $oldStatus, 'title' => 'Статус заказа'],
@@ -392,11 +396,12 @@ class EventLogService {
 		$info = [
 			'id' => ['data' => $order?->id ?? '-', 'title' => 'ID заказа'],
 			'order' => ['data' => $order?->order ?? '-', 'title' => 'Номер заказа'],
+			'order_type' => ['data' => $order?->order_type_title ?? '-', 'title' => 'Тип заказа'],
 			'price' => ['data' => number_format($order?->price, 2, '.', ' ')  ?? '-', 'title' => 'Стоимость', 'meta' => ['symbal' => 'dollar']],
 			'server_name' => ['data' => $order?->server_name ?? '-', 'title' => 'Инвайт'],
 			'raw_data' => ['data' => $order?->raw_data ?? '-', 'title' => 'Данные'],
 			'link' => ['data' => $order?->link ?? '-', 'title' => 'Ссылка'],
-			'date' => ['data' => $order?->date ?? '-', 'title' => 'Дата и время ориг.', 'meta' => ['date' => 1]],
+			'date' => ['data' => $order?->date ?? null, 'title' => 'Дата и время ориг.', 'meta' => ['date' => 1]],
 			'date_msc' => ['data' => $dateMsc, 'title' => 'Дата и время МСК', 'meta' => ['date' => 1]],
 			'timezone' => ['data' => $timezone['timezone'] ?? '-', 'title' => 'Временная зона'],
 			
@@ -431,11 +436,12 @@ class EventLogService {
 		$info = [
 			'id' => ['data' => $order?->id ?? '-', 'title' => 'ID заказа'],
 			'order' => ['data' => $order?->order ?? '-', 'title' => 'Номер заказа'],
+			'order_type' => ['data' => $order?->order_type_title ?? '-', 'title' => 'Тип заказа'],
 			'price' => ['data' => number_format($order?->price, 2, '.', ' ')  ?? '-', 'title' => 'Стоимость', 'meta' => ['symbal' => 'dollar']],
 			'server_name' => ['data' => $order?->server_name ?? '-', 'title' => 'Инвайт'],
 			'raw_data' => ['data' => $order?->raw_data ?? '-', 'title' => 'Данные'],
 			'link' => ['data' => $order?->link ?? '-', 'title' => 'Ссылка'],
-			'date' => ['data' => $order?->date ?? '-', 'title' => 'Дата и время ориг.', 'meta' => ['date' => 1]],
+			'date' => ['data' => $order?->date ?? null, 'title' => 'Дата и время ориг.', 'meta' => ['date' => 1]],
 			'date_msc' => ['data' => $dateMsc, 'title' => 'Дата и время МСК', 'meta' => ['date' => 1]],
 			'timezone' => ['data' => $timezone['timezone'] ?? '-', 'title' => 'Временная зона'],
 			
@@ -473,11 +479,12 @@ class EventLogService {
 		$info = [
 			'id' => ['data' => $order?->id ?? '-', 'title' => 'ID заказа'],
 			'order' => ['data' => $order?->order ?? '-', 'title' => 'Номер заказа'],
+			'order_type' => ['data' => $order?->order_type_title ?? '-', 'title' => 'Тип заказа'],
 			'price' => ['data' => number_format($order?->price, 2, '.', ' ')  ?? '-', 'title' => 'Стоимость', 'meta' => ['symbal' => 'dollar']],
 			'server_name' => ['data' => $order?->server_name ?? '-', 'title' => 'Инвайт'],
 			'raw_data' => ['data' => $order?->raw_data ?? '-', 'title' => 'Данные'],
 			'link' => ['data' => $order?->link ?? '-', 'title' => 'Ссылка'],
-			'date' => ['data' => $order?->date ?? '-', 'title' => 'Дата и время ориг.', 'meta' => ['date' => 1]],
+			'date' => ['data' => $order?->date ?? null, 'title' => 'Дата и время ориг.', 'meta' => ['date' => 1]],
 			'date_msc' => ['data' => $dateMsc, 'title' => 'Дата и время МСК', 'meta' => ['date' => 1]],
 			'timezone' => ['data' => $timezone['timezone'] ?? '-', 'title' => 'Временная зона'],
 			
@@ -528,11 +535,12 @@ class EventLogService {
 		$info = [
 			'id' => ['data' => $order?->id ?? '-', 'title' => 'ID заказа'],
 			'order' => ['data' => $order?->order ?? '-', 'title' => 'Номер заказа'],
+			'order_type' => ['data' => $order?->order_type_title ?? '-', 'title' => 'Тип заказа'],
 			'price' => ['data' => number_format($order?->price, 2, '.', ' ')  ?? '-', 'title' => 'Стоимость', 'meta' => ['symbal' => 'dollar']],
 			'server_name' => ['data' => $order?->server_name ?? '-', 'title' => 'Инвайт'],
 			'raw_data' => ['data' => $order?->raw_data ?? '-', 'title' => 'Данные'],
 			'link' => ['data' => $order?->link ?? '-', 'title' => 'Ссылка'],
-			'date' => ['data' => $order?->date ?? '-', 'title' => 'Дата и время ориг.', 'meta' => ['date' => 1]],
+			'date' => ['data' => $order?->date ?? null, 'title' => 'Дата и время ориг.', 'meta' => ['date' => 1]],
 			'date_msc' => ['data' => $dateMsc, 'title' => 'Дата и время МСК', 'meta' => ['date' => 1]],
 			'timezone' => ['data' => $timezone['timezone'] ?? '-', 'title' => 'Временная зона'],
 		];
@@ -567,11 +575,12 @@ class EventLogService {
 		$info = [
 			'id' => ['data' => $order?->id ?? '-', 'title' => 'ID заказа'],
 			'order' => ['data' => $order?->order ?? '-', 'title' => 'Номер заказа'],
+			'order_type' => ['data' => $order?->order_type_title ?? '-', 'title' => 'Тип заказа'],
 			'price' => ['data' => number_format($order?->price, 2, '.', ' ')  ?? '-', 'title' => 'Стоимость', 'meta' => ['symbal' => 'dollar']],
 			'server_name' => ['data' => $order?->server_name ?? '-', 'title' => 'Инвайт'],
 			'raw_data' => ['data' => $order?->raw_data ?? '-', 'title' => 'Данные'],
 			'link' => ['data' => $order?->link ?? '-', 'title' => 'Ссылка'],
-			'date' => ['data' => $order?->date ?? '-', 'title' => 'Дата и время ориг.', 'meta' => ['date' => 1]],
+			'date' => ['data' => $order?->date ?? null, 'title' => 'Дата и время ориг.', 'meta' => ['date' => 1]],
 			'date_msc' => ['data' => $dateMsc, 'title' => 'Дата и время МСК', 'meta' => ['date' => 1]],
 			'timezone' => ['data' => $timezone['timezone'] ?? '-', 'title' => 'Временная зона'],
 			'status' => ['data' => $oldStatus, 'title' => 'Предыдущий статус'],

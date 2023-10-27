@@ -106,11 +106,17 @@ window.calendar = function(calendarId = null, params = {}) {
 window.ddrDateBuilder = function(dateStr = false) {
 	const monthNames = {1: 'января', 2: 'февраля', 3: 'марта', 4: 'апреля', 5: 'мая', 6: 'июня', 7: 'июля', 8: 'августа', 9: 'сентября', 10: 'октября', 11: 'ноября', 12: 'декабря'};
 	const monthNamesShort = {1: 'янв', 2: 'фев', 3: 'мар', 4: 'апр', 5: 'мая', 6: 'июн', 7: 'июл', 8: 'авг', 9: 'сен', 10: 'окт', 11: 'ноя', 12: 'дек'};
-	const d = dateStr ? new Date(dateStr) : new Date();
+	let d = dateStr ? new Date(dateStr) : new Date();
+	
 	
 	const year = {
 		short: d.getFullYear().toString().substr(-2),
 		full: d.getFullYear(),
+	};
+	
+	const yearUTC = {
+		short: d.getUTCFullYear().toString().substr(-2),
+		full: d.getUTCFullYear(),
 	};
 	
 	const month = {
@@ -120,19 +126,44 @@ window.ddrDateBuilder = function(dateStr = false) {
 		namedShort: monthNamesShort[d.getMonth() + 1],
 	};
 	
+	const monthUTC = {
+		short: d.getUTCMonth() + 1,
+		zero: addZero(d.getUTCMonth() + 1),
+		named: monthNames[d.getUTCMonth() + 1],
+		namedShort: monthNamesShort[d.getUTCMonth() + 1],
+	};
+	
 	const day = {
 		short: d.getDate(),
 		zero: addZero(d.getDate()),
 	};
+	
+	const dayUTC = {
+		short: d.getUTCDate(),
+		zero: addZero(d.getUTCDate()),
+	};
+	
+	
+	const hours = {
+		short: d.getHours(),
+		zero: addZero(d.getHours()),
+	};
+	
+	const hoursUTC = {
+		short: d.getUTCHours(),
+		zero: addZero(d.getUTCHours()),
+	};
+	
+	
 	
 	const minutes = {
 		short: d.getMinutes(),
 		zero: addZero(d.getMinutes()),
 	};
 	
-	const hours = {
-		short: d.getHours(),
-		zero: addZero(d.getHours()),
+	const minutesUTC = {
+		short: d.getUTCMinutes(),
+		zero: addZero(d.getUTCMinutes()),
 	};
 	
 	const seconds = {
@@ -140,13 +171,28 @@ window.ddrDateBuilder = function(dateStr = false) {
 		zero: addZero(d.getSeconds()),
 	};
 	
+	
+	const secondsUTC = {
+		short: d.getUTCSeconds(),
+		zero: addZero(d.getUTCSeconds()),
+	};
+	
+	
+	
+	
 
 	return {
 		year,
+		yearUTC,
 		month,
+		monthUTC,
 		day,
+		dayUTC,
 		hours,
+		hoursUTC,
 		minutes,
+		minutesUTC,
 		seconds,
+		secondsUTC,
 	};
 };

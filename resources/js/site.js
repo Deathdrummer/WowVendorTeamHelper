@@ -77,7 +77,17 @@ $(function() {
 	
 	function listenTestChannel() {
 		Echo.channel('notyfy_channel').listen('.attachOrder', async ({action, info}) => {
-			console.log(action, info);
+			let date = ddrDateBuilder(info?.date_msc?.data, true),
+				buildedDate = `${date?.dayUTC?.short} ${date?.monthUTC?.named} ${date?.yearUTC?.full} в ${date?.hoursUTC?.zero}:${date?.minutesUTC?.zero}`;
+			
+			if (action == 'orderAttach') {
+				$.notify(`Заказ прикреплен к событию: ${info?.event_type?.data} / ${info?.order_type?.data} / ${buildedDate}`);
+			} else if (action == 'orderMove') {
+				$.notify(`Заказ перенесен в другое событие: ${info?.event_type?.data} / ${info?.order_type?.data} / ${buildedDate}`);
+			} else if (action == 'orderDoprun') {
+				$.notify(`Допран заказа: ${info?.event_type?.data} / ${info?.order_type?.data} / ${buildedDate}`);
+			}
+			
 			ringtone('notify2.mp3');
 		});
 	}

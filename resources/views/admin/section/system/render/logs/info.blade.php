@@ -24,6 +24,8 @@
 							@else
 								<p>{{$row['data']}}</p>
 							@endif
+						@else
+							<p>-</p>
 						@endif
 					</td>
 					<td>
@@ -39,6 +41,8 @@
 							@else
 								<p>{{$row['updated']}}</p>
 							@endif
+						@else
+							<p>-</p>
 						@endif
 					</td>
 				</tr>
@@ -70,6 +74,8 @@
 							@else
 								<p>{{$row['data']}}</p>
 							@endif
+						@else
+							<p>-</p>
 						@endif
 					</td>
 				</tr>
