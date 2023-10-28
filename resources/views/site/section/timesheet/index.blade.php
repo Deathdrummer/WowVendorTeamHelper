@@ -164,8 +164,8 @@
 	
 	
 	$.timesheetGetOrders = (row, timesheetId) => {
-		if ($(event.target).closest('[timesheetrulesblock]').length) return false;
-		timesheetOrders(row, timesheetId);
+		if (event instanceof PointerEvent && $(event.target).closest('[timesheetrulesblock]').length) return false;
+		timesheetOrders(row, timesheetId, event instanceof ProgressEvent);
 	}
 	
 	
@@ -201,8 +201,8 @@
 		timesheetCrudList.value({
 			list_type: listType.value,
 			region_id: regionId.value,
-			command_id: _.get(ddrStore('timesheet-commands-filter'), regionId.value+'.command', null),
-			event_type: _.get(ddrStore('timesheet-commands-filter'), regionId.value+'.eventtype', null),
+			command_id: _.get(ddrStore('timesheet-filter'), regionId.value+'.command', null),
+			event_type: _.get(ddrStore('timesheet-filter'), regionId.value+'.eventtype', null),
 		}, () => {
 			$('#timesheetTable').blockTable('buildTable');
 			timesheetContainerWait.destroy();
@@ -289,7 +289,11 @@
 	
 	// Автовыбор предыдущего выбранного периода
 	if (choosedPeriod.value) {
-		buildTimesheet();
+		buildTimesheet(() => {
+			const openTsId = ddrStore('open-ts');
+			$('#timesheetList').find(`[tsevent="${openTsId}"]`).trigger(tapEvent);
+			ddrStore('open-ts', false);
+		});
 	}
 	
 	

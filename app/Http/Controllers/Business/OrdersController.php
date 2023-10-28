@@ -510,12 +510,13 @@ class OrdersController extends Controller {
 			'comment'		=> $comment,
 			'order_id'		=> $orderId,
 			'timesheet_id'	=> $timesheetId,
+			'withFollow'	=> $withFollow,
 		] = $request->validate([
 			'comment'		=> 'nullable|string',
 			'order_id'		=> 'required|numeric',
 			'timesheet_id'	=> 'required|numeric',
+			'withFollow'	=> 'nullable|boolean',
 		]);
-		
 		
 		$timesheet = Timesheet::find($timesheetId);
 		//$timesheet->orders()->detach([$orderId]);
@@ -535,8 +536,58 @@ class OrdersController extends Controller {
 			$addOrderComment($orderId, $comment);
 		}
 		
-		return response()->json(true);
+		if (!$withFollow) return response()->json(true);
+		
+		$data = $this->_getTsInfo($timesheetId);
+		return response()->json($data);
 	}
+	
+	
+	
+	/**
+	* 
+	* @param 
+	* @return array|null
+	*/
+	private function _getTsInfo($timesheetId = null):array|null {
+		if (!$timesheet = Timesheet::find($timesheetId)) return null;
+		
+		$command = Command::find($timesheet?->command_id);
+		
+		$region = (int)$this->getSettingsCollect('timezones')->where('id', $command?->region_id)->value('region');
+		
+		$timesheetToPastHours = $this->getSettings('timesheet.to_past_hours', 0); // это настройка: Отправка в прошедшие спустя часов
+		$timePoint = DdrDateTime::shift(now(), 'TZ')->addHours(-1 * $timesheetToPastHours);
+		
+		
+		// ->addHours(-1 * $timesheetToPastHours) это настройка: Отправка в прошедшие спустя часов
+		
+		
+		// $command?->region_id // регион CEST EDT
+		
+		
+		// $timesheet?->timesheet_period_id // период
+		// $region US EU
+		// $timesheet?->event_type_id // тип события (для фильтра) 
+		// $timesheet?->command_id // комнда (для фильтра) 
+		$listType = match(true) {
+			$timesheet?->datetime >= $timePoint	=> 'actual',
+			$timesheet?->datetime < $timePoint	=> 'past',
+			default	=> 'actual',
+		};
+		
+		
+		return [
+			'period'				=> $timesheet?->timesheet_period_id ?? null,
+			'region'				=> (int)($region ?? null),
+			'listType'				=> $listType,
+			'filterEventTypeId'		=> $timesheet?->event_type_id ?? null,
+			'filterCommandId'		=> $timesheet?->command_id ?? null,
+		];
+	}
+	
+	
+	
 	
 	
 	

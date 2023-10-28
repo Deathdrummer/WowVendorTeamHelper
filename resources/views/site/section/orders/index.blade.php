@@ -487,18 +487,18 @@
 		
 		$.relocateOrderAction = async () => {
 			await relocateOrder();
-			console.log(2);
 		}
 		
 		$.relocateOrderFollowAction = async () => {
-			await relocateOrder();
+			await relocateOrder(true);
+			$('[loadsection="timesheet"]').trigger(tapEvent);
 		}
 		
 		
 		
-		async function relocateOrder() {
+		async function relocateOrder(withFollow = null) {
 			wait();
-			const formData = $(popper).ddrForm({order_id});
+			const formData = $(popper).ddrForm({order_id, withFollow});
 			
 			const {data, error, status, headers} = await ddrQuery.post('client/orders/relocate', formData);
 			
@@ -520,8 +520,17 @@
 				$.notify(`Не удалось перенести заказ «${orderNumber}» в выбранное событие!`, 'error');
 			}
 			
+			
+			if (data && withFollow) {
+				ddrStore('timesheet-choosedPeriod', data?.period);
+				ddrStore('eventsRegion', data?.region);
+				ddrStore('listType', data?.listType);
+				ddrStore('timesheet-filter', {[regionId.value]: {command: data?.filterEventTypeId}}, true);
+				ddrStore('timesheet-filter', {[regionId.value]: {eventtype: data?.filterCommandId}}, true);
+				ddrStore('open-ts', formData?.timesheet_id);
+			}
+				
 			close();
-			console.log(1);
 		}
 		
 	}

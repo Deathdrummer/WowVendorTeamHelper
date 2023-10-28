@@ -1,6 +1,6 @@
 const viewsPath = 'admin.section.system.render.orders';
 	
-export async function timesheetOrders(row = null, timesheetId = null) {
+export async function timesheetOrders(row = null, timesheetId = null, scroll = false) {
 	if (!timesheetId) throw new Error('Ошибка! timesheetOrders -> не передан timesheetId');
 	
 	//const row = $(btn).closest('[ddrtabletr]');
@@ -9,7 +9,7 @@ export async function timesheetOrders(row = null, timesheetId = null) {
 		$('#timesheetList').find('[ddrtabletr][opened]').removeAttrib('opened');
 		$('#timesheetList').find('div[timesheetorders]').remove();
 		$(row).setAttrib('opened');
-		await buildOrdersTable(row, timesheetId);
+		await buildOrdersTable(row, timesheetId, null, scroll);
 		
 	} else {
 		$(row).removeAttrib('opened');
@@ -20,16 +20,20 @@ export async function timesheetOrders(row = null, timesheetId = null) {
 
 
 
+		
+			
+		
 
 
 
-export async function buildOrdersTable(row = null, timesheetId = null, cb = null) {
+
+export async function buildOrdersTable(row = null, timesheetId = null, cb = null, scroll = false) {
 	if (_.isNull(row) || _.isNull(timesheetId)) {
 		console.error('buildOrdersTable ошибка -> переданы не все аргументы!');
 		return;
 	}
 	
-	_buildOrdersTable();
+	_buildOrdersTable(scroll);
 	
 	$.editTimesheetOrder = async (btn, orderId = null, orderNumber = null, timesheetId = null) => {
 		if (_.isNull(orderId)) return false;
@@ -370,7 +374,7 @@ export async function buildOrdersTable(row = null, timesheetId = null, cb = null
 	
 	
 	
-	async function _buildOrdersTable() {
+	async function _buildOrdersTable(scroll = false) {
 		if ($(row).siblings('[timesheetorders]').length == 0) $(row).after('<div class="timesheetorders minh7rem-5px" timesheetorders></div>');
 			
 		const ordersWait = $(row).siblings('[timesheetorders]').ddrWait({
@@ -398,6 +402,12 @@ export async function buildOrdersTable(row = null, timesheetId = null, cb = null
 		
 		const rowsCount = Number($(data).find('[ddrtablebody] [ddrtabletr]').length);
 		let count = $(row).find('[orderscount]').text(rowsCount);
+		
+		if (scroll) {
+			let rowHeight = $('#timesheetList').find(`[tsevent]`).first().outerHeight(),
+				rowIndex = $('#timesheetList').find(`[tsevent][opened]`).index();
+			if (rowIndex > 0) $('#timesheetList').scrollTop(rowIndex * rowHeight);
+		}
 		
 		if (_.isFunction(cb)) cb();
 	}

@@ -82,6 +82,8 @@ class TimesheetController extends Controller {
 			'event_type'	=> 'exclude|nullable|numeric',
 		]);
 		
+		toLog($request->all());
+		
 		
 		$timezones = $this->settings->get('timezones')->where('region', $regionId)->pluck('id')->toArray();
 		$regionCommands = Command::whereIn('region_id', $timezones)->get()->pluck('title', 'id');

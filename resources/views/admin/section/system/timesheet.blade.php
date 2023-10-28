@@ -167,7 +167,7 @@
 	
 	
 	$.timesheetGetOrders = (row, timesheetId) => {
-		if ($(event.target).closest('[timesheetrulesblock]').length) return false;
+		if (event && $(event.target).closest('[timesheetrulesblock]').length) return false;
 		timesheetOrders(row, timesheetId);
 	}
 	
@@ -203,8 +203,8 @@
 		timesheetCrudList.value({
 			list_type: listType.value,
 			region_id: regionId.value,
-			command_id: _.get(ddrStore('timesheet-commands-filter'), regionId.value+'.command', null),
-			event_type: _.get(ddrStore('timesheet-commands-filter'), regionId.value+'.eventtype', null),
+			command_id: _.get(ddrStore('timesheet-filter'), regionId.value+'.command', null),
+			event_type: _.get(ddrStore('timesheet-filter'), regionId.value+'.eventtype', null),
 		}, () => {
 			$('#timesheetTable').blockTable('buildTable');
 			timesheetContainerWait.destroy();

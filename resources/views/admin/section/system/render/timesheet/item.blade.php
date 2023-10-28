@@ -1,4 +1,4 @@
-<x-table.tr class="h4rem pointer noselect bg-light-hovered" onclick="$.timesheetGetOrders(this, {{$id}})">
+<x-table.tr class="h4rem pointer noselect bg-light-hovered" onclick="$.timesheetGetOrders(this, {{$id}})" tsevent="{{$id}}">
 	<x-table.td>
 		<p>{{DdrDateTime::date($datetime)}}</p>
 	</x-table.td>

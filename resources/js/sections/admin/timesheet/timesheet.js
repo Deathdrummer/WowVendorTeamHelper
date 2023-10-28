@@ -31,8 +31,8 @@ export async function timesheetCrud(periodId = null, listType = null, regionId =
 				period_id: periodId,
 				list_type: listType.value,
 				region_id: regionId.value,
-				command_id: _.get(ddrStore('timesheet-commands-filter'), regionId.value+'.command', null),
-				event_type: _.get(ddrStore('timesheet-commands-filter'), regionId.value+'.eventtype', null),
+				command_id: _.get(ddrStore('timesheet-filter'), regionId.value+'.command', null),
+				event_type: _.get(ddrStore('timesheet-filter'), regionId.value+'.eventtype', null),
 				search,
 			},
 			//create: {period_id: periodId},
@@ -51,8 +51,8 @@ export async function timesheetCrud(periodId = null, listType = null, regionId =
 			before() {
 				setParams('list', (params) => {
 					params.region_id = regionId.value;
-					params.command_id = _.get(ddrStore('timesheet-commands-filter'), regionId.value+'.command', null);
-					params.event_type = _.get(ddrStore('timesheet-commands-filter'), regionId.value+'.eventtype', null);
+					params.command_id = _.get(ddrStore('timesheet-filter'), regionId.value+'.command', null);
+					params.event_type = _.get(ddrStore('timesheet-filter'), regionId.value+'.eventtype', null);
 					return params;
 				});
 			},
@@ -65,11 +65,11 @@ export async function timesheetCrud(periodId = null, listType = null, regionId =
 					let hData = JSON.parse(headers[data] || []);
 					let eTHtml = '<div class="select small-select w100">';
 						eTHtml += `<select id="rooltest" oninput="$.${action}(this)">`;
-						let selectedAll = _.isNull(_.get(ddrStore('timesheet-commands-filter'), regionId.value+'.'+field, null)) ? ' selected' : '';
+						let selectedAll = _.isNull(_.get(ddrStore('timesheet-filter'), regionId.value+'.'+field, null)) ? ' selected' : '';
 						eTHtml += `<option${selectedAll} value="">${allName}</option>`;
 						
 						for (const [cmdId, cmdTitle] of Object.entries(hData)) {
-							let selected = cmdId == _.get(ddrStore('timesheet-commands-filter'), regionId.value+'.'+field, null) ? ' selected' : '';
+							let selected = cmdId == _.get(ddrStore('timesheet-filter'), regionId.value+'.'+field, null) ? ' selected' : '';
 							eTHtml += `<option${selected} value="${cmdId}">${cmdTitle}</option>`;
 						}
 						eTHtml += '</select></div>';
@@ -187,8 +187,8 @@ export async function timesheetCrud(periodId = null, listType = null, regionId =
 			
 			const {destroy} = $('#timesheetContainer').ddrWait();
 			
-			if (cmdId) ddrStore('timesheet-commands-filter', {[regionId.value]: {command: cmdId}}, true);
-			else ddrStore('timesheet-commands-filter', {[regionId.value]: {command: null}}, true);
+			if (cmdId) ddrStore('timesheet-filter', {[regionId.value]: {command: cmdId}}, true);
+			else ddrStore('timesheet-filter', {[regionId.value]: {command: null}}, true);
 			
 			setParams('list', (params) => {
 				params.command_id = cmdId || null;
@@ -208,8 +208,8 @@ export async function timesheetCrud(periodId = null, listType = null, regionId =
 			
 			const {destroy} = $('#timesheetContainer').ddrWait();
 			
-			if (evType) ddrStore('timesheet-commands-filter', {[regionId.value]: {eventtype: evType}}, true);
-			else ddrStore('timesheet-commands-filter', {[regionId.value]: {eventtype: null}}, true);
+			if (evType) ddrStore('timesheet-filter', {[regionId.value]: {eventtype: evType}}, true);
+			else ddrStore('timesheet-filter', {[regionId.value]: {eventtype: null}}, true);
 			
 			setParams('list', (params) => {
 				params.event_type = evType || null;
