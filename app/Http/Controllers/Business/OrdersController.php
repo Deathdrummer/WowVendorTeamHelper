@@ -559,23 +559,11 @@ class OrdersController extends Controller {
 		$timesheetToPastHours = $this->getSettings('timesheet.to_past_hours', 0); // это настройка: Отправка в прошедшие спустя часов
 		$timePoint = DdrDateTime::shift(now(), 'TZ')->addHours(-1 * $timesheetToPastHours);
 		
-		
-		// ->addHours(-1 * $timesheetToPastHours) это настройка: Отправка в прошедшие спустя часов
-		
-		
-		// $command?->region_id // регион CEST EDT
-		
-		
-		// $timesheet?->timesheet_period_id // период
-		// $region US EU
-		// $timesheet?->event_type_id // тип события (для фильтра) 
-		// $timesheet?->command_id // комнда (для фильтра) 
 		$listType = match(true) {
 			$timesheet?->datetime >= $timePoint	=> 'actual',
 			$timesheet?->datetime < $timePoint	=> 'past',
 			default	=> 'actual',
 		};
-		
 		
 		return [
 			'period'				=> $timesheet?->timesheet_period_id ?? null,
