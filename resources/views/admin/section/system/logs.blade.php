@@ -39,7 +39,7 @@
 		event.preventDefault();
 		if (isActive) return false;
 		group.value = grp;
-		await getEventsList(group.value);
+		await getEventsList(group.value, 1, true);
 	}
 
 	//'current_page'	
@@ -52,7 +52,7 @@
 		//currentPage: 3,
 		itemsAround: 1,
 		async onChangePage(page, done) {
-			await getEventsList(group.value, page, true);
+			await getEventsList(group.value, page);
 			//$('.card__scroll').scrollTop(0);
 			done();
 		}
@@ -60,7 +60,7 @@
 	
 	
 	
-	async function getEventsList(group = 1, page = 1, rereshPag = false) {
+	async function getEventsList(group = 1, page = 1, refreshPag = false) {
 		const eventLogWait = $('#logList').ddrWait();
 		$('#logTabs').addClass('notouch');
 		const {data, error, status, headers} = await ddrQuery.get('crud/events_logs', {group, page});
@@ -80,9 +80,9 @@
 		
 		eventLogWait.destroy();
 		$('#logTabs').removeClass('notouch');
-		/*if (rereshPag) pagRefresh({
+		if (refreshPag) pagRefresh({
 			countPages: hData.value['last_page'],
-		});*/
+		});
 	}
 	
 	

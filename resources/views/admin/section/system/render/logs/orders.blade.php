@@ -1,8 +1,8 @@
-<x-table id="eventLogTable" class="w100" scrolled="calc(100vh - 224px)" noborder>
+<x-table id="eventLogTable" class="w100" scrolled="calc(100vh - 232px)" noborder>
 	<x-table.head>
 		<x-table.tr class="h4rem">
-			<x-table.td class="w20rem v-end" noborder><strong class="fz12px lh90">Пользователь</strong></x-table.td>
-			<x-table.td class="w30rem v-end" noborder><strong class="fz12px lh90">Действие</strong></x-table.td>
+			<x-table.td class="w16rem v-end" noborder><strong class="fz12px lh90">Пользователь</strong></x-table.td>
+			<x-table.td class="w16rem v-end" noborder><strong class="fz12px lh90">Действие</strong></x-table.td>
 			
 			<x-table.td class="w-10rem v-end" noborder><strong class="fz12px lh90">ID Заказа</strong></x-table.td>
 			<x-table.td class="w-10rem v-end" noborder><strong class="fz12px lh90">Номер заказа</strong></x-table.td>

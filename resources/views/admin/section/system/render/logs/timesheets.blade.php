@@ -1,4 +1,4 @@
-<x-table id="eventLogTable" class="w100" scrolled="calc(100vh - 224px)" noborder>
+<x-table id="eventLogTable" class="w100" scrolled="calc(100vh - 232px)" noborder>
 	<x-table.head>
 		<x-table.tr class="h4rem">
 			<x-table.td class="w16rem v-end" noborder><strong class="fz12px lh90">Пользователь</strong></x-table.td>
@@ -7,7 +7,7 @@
 			<x-table.td class="w-10rem v-end" noborder><strong class="fz12px lh90">Период</strong></x-table.td>
 			<x-table.td class="w-10rem v-end" noborder><strong class="fz12px lh90">Команда</strong></x-table.td>
 			<x-table.td class="w-20rem v-end" noborder><strong class="fz12px lh90">Тип события</strong></x-table.td>
-			<x-table.td class="w-auto v-end" noborder><strong class="fz12px lh90">Дата и время события</strong></x-table.td>
+			<x-table.td class="w-auto v-end" noborder><div class="d-flex h100 align-items-end"><strong class="fz12px lh90">Дата и время события</strong></div></x-table.td>
 			<x-table.td class="w18rem v-end" noborder><strong class="fz12px lh90">Дата и время</strong></x-table.td>
 		</x-table.tr>
 	</x-table.head>

@@ -36,7 +36,7 @@ class EventsLogsController extends Controller {
 			->where('group', (int)$group)
 			->orderBy('id', 'DESC');
 		
-		$paginate = $this->paginate($query, $page, 15)->toArray();
+		$paginate = $this->paginate($query, $page, 30)->toArray();
 		['data' => $data] = array_splice($paginate, array_search('data', array_keys($paginate)), 1);
 		
 		if ($data ?? false) {
