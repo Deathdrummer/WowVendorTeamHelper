@@ -15,6 +15,9 @@ final class LogEventsTypes extends Enum {
 	#[Description('{"ru": "Удалено событие","en":""}')]
 	const timesheetRemoved = 3;
 	
+	
+	
+	
 	#[Description('{"ru": "Создан заказ в событии","en":""}')]
 	const orderCreatedInTs = 4;
 	
@@ -52,6 +55,9 @@ final class LogEventsTypes extends Enum {
 	const orderDetach = 15;
 	
 	
+	
+	#[Description('{"ru": "Отправлено уведомление Slack","en":""}')]
+	const slackSendMessage = 16;
 	
 	
 	

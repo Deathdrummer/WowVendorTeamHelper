@@ -595,6 +595,36 @@ class EventLogService {
 	}
 	
 	
+	
+	
+	/**
+	* 
+	* @param 
+	* @return 
+	*/
+	public function sendSlackMessage($info = null) {
+		if (!$info)return false;
+		
+		$order = Order::find($info['order_id'] ?? null);
+		$timesheetPeriod = TimesheetPeriod::find($info['timesheet']['period']);	
+		
+		$info = [
+			'timesheet_period_id' => ['data' => $timesheetPeriod?->title ?? '-', 'title' => 'Период'],
+			'order' => ['data' => $order?->order ?? '-', 'title' => 'Номер заказа'],
+			'command' => ['data' => $info['timesheet']['command'] ?? '-', 'title' => 'Команда'],
+			'datetime' => ['data' => $info['timesheet']['date'] ?? null, 'title' => 'Дата и время события'],
+		];
+		
+		$this->sendToEventLog(LogEventsGroups::slack_notifies, LogEventsTypes::slackSendMessage, $info);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
 
 
 

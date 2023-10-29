@@ -11,6 +11,7 @@
 				<ul class="ddrtabsnav" ddrtabsnav id="logTabs">
 					<li class="ddrtabsnav__item ddrtabsnav__item_active" onclick="$.getEventsLogsList(event, 1, this.classList.contains('ddrtabsnav__item_active'))" ddrtabsitem>События</li>
 					<li class="ddrtabsnav__item" onclick="$.getEventsLogsList(event, 2, this.classList.contains('ddrtabsnav__item_active'))" ddrtabsitem>Заказы</li>
+					<li class="ddrtabsnav__item" onclick="$.getEventsLogsList(event, 3, this.classList.contains('ddrtabsnav__item_active'))" ddrtabsitem>Уведомления Slack</li>
 				</ul>
 			</div>
 			

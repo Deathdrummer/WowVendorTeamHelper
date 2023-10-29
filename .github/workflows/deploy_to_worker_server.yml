@@ -38,6 +38,7 @@ jobs:
           --exclude=/.github \
           --exclude=/public/build \
           --exclude=/public/hot \
+          --exclude=/storage \
           -rc \
           --delete \
           . ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }}:${{ env.SERVER_PATH }}

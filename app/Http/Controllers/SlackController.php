@@ -111,11 +111,29 @@ class SlackController extends Controller {
 			
 			if (is_null($webhook) || (!is_null($command) && $timesheet?->command_id != $command)) continue;
 			
-			return $sendMessage([
+			$sMStat = $sendMessage([
 				'order_id' => $orderId,
 				'webhook' => $webhook ?? null,
 				'message' => $data['message'] ?? null,
 			]);
+			
+			
+			
+			if ($data['logging'] ?? false) {
+				$flipCommands = array_flip($commands);
+				
+				eventLog()->sendSlackMessage([
+					'order_id' => $orderId,
+					'timesheet' => [
+						'period' => $timesheet?->timesheet_period_id,
+						'date' => $timesheet?->datetime,
+						'command' => $flipCommands[$timesheet?->command_id] ?? null
+					],
+					'message' => ($data['message'] ?? null)
+				]);
+			}
+			
+			return $sMStat;
 		}
 		
 		return false;
