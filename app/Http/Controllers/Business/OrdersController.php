@@ -510,13 +510,13 @@ class OrdersController extends Controller {
 			'comment'		=> $comment,
 			'order_id'		=> $orderId,
 			'timesheet_id'	=> $timesheetId,
-			'withFollow'	=> $withFollow,
 		] = $request->validate([
 			'comment'		=> 'nullable|string',
 			'order_id'		=> 'required|numeric',
 			'timesheet_id'	=> 'required|numeric',
-			'withFollow'	=> 'nullable|boolean',
 		]);
+		
+		$withFollow = $request->input('withFollow');
 		
 		$timesheet = Timesheet::find($timesheetId);
 		//$timesheet->orders()->detach([$orderId]);
