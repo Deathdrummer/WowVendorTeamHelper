@@ -765,6 +765,7 @@ class OrdersController extends Controller {
 		$shift = (int)$timezones[$formData['timezone_id']]['shift'];
 		
 		$formData['date'] = DdrDateTime::buildTimestamp($formData['date'], ['shift' => $shift]);
+		$formData['manually'] = true;
 		
 		$order = Order::create($formData);
 		

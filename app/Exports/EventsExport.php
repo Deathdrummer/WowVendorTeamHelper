@@ -24,14 +24,15 @@ class EventsExport implements WithMultipleSheets {
      * @return array
      */
     public function sheets(): array {
-        $sheets = [];
+	   $sheets = [];
 		
-		if ($this->params['type'] == 'all') {
+		if ($this->params['type'] == 'all') { //------------------------------ Выгрузка входящего потока по дате
 			
 			$dateFrom = DdrDateTime::buildTimestamp($this->params['date_from'], ['shift' => -3]);
 			$dateTo = DdrDateTime::buildTimestamp($this->params['date_to'], '23:59:59', ['shift' => -3]);
 			
-			$orders = Order::select('order', 'raw_data', 'status', 'date_add', 'created_at')
+			$manuallyOrders = [];
+			$orders = Order::select('order', 'raw_data', 'status', 'date_add', 'created_at', 'manually')
 				->where(function ($query) use($dateFrom, $dateTo) {
 					$query->where('date_add', '>=', $dateFrom)->where('date_add', '<=', $dateTo);
 				})
@@ -40,10 +41,14 @@ class EventsExport implements WithMultipleSheets {
 				})
 				->get()
 				->makeHidden(['date_msc'])
-				->mapToGroups(function($item, $key) {
+				->mapToGroups(function($item, $key) use(&$manuallyOrders) {
 					$status = $item['status'];
+					$manually = $item['manually'];
 					$item['date'] = Carbon::parse($item['date_add'] ?? $item['created_at'])->format('Y-m-d H:i');
 					unset($item['status'], $item['date_add'], $item['created_at']);
+					
+					if ($manually) $manuallyOrders[] = $item->toArray();
+					
 					return [$status => $item];
 				});
 			
@@ -55,11 +60,14 @@ class EventsExport implements WithMultipleSheets {
 			];
 			
 			foreach ($listsNames as $statName => $listName) {
-				$status = OrderStatus::fromKey($statName)->value;
+				$status = OrderStatus::fromKey($statName)?->value;
 				$sheets[] = new EventTypeSheet($orders[$status] ?? [], $listName);
 			}
 			
-		} else if ($this->params['type'] == 'linked') {
+			$sheets[] = new EventTypeSheet($manuallyOrders, 'Созданные заказы'); // Добавляем к массиву заказов заказы, созданные вручную
+			
+			
+		} else if ($this->params['type'] == 'linked') { //------------------------------ экспорт данных за выбранный период
 			
 			$periodId = $this->params['period_id'];
 			

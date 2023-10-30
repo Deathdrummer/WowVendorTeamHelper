@@ -145,6 +145,27 @@ window.ref = function (data) {
 
 
 
+/*window.ref = function (data) {
+	let target = {};
+	let proxy = new Proxy(target, {
+		get(target, prop, receiver) {
+			if (prop in target) {
+				if (_.isNumber(target[prop])) return Number(Reflect.get(target, prop, receiver));
+				return Reflect.get(target, prop, receiver)
+			} else {
+				return null;
+			}
+		}
+	});
+	proxy.value = data;
+	return proxy;
+}*/
+
+
+
+
+
+
 /*
 	shift  		shift 	shiftKey
 	option 		alt  	altKey

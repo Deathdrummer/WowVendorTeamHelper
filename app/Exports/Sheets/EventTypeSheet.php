@@ -3,15 +3,15 @@
 use App\Traits\Settingable;
 use Maatwebsite\Excel\Concerns\FromArray;
 
-use Maatwebsite\Excel\Concerns\WithColumnWidths;
+//use Maatwebsite\Excel\Concerns\WithColumnWidths;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
-use PhpOffice\PhpSpreadsheet\Style\Style;
-use PhpOffice\PhpSpreadsheet\Style\Color;
-use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
-use PhpOffice\PhpSpreadsheet\Style\Border;
-use Maatwebsite\Excel\Concerns\WithDefaultStyles;
+//use PhpOffice\PhpSpreadsheet\Style\Style;
+//use PhpOffice\PhpSpreadsheet\Style\Color;
+//use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
+//use PhpOffice\PhpSpreadsheet\Style\Border;
+//use Maatwebsite\Excel\Concerns\WithDefaultStyles;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
-use Maatwebsite\Excel\Concerns\WithBackgroundColor;
+//use Maatwebsite\Excel\Concerns\WithBackgroundColor;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use Maatwebsite\Excel\Events\AfterSheet;
