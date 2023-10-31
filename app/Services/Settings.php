@@ -141,11 +141,12 @@ class Settings {
 		
 		$settingValue = $setting->value;
 		
-		if (is_array($settingValue)) $settingValue = array_values($settingValue);
+		if (is_array($settingValue) && !Arr::isAssoc($settingValue)) $settingValue = array_values($settingValue);
 		
 		if ($path) $setting->value = json_encode(data_set($settingValue, $path, $value), JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);
 		else $setting->value = is_array($value) ? json_encode($value, JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES) : $value;
 		if ($group) $setting->group = $group;
+		
 		$stat = $setting->save();
 		return $stat;
 	}
