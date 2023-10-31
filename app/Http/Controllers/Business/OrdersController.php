@@ -66,7 +66,7 @@ class OrdersController extends Controller {
 		['orders' => $orders, 'count_rows_in_list' => $cuntRowsInList, 'current_page' => $currentPage] = $request->all();
 		
 		$allNewOrdersCount = count($orders) ?? 0;
-		$perPage = $this->getSettings('orders.per_page');
+		$perPage = $this->getSettings('orders.per_page') ?? 20;
 
 		$countRowsToSet = $cuntRowsInList - $perPage;
 		
