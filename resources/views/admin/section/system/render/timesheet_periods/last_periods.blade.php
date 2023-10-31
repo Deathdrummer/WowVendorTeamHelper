@@ -1,4 +1,4 @@
-@if(count($list))
+@if($list)
 	<ul class="d-flex flex-row-reverse timesheetperiods">
 		@foreach($list as $item)
 			<li

@@ -86,8 +86,11 @@ class OrderService {
 	public function getToTimesheetList($timesheetId = null, $search = null):Collection|null {
 		$ordersTypesSorts = $this->getSettings('orders_types', 'sort', 'id');
 		
-		$list = Timesheet::find($timesheetId)
-			->orders()
+		$getToTimesheetListQuery = Timesheet::find($timesheetId)?->orders();
+		
+		if ($getToTimesheetListQuery?->count() == 0) return null;
+		
+		$list = $getToTimesheetListQuery
 			/* ->withExists(['has_confirm_orders as is_confirmed' => function($q) use($timesheetId) { // это если нужно задать для конкретного заказа а для допранов - нет
 				$q->where('confirmed_orders.timesheet_id', $timesheetId);
 			}]) */

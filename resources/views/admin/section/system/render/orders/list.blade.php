@@ -1,4 +1,4 @@
-@if(count($list))
+@if($list)
 	<x-table class="w100" scrolled="300px">
 		<x-table.head>
 			<x-table.tr class="h3rem">

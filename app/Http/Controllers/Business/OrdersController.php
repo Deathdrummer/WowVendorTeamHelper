@@ -809,7 +809,7 @@ class OrdersController extends Controller {
 		$orderId = $request->input('order_id');
 		$timesheetId = $request->input('timesheet_id');
 		
-		if ($request->input('ot_orig') != $formData['order_type']) {
+		if ($request->input('ot_orig') != ($formData['order_type'] ?? false)) {
 			$formData['ot_changed'] = true;
 		}
 		
