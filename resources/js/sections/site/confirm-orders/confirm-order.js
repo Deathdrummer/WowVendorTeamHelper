@@ -12,7 +12,7 @@ export async function confirmOrder(btn, id) {
 		return;
 	}
 	
-	if (data) {
+	if (data == true) {
 		let hasRows = !!$(btn).closest('[ddrtabletr]').siblings('[ddrtabletr]').length;
 		if (hasRows) $(btn).closest('[ddrtabletr]').remove();
 		else $(btn).closest('[ddrtable]').replaceWith('<p class="color-gray-400 text-center mt2rem fz14px">Нет заказов</p>');
@@ -53,7 +53,7 @@ export async function confirmAllOrders(btn) {
 			return;
 		}
 		
-		if (data) {
+		if (data == true) {
 			$('#confirmOrdersBlock').html('<p class="color-gray-400 text-center mt2rem fz14px">Нет заказов</p>');
 			$.notify('Все заказы успешно подтвеждены!');
 			$(btn).remove();
