@@ -7,6 +7,11 @@ export async function confirmOrder(btn, id) {
 		return;
 	}
 	
+	if (data?.slack_error) {
+		$.notify('Ошибка! Заказ не подтвежден! Проблема со стороны Slack!', 'error');
+		return;
+	}
+	
 	if (data) {
 		let hasRows = !!$(btn).closest('[ddrtabletr]').siblings('[ddrtabletr]').length;
 		if (hasRows) $(btn).closest('[ddrtabletr]').remove();
@@ -39,6 +44,12 @@ export async function confirmAllOrders(btn) {
 			console.log(error);
 			$.notify(error?.message, 'error');
 			wait(false);
+			return;
+		}
+		
+		if (data?.slack_error) {
+			wait(false);
+			$.notify('Ошибка! Заказ не подтвежден! Проблема со стороны Slack!', 'error');
 			return;
 		}
 		

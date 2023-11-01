@@ -134,6 +134,8 @@ class SendSlackMessageAction {
 			->withContentType('application/json')
 			//->returnResponseObject()
 			->post();
+		
+		if ($resp == 'no_service') toLog('SendSlackMessageAction -> send сообщение не отправилось, что-то не так с вебхуком!');
 			
 		return !!($resp == 'ok');
 	}
