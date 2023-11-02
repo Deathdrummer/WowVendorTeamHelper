@@ -35,6 +35,9 @@
 		</x-table.td>
 	@endif
 	<x-table.td>
+		<p>{{$data['events_types'][$event_type_id] ?? '-'}}</p>
+	</x-table.td>
+	<x-table.td>
 		<div class="d-flex justify-content-between align-items-center" ordercommentblock>
 			<div class="mr5px scrollblock scrollblock-light minh-1rem-4px maxh3rem-1px w100" rowcomment>
 				@if($comment)
@@ -53,9 +56,6 @@
 			</div>
 		</div>
 		
-	</x-table.td>
-	<x-table.td>
-		<p>{{$data['events_types'][$event_type_id] ?? '-'}}</p>
 	</x-table.td>
 	<x-table.td class="h-center">
 		<p orderscount>{{$orders_count}}</p>
