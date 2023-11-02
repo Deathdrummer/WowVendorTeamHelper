@@ -45,7 +45,7 @@ class EventsExport implements WithMultipleSheets {
 					$status = $item['status'];
 					$manually = $item['manually'];
 					$item['date'] = Carbon::parse($item['date_add'] ?? $item['created_at'])->format('Y-m-d H:i');
-					unset($item['status'], $item['date_add'], $item['created_at']);
+					unset($item['status'], $item['date_add'], $item['created_at'], $item['manually']);
 					
 					$incomingOrders[] = $item->toArray();
 					
@@ -53,7 +53,6 @@ class EventsExport implements WithMultipleSheets {
 					
 					return [$status => $item];
 				});
-			
 			
 			$listsNames = [
 				'wait'		=> 'Лист ожидания',
