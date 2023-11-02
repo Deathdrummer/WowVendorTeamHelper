@@ -31,7 +31,7 @@ class EventsExport implements WithMultipleSheets {
 			$dateFrom = DdrDateTime::buildTimestamp($this->params['date_from'], ['shift' => -3]);
 			$dateTo = DdrDateTime::buildTimestamp($this->params['date_to'], '23:59:59', ['shift' => -3]);
 			
-			$manuallyOrders = [];
+			$incomingOrders = []; $manuallyOrders = [];
 			$orders = Order::select('order', 'raw_data', 'status', 'date_add', 'created_at', 'manually')
 				->where(function ($query) use($dateFrom, $dateTo) {
 					$query->where('date_add', '>=', $dateFrom)->where('date_add', '<=', $dateTo);
@@ -41,11 +41,13 @@ class EventsExport implements WithMultipleSheets {
 				})
 				->get()
 				->makeHidden(['date_msc'])
-				->mapToGroups(function($item, $key) use(&$manuallyOrders) {
+				->mapToGroups(function($item, $key) use(&$manuallyOrders, &$incomingOrders) {
 					$status = $item['status'];
 					$manually = $item['manually'];
 					$item['date'] = Carbon::parse($item['date_add'] ?? $item['created_at'])->format('Y-m-d H:i');
 					unset($item['status'], $item['date_add'], $item['created_at']);
+					
+					$incomingOrders[] = $item->toArray();
 					
 					if ($manually) $manuallyOrders[] = $item->toArray();
 					
@@ -54,10 +56,11 @@ class EventsExport implements WithMultipleSheets {
 			
 			
 			$listsNames = [
-				'new'		=> 'Входящие',
 				'wait'		=> 'Лист ожидания',
 				'cancel'	=> 'Отмененные',
 			];
+			
+			$sheets[] = new EventTypeSheet($incomingOrders, 'Входящие'); // Добавляем к массиву заказов все созданные заказы
 			
 			foreach ($listsNames as $statName => $listName) {
 				$status = OrderStatus::fromKey($statName)?->value;
