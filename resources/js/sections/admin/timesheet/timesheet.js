@@ -63,7 +63,7 @@ export async function timesheetCrud(periodId = null, listType = null, regionId =
 				function buildColumnFilter(action = null, field = null, selector = null, data = null, allName = 'ВСЕ ЗАПИСИ') {
 					if (!field || !selector || !data) throw new Error('buildColumnFilter Ошибка! Переданы не все аргументы!');
 					let hData = JSON.parse(headers[data] || []);
-					let eTHtml = '<div class="select small-select w100">';
+					let eTHtml = '<div class="select small-select maxw-15rem">';
 						eTHtml += `<select id="rooltest" oninput="$.${action}(this)">`;
 						let selectedAll = _.isNull(_.get(ddrStore('timesheet-filter'), regionId.value+'.'+field, null)) ? ' selected' : '';
 						eTHtml += `<option${selectedAll} value="">${allName}</option>`;
