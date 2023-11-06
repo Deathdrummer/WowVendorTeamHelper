@@ -558,8 +558,8 @@ class TimesheetController extends Controller {
 		$titlesData[0] = [[
 			'title'	=> null,
 			'type'	=> 'date',
-			'horizontal' => 'center',
-			'vertical' => 'bottom',
+			'horizontal' => 'left',
+			'vertical' => 'center',
 			'wrap' => true,
 			//'cell_bg' => '#777777',
 			//'col_bg' => '0000ff',
