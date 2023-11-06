@@ -27,12 +27,14 @@ class SheetsBuilder implements WithMultipleSheets {
 		
 		foreach ($this->rawData as $labelName => $labelData) {
 			['joins' => $joins, 'data' => $data] = $this->_buildCells($labelData['data'], count($labelData['titles']) ?: 0); // ['joins' => $joins, 'data' => $data]
+			['joins' => $titlesJoins] = $this->_buildCells($labelData['titles'], count($labelData['titles']) ?: 0); // ['joins' => $titlesJoins]
+			
 			$properties = $labelData['properties'] ?? null;
 			$cols = $labelData['cols'] ?? null;
 			$titles = $labelData['titles'] ?? null;
 			$meta = $labelData['meta'] ?? null;
 			
-			$sheets[] = new Sheet($labelName, $properties, $cols, $titles, $data, $joins, $meta);
+			$sheets[] = new Sheet($labelName, $properties, $cols, $titles, $data, $joins, $titlesJoins, $meta);
 		}
 		
 		return $sheets;
@@ -52,7 +54,9 @@ class SheetsBuilder implements WithMultipleSheets {
 		$joins = []; $joinIterH = 0; $joinIterV = 0; $prevRow = 0;
 		foreach ($data as $rowNum => $rowData) {
 			$rowIndex = $rowNum + 1;
-			foreach ($rowData['data'] as $colNum => $colData) {
+			$rowData = $rowData['data'] ?? $rowData;
+			foreach ($rowData as $colNum => $colData) {
+				
 				$colIndex = $colNum + 1;
 				if ($colData == '_join_h_') {
 					if ($colIndex == 1) {

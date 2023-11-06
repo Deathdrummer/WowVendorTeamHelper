@@ -103,10 +103,9 @@
 			done: (stat) => {
 				if (!stat) {
 					$.notify('Ошибка экспорта данных!', 'error');
-					periodsWinFuncs?.wait(false);
+					wait(false);
 				}
-				periodsWinFuncs?.wait(false);
-				//periodsWinFuncs?.close();
+				periodsWinFuncs?.close();
 			},
 		});
 	}

@@ -85,12 +85,13 @@ class Sheet extends \PhpOffice\PhpSpreadsheet\Cell\StringValueBinder implements 
 	private $titles = [];
 	private $data = [];
 	private $joins = [];
+	private $titlesJoins = [];
 	public static $freezeRows = null; # количество строк для заморозки
 	private $cellContentHeight; # Высота всех строк по-умолчанию
 	private $cellTitlesHeight; # Высота первой строки 
 	
 	
-    public function __construct(?string $labelName = null, ?array $properties = [], ?array $cols = null, ?array $titles = null, ?array $data = null, ?array $joins = null, ?array $meta = null) {
+    public function __construct(?string $labelName = null, ?array $properties = [], ?array $cols = null, ?array $titles = null, ?array $data = null, ?array $joins = null, $titlesJoins = null, ?array $meta = null) {
         $this->labelName = $labelName;
 		$this->properties = $properties;
 		
@@ -98,6 +99,7 @@ class Sheet extends \PhpOffice\PhpSpreadsheet\Cell\StringValueBinder implements 
 		$this->titles = $titles;
 		$this->data = $data;
 		$this->joins = $joins;
+		$this->titlesJoins = $titlesJoins;
 		
 		self::$freezeRows = match(true) {
 			isset($meta['freeze']) && $meta['freeze'] === true => count($this?->titles) ?? 0,
@@ -168,6 +170,7 @@ class Sheet extends \PhpOffice\PhpSpreadsheet\Cell\StringValueBinder implements 
 		
 		if ($titles = $this->_buildTitles()) {
 			$data[] = [...$titles];
+			//toLog($data);
 		}
 		
 		# формирование массива данных, удаление META данных ячеек
@@ -190,9 +193,9 @@ class Sheet extends \PhpOffice\PhpSpreadsheet\Cell\StringValueBinder implements 
 	
 	
 	/**
-    * @return \Illuminate\Support\Array
+    * @return void
     */
-	public function styles(Worksheet $sheet):array {
+	public function styles(Worksheet $sheet):void {
 		
 		# Получить координаты начала и конца списков заголовков и контента
 		['titles' => $titlesCoords, 'content' => $contentCoords] = $this->_getContentCoordinates();
@@ -212,7 +215,30 @@ class Sheet extends \PhpOffice\PhpSpreadsheet\Cell\StringValueBinder implements 
 		
 		
 		
-		# Объединить ячейки
+		# Объединить ячейки заголовков
+		if ($this->titlesJoins) {
+			foreach ($this->titlesJoins as $type => $joinsData) {
+				foreach ($joinsData as ['start' => $start, 'end' => $end]) {
+					$merge = null;
+					if ($type == 'vertical') {
+						$colCoord = $this->getFieldCoords($start['col']);
+						$merge = $colCoord.$start['row'].':'.$colCoord.$end['row'];
+					}
+					
+					if ($type == 'horizontal') {
+						$colCoordStart = $this->getFieldCoords($start['col']);
+						$colCoordEnd = $this->getFieldCoords($end['col']);
+						$merge = $colCoordStart.$start['row'].':'.$colCoordEnd.$start['row'];
+					}
+					
+					if ($merge) $sheet->mergeCells($merge);
+				}	
+			}
+		}
+		
+		
+		
+		# Объединить ячейки контента
 		if ($this->joins) {
 			foreach ($this->joins as $type => $joinsData) {
 				foreach ($joinsData as ['start' => $start, 'end' => $end]) {
@@ -253,8 +279,8 @@ class Sheet extends \PhpOffice\PhpSpreadsheet\Cell\StringValueBinder implements 
 			foreach ($this?->titles as $row => $titles) {
 				foreach ($titles as $index => $titleMeta) {
 					$coord = $this->getFieldCoords($index + 1);
-					$type = $titleMeta['type'];
-					unset($titleMeta['type']);
+					$type = $titleMeta['type'] ?? null;
+					if ($titleMeta['type'] ?? null) unset($titleMeta['type']);
 					$colMeta = $this->cols[$type] ?? null;
 					
 					# $colMeta
@@ -293,14 +319,14 @@ class Sheet extends \PhpOffice\PhpSpreadsheet\Cell\StringValueBinder implements 
 					
 					# Перенос и положение текста для заголовков
 					$sheet->getStyle($titleColumnCoord)->getAlignment()->setWrapText($titleMeta['wrap'] ?? false);
-					$sheet->getStyle($titleColumnCoord)->getAlignment()->setHorizontal($this->_getAligment('horizontal', $titleMeta['horizontal']));
-					$sheet->getStyle($titleColumnCoord)->getAlignment()->setVertical($this->_getAligment('vertical', $titleMeta['vertical']));
+					$sheet->getStyle($titleColumnCoord)->getAlignment()->setHorizontal($this->_getAligment('horizontal', $titleMeta['horizontal'] ?? false));
+					$sheet->getStyle($titleColumnCoord)->getAlignment()->setVertical($this->_getAligment('vertical', $titleMeta['vertical'] ?? false));
 					
 					
 					# Перенос и положение текста для контента
 					$sheet->getStyle($contentColumnCoord)->getAlignment()->setWrapText($colMeta['wrap'] ?? false);
-					$sheet->getStyle($contentColumnCoord)->getAlignment()->setHorizontal($this->_getAligment('horizontal', $colMeta['horizontal']));
-					$sheet->getStyle($contentColumnCoord)->getAlignment()->setVertical($this->_getAligment('vertical', $colMeta['vertical']));
+					$sheet->getStyle($contentColumnCoord)->getAlignment()->setHorizontal($this->_getAligment('horizontal', $colMeta['horizontal'] ?? false));
+					$sheet->getStyle($contentColumnCoord)->getAlignment()->setVertical($this->_getAligment('vertical', $colMeta['vertical'] ?? false));
 					
 					
 					match($colMeta['type'] ?? null) {
@@ -410,7 +436,6 @@ class Sheet extends \PhpOffice\PhpSpreadsheet\Cell\StringValueBinder implements 
 		
 		
 		
-		return[];
 		
 		/* return [
 			1	=>	['fill' => [

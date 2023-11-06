@@ -600,8 +600,8 @@ class TimesheetController extends Controller {
 		];
 		
 		
-		$isAll = false;
 		
+		$isAll = false;
 		foreach ($buildData as $date => $oTypes) {
 			foreach ($oTypes as $oType => ['commands' => $commands, 'regions' => $regions, 'all' => $all]) {
 				$commandsRow = [];
