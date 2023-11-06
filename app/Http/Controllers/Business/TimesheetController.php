@@ -567,8 +567,8 @@ class TimesheetController extends Controller {
 		], [
 			'title'	=> $periodTitle,
 			'type'	=> 'order_type',
-			'horizontal' => 'center',
-			'vertical' => 'bottom',
+			'horizontal' => 'left',
+			'vertical' => 'center',
 			'wrap' => true,
 			//'cell_bg' => '777777',
 			//'col_bg' => '0000ff',
