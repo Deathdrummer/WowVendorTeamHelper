@@ -151,14 +151,13 @@ export default class DdrFiles { // 29.07.23
 			- коллбэк
 	*/
 	async export(params = {}) {
-		const {query, data, headers, filename, done} = _.assign({
+		let {query, data, headers, filename, done} = _.assign({
 			query: null, // url, params
 			data: null, // 
-			headers: {}, // 
+			headers: null, // 
 			filename: null, //
 			done: null, //
 		}, params);
-		
 		
 		if (query) {
 			const {url, params} = _.assign({
@@ -170,6 +169,7 @@ export default class DdrFiles { // 29.07.23
 			
 			if (error) {
 				$.notify('export -> ddrQuery ошибка экспорта!', 'error');
+				callFunc(done, false);
 				return false;
 			}
 			
@@ -185,11 +185,13 @@ export default class DdrFiles { // 29.07.23
 			window.navigator.msSaveBlob(blob, filename);
 		} else {
 			const headerContentDisp = headers["content-disposition"] || null;
-		
-			const fName = headerContentDisp && headerContentDisp.split("filename=")[1].replace(/["']/g, "");
-			const fExt = getFileName(fName, 2);
 			
-			const finalFileName = filename ? filename+'.'+fExt : fName;
+			const fName = headerContentDisp && headerContentDisp.split("filename=")[1].replace(/["']/g, "");
+			
+			const fExt = getFileName(fName, 2);
+			const fExtToName = fExt ? '.'+fExt : '';
+			
+			const finalFileName = filename ? filename+fExtToName : fName;
 			
 			const contentType = headers["content-type"];
 			const blob = new Blob([data], {contentType});
@@ -199,9 +201,10 @@ export default class DdrFiles { // 29.07.23
 			el.setAttribute("download", finalFileName);
 			el.click();
 			window.URL.revokeObjectURL(blob);
+			
 		}
 		
-		callFunc(done);
+		callFunc(done, true);
 	}
 	
 	

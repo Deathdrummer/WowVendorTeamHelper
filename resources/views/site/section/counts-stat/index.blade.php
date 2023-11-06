@@ -59,6 +59,7 @@
 	
 	
 	
+	
 	let isBuildesPeriod = false;
 	$.timesheetPeriodsBuild = async (btn, periodId) => {
 		if ($(btn).hasClass('active') || isBuildesPeriod) return;
@@ -84,6 +85,33 @@
 		
 		$(btn).addClass('active');
 	}
+	
+	
+	
+	
+	$.timesheetPeriodsExport = async (btn, periodId, periodTitle) => {
+		periodsWinFuncs?.wait();
+		
+		const filename = `Количество проков за период: ${periodTitle}`;
+		
+		$.ddrFiles('export', {
+			query: {
+				url: 'crud/timesheet/orders_counts_stat_export',
+				params: {period_id: periodId},
+			},
+			filename,
+			done: (stat) => {
+				if (!stat) {
+					$.notify('Ошибка экспорта данных!', 'error');
+					periodsWinFuncs?.wait(false);
+				}
+				periodsWinFuncs?.wait(false);
+				//periodsWinFuncs?.close();
+			},
+		});
+	}
+	
+	
 	
 	
 	

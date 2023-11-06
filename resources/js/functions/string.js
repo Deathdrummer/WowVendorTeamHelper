@@ -126,7 +126,8 @@ window.addZero = function(value = null, numLength = 2) {
 		- 2: расширение
 	Третий аргумент: обрезает название до заданного количества символов
 */
-window.getFileName = function(fileName, nameOrExt = null, nameLimit) {
+window.getFileName = function(fileName = null, nameOrExt = null, nameLimit) {
+	if (!fileName) return null;
 	let fn = typeof fileName === 'object' ? fileName.name.split('.') : fileName.split('.');
 	
 	if (fn.length == 1) return nameOrExt == null ? [null, null] : null;

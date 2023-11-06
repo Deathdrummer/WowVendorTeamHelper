@@ -1,9 +1,11 @@
 <?php namespace App\Http\Controllers\Business;
 
+use App\Actions\ExportToExcelAction;
 use App\Actions\GetUserSetting;
 use App\Actions\UpdateModelAction;
 use App\Enums\OrderStatus;
 use App\Exports\EventsExport;
+use App\Exports\Sheets\CountsStatSheet;
 use App\Helpers\DdrDateTime;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ImportTimesheetEventsRequest;
@@ -509,7 +511,7 @@ class TimesheetController extends Controller {
 	* @param 
 	* @return 
 	*/
-	public function orders_counts_stat(Request $request, Settings $settingsService) {
+	public function orders_counts_stat(Request $request) {
 		[
 			'period_id'	=> $periodId,
 			'views'		=> $viewPath,
@@ -518,6 +520,200 @@ class TimesheetController extends Controller {
 			'period_id'	=> 'required|numeric',
 		]);
 		
+		[
+			$buildData,
+			$periodTitle,
+			$map,
+			$ordersTypes,
+		] = $this->_ordersCountsStat($periodId);
+		
+		return response(view($viewPath.'.index', compact('buildData', 'periodTitle', 'map', 'ordersTypes')));
+	}
+	
+	
+	
+	
+	
+	
+	/**
+	* 
+	* @param 
+	* @return 
+	*/
+	public function orders_counts_stat_export(Request $request, ExportToExcelAction $exportToExcel) {
+		[
+			'period_id'	=> $periodId,
+		] = $request->validate([
+			'period_id'	=> 'required|numeric',
+		]);
+		
+		[$buildData, $periodTitle, $map, $ordersTypes,] = $this->_ordersCountsStat($periodId);
+		
+		$titlesData = [];
+		$rowsData = [];
+		
+		// $buildData -> date => order_type => [commands => [command => count], regions => [region => count], all => count]
+		// $map -> commands regions
+		
+		$titlesData[0] = [[
+			'title'	=> null,
+			'type'	=> 'date',
+			'horizontal' => 'center',
+			'vertical' => 'bottom',
+			'wrap' => true,
+			//'cell_bg' => '#777777',
+			//'col_bg' => '0000ff',
+			'color' => '#fff',
+		], [
+			'title'	=> $periodTitle,
+			'type'	=> 'order_type',
+			'horizontal' => 'center',
+			'vertical' => 'bottom',
+			'wrap' => true,
+			//'cell_bg' => '777777',
+			//'col_bg' => '0000ff',
+			'color' => '#fff',
+		]];
+		
+		foreach ([...$map['commands'], ...$map['regions']] as $id => $item) {
+			$titlesData[0][] = [
+				'title'	=> $item['title'] ?? $item,
+				'type'	=> 'command',
+				'horizontal' => 'center',
+				'vertical' => 'bottom',
+				'wrap' => true,
+				'cell_bg' => $item['color'] ?? null,
+				'col_bg' => $item['color'] ?? null,
+				'color' => '#fff',
+			];
+		}
+		
+		$titlesData[0][] = [
+			'title'	=> 'ALL',
+			'type'	=> 'command',
+			'horizontal' => 'center',
+			'vertical' => 'bottom',
+			'wrap' => true,
+			//'cell_bg' => '#00f0ff',
+			//'col_bg' => '0000ff',
+			'color' => '#fff',
+		];
+		
+		
+		$isAll = false;
+		
+		foreach ($buildData as $date => $oTypes) {
+			foreach ($oTypes as $oType => ['commands' => $commands, 'regions' => $regions, 'all' => $all]) {
+				$commandsRow = [];
+				$regionsRow = [];
+				
+				if (!$isAll) $isAll = $date == 'all';
+				$allColor = 'ffefb7';
+				
+				$orderType = [
+					'meta' => ['bg' => $ordersTypes[$oType]['color'] ?? null],
+					'data' => $ordersTypes[$oType]['title']
+				];
+				
+				foreach ($map['commands'] as $mapCmdId => $mapCmdTitle) {
+					$commandsRow[] = [
+						'meta' => ['bg' => $isAll ? $allColor : null],
+						'data' => $commands[$mapCmdId] ?? null
+					];
+					
+					//$commandsRow[] = $commands[$mapCmdId] ?? null;
+				}
+				
+				foreach ($map['regions'] as $mapRegId => $mapRegTitle) {
+					$commandsRow[] = [
+						'meta' => ['bg' => $isAll ? $allColor : null],
+						'data' => $regions[$mapRegId] ?? null
+					];
+					
+					//$regionsRow[] = $regions[$mapRegId] ?? null;
+				}
+				
+				
+				$allRow = [
+					'meta' => ['bg' => $isAll ? $allColor : null],
+					'data' => $all ?? null
+				];
+				
+				
+				$rowsData[] = [
+					//'meta' => ['bg' => $date == 'all' ? 'DD99AA' : null],
+					'data' => [
+						$date,
+						$orderType,
+						...$commandsRow,
+						...$regionsRow,
+						$allRow,
+					]
+				];
+				$date = '_join_v_';
+			}
+		}
+		
+		
+		
+		
+		
+		$dataToExport = [
+			'Ddr' => [
+				'properties' => [
+					'creator'        => 'WowVendorTeamHelper',
+					'title'          => 'WowVendorTeamHelper заказы',
+					'description'    => 'WowVendorTeamHelper список заказов',
+					'company'        => 'WowVendorTeamHelper',
+				],
+				'meta' => [
+					'cell_height' => 25, // Высота ячеек
+					'titles_height' => 46, // Высота ячеек
+					'freeze' => 1, // Зафиксировать строки true - зафиксить заголовки, число - зафиксить заданное число строк
+				],
+				'cols' => [
+					'date'			=> ['width' => 15, 'horizontal' => 'left', 'vertical' => 'top', 'bg' => '#777', 'color' => '#fff', 'type' => 'text'],
+					'order_type'	=> ['width' => 20, 'horizontal' => 'left', 'vertical' => 'center', 'wrap' => true, 'type' => 'text'],
+					'command'		=> ['width' => 8, 'horizontal' => 'center', 'vertical' => 'center', 'wrap' => true, 'type' => 'text'],
+				],
+				'titles' => $titlesData,
+				'data' => $rowsData,
+			]
+		];
+		
+		return $exportToExcel($dataToExport, 'counts-stat.xlsx');
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	//---------------------------------------------------------------------------------------
+	
+	
+	
+	/** Формирование данных для статистики или отчета Excel
+	* 
+	* @param 
+	* @return 
+	*/
+	private function _ordersCountsStat($periodId = null) {
+		$settingsService = app()->make(Settings::class);
 		$periodTitle = TimesheetPeriod::find($periodId)->title;
 		$map = [];
 		
@@ -530,7 +726,9 @@ class TimesheetController extends Controller {
 		$map['regions'] = $settingsService->get('regions')->pluck('title', 'id')->toArray();
 		
 		$ordersTypes = $settingsService->get('orders_types')?->mapWithKeys(function($row) {
-			return [$row['id'] => $row];
+			$id = $row['id'];
+			unset($row['matches'], $row['sort'], $row['exceptions'], $row['id']);
+			return [$id => $row];
 		})->toArray();
 		
 		
@@ -585,7 +783,12 @@ class TimesheetController extends Controller {
 			ksort($buildData);
 		}
 		
-		return response(view($viewPath.'.index', compact('buildData', 'periodTitle', 'map', 'ordersTypes')));
+		return [
+			$buildData,
+			$periodTitle,
+			$map,
+			$ordersTypes,
+		];
 	}
 	
 	
@@ -595,12 +798,6 @@ class TimesheetController extends Controller {
 	
 	
 	
-	
-	
-	
-	
-	
-	//---------------------------------------------------------------------------------------
 	
 	
 	

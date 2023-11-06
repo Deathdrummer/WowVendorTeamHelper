@@ -15,11 +15,18 @@
 			<x-buttons-group group="small" w="3rem">
 				@if($ordersCountsStat)
 					<x-button
-						variant="yellow"
+						variant="green"
 						action="timesheetPeriodsBuild:{{$id}}"
 						disabled="{{!($timesheet_items_count ?? false)}}"
 						title="Сформировать отчет"
 						><i class="fa-solid fa-fw fa-chart-column"></i></x-button>
+					
+					<x-button
+						variant="yellow"
+						action="timesheetPeriodsExport:{{$id}},{{$title ?? '-'}}"
+						disabled="{{!($timesheet_items_count ?? false)}}"
+						title="Экспорт"
+						><i class="fa-solid fa-fw fa-file-export"></i></x-button>
 				@elseif($accounting)
 					<x-checkbox
 						input-accountingperiod="{{$id}}"

@@ -43,6 +43,7 @@ Route::post('timesheet/export', [TimesheetController::class, 'export_orders']);
 Route::get('timesheet/comment', [TimesheetController::class, 'comment_form']);
 Route::post('timesheet/comment', [TimesheetController::class, 'comment_save']);
 Route::get('timesheet/orders_counts_stat', [TimesheetController::class, 'orders_counts_stat']);
+Route::get('timesheet/orders_counts_stat_export', [TimesheetController::class, 'orders_counts_stat_export']);
 Route::resource('timesheet', TimesheetController::class)->except(['show']);
 
 
