@@ -34,7 +34,8 @@ class SendSlackMessageAction {
 		$timezones = $settings['timezones'] ?? [];
 		$ordersTypes = $settings['orders_types'] ?? [];
 		
-		$orderData = Order::find($params['order_id']);
+		$orderData = Order::with('mainTimesheet')->find($params['order_id']);
+		
 		$message = $params['message'] ?? '';
 		
 		if (is_array($params['order_id'])) {
@@ -87,9 +88,10 @@ class SendSlackMessageAction {
 		$price = $orderData?->price ?? '---';
 		$serverName = $orderData?->server_name ?? '---';
 		$link = $orderData?->link ?? '---';
-		$dateOrig = DdrDateTime::date($orderData?->date).' в '.DdrDateTime::time($orderData?->date);
-		$dateMsc = DdrDateTime::date($orderData->date_msc).' в '.DdrDateTime::time($orderData->date_msc);
-		$dateAdd = DdrDateTime::date($orderData->date_add).' в '.DdrDateTime::time($orderData->date_add);
+		$dateOrig = $orderData?->date ? DdrDateTime::date($orderData?->date).' в '.DdrDateTime::time($orderData?->date) : '-';
+		$dateMsc = $orderData?->date_msc ? DdrDateTime::date($orderData->date_msc).' в '.DdrDateTime::time($orderData->date_msc) : '-';
+		$dateAdd = $orderData?->date_add ? DdrDateTime::date($orderData->date_add).' в '.DdrDateTime::time($orderData->date_add) : '-';
+		$dateTs = $orderData?->mainTimesheet?->datetime ? DdrDateTime::date($orderData?->mainTimesheet?->datetime).' в '.DdrDateTime::time($orderData?->mainTimesheet->datetime) : '-';
 		
 		$statuses = [
 			'new'		=> 'новый',
@@ -100,17 +102,18 @@ class SendSlackMessageAction {
 		];
 		
 		return Str::swap([
-			'{{raw}}' 			=> $rawData,
-			'{{timezone}}' 		=> $timezone,
-			'{{status}}' 		=> $statuses[$status] ?? '-',
-			'{{order}}' 		=> $order,
-			'{{order_type}}'	=> $orderType,
-			'{{price}}' 		=> $price,
-			'{{server_name}}'	=> $serverName,
-			'{{link}}' 			=> $link,
-			'{{date_orig}}' 	=> $dateOrig,
-			'{{date_msc}}' 		=> $dateMsc,
-			'{{date_add}}' 		=> $dateAdd,
+			'{{raw}}' 				=> $rawData,
+			'{{timezone}}' 			=> $timezone,
+			'{{status}}' 			=> $statuses[$status] ?? '-',
+			'{{order}}' 			=> $order,
+			'{{order_type}}'		=> $orderType,
+			'{{price}}' 			=> $price,
+			'{{server_name}}'		=> $serverName,
+			'{{link}}' 				=> $link,
+			'{{date_orig}}' 		=> $dateOrig,
+			'{{date_msc}}' 			=> $dateMsc,
+			'{{date_add}}' 			=> $dateAdd,
+			'{{date_timesheet}}'	=> $dateTs,
 		], $message ?? '');
 	}
 	

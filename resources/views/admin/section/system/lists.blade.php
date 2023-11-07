@@ -223,6 +223,7 @@
 						<p class="color-gray-500 color-gray-600-hovered pointer color-green-active" onclick="$.copyToClipboard(event, '@{{link}}')" title="Скопировать">@{{link}} 				- Ссылка</p>
 						<p class="color-gray-500 color-gray-600-hovered pointer color-green-active" onclick="$.copyToClipboard(event, '@{{date_add}}')" title="Скопировать">@{{date_add}} 		- Дата добавления</p>
 						<p class="color-gray-500 color-gray-600-hovered pointer color-green-active" onclick="$.copyToClipboard(event, '@{{date_msc}}')" title="Скопировать">@{{date_msc}} 		- Дата по МСК</p>
+						<p class="color-gray-500 color-gray-600-hovered pointer color-green-active" onclick="$.copyToClipboard(event, '@{{date_timesheet}}')" title="Скопировать">@{{date_timesheet}} 		- Дата по события</p>
 					</code>
 					
 					

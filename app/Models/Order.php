@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 
 class Order extends Model {
     use HasFactory, Collectionable, Dateable, Settingable, Filterable, HasEvents;
@@ -91,6 +92,24 @@ class Order extends Model {
 			->as('pivot')
 			->withPivot('doprun');
 	}
+	
+	
+	
+	public function mainTimesheet():hasOneThrough {
+		return $this->hasOneThrough(
+            Timesheet::class,
+            TimesheetOrder::class,
+            'order_id', // Внешний ключ в таблице `timesheet_order` ...
+            'id', // Внешний ключ в таблице `timesheets` ...
+            'id', // Локальный ключ в таблице `orders` ...
+            'timesheet_id' // Локальный ключ в таблице `timesheet_order` ...
+        )->where('cloned', null);
+	}
+	
+	
+	
+	
+	
 	
 	
 	public function timesheet_to_confirm():BelongsToMany {
