@@ -64,9 +64,6 @@ class SendSlackMessageAction {
 			]);
 		}
 		
-		toLog(trim($messText));
-		return true;
-		
 		return $this->send([
 			'endpoint' 	=> $endpoint,
 			'message' 	=> trim($messText),
