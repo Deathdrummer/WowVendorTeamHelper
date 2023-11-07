@@ -3,6 +3,7 @@
 use App\Enums\OrderStatus;
 use App\Helpers\DdrDateTime;
 use App\Models\Order;
+use App\Models\Timesheet;
 use App\Traits\Settingable;
 use Illuminate\Support\Str;
 use Ixudra\Curl\Facades\Curl;
@@ -34,15 +35,18 @@ class SendSlackMessageAction {
 		$timezones = $settings['timezones'] ?? [];
 		$ordersTypes = $settings['orders_types'] ?? [];
 		
-		$orderData = Order::with('mainTimesheet')->find($params['order_id']);
+		$orderData = Order::find($params['order_id']);
+		$timesheetId = $params['timesheet_id'] ?? null;
 		
 		$message = $params['message'] ?? '';
 		
 		if (is_array($params['order_id'])) {
 			$messText = '';
-			$orderData->each(function($order) use(&$messText, $timezones, $ordersTypes, $message) {
+			$orderData->each(function($order) use(&$messText, $timezones, $ordersTypes, $timesheetId, $message) {
+				$timesheet = Timesheet::find($timesheetId);
 				$messText .= $this->buildMess([
 					'order' 		=> $order,
+					'timesheet' 	=> $timesheet,
 					'message' 		=> $message,
 					'timezones' 	=> $timezones,
 					'ordersTypes' 	=> $ordersTypes,
@@ -50,13 +54,18 @@ class SendSlackMessageAction {
 				$messText .= "\n";
 			});
 		} else {
+			$timesheet = Timesheet::find($timesheetId);
 			$messText = $this->buildMess([
 				'order' 		=> $orderData,
+				'timesheet' 	=> $timesheet,
 				'message' 		=> $message,
 				'timezones' 	=> $timezones,
 				'ordersTypes' 	=> $ordersTypes,
 			]);
 		}
+		
+		toLog(trim($messText));
+		return true;
 		
 		return $this->send([
 			'endpoint' 	=> $endpoint,
@@ -91,7 +100,7 @@ class SendSlackMessageAction {
 		$dateOrig = $orderData?->date ? DdrDateTime::date($orderData?->date).' в '.DdrDateTime::time($orderData?->date) : '-';
 		$dateMsc = $orderData?->date_msc ? DdrDateTime::date($orderData->date_msc).' в '.DdrDateTime::time($orderData->date_msc) : '-';
 		$dateAdd = $orderData?->date_add ? DdrDateTime::date($orderData->date_add).' в '.DdrDateTime::time($orderData->date_add) : '-';
-		$dateTs = $orderData?->mainTimesheet?->datetime ? DdrDateTime::date($orderData?->mainTimesheet?->datetime).' в '.DdrDateTime::time($orderData?->mainTimesheet->datetime) : '-';
+		$dateTs = $timesheet?->datetime ? DdrDateTime::date($timesheet?->datetime).' в '.DdrDateTime::time($timesheet?->datetime) : '-';
 		
 		$statuses = [
 			'new'		=> 'новый',

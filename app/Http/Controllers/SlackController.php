@@ -112,9 +112,10 @@ class SlackController extends Controller {
 			if (is_null($webhook) || (!is_null($command) && $timesheet?->command_id != $command)) continue;
 			
 			$sMStat = $sendMessage([
-				'order_id' => $orderId,
-				'webhook' => $webhook ?? null,
-				'message' => $data['message'] ?? null,
+				'order_id' 		=> $orderId,
+				'timesheet_id' 	=> $timesheetId,
+				'webhook' 		=> $webhook ?? null,
+				'message' 		=> $data['message'] ?? null,
 			]);
 			
 			
