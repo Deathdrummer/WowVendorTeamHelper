@@ -139,8 +139,9 @@
 					@if($status != \App\Enums\OrderStatus::necro)
 						<x-button w="50px" variant="neutral" action="toTimesheetBtn:{{$id ?? null}},{{$date_msc ?? null}},{{$order ?? '-'}}" title="Привязать заказ к событию"><i class="fa-solid fa-fw fa-angles-right"></i></x-button>
 					@endif
-					
-					<x-button w="50px" variant="green" action="editOrder:{{$id ?? null}},{{$order ?? '-'}}" title="Редактировать заказ"><i class="fa-solid fa-fw fa-pen-to-square"></i></x-button>
+					@cando('edit-attached-order:site')
+						<x-button w="50px" variant="green" action="editOrder:{{$id ?? null}},{{$order ?? '-'}}" title="Редактировать заказ"><i class="fa-solid fa-fw fa-pen-to-square"></i></x-button>
+					@endcando
 				</x-buttons-group>
 			</div>
 		</div>
