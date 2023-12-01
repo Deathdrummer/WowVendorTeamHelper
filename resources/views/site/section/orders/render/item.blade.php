@@ -18,7 +18,10 @@
 	<div class="col-auto">
 		<div class="order__block">
 			<div class="order__ordernumber">
-				<p>{{$order ?? '-'}}</p>
+				<p
+					class="color-gray-500 color-gray-600-hovered pointer color-green-active"
+					onclick="$.copyToClipboard(event, '{{$order ?? '-'}}')" title="Скопировать"
+					>{{$order ?? '-'}}</p>
 			</div>
 		</div>
 	</div>
