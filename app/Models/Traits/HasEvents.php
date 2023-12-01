@@ -61,7 +61,7 @@ trait HasEvents {
 			}
 			
 			$cbData = $cb($buildedFields[$field]['data'] ?? null, $buildedFields[$field]['updated'] ?? null);
-			if ($title && is_array($cbData)) $cbData['title'] = $title;
+			if ($title/*  && is_array($cbData) */) $cbData['title'] = $title; # тут закомментировал, потому что, если $cbData вернет null  - то не присвоится значение title и в инфо не будет отображаться название поля
 			return $cbData;
 		};
 	}

@@ -210,6 +210,59 @@ class EventLogService {
 	
 	
 	
+	
+	
+	/**
+	* 
+	* @param 
+	* @return 
+	*/
+	public function detachedOrderUpdated(Order $order) {
+		$buildFields = self::buildFields($order, datetimeFields: ['date', 'date_msc']);
+		
+		$timezone = $this->getTimezone($order?->timezone_id);
+		
+		$orderService = app()->make(OrderService::class);
+		$orderService->setRawDataHistory($order?->id, $buildFields('raw_data'));
+		
+		$info = [
+			'id' => $buildFields('id', 'ID заказа'),
+			'order' => $buildFields('order', 'Номер заказа'),
+			'order_type' => ['data' => $order?->order_type_title ?? '-', 'title' => 'Тип заказа'],
+			'price' => $buildFields('price', function($orig, $upd) {
+				$row['data'] = number_format($orig, 2, '.', ' ');
+				if ($upd) $row['updated'] = number_format($upd, 2, '.', ' ');
+				$row['meta'] = ['symbal' => 'dollar'];
+				return $row;
+			}, 'Стоимость'),
+			'server_name' => $buildFields('server_name', 'Инвайт'),
+			'raw_data' => $buildFields('raw_data', 'Данные'),
+			'link' => $buildFields('link', 'Ссылка'),
+			'date' => $buildFields('date', 'Дата и время ориг.'),
+			'date_msc' => $buildFields('date', function($orig, $upd) use($order) {
+				if (!$timezoneId = $order?->timezone_id) return null;
+				$timezones = $this->getSettings('timezones', 'id', 'shift');
+				$shift = (-1 * (int)$timezones[$timezoneId]);
+				
+				$row['data'] = DdrDateTime::shift($orig, $shift);
+				if ($upd) $row['updated'] = DdrDateTime::shift($upd, $shift);
+				$row['meta'] = ['date' => 1];
+				return $row;
+			}, 'Дата и время МСК'),
+
+			'event_type' => ['data' => $eventType ?? '-', 'title' => 'Тип события'],
+		];
+		
+		$this->sendToEventLog(LogEventsGroups::orders, LogEventsTypes::orderUpdated, $info);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
 	/**
 	* 
 	* @param 

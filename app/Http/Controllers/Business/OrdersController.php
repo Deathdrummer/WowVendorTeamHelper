@@ -832,6 +832,51 @@ class OrdersController extends Controller {
 	
 	
 	
+	/** Обновить заказ
+	 * @param 
+	 * @return 
+	 */
+	public function update_order(Request $request, EventLogService $eventLog) {
+		$formData = $request->validate([
+			'order_id' 		=> 'required|numeric|exclude',
+			'order' 		=> 'required|string',
+			'order_type' 	=> 'numeric|nullable',
+			'ot_orig' 		=> 'numeric|nullable|exclude',
+			'price' 		=> 'required|decimal:0,2',
+			'server_name' 	=> 'required|string',
+			'raw_data' 		=> 'required|string',
+			'link' 			=> 'string|nullable',
+		]);
+		
+		$orderId = $request->input('order_id');
+		$timesheetId = $request->input('timesheet_id');
+		
+		# Если ручное редактирование - то потом нельзя менять типа заказа
+		/* if ($request->input('ot_orig') != ($formData['order_type'] ?? false)) {
+			$formData['ot_changed'] = true;
+		} */
+		
+		$order = Order::find($orderId);
+		$order->fill($formData);
+		$eventLog->detachedOrderUpdated($order);
+		$res = $order->save();
+		
+		$orderWithCount = $order->loadCount('rawDataHistory as rawDataHistory');
+		$formData['rawDataHistory'] = $orderWithCount?->rawDataHistory ?? 0;
+		
+		// Обновить поле doprun в промежуточной таблице
+		//$timesheet = Timesheet::find($timesheetId);
+		//$timesheet->orders()->updateExistingPivot($orderId, ['doprun' => 3]);
+		
+		return response()->json(!$res ? false : $formData);
+	}
+	
+	
+	
+	
+	
+	
+	
 	
 	/** Сформировать чат комментариев
 	 * @param 

@@ -10,7 +10,7 @@
 		<tbody>
 			@foreach($data as $field => $row)
 				<tr>
-					<td class="field"><p>{{$row['title']}}</p></td>
+					<td class="field"><p>{{$row['title'] ?? '-'}}</p></td>
 					<td>
 						@if($row['data'] ?? null)
 							@if($row['meta']['symbal'] ?? false)
@@ -60,7 +60,7 @@
 		<tbody>
 			@foreach($data as $field => $row)
 				<tr>
-					<td class="field"><p>{{$row['title']}}</p></td>
+					<td class="field"><p>{{$row['title'] ?? '-'}}</p></td>
 					<td>
 						@if($row['data'] ?? null)
 							@if($row['meta']['symbal'] ?? false)

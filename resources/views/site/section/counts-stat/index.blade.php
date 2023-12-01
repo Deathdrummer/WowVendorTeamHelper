@@ -80,7 +80,6 @@
 		
 		timesheetPeriodsBuildWait.destroy();
 		
-		
 		isBuildesPeriod = false;
 		
 		$(btn).addClass('active');

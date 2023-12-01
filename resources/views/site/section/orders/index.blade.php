@@ -73,7 +73,7 @@
 
 
 <script type="module">
-	const {getOrders, pag, status, currentPage, perPage, lastPage, total} = await loadSectionScripts({section: 'orders', guard: 'site'});
+	const {getOrders, editOrder, pag, status, currentPage, perPage, lastPage, total} = await loadSectionScripts({section: 'orders', guard: 'site'});
 	const {orderCommentsChat} = await loadSectionScripts({section: 'timesheet', guard: 'admin'});
 	
 	await getOrders({init: true});
@@ -85,6 +85,17 @@
 	
 	$('#contractsCard').card('ready');
 	$('#ordersTypesChuser').removeAttrib('disabled');
+	
+	
+	
+	$.editOrder = (btn, id, order) => {
+		//$(btn).setAttrib('disabled');
+		editOrder(btn, id, order);
+	}
+	
+	
+	
+	
 	
 	
 	
