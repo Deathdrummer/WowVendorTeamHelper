@@ -607,6 +607,7 @@ export async function showStatusesTooltip(btn = null, orderId = null, timesheetI
 		
 		let title;
 		let message = null;
+		let groupId = null;
 		if (status == 'wait') title = 'В лист ожидания';
 		else if (status == 'cancel')  title = 'В отмененные';
 		
@@ -634,10 +635,12 @@ export async function showStatusesTooltip(btn = null, orderId = null, timesheetI
 				wait();
 				
 				message = $(popper).find('#comment').val();
+				groupId = $(popper).find('#groupId').val();
 				
-				await setStatusFunc(() => {
-					close();
-				})
+				await setStatusFunc((stat) => {
+					if (!stat) wait(false);
+					else close();
+				}, popper);
 			};
 		} else {
 			await setStatusFunc();
@@ -645,12 +648,18 @@ export async function showStatusesTooltip(btn = null, orderId = null, timesheetI
 			
 		
 		
-		async function setStatusFunc(cb = null) {
-			const {data, error, headers} = await ddrQuery.post('crud/orders/set_status', {order_id: orderId, timesheet_id: timesheetId, message, status});
+		async function setStatusFunc(cb = null, popper = null) {
+			const {data, error, headers} = await ddrQuery.post('crud/orders/set_status', {order_id: orderId, timesheet_id: timesheetId, message, group_id: groupId, status});
 			
 		 	if (error) {
 				console.log(error);
 				$.notify(error?.message, 'error');
+				if (error.errors) {
+					$.each(error.errors, function(field, errors) {
+						if (field == 'group_id') $(popper).find('[id="groupId"]').ddrInputs('error', errors[0]);
+					});
+				}
+				callFunc(cb, false);
 				return;
 			}
 			

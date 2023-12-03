@@ -56,6 +56,7 @@ class Order extends Model {
 		'price',
 		'timezone_id',
 		'status',
+		'wait_group',
 		'created_at',
 		'updated_at',
     ];

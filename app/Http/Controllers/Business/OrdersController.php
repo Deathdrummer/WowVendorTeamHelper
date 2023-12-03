@@ -14,6 +14,7 @@ use App\Models\Timesheet;
 use App\Models\TimesheetOrder;
 use App\Services\Business\OrderService;
 use App\Services\EventLogService;
+use App\Services\Settings;
 use App\Traits\HasPaginator;
 use App\Traits\Renderable;
 use App\Traits\Settingable;
@@ -259,14 +260,16 @@ class OrdersController extends Controller {
 	 * @param 
 	 * @return 
 	 */
-	public function to_wait_list_form(Request $request) {
+	public function to_wait_list_form(Request $request, Settings $setings) {
 		[
 			'views'	=> $viewPath,
 		] = $request->validate([
 			'views'	=> 'required|string',
 		]);
-
-		return $this->render($viewPath, ['listType' => 'лист ожидания']);
+		
+		$waitListGroups = $setings->get('wait_list_groups')->pluck('title', 'id')->toArray();
+		
+		return $this->render($viewPath, ['listType' => 'лист ожидания', 'waitListGroups' => $waitListGroups]);
 	}
 	
 	
@@ -283,6 +286,7 @@ class OrdersController extends Controller {
 			'order_id'	=> 'required|numeric',
 			'message'	=> 'string|nullable',
 		]);
+
 		
 		$order = Order::find($orderId);
 		$order->fill(['status' => OrderStatus::wait]);
@@ -991,15 +995,17 @@ class OrdersController extends Controller {
 			'order_id'		=> $orderId,
 			'timesheet_id'	=> $timesheetId,
 			'status'		=> $status,
+			'group_id'		=> $groupId,
 			'message'		=> $message,
 		] = $request->validate([
 			'order_id'		=> 'required|numeric',
 			'timesheet_id'	=> 'required|numeric',
 			'status'		=> 'required|string',
+			'group_id'		=> 'required|numeric',
 			'message'		=> 'string|nullable',
 		]);
 		
-		if (!$setStatRes = $this->orderService->setStatus($orderId, $timesheetId, $status)) return response()->json(false);
+		if (!$setStatRes = $this->orderService->setStatus($orderId, $timesheetId, $status, $groupId)) return response()->json(false);
 		
 		// отправить коммент
 		if ($message) {

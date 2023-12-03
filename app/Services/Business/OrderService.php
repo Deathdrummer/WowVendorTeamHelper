@@ -320,7 +320,7 @@ class OrderService {
 	 * @param 
 	 * @return 
 	 */
-	public function setStatus($orderId = null, $timesheetId = null, $status = null) {
+	public function setStatus($orderId = null, $timesheetId = null, $status = null, $waitGroupId = null) {
 		if (is_null($orderId) || is_null($status)) return false;
 		
 		$isHashOrder = false;
@@ -328,7 +328,7 @@ class OrderService {
 		$stat = OrderStatus::fromKey($status);
 		
 		$order = Order::find($orderId);
-		$order->fill(['status' => $stat]);
+		$order->fill(['status' => $stat, 'wait_group' => $waitGroupId]);
 		
 		$timesheet = Timesheet::find($timesheetId);
 		
