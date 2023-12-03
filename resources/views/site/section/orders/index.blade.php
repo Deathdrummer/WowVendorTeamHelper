@@ -50,13 +50,17 @@
 				id="ordersWaitTypes"
 				class="mb1rem"
 				>
-				@foreach($waitListGroups as $item)
-					<x-chooser.item
-						action="getOrdersWaitType:{{$item['id']}}"
-						orderswaitgroup="{{$item['id']}}"
-						active="{{$loop->first}}"
-						>{{$item['title']}}</x-chooser.item>
-				@endforeach
+				@if($waitListGroups)
+					@foreach($waitListGroups as $item)
+						<x-chooser.item
+							action="getOrdersWaitType:{{$item['id']}}"
+							orderswaitgroup="{{$item['id']}}"
+							active="{{$loop->first}}"
+							>{{$item['title']}}</x-chooser.item>
+					@endforeach
+				@else
+					<p class="empty">Нет групп</p>
+				@endif
 			</x-chooser>
 		</div>
 		
