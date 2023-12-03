@@ -40,6 +40,24 @@
 						/>
 				</div>
 			</div>
+			
+			<x-chooser
+				variant="neutral"
+				group="small"
+				disabled
+				hidden
+				px="25"
+				id="ordersWaitTypes"
+				class="mb1rem"
+				>
+				@foreach($waitListGroups as $item)
+					<x-chooser.item
+						action="getOrdersWaitType:{{$item['id']}}"
+						orderswaitgroup="{{$item['id']}}"
+						active="{{$loop->first}}"
+						>{{$item['title']}}</x-chooser.item>
+				@endforeach
+			</x-chooser>
 		</div>
 		
 		<div class="col">
@@ -184,6 +202,15 @@
 		status.value = stat;
 		currentPage.value = 1;
 		
+		if (stat == 'wait') {
+			$('#contractsCard').card('scrolled', 'calc(100vh - 254px)');
+			$('#ordersWaitTypes').removeAttrib('hidden');
+			$('#ordersWaitTypes').setAttrib('disabled');
+		} else {
+			$('#contractsCard').card('scrolled', 'calc(100vh - 216px)');
+			$('#ordersWaitTypes').setAttrib('hidden');
+		}
+		
 		await getOrders({search: searchStr});
 		
 		pagRefresh({
@@ -192,7 +219,32 @@
 		});
 		
 		$('#ordersTypesChuser').removeAttrib('disabled');
+		if (stat == 'wait') $('#ordersWaitTypes').removeAttrib('disabled');
 	}
+	
+	
+	
+	$.getOrdersWaitType = async (selector, isActive, waitType) => {
+		if (isActive) return;
+		$('#ordersWaitTypes').setAttrib('disabled');
+		status.value = 'wait';
+		
+		currentPage.value = 1;
+		
+		$('#ordersWaitTypes').setAttrib('disabled');
+		
+		await getOrders({search: searchStr, waitType});
+		
+		pagRefresh({
+			countPages: lastPage.value,
+			currentPage: 1,
+		});
+		
+		$('#ordersWaitTypes').removeAttrib('disabled');
+	}
+	
+	
+	
 	
 	
 	$.openLink = (btn, url) => {

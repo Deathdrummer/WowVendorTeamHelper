@@ -7,12 +7,15 @@ const total = ref(null);
 
 
 async function getOrders(ops = {}) {
+	
 	const {
 		init,
 		search,
+		waitType,
 	} = _.assign({
 		init: false, // обновление списка
 		search: null, // поиск по номеру заказа
+		waitType: $('#ordersWaitTypes').find('[orderswaitgroup].chooser__item_active').attr('orderswaitgroup') || 1, // Группа листа ожидания
 	}, ops);
 	
 	let wait;
@@ -24,8 +27,10 @@ async function getOrders(ops = {}) {
 		});
 	}
 	
+	
 	const {data, error, headers} = await ddrQuery.get('client/orders', {
 		status: status.value,
+		wait_type: waitType,
 		current_page: currentPage.value,
 		search,
 	});

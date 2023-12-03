@@ -9,7 +9,8 @@
 					<li class="ddrtabsnav__item" ddrtabsitem="sectionsTab2">Составные списки</li>
 					<li class="ddrtabsnav__item" ddrtabsitem="sectionsTab3">Статусы заказов</li>
 					<li class="ddrtabsnav__item" ddrtabsitem="sectionsTab4">Типы заказов</li>
-					<li class="ddrtabsnav__item" ddrtabsitem="sectionsTab5">Уведомеления Slack</li>
+					<li class="ddrtabsnav__item" ddrtabsitem="sectionsTab5">Группы листа ожидания</li>
+					<li class="ddrtabsnav__item" ddrtabsitem="sectionsTab6">Уведомеления Slack</li>
 				</ul>
 			</div>
 			
@@ -209,6 +210,22 @@
 				</div>
 				
 				<div class="ddrtabscontent__item" ddrtabscontentitem="sectionsTab5">
+					<x-card
+						loading
+						ready
+						title="Группы листа ожидания"
+						>
+						<x-simplelist
+							setting="wait_list_groups"
+							fieldset="ID:w7rem|number|id|1,Название группы листа ожидания:w30rem|text|title,Сорт:w7rem|number|sort"
+							{{-- options="name_type;foo:fooval,bar:barval|name_radio;foo:rool,bar:tool" --}}
+							{{-- onRemove="removeCustomerAction" --}}
+							group="normal"
+						 />
+					</x-card>
+				</div>
+				
+				<div class="ddrtabscontent__item" ddrtabscontentitem="sectionsTab6">
 					
 					<code class="d-block mb2rem">
 						<strong>Подстановка данных</strong>

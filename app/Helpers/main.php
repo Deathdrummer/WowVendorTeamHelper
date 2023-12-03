@@ -70,7 +70,7 @@ if (! function_exists('ddrSplit')) {
 			function runRegSplit($str, $separator = null) {
 				$separator = is_array($separator) ? implode('|', $separator) : $separator;
 				if (strpos($str, $separator) === false) return [$str];
-				return preg_split('/\s*['.$separator.']\s*/', $str);
+				return preg_split('/\s*[\\'.$separator.']\s*/', $str);
 			};
 		}
 		

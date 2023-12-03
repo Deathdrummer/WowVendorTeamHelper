@@ -58,7 +58,7 @@
 	@endisset
 	
 	@if($scrolled)
-		<div class="card__scroll scrollblock" style="max-height: {{$scrolled}};">
+		<div class="card__scroll scrollblock" scrollblock style="max-height: {{$scrolled}};">
 			{{$slot}}
 		</div>
 	@else

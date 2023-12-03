@@ -286,11 +286,17 @@ Route::middleware(['lang', 'auth:site', 'isajax:site'])->post('/get_section', fu
 	$user = Auth::guard('site')->user();
 	
 	
+	
 	// Сюда добавляюся любые данные пользователя
 	$data = [
 		'user' 				=> $user,
 		'setting' 			=> $settingsData
 	];
+	
+	if ($section == 'orders') {
+		$waitListGroups = $settings->get('wait_list_groups');
+		$data['waitListGroups'] = $waitListGroups;
+	}
 	
 	
 	

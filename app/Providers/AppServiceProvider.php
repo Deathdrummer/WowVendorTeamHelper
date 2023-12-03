@@ -195,6 +195,25 @@ class AppServiceProvider extends ServiceProvider {
 		
 		
 		
+		/**
+		* 
+		* @param string|null  $expression через запятую: $attrValue, $attrTag
+		* @return string|null
+		*/
+		Blade::directive('attr', function ($expression):string|null {
+			$d = splitString($expression, ',');
+			$d = bringTypes($d);
+			
+			if (!isset($d[0]) || !isset($d[1])) return false;
+			
+            return "<?php echo isset({$d[1]}) && $d[1] !== false ? {$d[0]}.'='.\"{$d[1]}\" : ''; ?>";
+		});
+		
+		
+		
+		
+		
+		
 		
 		
 		/**

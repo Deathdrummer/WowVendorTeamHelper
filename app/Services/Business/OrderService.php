@@ -25,9 +25,8 @@ class OrderService {
 		$queryParams = $request->only([
 			'status',
 			'search',
+			'wait_type',
 		]);
-		
-		
 		
 		$perPage = $this->getSettings('orders.per_page') ?? 20;
 		$currentPage = $request->input('current_page', 1);

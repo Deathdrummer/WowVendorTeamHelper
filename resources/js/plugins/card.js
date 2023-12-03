@@ -1,4 +1,4 @@
-$.fn.card = function(comand) {
+$.fn.card = function(comand, ...params) {
 	const selector = this,
 		comands = {
 			ready() {
@@ -16,6 +16,10 @@ $.fn.card = function(comand) {
 			},
 			enableButton() {
 				$(selector).find('[cardbutton]').ddrInputs('enable');
+			},
+			scrolled(height = null) {
+				if (!height) return;
+				$(selector).find('[scrollblock]').css('max-height', height);
 			}
 		};
 	
@@ -25,6 +29,6 @@ $.fn.card = function(comand) {
 	
 	
 	
-	comands[comand]();
+	comands[comand](...params);
 	return comands;
 }
