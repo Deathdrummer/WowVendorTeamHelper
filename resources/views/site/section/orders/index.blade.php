@@ -673,7 +673,8 @@
 					$('[groupaction][has]').setAttrib('hidden');
 					//$('#chooseGroupCounter').setAttrib('hidden');
 					$('#chooseGroupCounter [counter]').text('0');
-					$.notify(`Заказы (${data} шт.) успешно перенесены в выбранное событие!`);
+					
+					$.notify(`Заказы (${data.orders_count} шт.) успешно перенесены в выбранное событие!`);
 				} else {
 					const row = $(rowBtn).closest('[order]');
 					$(row).remove();

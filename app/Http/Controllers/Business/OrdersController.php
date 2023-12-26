@@ -609,6 +609,7 @@ class OrdersController extends Controller {
 		if (!$withFollow) return response()->json(true);
 		
 		$data = $this->_getTsInfo($timesheetId);
+		if (is_array($orderId)) $data['orders_count'] = count($orderId);
 		return response()->json($data);
 	}
 	
