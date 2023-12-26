@@ -11,6 +11,14 @@
 	order="{{$id ?? null}}"
 	>
 	<div class="col-auto">
+		<div class="order__block order__choose">
+			<x-checkbox
+				tag="choosedorder:{{$id ?? null}}"
+				size="small"
+				/>
+		</div>
+	</div>
+	<div class="col-auto">
 		<div class="order__block order__id">
 			<strong>{{$id ?? null}}</strong>
 		</div>
@@ -84,7 +92,7 @@
 						<p class="fz10px color-gray-400">Нет комментариев</p>
 					@endif
 				</div>
-				<div class="align-self-center">
+				<div class="align-self-center ml-2px">
 					<x-button
 						size="verysmall"
 						w="2rem-5px"

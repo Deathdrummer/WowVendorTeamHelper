@@ -149,7 +149,7 @@ class Timesheet extends Model {
      * @return Builder
      */
 	public function scopeFuture($query, $calendarDate = null, $orderDate = null):Builder  {
-		if (!$calendarDate && !$orderDate) return $query->whereBetween('datetime', [now()->startOfDay(), now()->endOfDay()]);
+		if ((!$calendarDate && !$orderDate) || !$orderDate) return $query->whereBetween('datetime', [now()->startOfDay(), now()->endOfDay()]);
 		
 		$timesheetOffsetHours = $this->getSettings('timesheet.attach_order_events_offset_hours') ?: 0;
 		

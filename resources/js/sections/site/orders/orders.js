@@ -15,7 +15,7 @@ async function getOrders(ops = {}) {
 	} = _.assign({
 		init: false, // обновление списка
 		search: null, // поиск по номеру заказа
-		waitType: $('#ordersWaitTypes').find('[orderswaitgroup].chooser__item_active').attr('orderswaitgroup') || 1, // Группа листа ожидания
+		waitType: status.value == 'wait' ? ($('#ordersWaitTypes').find('[orderswaitgroup].chooser__item_active').attr('orderswaitgroup') || 1) : null, // Группа листа ожидания
 	}, ops);
 	
 	let wait;
@@ -26,7 +26,6 @@ async function getOrders(ops = {}) {
 			iconColor: 'hue-rotate(170deg)',
 		});
 	}
-	
 	
 	const {data, error, headers} = await ddrQuery.get('client/orders', {
 		status: status.value,
@@ -157,6 +156,59 @@ function pag(selector = null) {
 }
 
 
+let getChoosedOrdersCB;
+function getChoosedOrders(cb = null) {
+	if (cb) {
+		$('#ordersList').on(tapEvent, '[choosedorder]', function() {
+			const choosedOrders = _getChoosedOrders();
+			callFunc(cb, {list: choosedOrders, hasChoosed: !!choosedOrders.length, listType: null});
+		});
+		getChoosedOrdersCB = cb;
+		
+		return {
+			chooseAllOrders() {
+				const ordersRowsCount = $('#ordersList').find('[choosedorder]').length,
+					choosedCount = $('#ordersList').find('[choosedorder]:checked').length;
+				
+				if (ordersRowsCount > choosedCount) {
+					$('#ordersList').find('[choosedorder]').ddrInputs('checked', true);
+				} else if (ordersRowsCount == choosedCount) {
+					$('#ordersList').find('[choosedorder]').ddrInputs('checked', false);
+				}
+				
+				const choosedOrders = _getChoosedOrders();
+				
+				callFunc(cb, {list: choosedOrders, hasChoosed: !!choosedOrders.length, listType: null});
+				
+				return {
+					choosedOrders,
+				};
+			}
+		};
+	} else {
+		return _getChoosedOrders();
+	}
+}
+
+function _getChoosedOrders() {
+	const ordersItems = $('#ordersList').find('[choosedorder]:checked'),
+		choosedOrders = [];
+		
+	for (let chOrder of ordersItems) {
+		choosedOrders.push(Number($(chOrder).attr('choosedorder')));
+	}
+	return choosedOrders;
+}
+
+
+$('#sectionPlace').on(tapEvent, '[orderstabs], [pagination]', function(e) {
+	let tabListType = $(this).attr('orderstabs');
+	getChoosedOrdersCB({list: [], hasChoosed: false, listType: tabListType});
+});
+
+
+
+
 
 
 
@@ -169,4 +221,5 @@ export {
 	perPage,
 	lastPage,
 	total,
+	getChoosedOrders,
 }

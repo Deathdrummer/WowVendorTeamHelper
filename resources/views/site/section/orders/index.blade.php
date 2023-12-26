@@ -14,20 +14,24 @@
 						>
 						<x-chooser.item
 							action="getOrdersAction:new"
+							orderstabs="new"
 							active
 							>Входящие</x-chooser.item>
 						<x-chooser.item
 							action="getOrdersAction:wait"
+							orderstabs="wait"
 							>Лист ожидания</x-chooser.item>
 						<x-chooser.item
 							action="getOrdersAction:cancel"
+							orderstabs="cancel"
 							>Отмененные</x-chooser.item>
 						<x-chooser.item
 							action="getOrdersAction:necro"
+							orderstabs="necro"
 							>Некрота</x-chooser.item>
 					</x-chooser>
 				</div>
-				<div class="col">
+				<div class="col-auto">
 					<x-input
 						size="normal"
 						id="searchOrdersField"
@@ -38,6 +42,32 @@
 						iconaction="searchAction"
 						{{-- hidden --}}
 						/>
+				</div>
+				<div class="col mt-2px">
+					<div class="row">
+						<div class="col-auto">
+							<x-button w="50px" variant="yellow" size="small" action="chooseAllOrders" title="Выделить все"><i class="fa-solid fa-fw fa-check-double"></i></x-button>
+						</div>
+						<div class="col-auto">
+							<p id="chooseGroupCounter" class="nowrap mt5px">Выбрано: <strong counter>0</strong></p>
+						</div>
+					</div>
+				</div>
+				<div class="col-auto mt-2px mr63px ml-auto">
+					<div class="row">
+						<div class="col" hidden has groupaction ltnew ltwait>
+							<x-button w="50px" variant="red" size="small" action="toCancelListBtn" title="В отмененные"><i class="fa-solid fa-fw fa-ban"></i></x-button>
+						</div>
+						<div class="col" hidden has groupaction ltnew ltnecro>
+							<x-button w="50px" variant="blue" size="small" action="toWaitListBtn" title="В лист ожидания"><i class="fa-solid fa-fw fa-hourglass-half"></i></x-button>
+						</div>
+						<div class="col" hidden groupaction ltwait>
+							<x-button w="50px" variant="dark" size="small" action="toNecroListBtn" title="В некроту"><i class="fa-solid fa-fw fa-skull"></i></x-button>
+						</div>
+						<div class="col" hidden has groupaction ltnew ltwait ltcancel>
+							<x-button w="50px" variant="neutral" size="small" action="toTimesheetBtn" title="Привязать заказы к событию"><i class="fa-solid fa-fw fa-angles-right"></i></x-button>
+						</div>
+					</div>
 				</div>
 			</div>
 			
@@ -55,6 +85,7 @@
 						<x-chooser.item
 							action="getOrdersWaitType:{{$item['id']}}"
 							orderswaitgroup="{{$item['id']}}"
+							orderstabs="wait"
 							active="{{$loop->first}}"
 							>{{$item['title']}}</x-chooser.item>
 					@endforeach
@@ -95,7 +126,7 @@
 
 
 <script type="module">
-	const {getOrders, editOrder, pag, status, currentPage, perPage, lastPage, total} = await loadSectionScripts({section: 'orders', guard: 'site'});
+	const {getOrders, editOrder, pag, status, currentPage, perPage, lastPage, total, getChoosedOrders} = await loadSectionScripts({section: 'orders', guard: 'site'});
 	const {orderCommentsChat} = await loadSectionScripts({section: 'timesheet', guard: 'admin'});
 	
 	await getOrders({init: true});
@@ -276,7 +307,9 @@
 	
 	
 	$.toWaitListBtn = async (btn, order_id = null) => {
-		if (_.isNull(order_id)) return;
+		if (_.isNull(order_id)) {
+			if(!(order_id = getChoosedOrders())) return;
+		} 
 		
 		const views = 'movelist_form';
 		
@@ -298,20 +331,37 @@
 		$.toWaitListAction = async (__) => {
 			wait();
 			
-			const message = $(popper).find('#comment').val();
+			const message = $(popper).find('#comment').val(),
+				groupId = $(popper).find('#groupId').val();
 			
-			const {data, error, status, headers} = await ddrQuery.post('client/orders/to_wait_list', {order_id, message});
+			const {data, error, status, headers} = await ddrQuery.post('client/orders/to_wait_list', {order_id, message, group_id: groupId});
 			
 			if (error) {
 				$.notify(error?.message, 'error');
 				wait(false);
+				console.log(error.errors);
+				if (error.errors) {
+					$.each(error.errors, function(field, errors) {
+						if (field == 'group_id') $(popper).find('#groupId').ddrInputs('error', errors[0]);
+					});
+				}
 				return false;
 			}
 			
 			if (data) {
-				const row = $(btn).closest('[order]');
-				$(row).remove();
-				$.notify('Заказ успешно перенесен в лист ожидания!');
+				if (_.isArray(order_id)) {
+					for (let orderId of order_id) {
+						$('#ordersList').find(`[order="${orderId}"]`).remove();
+					}
+					$('[groupaction][has]').setAttrib('hidden');
+					//$('#chooseGroupCounter').setAttrib('hidden');
+					$('#chooseGroupCounter [counter]').text('0');
+					$.notify(`Заказы (${data} шт.) успешно перенесены в лист ожидания!`);
+				} else {
+					const row = $(btn).closest('[order]');
+					$(row).remove();
+					$.notify('Заказ успешно перенесен в лист ожидания!');
+				}
 				close();
 			}
 		}
@@ -322,7 +372,9 @@
 	
 	
 	$.toNecroListBtn = async (btn, order_id = null) => {
-		if (_.isNull(order_id)) return;
+		if (_.isNull(order_id)) {
+			if(!(order_id = getChoosedOrders())) return;
+		}
 		
 		const views = 'movelist_form';
 		
@@ -355,9 +407,19 @@
 			}
 			
 			if (data) {
-				const row = $(btn).closest('[order]');
-				$(row).remove();
-				$.notify('Заказ успешно перенесен в некроту!');
+				if (_.isArray(order_id)) {
+					for (let orderId of order_id) {
+						$('#ordersList').find(`[order="${orderId}"]`).remove();
+					}
+					$('[groupaction][has]').setAttrib('hidden');
+					//$('#chooseGroupCounter').setAttrib('hidden');
+					$('#chooseGroupCounter [counter]').text('0');
+					$.notify(`Заказы (${data} шт.) успешно перенесены в некроту!`);
+				} else {
+					const row = $(btn).closest('[order]');
+					$(row).remove();
+					$.notify('Заказ успешно перенесен в некроту!');
+				}
 				close();
 			}
 		}
@@ -369,11 +431,12 @@
 	
 	
 	$.toCancelListBtn = async (btn, order_id = null) => {
-		if (_.isNull(order_id)) return;
+		if (_.isNull(order_id)) {
+			if(!(order_id = getChoosedOrders())) return;
+		}
 		
-		const views = 'movelist_form';
-		
-		const {
+		const views = 'movelist_form',
+		{
 			popper,
 			wait,
 			close,
@@ -402,9 +465,19 @@
 			}
 			
 			if (data) {
-				const row = $(btn).closest('[order]');
-				$(row).remove();
-				$.notify('Заказ успешно перенесен!');
+				if (_.isArray(order_id)) {
+					for (let orderId of order_id) {
+						$('#ordersList').find(`[order="${orderId}"]`).remove();
+					}
+					$('[groupaction][has]').setAttrib('hidden');
+					//$('#chooseGroupCounter').setAttrib('hidden');
+					$('#chooseGroupCounter [counter]').text('0');
+					$.notify(`Заказы (${data} шт.) успешно перенесены в отмененные!`);
+				} else {
+					const row = $(btn).closest('[order]');
+					$(row).remove();
+					$.notify('Заказ успешно перенесен в отмененные!');
+				}
 				close();
 			}
 		}
@@ -418,7 +491,9 @@
 	
 	
 	$.toTimesheetBtn = async (rowBtn, order_id = null, date = null, orderNumber = null) => {
-		if (_.isNull(order_id)) return;
+		if (_.isNull(order_id)) {
+			if(!(order_id = getChoosedOrders())) return;
+		}
 		
 		const action = 'Перенести заказ';
 		const views = 'site.section.orders.render.relocate';
@@ -576,7 +651,8 @@
 				return;
 			}
 			
-			if (data) {
+			
+			/*if (data) {
 				const countOrders = $(rowBtn).closest('[order]').siblings('[order]').length;
 				$(rowBtn).closest('[order]').remove();
 				
@@ -585,6 +661,25 @@
 				$.notify(`Заказ «${orderNumber}» успешно перенесен в выбранное событие!`);
 			} else {
 				$.notify(`Не удалось перенести заказ «${orderNumber}» в выбранное событие!`, 'error');
+			}
+			*/
+			
+			
+			if (data) {
+				if (_.isArray(order_id)) {
+					for (let orderId of order_id) {
+						$('#ordersList').find(`[order="${orderId}"]`).remove();
+					}
+					$('[groupaction][has]').setAttrib('hidden');
+					//$('#chooseGroupCounter').setAttrib('hidden');
+					$('#chooseGroupCounter [counter]').text('0');
+					$.notify(`Заказы (${data} шт.) успешно перенесены в выбранное событие!`);
+				} else {
+					const row = $(rowBtn).closest('[order]');
+					$(row).remove();
+					$.notify('Заказ успешно перенесен в отмененные!');
+				}
+				//close();
 			}
 			
 			
@@ -612,6 +707,33 @@
 	
 	
 	
+	// получить выбранные заказы для дальнейших манипуляций с ними
+	const {chooseAllOrders} = getChoosedOrders(({list, hasChoosed, listType}) => {
+		if (listType) {
+			$('[groupaction]').setAttrib('hidden');
+			$('[groupaction]').removeAttrib('has');
+			$(`[lt${listType}]`).setAttrib('has');
+		}
+		
+		if (hasChoosed) {
+			$('[groupaction][has]').removeAttrib('hidden');
+			//$('#chooseGroupCounter').removeAttrib('hidden');
+			$('#chooseGroupCounter [counter]').text(list.length);
+		} else {
+			$('[groupaction][has]').setAttrib('hidden');
+			//$('#chooseGroupCounter').setAttrib('hidden');
+			$('#chooseGroupCounter [counter]').text('0');
+		}
+		
+		
+		//console.log(list, hasChoosed, listType);
+	});
+	
+	
+	$.chooseAllOrders = () => {
+		const {choosedOrders} = chooseAllOrders();
+		//console.log(choosedOrders);
+	}
 	
 	
 	

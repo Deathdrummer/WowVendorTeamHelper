@@ -281,21 +281,31 @@ class OrdersController extends Controller {
 	public function to_wait_list(Request $request, AddOrderCommentAction $addOrderComment) {
 		[
 			'order_id'	=> $orderId,
+			'group_id'	=> $groupId,
 			'message'	=> $message,
 		] = $request->validate([
-			'order_id'	=> 'required|numeric',
+			'order_id'	=> 'required',
+			'group_id'	=> 'required|numeric',
 			'message'	=> 'string|nullable',
 		]);
-
 		
-		$order = Order::find($orderId);
-		$order->fill(['status' => OrderStatus::wait]);
-		eventLog()->orderToWaitlList($order);
-		$res = $order->save();
+		if (is_array($orderId)) {
+			$res = Order::whereIn('id', $orderId)->update(['status' => OrderStatus::wait, 'wait_group' => $groupId]);
+			//eventLog()->ordersToWaitlList($orderId);
+		} elseif (is_numeric($orderId)) {
+			$order = Order::find($orderId);
+			$order->fill(['status' => OrderStatus::wait, 'wait_group' => $groupId]);
+			eventLog()->orderToWaitlList($order);
+			$res = $order->save();
+		}
+		
 		
 		// отправить коммент
 		if ($message) {
-			$addOrderComment($orderId, $message);
+			$ordersIds = is_array($orderId) ? $orderId : [$orderId];
+			foreach ($ordersIds as $rdrId) {
+				$addOrderComment($rdrId, $message);
+			}
 		}
 		
 		return response()->json($res);
@@ -331,18 +341,26 @@ class OrdersController extends Controller {
 			'order_id'	=> $orderId,
 			'message'	=> $message,
 		] = $request->validate([
-			'order_id'	=> 'required|numeric',
+			'order_id'	=> 'required',
 			'message'	=> 'string|nullable',
 		]);
 		
-		$order = Order::find($orderId);
-		$order->fill(['status' => OrderStatus::necro]);
-		eventLog()->orderToWaitlList($order);
-		$res = $order->save();
+		if (is_array($orderId)) {
+			$res = Order::whereIn('id', $orderId)->update(['status' => OrderStatus::necro]);
+			//eventLog()->orderToNecrolList($orderId);
+		} elseif (is_numeric($orderId)) {
+			$order = Order::find($orderId);
+			$order->fill(['status' => OrderStatus::necro]);
+			eventLog()->orderToNecrolList($order);
+			$res = $order->save();
+		}
 		
 		// отправить коммент
 		if ($message) {
-			$addOrderComment($orderId, $message);
+			$ordersIds = is_array($orderId) ? $orderId : [$orderId];
+			foreach ($ordersIds as $rdrId) {
+				$addOrderComment($rdrId, $message);
+			}
 		}
 		
 		return response()->json($res);
@@ -367,6 +385,8 @@ class OrdersController extends Controller {
 		] = $request->validate([
 			'views'	=> 'required|string',
 		]);
+		
+		//toLog($viewPath);
 
 		return $this->render($viewPath, ['listType' => 'отмененные']);
 	}
@@ -381,18 +401,26 @@ class OrdersController extends Controller {
 			'order_id'	=> $orderId,
 			'message'	=> $message,
 		] = $request->validate([
-			'order_id'	=> 'required|numeric',
+			'order_id'	=> 'required',
 			'message'	=> 'string|nullable',
 		]);
 		
-		$order = Order::find($orderId);
-		$order->fill(['status' => OrderStatus::cancel]);
-		eventLog()->orderToCancelList($order);
-		$res = $order->save();
+		if (is_array($orderId)) {
+			$res = Order::whereIn('id', $orderId)->update(['status' => OrderStatus::cancel]);
+			//eventLog()->ordersToCancelList($orderId);
+		} elseif (is_numeric($orderId)) {
+			$order = Order::find($orderId);
+			$order->fill(['status' => OrderStatus::cancel]);
+			eventLog()->orderToCancelList($order);
+			$res = $order->save();
+		}
 		
 		// отправить коммент
 		if ($message) {
-			$addOrderComment($orderId, $message);
+			$ordersIds = is_array($orderId) ? $orderId : [$orderId];
+			foreach ($ordersIds as $rdrId) {
+				$addOrderComment($rdrId, $message);
+			}
 		}
 		
 		return response()->json($res);
@@ -412,20 +440,22 @@ class OrdersController extends Controller {
 			'order_id'	=> $orderId,
 			'views'		=> $viewPath,
 		] = $request->validate([
-			'order_id'	=> 'required|numeric',
+			'order_id'	=> 'required',
 			'views'		=> 'required|string',
 		]);
 		
-
-		$order = Order::find($orderId);
-		
-		$rawData = $order?->raw_data;
-		
 		$regionId = null;
-		$timezone = $this->_parseTimezone($rawData);
-		if ($timezone) {
-			$timezones = $this->getSettings('timezones', null, null, ['timezone' => $timezone]);
-			$regionId = reset($timezones)['region'];
+		$rawData = null;
+		if (!is_array($orderId)) {
+			$order = Order::find($orderId);
+			
+			$rawData = $order?->raw_data;
+			
+			$timezone = $this->_parseTimezone($rawData);
+			if ($timezone) {
+				$timezones = $this->getSettings('timezones', null, null, ['timezone' => $timezone]);
+				$regionId = reset($timezones)['region'];
+			}
 		}
 		
 		$regions = $this->getSettings('regions', 'id', 'title');
@@ -453,15 +483,18 @@ class OrdersController extends Controller {
 			'date'		=> 'required|date',
 			'region_id'	=> 'numeric|nullable',
 			'period'	=> 'string|nullable',
-			'order_id'	=> 'required|numeric',
+			'order_id'	=> 'required',
 		]);
 		
+		if (!is_array($orderId)) {
+			if (!$order = Order::find($orderId)) return response()->json(false);
+			$orderDate = $order?->date_msc;
+		} else {
+			$orderDate = null;
+		}
 		
-		if (!$order = Order::find($orderId)) return response()->json(false);
 		
 		$regionShiftHours = $this->getSettings('regions', 'id', 'shift', ['id' => $regionId])[$regionId] ?? 0;
-		
-		$orderDate = $order?->date_msc;
 		
 		$timezonesIds = $this->getSettingsCollect('timezones', null, null, ['region' => $regionId])->pluck('id');
 		$commandsIds = Command::whereIn('region_id', $timezonesIds)->get()->pluck('id');
@@ -474,10 +507,7 @@ class OrdersController extends Controller {
 			};
 		};
 		
-		$timesheet = $tsQuery()
-			->where('datetime', DdrDateTime::shift($orderDate, 'UTC'))
-			->whereIn('command_id', $commandsIds)
-			->first();
+		
 		
 		$timesheets = $tsQuery()->withCount('orders AS orders_count')
 			->whereIn('command_id', $commandsIds)
@@ -496,8 +526,19 @@ class OrdersController extends Controller {
     		return [$item['id'] => $item['title']];
 		})->toArray();
 		
-		$choosedTsId = $timesheet?->id;
-		$headers = ['x-timesheet-id' => $choosedTsId];
+		
+		if (!is_array($orderId)) {
+				$timesheet = $tsQuery()
+				->where('datetime', DdrDateTime::shift($orderDate, 'UTC'))
+				->whereIn('command_id', $commandsIds)
+				->first();
+			
+			$choosedTsId = $timesheet?->id;
+			$headers = ['x-timesheet-id' => $choosedTsId];
+		} else {
+			$choosedTsId = null;
+			$headers = ['x-timesheet-id' => null];
+		}
 		
 		return response()->view($viewPath.'.timesheets', compact('timesheets', 'commands', 'eventsTypes', 'orderDate', 'choosedTsId', 'regionShiftHours'))->withHeaders($headers);
 	}
@@ -511,33 +552,58 @@ class OrdersController extends Controller {
 	 */
 	public function set_relocate_client(Request $request, AddOrderCommentAction $addOrderComment) {
 		[
-			'comment'		=> $comment,
 			'order_id'		=> $orderId,
 			'timesheet_id'	=> $timesheetId,
+			'comment'		=> $comment,
 		] = $request->validate([
-			'comment'		=> 'nullable|string',
-			'order_id'		=> 'required|numeric',
+			'order_id'		=> 'required',
 			'timesheet_id'	=> 'required|numeric',
+			'comment'		=> 'nullable|string',
 		]);
+		
+		$orderId = isJson($orderId) ? json_decode($orderId, true) : $orderId;
 		
 		$withFollow = $request->input('withFollow');
 		
 		$timesheet = Timesheet::find($timesheetId);
 		//$timesheet->orders()->detach([$orderId]);
-		$sync = $timesheet->orders()->syncWithoutDetaching($orderId);
-		if (!count($sync['attached'])) return response()->json(false);
 		
-		// менять статус на новый
-		$order = Order::find($orderId);
-		$order->fill(['status' => OrderStatus::new]);
-		eventLog()->orderAttach($order, $timesheetId);
-		$res = $order->save();
+		# Прикрепить заказ(ы)
+		if (is_array($orderId)) {
+			foreach ($orderId as $ordrId) {
+				$timesheet->orders()->syncWithoutDetaching($ordrId);
+			}
+		} else {
+			$sync = $timesheet->orders()->syncWithoutDetaching($orderId);
+			if (!count($sync['attached'])) return response()->json(false);
+		}
 		
-		if (!$res) return response()->json(false);
+		
+		
+		# менять статус на новый
+		if (is_array($orderId)) {
+			$response = Order::whereIn('id', $orderId)->update(['status' => OrderStatus::new]);
+			
+			if (!$response) return response()->json(false);
+			
+			//eventLog()->orderAttach($order, $timesheetId);
+		
+		} else {
+			$order = Order::find($orderId);
+			$order->fill(['status' => OrderStatus::new]);
+			eventLog()->orderAttach($order, $timesheetId);
+			$res = $order->save();
+			
+			if (!$res) return response()->json(false);	
+		}
+		
 		
 		// отправить коммент
 		if ($comment) {
-			$addOrderComment($orderId, $comment);
+			$ordersIds = is_array($orderId) ? $orderId : [$orderId];
+			foreach ($ordersIds as $rdrId) {
+				$addOrderComment($rdrId, $comment);
+			}
 		}
 		
 		if (!$withFollow) return response()->json(true);
