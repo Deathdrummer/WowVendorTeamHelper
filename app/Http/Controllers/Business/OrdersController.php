@@ -291,7 +291,7 @@ class OrdersController extends Controller {
 		
 		if (is_array($orderId)) {
 			$res = Order::whereIn('id', $orderId)->update(['status' => OrderStatus::wait, 'wait_group' => $groupId]);
-			//eventLog()->ordersToWaitlList($orderId);
+			eventLog()->ordersToWaitlList($orderId);
 		} elseif (is_numeric($orderId)) {
 			$order = Order::find($orderId);
 			$order->fill(['status' => OrderStatus::wait, 'wait_group' => $groupId]);
@@ -347,11 +347,11 @@ class OrdersController extends Controller {
 		
 		if (is_array($orderId)) {
 			$res = Order::whereIn('id', $orderId)->update(['status' => OrderStatus::necro]);
-			//eventLog()->orderToNecrolList($orderId);
+			eventLog()->ordersToNecroList($orderId);
 		} elseif (is_numeric($orderId)) {
 			$order = Order::find($orderId);
 			$order->fill(['status' => OrderStatus::necro]);
-			eventLog()->orderToNecrolList($order);
+			eventLog()->orderToNecroList($order);
 			$res = $order->save();
 		}
 		
@@ -407,7 +407,7 @@ class OrdersController extends Controller {
 		
 		if (is_array($orderId)) {
 			$res = Order::whereIn('id', $orderId)->update(['status' => OrderStatus::cancel]);
-			//eventLog()->ordersToCancelList($orderId);
+			eventLog()->ordersToCancelList($orderId);
 		} elseif (is_numeric($orderId)) {
 			$order = Order::find($orderId);
 			$order->fill(['status' => OrderStatus::cancel]);
@@ -586,7 +586,7 @@ class OrdersController extends Controller {
 			
 			if (!$response) return response()->json(false);
 			
-			//eventLog()->orderAttach($order, $timesheetId);
+			eventLog()->ordersAttach($orderId, $timesheetId);
 		
 		} else {
 			$order = Order::find($orderId);

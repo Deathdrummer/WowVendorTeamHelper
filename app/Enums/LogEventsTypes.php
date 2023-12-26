@@ -27,11 +27,29 @@ final class LogEventsTypes extends Enum {
 	#[Description('{"ru": "Заказ отправлен в лист ожидания","en":""}')]
 	const orderToWaitlList = 6;
 	
+	#[Description('{"ru": "Заказы отправлены в лист ожидания","en":""}')]
+	const ordersToWaitlList = 17;
+	
 	#[Description('{"ru": "Заказ отправлен в отмененные","en":""}')]
 	const orderToCancelList	= 7;
 	
+	#[Description('{"ru": "Заказы отправлены в отмененные","en":""}')]
+	const ordersToCancelList	= 18;
+	
+	#[Description('{"ru": "Заказ отправлен в некро","en":""}')]
+	const orderToNecroList	= 19;
+	
+	#[Description('{"ru": "Заказы отправлены в некро","en":""}')]
+	const ordersToNecroList	= 20;
+	
+	
+	
+	
 	#[Description('{"ru": "Заказ привязан к событию","en":""}')]
 	const orderAttach = 8;
+	
+	#[Description('{"ru": "Заказы привязаны к событию","en":""}')]
+	const ordersAttach = 21;
 	
 	#[Description('{"ru": "Заказ перенесен в другое событие","en":""}')]
 	const orderMove	= 9;

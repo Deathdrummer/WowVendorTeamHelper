@@ -295,6 +295,32 @@ class EventLogService {
 	}
 	
 	
+	/**
+	* 
+	* @param 
+	* @return 
+	*/
+	public function ordersToWaitlList($ordersIds) {
+		$ordersIdsStr = implode(', ', $ordersIds);
+		$orders = Order::whereIn('id', $ordersIds)->pluck('order')?->join(', ');
+		
+		$confirmedFrom = auth()->user();
+		
+		$info = [
+			'id' => ['data' => $ordersIdsStr ?? '-', 'title' => 'ID заказов'],
+			'order' => ['data' => $orders ?? '-', 'title' => 'Номера заказов'],
+			'from' => ['data' => $confirmedFrom['name'] ?? $confirmedFrom['pseudoname'], 'title' => 'Кем отправлены'],
+		];
+		
+		$this->sendToEventLog(LogEventsGroups::orders, LogEventsTypes::ordersToWaitlList, $info);
+	}
+	
+	
+	
+	
+	
+	
+	
 	
 	/**
 	* 
@@ -325,6 +351,90 @@ class EventLogService {
 		
 		$this->sendToEventLog(LogEventsGroups::orders, LogEventsTypes::orderToCancelList, $info);
 	}
+	
+	
+	/**
+	* 
+	* @param 
+	* @return 
+	*/
+	public function ordersToCancelList($ordersIds) {
+		$ordersIdsStr = implode(', ', $ordersIds);
+		$orders = Order::whereIn('id', $ordersIds)->pluck('order')?->join(', ');
+		
+		$confirmedFrom = auth()->user();
+		
+		$info = [
+			'id' => ['data' => $ordersIdsStr ?? '-', 'title' => 'ID заказов'],
+			'order' => ['data' => $orders ?? '-', 'title' => 'Номера заказов'],
+			'from' => ['data' => $confirmedFrom['name'] ?? $confirmedFrom['pseudoname'], 'title' => 'Кем отправлены'],
+		];
+		
+		$this->sendToEventLog(LogEventsGroups::orders, LogEventsTypes::ordersToCancelList, $info);
+	}
+	
+	
+	
+	
+	
+	
+	
+	/**
+	* 
+	* @param 
+	* @return 
+	*/
+	public function orderToNecroList(Order $order) {
+		$timezone = $this->getTimezone($order?->timezone_id);
+		$dateMsc = $timezone ? DdrDateTime::shift($order?->date, (-1 * $timezone['shift'])) : null;
+		
+		$oldData = $order?->getRawOriginal() ?? null;
+		$orderStatuses = $this->getSettings('order_statuses');
+		$oldStatus = $orderStatuses[OrderStatus::fromValue((int)$oldData['status'])?->key]['name'] ?? '-';
+		
+		$info = [
+			'id' => ['data' => $order?->id ?? '-', 'title' => 'ID заказа'],
+			'order' => ['data' => $order?->order ?? '-', 'title' => 'Номер заказа'],
+			'order_type' => ['data' => $order?->order_type_title ?? '-', 'title' => 'Тип заказа'],
+			'price' => ['data' => number_format($order?->price, 2, '.', ' ')  ?? '-', 'title' => 'Стоимость', 'meta' => ['symbal' => 'dollar']],
+			'server_name' => ['data' => $order?->server_name ?? '-', 'title' => 'Инвайт'],
+			'raw_data' => ['data' => $order?->raw_data ?? '-', 'title' => 'Данные'],
+			'link' => ['data' => $order?->link ?? '-', 'title' => 'Ссылка'],
+			'date' => ['data' => $order?->date ?? null, 'title' => 'Дата и время ориг.', 'meta' => ['date' => 1]],
+			'date_msc' => ['data' => $dateMsc, 'title' => 'Дата и время МСК', 'meta' => ['date' => 1]],
+			'timezone' => ['data' => $timezone['timezone'] ?? '-', 'title' => 'Временная зона'],
+			'old_status' => ['data' => $oldStatus, 'title' => 'Предыдущий статус'],
+		];
+		
+		$this->sendToEventLog(LogEventsGroups::orders, LogEventsTypes::orderToNecroList, $info);
+	}
+	
+	
+	/**
+	* 
+	* @param 
+	* @return 
+	*/
+	public function ordersToNecroList($ordersIds) {
+		$ordersIdsStr = implode(', ', $ordersIds);
+		$orders = Order::whereIn('id', $ordersIds)->pluck('order')?->join(', ');
+		
+		$confirmedFrom = auth()->user();
+		
+		$info = [
+			'id' => ['data' => $ordersIdsStr ?? '-', 'title' => 'ID заказов'],
+			'order' => ['data' => $orders ?? '-', 'title' => 'Номера заказов'],
+			'from' => ['data' => $confirmedFrom['name'] ?? $confirmedFrom['pseudoname'], 'title' => 'Кем отправлены'],
+		];
+		
+		$this->sendToEventLog(LogEventsGroups::orders, LogEventsTypes::ordersToNecroList, $info);
+	}
+	
+	
+	
+	
+	
+	
 	
 	
 	
@@ -367,6 +477,42 @@ class EventLogService {
 		$this->sendToEventLog(LogEventsGroups::orders, LogEventsTypes::orderAttach, $info);
 		broadcast(new AttachOrderEvent('orderAttach', $info, $timesheet?->command_id))->toOthers();
 	}
+	
+	
+	/**
+	* 
+	* @param 
+	* @return 
+	*/
+	public function ordersAttach($ordersIds, $timesheetId) {
+		$ordersIdsStr = implode(', ', $ordersIds);
+		$orders = Order::whereIn('id', $ordersIds)->pluck('order')?->join(', ');
+		
+		$timesheet = Timesheet::find($timesheetId);
+		$command = $this->getTsCommand($timesheet?->command_id);
+		$eventType = $this->getTsEventType($timesheet?->event_type_id);
+		$timesheetPeriod = TimesheetPeriod::find($timesheet?->timesheet_period_id);
+		
+		$confirmedFrom = auth()->user();
+		
+		$info = [
+			'id' => ['data' => $ordersIdsStr ?? '-', 'title' => 'ID заказов'],	
+			'order' => ['data' => $orders ?? '-', 'title' => 'Номера заказов'],
+			'timezone' => ['data' => $timezone['timezone'] ?? '-', 'title' => 'Временная зона'],
+			'command' => ['data' => $command?->title ?? '-', 'title' => 'Команда', 'sort' => 10],
+			'timesheet_period' => ['data' => $timesheetPeriod?->title ?? '-', 'title' => 'Период'],
+			'event_type' => ['data' => $eventType ?? '-', 'title' => 'Тип события'],
+			'from' => ['data' => $confirmedFrom['name'] ?? $confirmedFrom['pseudoname'], 'title' => 'Кем отправлены'],
+		];
+		
+		$this->sendToEventLog(LogEventsGroups::orders, LogEventsTypes::ordersAttach, $info);
+		broadcast(new AttachOrderEvent('orderAttach', $info, $timesheet?->command_id))->toOthers();
+	}
+	
+	
+	
+	
+	
 	
 	
 	
