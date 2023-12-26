@@ -206,6 +206,9 @@ $('#sectionPlace').on(tapEvent, '[orderstabs], [pagination]', function(e) {
 	getChoosedOrdersCB({list: [], hasChoosed: false, listType: tabListType});
 });
 
+$('#sectionPlace').on('input', '#searchOrdersField', function(e) {
+	getChoosedOrdersCB({list: [], hasChoosed: false, listType: null});
+});
 
 
 

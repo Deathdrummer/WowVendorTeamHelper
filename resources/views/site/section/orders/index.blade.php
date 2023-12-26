@@ -724,15 +724,11 @@
 			//$('#chooseGroupCounter').setAttrib('hidden');
 			$('#chooseGroupCounter [counter]').text('0');
 		}
-		
-		
-		//console.log(list, hasChoosed, listType);
 	});
 	
 	
 	$.chooseAllOrders = () => {
 		const {choosedOrders} = chooseAllOrders();
-		//console.log(choosedOrders);
 	}
 	
 	
