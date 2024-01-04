@@ -1,6 +1,6 @@
 <div class="row row-cols-1 gy-20 mb2rem">
 	<div class="col">
-		<p class="fz16px color-green">Вы действительно хотите перенести заказ в {{$listType ?? '---'}}?</p>
+		<p class="fz16px color-green">Вы действительно хотите перенести заказ{{$multiple ? 'ы' : ''}} в {{$listType ?? '---'}}?</p>
 	</div>
 	
 	@if($waitListGroups ?? false)

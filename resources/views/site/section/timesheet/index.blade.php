@@ -119,7 +119,8 @@
 		buildOrdersTable,
 		orderCommentsChat,
 		rawDataHistory,
-		showStatusesTooltip
+		showStatusesTooltip,
+		chooseTsOrders,
 	} = await loadSectionScripts({section: 'timesheet', guard: 'admin'});
 	
 	
@@ -236,6 +237,7 @@
 	
 	
 	$.openStatusesTooltip = (btn, orderId, timesheetId, status) => {
+		if (_.isNull(orderId)) orderId = chooseTsOrders(true);
 		showStatusesTooltip(btn, orderId, timesheetId, status);
 	}
 	
@@ -473,6 +475,25 @@
 		}
 	}
 	
+	
+	
+	
+	
+	
+	const {chooseAllTsOrders} = chooseTsOrders(({container, hasChoosed}) => {
+		if (hasChoosed) {
+			$(container).find('[choosetslabel]:visible').setAttrib('hidden');
+			$(container).find('[choosetsbuttons]:hidden').removeAttrib('hidden');
+		} else {
+			$(container).find('[choosetslabel]:hidden').removeAttrib('hidden');
+			$(container).find('[choosetsbuttons]:visible').setAttrib('hidden');
+		}
+	});
+	
+	
+	$('#timesheetContainer').on(tapEvent, '[choosealltsdorders]', function(e) {
+		chooseAllTsOrders(e);
+	});
 	
 	
 	

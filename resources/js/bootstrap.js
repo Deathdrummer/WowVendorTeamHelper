@@ -83,6 +83,37 @@ import axiosQuery from '@plugins/axiosQuery';
 window.axiosQuery = axiosQuery;
 
 
+// глобальная обработка AJAX ответаов
+axios.interceptors.response.use(function (response) {
+	const {data, headers} = response;
+	
+	const isJsonContentType = headers.get('content-type')?.includes('application/json');
+	
+	// Проверяет, если тип данных json, а сами данные в виде строки - привести данные в JSON
+	if (isJsonContentType && _.isString(data) && isJson(data)) response.data = JSON.parse(data);
+	
+	return response;
+}, function (error) {
+	return Promise.reject(error);
+});
+
+
+/*axios.interceptors.request.use(function (request) {
+	console.log('request', request);
+	
+	return request;
+}, function (error) {
+	return Promise.reject(error);
+});*/
+
+
+
+
+
+
+
+
+//------------------------------------------------------------ Echo & Pusher
 import Echo from 'laravel-echo';
 import Pusher from 'pusher-js';
 window.Pusher = Pusher;
@@ -99,19 +130,6 @@ window.Echo = new Echo({
 	enabledTransports: ['ws', 'wss'],
 });
 
-
-// глобальная обработка AJAX ответаов
-axios.interceptors.response.use(function (response) {
-	const {data, headers} = response;
-	const isJsonContentType = headers.get('content-type')?.includes('application/json');
-	
-	// Проверяет, если тип данных json, а сами данные в виде строки - привести данные в JSON
-	if (isJsonContentType && _.isString(data) && isJson(data)) response.data = JSON.parse(data);
-	
-	return response;
-}, function (error) {
-	return Promise.reject(error);
-});
 
 
 

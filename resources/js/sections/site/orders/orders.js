@@ -159,7 +159,7 @@ function pag(selector = null) {
 let getChoosedOrdersCB;
 function getChoosedOrders(cb = null) {
 	if (cb) {
-		$('#ordersList').on(tapEvent, '[choosedorder]', function() {
+		$('#ordersList').on('change', '[choosedorder]', function() {
 			const choosedOrders = _getChoosedOrders();
 			callFunc(cb, {list: choosedOrders, hasChoosed: !!choosedOrders.length, listType: null});
 		});

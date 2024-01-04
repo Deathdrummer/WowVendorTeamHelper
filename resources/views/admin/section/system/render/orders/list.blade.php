@@ -2,6 +2,13 @@
 	<x-table class="w100" scrolled="300px">
 		<x-table.head>
 			<x-table.tr class="h3rem">
+				<x-table.td class="w4rem h-center">
+					<x-button
+						size="verysmall"
+						variant="yellow"
+						tag="choosealltsdorders"
+						><i class="fa-solid fa-fw fa-check-double"></i></x-button>
+					</x-table.td>
 				<x-table.td class="w4rem h-center"><strong>№</strong></x-table.td>
 				@cando('nomer-zakaza-(klient):site')<x-table.td class="w8rem-4px pointer color-neutral-hovered" onclick="$.copyOrdersColumn(this)"><strong>№ заказа</strong></x-table.td> @endcando
 				@cando('data-(klient):site')<x-table.td class="w19rem"><strong>Дата</strong></x-table.td> @endcando
@@ -32,19 +39,37 @@
 				@endcando
 				
 				@cando('status-(klient):site')
-				<x-table.td
-					@class([
-						'w-10rem' => $showType['text'] ?: false,
-						'w-5rem' => ($showType['color'] || $showType['icon']) ?: false,
-					])
-					>
-					<strong>{{$showType['text'] ? 'Статус' : 'Стат'}}</strong>
-				</x-table.td>
+					<x-table.td
+						@class([
+							'w-10rem' => $showType['text'] ?: false,
+							'w-5rem' => ($showType['color'] || $showType['icon']) ?: false,
+						])
+						>
+						<strong choosetslabel>{{$showType['text'] ? 'Статус' : 'Стат'}}</strong>
+						<x-button
+							variant="green"
+							group="verysmall"
+							choosetsbuttons
+							hidden
+							action="openStatusesTooltip:null,{{$timesheetId}}"
+							title="Изменить статус выбранных заказов"
+							><i class="fa-solid fa-fw fa-circle-half-stroke"></i></i>
+						</x-button>	
+					</x-table.td>
 				@endcando
 				
 				@cando('ssylka-(klient):site')<x-table.td class="w4rem h-center" title="Ссылка"><i class="fa-solid fa-fw fa-link"></i></x-table.td> @endcando
 				
-				@cando('deystviya-(klient):site')<x-table.td class="w-13rem"><strong>Действия</strong></x-table.td> @endcando
+				@cando('deystviya-(klient):site')
+					<x-table.td class="w-13rem pl9px">
+						<strong choosetslabel>Действия</strong>
+						<x-buttons-group group="verysmall" w="2rem-5px" gx="4" inline choosetsbuttons hidden>
+							<x-button variant="gray" action="detachTimesheetOrder:{{$timesheetId}}" title="Отвязать от события"><i class="fa-solid fa-fw fa-link-slash"></i></x-button>
+							<x-button variant="yellow" action="relocateTimesheetOrder:{{$timesheetId}},move" title="Переместить выбранные заказы"><i class="fa-solid fa-fw fa-angles-right"></i></x-button>
+							<x-button variant="yellow" action="relocateTimesheetOrder:{{$timesheetId}},clone" title="Клонировать выбранные заказы"><i class="fa-regular fa-fw fa-clone"></i></x-button>
+						</x-buttons-group>
+					</x-table.td>
+				@endcando
 			</x-table.tr>
 		</x-table.head>
 		<x-table.body>

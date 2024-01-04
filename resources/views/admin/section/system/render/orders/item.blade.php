@@ -1,4 +1,10 @@
 <x-table.tr class="h4rem">
+	<x-table.td class="h-center">
+		<x-checkbox
+			size="small"
+			tag="choosetsdorder:{{$id}}|{{$status}}"
+			/>
+	</x-table.td>
 	<x-table.td class="h-center"><strong class="fz12px">{{$loop->index + 1}}</strong></x-table.td>
 	@cando('nomer-zakaza-(klient):site')
 		<x-table.td>
@@ -131,8 +137,6 @@
 		@elseif($confirm)
 			<i class="fa-regular fa-fw fa-circle-check color-green fz18px" title="Подтвержден"></i>
 		@else
-		
-		
 			<div
 				@class([
 					'd-inline-flex',

@@ -562,6 +562,7 @@ export async function rawDataHistory(orderId = null, orderName = null, rowBtn = 
 
 export async function showStatusesTooltip(btn = null, orderId = null, timesheetId = null, stat = null, cb = null) {
 	let ref, ttip;
+	$(btn).addClass('notouch');
 	const statusesTooltip = $(btn).ddrTooltip({
 		cls: 'noselect',
 		offset: [-1, 3],
@@ -573,8 +574,12 @@ export async function showStatusesTooltip(btn = null, orderId = null, timesheetI
 			iconHeight: '40px'
 		},
 		onShow: async function({reference, popper, show, hide, destroy, waitDetroy, setContent, setData, setProps}) {
-			const {data, error, status, headers} = await ddrQuery.get('crud/orders/statuses', {order_id: orderId, status: stat, views: viewsPath});
+			let order_id = _.isPlainObject(orderId) ? null : orderId;
 			
+			const {data, error, status, headers} = await ddrQuery.get('crud/orders/statuses', {order_id, status: stat, views: viewsPath});
+			
+			$(btn).removeClass('notouch');
+		 	
 		 	if (error) {
 				console.log(error);
 				$.notify(error?.message, 'error');
@@ -623,7 +628,7 @@ export async function showStatusesTooltip(btn = null, orderId = null, timesheetI
 				close,
 			} = await ddrPopup({
 				url: `client/orders/${url[status]}`,
-				params: {views: 'movelist_form'},
+				params: {views: 'movelist_form', multiple: _.isPlainObject(orderId) ? 1 : 0},
 				method: 'get',
 				title,
 				width: 400, // ширина окна
@@ -637,22 +642,46 @@ export async function showStatusesTooltip(btn = null, orderId = null, timesheetI
 				message = $(popper).find('#comment').val();
 				groupId = $(popper).find('#groupId').val();
 				
-				await setStatusFunc((stat) => {
-					if (!stat) wait(false);
-					else close();
-				}, popper);
+				let ordersIds = _buildOrdersIds(orderId, status);
+				
+				if (_.isEmpty(ordersIds)) {
+					$.notify('Нет подходящих для выполнения заказов', 'info');
+					return;
+				}
+				
+				ordersIds.forEach(function(ordrId, index) {
+					setStatusFunc(ordrId, (stat) => {
+						if (!stat) wait(false);
+						else close();
+					}, popper, (index + 1 == ordersIds.length));
+				});
 			};
 		} else {
-			await setStatusFunc();
+			let ordersIds = _buildOrdersIds(orderId, status);
+			
+			if (_.isEmpty(ordersIds)) {
+				$.notify('Нет подходящих для выполнения заказов', 'info');
+				return;
+			}
+			
+			ordersIds.forEach(function(ordrId) {
+				setStatusFunc(ordrId);
+			});
 		}
 			
 		
 		
-		async function setStatusFunc(cb = null, popper = null) {
-			const {data, error, headers} = await ddrQuery.post('crud/orders/set_status', {order_id: orderId, timesheet_id: timesheetId, message, group_id: groupId, status});
+		async function setStatusFunc(orderId = null, cb = null, popper = null, end = true) {
+			const {data, error, headers} = await ddrQuery.post('crud/orders/set_status', {
+				order_id: orderId,
+				timesheet_id: timesheetId,
+				message,
+				group_id: groupId,
+				status,
+			});
 			
 		 	if (error) {
-				console.log(error);
+		 		console.log(error);
 				$.notify(error?.message, 'error');
 				if (error.errors) {
 					$.each(error.errors, function(field, errors) {
@@ -707,8 +736,24 @@ export async function showStatusesTooltip(btn = null, orderId = null, timesheetI
 					changeOnclickAttr(statBlock, stat, status);
 				}
 				
-				callFunc(cb);
+				if (end) callFunc(cb, true);
 			}
+		}
+		
+		
+		
+		function _buildOrdersIds(ordersData = null, setStatus = null) {
+			if (_.isNull(ordersData)) return false;
+			
+			if (!_.isPlainObject(ordersData)) return [ordersData];
+			
+			const ordersIds = [];
+			for (const [status, orders] of Object.entries(ordersData)) {
+				if (status == 'ready' || status == setStatus) continue;
+				ordersIds.push(...orders);
+			}
+			
+			return ordersIds;
 		}
 		
 		
@@ -717,6 +762,85 @@ export async function showStatusesTooltip(btn = null, orderId = null, timesheetI
 }
 
 
+
+
+
+
+
+let chooseTsOrdersCB;
+export function chooseTsOrders(cb = null) {
+	chooseTsOrdersCB = cb;
+	
+	if (_.isFunction(cb)) {
+		$('#timesheetContainer').on('change', '[choosetsdorder]', function(e) {
+			const container = $(e.target).closest('[timesheetorders]'),
+				{ids, status_ids} = _getChoosedTsOrders();
+			callFunc(cb, {container, ids, status_ids, hasChoosed: !!ids.length});
+		});
+	} else if (cb === true) {
+		return _getChoosedTsOrders()['status_ids'];
+	}
+	
+	return {
+		chooseAllTsOrders(e) {
+			const container = $(e.target).closest('[timesheetorders]'),
+				ordersRowsCount = $(container).find('[choosetsdorder]').length,
+				choosedCount = $(container).find('[choosetsdorder]:checked').length;
+			
+			if (ordersRowsCount > choosedCount) {
+				$(container).find('[choosetsdorder]:not(:disabled)').ddrInputs('checked', true);
+			} else if (ordersRowsCount == choosedCount) {
+				$(container).find('[choosetsdorder]:not(:disabled)').ddrInputs('checked', false);
+			}
+			
+			const {ids, status_ids} = _getChoosedTsOrders();
+			callFunc(cb, {container, ids, status_ids, hasChoosed: !!ids.length});
+			
+			return {
+				ids,
+			};
+		}
+	};
+}
+
+
+
+/*	
+	1. все - массив
+	2. ID => статус - массив объектов
+*/
+function _getChoosedTsOrders() {
+	const ordersItems = $('#timesheetContainer').find('[choosetsdorder]:checked'),
+		choosedTsOrders = [],
+		choosedTsOrdersStatus = {};
+	
+	for (let chOrder of ordersItems) {
+		const attrStr = $(chOrder).attr('choosetsdorder'),
+			[orderId, status] = ddrSplit(attrStr, '|');
+		choosedTsOrders.push(Number(orderId));
+		
+		if (!choosedTsOrdersStatus[status]) choosedTsOrdersStatus[status] = [];
+		choosedTsOrdersStatus[status].push(Number(orderId));
+	}
+	
+	return {ids: choosedTsOrders, status_ids: choosedTsOrdersStatus};
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//----------------------------------------------------------------------------------------
 
 
 

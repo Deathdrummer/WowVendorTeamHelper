@@ -69,6 +69,7 @@ class TimesheetController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request, GetUserSetting $getUserSetting) {
+		toLog(123);
 		[
 			'views'			=> $viewPath,
 			'period_id'		=> $tsPeriodId,

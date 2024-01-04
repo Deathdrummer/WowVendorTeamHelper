@@ -262,14 +262,16 @@ class OrdersController extends Controller {
 	 */
 	public function to_wait_list_form(Request $request, Settings $setings) {
 		[
-			'views'	=> $viewPath,
+			'views'		=> $viewPath,
+			'multiple'	=> $multiple,
 		] = $request->validate([
-			'views'	=> 'required|string',
+			'views'		=> 'required|string',
+			'multiple'	=> 'sometimes|numeric',
 		]);
 		
 		$waitListGroups = $setings->get('wait_list_groups')->pluck('title', 'id')->toArray();
 		
-		return $this->render($viewPath, ['listType' => 'лист ожидания', 'waitListGroups' => $waitListGroups]);
+		return $this->render($viewPath, ['listType' => 'лист ожидания', 'waitListGroups' => $waitListGroups, 'multiple' => !!$multiple]);
 	}
 	
 	
@@ -279,6 +281,7 @@ class OrdersController extends Controller {
 	 * @return 
 	 */
 	public function to_wait_list(Request $request, AddOrderCommentAction $addOrderComment) {
+		
 		[
 			'order_id'	=> $orderId,
 			'group_id'	=> $groupId,
@@ -322,12 +325,14 @@ class OrdersController extends Controller {
 	 */
 	public function to_necro_list_form(Request $request) {
 		[
-			'views'	=> $viewPath,
+			'views'		=> $viewPath,
+			'multiple'	=> $multiple,
 		] = $request->validate([
-			'views'	=> 'required|string',
+			'views'		=> 'required|string',
+			'multiple'	=> 'sometimes|numeric',
 		]);
 
-		return $this->render($viewPath, ['listType' => 'некроту']);
+		return $this->render($viewPath, ['listType' => 'некроту', 'multiple' => !!$multiple]);
 	}
 	
 	
@@ -381,14 +386,16 @@ class OrdersController extends Controller {
 	 */
 	public function to_cancel_list_form(Request $request) {
 		[
-			'views'	=> $viewPath,
+			'views'		=> $viewPath,
+			'multiple'	=> $multiple,
 		] = $request->validate([
-			'views'	=> 'required|string',
+			'views'		=> 'required|string',
+			'multiple'	=> 'sometimes|numeric',
 		]);
 		
 		//toLog($viewPath);
 
-		return $this->render($viewPath, ['listType' => 'отмененные']);
+		return $this->render($viewPath, ['listType' => 'отмененные', 'multiple' => !!$multiple]);
 	}
 	
 	
@@ -1028,19 +1035,19 @@ class OrdersController extends Controller {
 	 * @return 
 	 */
 	public function statuses(Request $request) {
-		[
-			'views'		=> $viewPath,
-			'order_id'	=> $orderId,
-			'status'	=> $status,
-		] = $request->validate([
+		$validated = $request->validate([
 			'views'		=> 'required|string',
-			'order_id'	=> 'required|numeric',
-			'status'	=> 'required|string',
+			'order_id'	=> 'sometimes|numeric',
+			'status'	=> 'sometimes|string',
 		]);
+		
+		$viewPath = $validated['views'];
+		$orderId = $validated['order_id'] ?? null;
+		$status = $validated['status'] ?? null;
 		
 		$orderStatusesSettings = $this->getSettingsCollect('order_statuses')->sortBy('sort')->where('show', 1);
 		
-		$currentStatusName = $status ?? 'new';
+		$currentStatusName = $orderId ? ($status ?? 'new') : null;
 		
 		$showType = $this->getSettings('order_statuses_showtype', 'color');
 		
@@ -1062,15 +1069,16 @@ class OrdersController extends Controller {
 			'order_id'		=> $orderId,
 			'timesheet_id'	=> $timesheetId,
 			'status'		=> $status,
-			'group_id'		=> $groupId,
 			'message'		=> $message,
 		] = $request->validate([
-			'order_id'		=> 'required|numeric',
+			'order_id'		=> 'required',
 			'timesheet_id'	=> 'required|numeric',
 			'status'		=> 'required|string',
-			'group_id'		=> 'required|numeric',
+			'group_id'		=> 'sometimes|nullable|numeric',
 			'message'		=> 'string|nullable',
 		]);
+		
+		$groupId = $request->input('group_id');
 		
 		if (!$setStatRes = $this->orderService->setStatus($orderId, $timesheetId, $status, $groupId)) return response()->json(false);
 		

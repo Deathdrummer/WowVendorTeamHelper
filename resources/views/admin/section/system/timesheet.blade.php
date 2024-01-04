@@ -1,5 +1,4 @@
 <section>
-	
 	<div class="col-auto" teleport="#headerTeleport1">
 		<div class="header__block">
 			<div>
