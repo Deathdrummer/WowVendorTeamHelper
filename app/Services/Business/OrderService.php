@@ -36,13 +36,16 @@ class OrderService {
 		$query = Order::filter($orderFilter)
 			->when(isset($params['tied']) && $params['tied'] === true, function($query) {
 				$query->tied();
-			}, function($query) {
-				$query->notTied();
+			}, function($query) use($queryParams) {
+				$query->notTied($queryParams['status']);
 			})
 			->with('timesheets')
 			->with('lastComment', function($query) {
 				$query->with('author:id,name,pseudoname', 'adminauthor:id,name,pseudoname');
 			})
+			->withExists(['has_dopdun_orders as is_doprun' => function($q) {
+				$q->where('timesheet_order.doprun', 1);
+			}])
 			->orderBy('id', 'desc');
 		
 		$paginate = $this->paginate($query, $currentPage, $perPage)->toArray();
@@ -320,7 +323,7 @@ class OrderService {
 	 * @param 
 	 * @return 
 	 */
-	public function setStatus($orderId = null, $timesheetId = null, $status = null, $waitGroupId = null) {
+	public function setStatus($orderId = null, $timesheetId = null, $status = null, $waitGroupId = null, $currentStatus = null) {
 		if (is_null($orderId) || is_null($status)) return false;
 		
 		$isHashOrder = false;
@@ -333,8 +336,13 @@ class OrderService {
 		$timesheet = Timesheet::find($timesheetId);
 		
 		if (in_array($status, ['cancel', 'wait'])) {
-			$timesheet->orders()->detach($orderId);
-			eventLog()->orderDetach($order, $timesheetId, $status);
+			if ($currentStatus == 'doprun') {
+				
+			} else {
+				$timesheet->orders()->detach($orderId);
+				eventLog()->orderDetach($order, $timesheetId, $status);	
+			}
+			
 		} else {
 			//$timesheet->orders()->updateExistingPivot($orderId, ['doprun' => null]);
 			
@@ -407,6 +415,24 @@ class OrderService {
 	}
 	
 	
+	
+	
+	
+	
+	
+	
+	
+	
+	/**
+	* 
+	* @param 
+	* @return 
+	*/
+	public function isDoprunOrder($orderId = null) {
+		if (is_null($orderId)) return false;
+		$countInDoprun = TimesheetOrder::where(['order_id' => $orderId, 'doprun' => 1])->count();
+		return $countInDoprun > 0;
+	}
 	
 	
 	

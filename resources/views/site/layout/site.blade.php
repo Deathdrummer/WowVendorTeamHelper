@@ -297,6 +297,7 @@
 				const dataDom = buildTeleports(data);
 				$('#sectionPlace').html(dataDom);
 				$('#sectionTitle').html(setPageTitle(headers['x-page-title']));
+				$(document).trigger('onloadsection:site', section);
 			}
 			
 			$('#sectionTitle:not(.header__pagetitle_visible)').addClass('header__pagetitle_visible');

@@ -7,7 +7,6 @@ const total = ref(null);
 
 
 async function getOrders(ops = {}) {
-	
 	const {
 		init,
 		search,
@@ -210,6 +209,13 @@ $('#sectionPlace').on('input', '#searchOrdersField', function(e) {
 	getChoosedOrdersCB({list: [], hasChoosed: false, listType: null});
 });
 
+
+
+$(document).on('onloadsection:site', function(e, section) {
+	if (section == 'orders') {
+		status.value = 'new';
+	}
+});
 
 
 

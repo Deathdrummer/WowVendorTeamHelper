@@ -13,9 +13,12 @@ trait HasPaginator {
 	 */
 	public function paginate($query = null, $currentPage, $perPage, string $fields = '*') {
 		if (!$query) return false;
-		$fields = preg_split('/[\s,|]+/', $fields);
 		$countAll = $query->count();
-		$list = $query->select($fields)->forPage($currentPage, $perPage)->get();
+		
+		$list = match(true) {
+			$fields == '*'	=> $query->forPage($currentPage, $perPage)->get(),
+			$fields != '*'	=> $query->select(preg_split('/[\s,|]+/', $fields))->forPage($currentPage, $perPage)->get(),
+		};
 		
 		$pagination = new LengthAwarePaginator(
 			$list,

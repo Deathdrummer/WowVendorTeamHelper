@@ -141,6 +141,14 @@ class Order extends Model {
 	
 	
 	
+	public function has_dopdun_orders():HasMany {
+		return $this->hasMany(TimesheetOrder::class, 'order_id', 'id');
+	}
+	
+	
+	
+	
+	
 	/**
      * Добавить к выдаче время по МСК.
      *
@@ -213,10 +221,14 @@ class Order extends Model {
 	/**
      * Вывести не привязанные к событию заказы
      */
-	public function scopeNotTied($query) {
+	public function scopeNotTied($query, $status) {
 		return $query->whereIn('orders.id', function ($builder) {
             $builder->select('timesheet_order.order_id')->from('timesheet_order');
-        }, not: true);
+        }, not: true)->when(in_array($status, ['wait', 'cancel']), function($q) {
+			$q->orWhereIn('orders.id', function ($bdr) {
+				$bdr->select('timesheet_order.order_id')->from('timesheet_order')->where('doprun', 1);
+			});
+		});
 	}
 	
 	

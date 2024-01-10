@@ -3,11 +3,13 @@
 		'ddrlist__item',
 		'order',
 		'order_new' => isset($new),
+		//'order_doprun' => isset($is_doprun) && $is_doprun,
 		'border-all',
 		'border-gray-200',
 		'border-radius-5px',
 		'mr5px',
 	])
+	@if($is_doprun ?? false) style="border-color: {{$doprunStatus['color'].'5e' ?? null}};"@endif
 	order="{{$id ?? null}}"
 	>
 	<div class="col-auto">
@@ -133,28 +135,39 @@
 		</div>
 	</div>
 	
+	@if($is_doprun)
 		<div class="col-auto">
-			<div class="order__block order__block-noborder">
-				<x-buttons-group class="order__right" size="small">
-					@if(!isset($status) || $status == \App\Enums\OrderStatus::new)
-						<x-button w="50px" action="toCancelListBtn:{{$id ?? null}}" variant="red" title="В отмененные"><i class="fa-solid fa-fw fa-ban"></i></x-button>
-						<x-button w="50px" action="toWaitListBtn:{{$id ?? null}}" variant="blue" title="В лист ожидания"><i class="fa-solid fa-fw fa-hourglass-half"></i></x-button>
-					@elseif($status == \App\Enums\OrderStatus::wait)
-						<x-button w="50px" action="toCancelListBtn:{{$id ?? null}}" variant="red" title="В отмененные"><i class="fa-solid fa-fw fa-ban"></i></x-button>
-						<x-button w="50px" action="toNecroListBtn:{{$id ?? null}}" variant="dark" title="В некроту"><i class="fa-solid fa-fw fa-skull"></i></x-button>
-					@elseif($status == \App\Enums\OrderStatus::cancel)
-					@elseif($status == \App\Enums\OrderStatus::necro)
-						<x-button w="50px" action="toWaitListBtn:{{$id ?? null}}" variant="blue" title="В лист ожидания"><i class="fa-solid fa-fw fa-hourglass-half"></i></x-button>
-					@endif
-					
-					@if($status != \App\Enums\OrderStatus::necro)
-						<x-button w="50px" variant="neutral" action="toTimesheetBtn:{{$id ?? null}},{{$date_msc ?? null}},{{$order ?? '-'}}" title="Привязать заказ к событию"><i class="fa-solid fa-fw fa-angles-right"></i></x-button>
-					@endif
-					@cando('edit-attached-order:site')
-						<x-button w="50px" variant="green" action="editOrder:{{$id ?? null}},{{$order ?? '-'}}" title="Редактировать заказ"><i class="fa-solid fa-fw fa-pen-to-square"></i></x-button>
-					@endcando
-				</x-buttons-group>
+			<div class="order__block w10rem">
+				<div class="d-inline-flex align-items-center">
+					<div class="w2rem h2rem border-rounded-circle" style="background-color: {{$doprunStatus['color'] ?? null}};" title="{{$doprunStatus['name'] ?? null}}"></div>
+					<p class="fz12px ml5px" rowstatustext="">{{$doprunStatus['name'] ?? null}}</p>
+				</div>
 			</div>
 		</div>
+	@endif
+	
+	<div class="col-auto">
+		<div class="order__block order__block-noborder">
+			<x-buttons-group class="order__right" size="small">
+				@if(!isset($status) || $status == \App\Enums\OrderStatus::new)
+					<x-button w="50px" action="toCancelListBtn:{{$id ?? null}}" variant="red" title="В отмененные"><i class="fa-solid fa-fw fa-ban"></i></x-button>
+					<x-button w="50px" action="toWaitListBtn:{{$id ?? null}}" variant="blue" title="В лист ожидания"><i class="fa-solid fa-fw fa-hourglass-half"></i></x-button>
+				@elseif($status == \App\Enums\OrderStatus::wait)
+					<x-button w="50px" action="toCancelListBtn:{{$id ?? null}}" variant="red" title="В отмененные"><i class="fa-solid fa-fw fa-ban"></i></x-button>
+					<x-button w="50px" action="toNecroListBtn:{{$id ?? null}}" variant="dark" title="В некроту"><i class="fa-solid fa-fw fa-skull"></i></x-button>
+				@elseif($status == \App\Enums\OrderStatus::cancel)
+				@elseif($status == \App\Enums\OrderStatus::necro)
+					<x-button w="50px" action="toWaitListBtn:{{$id ?? null}}" variant="blue" title="В лист ожидания"><i class="fa-solid fa-fw fa-hourglass-half"></i></x-button>
+				@endif
+				
+				@if($status != \App\Enums\OrderStatus::necro)
+					<x-button w="50px" variant="neutral" action="toTimesheetBtn:{{$id ?? null}},{{$date_msc ?? null}},{{$order ?? '-'}}" title="Привязать заказ к событию"><i class="fa-solid fa-fw fa-angles-right"></i></x-button>
+				@endif
+				@cando('edit-attached-order:site')
+					<x-button w="50px" variant="green" action="editOrder:{{$id ?? null}},{{$order ?? '-'}}" title="Редактировать заказ"><i class="fa-solid fa-fw fa-pen-to-square"></i></x-button>
+				@endcando
+			</x-buttons-group>
+		</div>
+	</div>
 	
 </li>

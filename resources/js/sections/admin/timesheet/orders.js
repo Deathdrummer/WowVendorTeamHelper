@@ -560,8 +560,8 @@ export async function rawDataHistory(orderId = null, orderName = null, rowBtn = 
 
 
 
-export async function showStatusesTooltip(btn = null, orderId = null, timesheetId = null, stat = null, cb = null) {
-	let ref, ttip;
+export async function showStatusesTooltip(btn = null, orderId = null, timesheetId = null, rowStat = null, cb = null) {
+	let ref, ttip, isMultiple = btn.localName == 'button';
 	$(btn).addClass('notouch');
 	const statusesTooltip = $(btn).ddrTooltip({
 		cls: 'noselect',
@@ -576,7 +576,7 @@ export async function showStatusesTooltip(btn = null, orderId = null, timesheetI
 		onShow: async function({reference, popper, show, hide, destroy, waitDetroy, setContent, setData, setProps}) {
 			let order_id = _.isPlainObject(orderId) ? null : orderId;
 			
-			const {data, error, status, headers} = await ddrQuery.get('crud/orders/statuses', {order_id, status: stat, views: viewsPath});
+			const {data, error, status, headers} = await ddrQuery.get('crud/orders/statuses', {order_id, status: rowStat, views: viewsPath});
 			
 			$(btn).removeClass('notouch');
 		 	
@@ -599,6 +599,13 @@ export async function showStatusesTooltip(btn = null, orderId = null, timesheetI
 	$.setOrderStatus = async (li, status, isActive) => {
 		if (isActive) return false;
 		
+		let ordersIds = _buildOrdersIds(orderId, status);
+		if (!ordersIds.length) {
+			statusesTooltip.destroy();
+			$.notify('Нет подходящих для выполнения заказов', 'info');
+			return;
+		}
+		
 		$(li).closest('[orderstatusestooltip]').find('[ordertatus]').removeClass('statusitem-active');	
 		$(li).addClass('statusitem-active');
 		
@@ -607,7 +614,6 @@ export async function showStatusesTooltip(btn = null, orderId = null, timesheetI
 			bgColor: '#ffffffa1'
 		});
 		
-		ttWait.destroy();
 		statusesTooltip.destroy();
 		
 		let title;
@@ -635,6 +641,8 @@ export async function showStatusesTooltip(btn = null, orderId = null, timesheetI
 				buttons: ['ui.cancel', {title: 'Перенести', variant: 'green', action: 'setStatusAction'}],
 				centerMode: true, // контент по центру
 			});
+			
+			ttWait.destroy();
 			
 			$.setStatusAction = async (__) => {
 				wait();
@@ -678,6 +686,7 @@ export async function showStatusesTooltip(btn = null, orderId = null, timesheetI
 				message,
 				group_id: groupId,
 				status,
+				current_status: rowStat
 			});
 			
 		 	if (error) {
@@ -696,10 +705,11 @@ export async function showStatusesTooltip(btn = null, orderId = null, timesheetI
 				if (['wait', 'cancel'].includes(status)) {
 					let hasRows = !!$(ref).closest('[ddrtabletr]').siblings('[ddrtabletr]').length;
 					
-					decrementTimesheetCount(btn);
-					
-					if (hasRows) $(ref).closest('[ddrtabletr]').remove();
-					else $(ref).closest('[ddrtable]').replaceWith('<p class="color-gray-400 text-center mt2rem fz14px">Нет заказов</p>');
+					if (rowStat != 'doprun') {
+						decrementTimesheetCount(btn);
+						if (hasRows) $(ref).closest('[ddrtabletr]').remove();
+						else $(ref).closest('[ddrtable]').replaceWith('<p class="color-gray-400 text-center mt2rem fz14px">Нет заказов</p>');
+					}
 					
 					let listNames = {
 						wait: 'лист ожидания',
@@ -709,13 +719,25 @@ export async function showStatusesTooltip(btn = null, orderId = null, timesheetI
 					$.notify(`Заказ успешно отвязан и перенесен в ${listNames[status]}`);
 					
 				} else if (status == 'ready') {
-					if (data?.isHash) {
-						$(btn).replaceWith('<i class="fa-regular fa-fw fa-circle-check color-green fz18px" title="Подтвержден"></i>');
-						$.notify(`Заказ успешно подтвержден!`);
+					if (isMultiple) {
+						if (data?.isHash) {
+							$('#timesheetContainer').find(`[orderstatusblock="${orderId}"]`).replaceWith('<i class="fa-regular fa-fw fa-circle-check color-green fz18px" title="Подтвержден"></i>');
+							$.notify(`Заказы успешно подтверждены!`);
+						} else {
+							$('#timesheetContainer').find(`[orderstatusblock="${orderId}"]`).replaceWith('<i class="fa-regular fa-fw fa-clock color-gray fz18px" title="На подтверждении"></i>');
+							$.notify(`Заказы отправлены на подтверждение!`);
+						}
+						
 					} else {
-						$(btn).replaceWith('<i class="fa-regular fa-fw fa-clock color-gray fz18px" title="На подтверждении"></i>');
-						$.notify(`Заказ отправлен на подтверждение!`);
+						if (data?.isHash) {
+							$(btn).replaceWith('<i class="fa-regular fa-fw fa-circle-check color-green fz18px" title="Подтвержден"></i>');
+							$.notify(`Заказ успешно подтвержден!`);
+						} else {
+							$(btn).replaceWith('<i class="fa-regular fa-fw fa-clock color-gray fz18px" title="На подтверждении"></i>');
+							$.notify(`Заказ отправлен на подтверждение!`);
+						}
 					}
+						
 				} else {
 					const {name, icon, color} = data;
 					const statBlock = $(btn);
@@ -733,7 +755,7 @@ export async function showStatusesTooltip(btn = null, orderId = null, timesheetI
 						if (color) $(statBlock).find('[rowstatusicon]').css('color', `${color}`);
 					}
 					
-					changeOnclickAttr(statBlock, stat, status);
+					changeOnclickAttr(statBlock, rowStat, status);
 				}
 				
 				if (end) callFunc(cb, true);
@@ -749,7 +771,7 @@ export async function showStatusesTooltip(btn = null, orderId = null, timesheetI
 			
 			const ordersIds = [];
 			for (const [status, orders] of Object.entries(ordersData)) {
-				if (status == 'ready' || status == setStatus) continue;
+				if (status == 'ready' || status == setStatus || (status == 'doprun' && ['new', 'wait'].includes(setStatus))) continue;
 				ordersIds.push(...orders);
 			}
 			

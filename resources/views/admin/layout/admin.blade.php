@@ -271,6 +271,8 @@
 				
 				//$('#sectionPlace').html(data);
 				$('#sectionTitle').html(setPageTitle(headers['x-page-title']));
+				
+				$(document).trigger('onloadsection:admin', section);
 			}
 			
 			$('#sectionTitle:not(.header__pagetitle_visible)').addClass('header__pagetitle_visible');

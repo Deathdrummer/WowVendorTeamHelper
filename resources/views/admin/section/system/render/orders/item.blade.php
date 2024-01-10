@@ -143,6 +143,7 @@
 					'align-items-center',
 					'pointer' => $canAnySetStat,
 				])
+				orderstatusblock="{{$id}}"
 				@if($canAnySetStat)onclick="$.openStatusesTooltip(this, {{$id}}, {{$timesheet_id}}, '{{$status}}')" @endif
 				>
 				@if($showType['color'] ?? false)

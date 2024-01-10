@@ -48,10 +48,13 @@ class OrdersController extends Controller {
 		];
 		
 		$timezones = $this->getSettings('timezones', 'id');
+		$doprunStatus = $this->getSettingsCollect('order_statuses')->filter(fn($val, $key) => $key == 'doprun')['doprun'] ?? null;
 		$status = $request->input('status', 'new');
 		
+		toLog($doprunStatus);
+		
 		$itemView = $this->renderPath.'.item';
-		return $this->renderWithHeaders('list', compact('orders', 'itemView', 'timezones', 'status'), $headers);
+		return $this->renderWithHeaders('list', compact('orders', 'itemView', 'timezones', 'status', 'doprunStatus'), $headers);
 	}
 	
 	
@@ -263,11 +266,12 @@ class OrdersController extends Controller {
 	public function to_wait_list_form(Request $request, Settings $setings) {
 		[
 			'views'		=> $viewPath,
-			'multiple'	=> $multiple,
 		] = $request->validate([
 			'views'		=> 'required|string',
 			'multiple'	=> 'sometimes|numeric',
 		]);
+		
+		$multiple = $request->input('multiple');
 		
 		$waitListGroups = $setings->get('wait_list_groups')->pluck('title', 'id')->toArray();
 		
@@ -326,11 +330,12 @@ class OrdersController extends Controller {
 	public function to_necro_list_form(Request $request) {
 		[
 			'views'		=> $viewPath,
-			'multiple'	=> $multiple,
 		] = $request->validate([
 			'views'		=> 'required|string',
 			'multiple'	=> 'sometimes|numeric',
 		]);
+		
+		$multiple = $request->input('multiple');
 
 		return $this->render($viewPath, ['listType' => 'некроту', 'multiple' => !!$multiple]);
 	}
@@ -387,11 +392,12 @@ class OrdersController extends Controller {
 	public function to_cancel_list_form(Request $request) {
 		[
 			'views'		=> $viewPath,
-			'multiple'	=> $multiple,
 		] = $request->validate([
 			'views'		=> 'required|string',
 			'multiple'	=> 'sometimes|numeric',
 		]);
+		
+		$multiple = $request->input('multiple');
 		
 		//toLog($viewPath);
 
@@ -578,10 +584,18 @@ class OrdersController extends Controller {
 		# Прикрепить заказ(ы)
 		if (is_array($orderId)) {
 			foreach ($orderId as $ordrId) {
-				$timesheet->orders()->syncWithoutDetaching($ordrId);
+				$isDoprunOrder = $this->orderService->isDoprunOrder($ordrId);
+				match($isDoprunOrder) {
+					true	=> $timesheet->orders()->syncWithoutDetaching([$ordrId => ['doprun' => 1]]),
+					false	=> $timesheet->orders()->syncWithoutDetaching($ordrId),
+				};
 			}
 		} else {
-			$sync = $timesheet->orders()->syncWithoutDetaching($orderId);
+			$isDoprunOrder = $this->orderService->isDoprunOrder($orderId);
+			$sync = match($isDoprunOrder) {
+				true	=> $timesheet->orders()->syncWithoutDetaching([$orderId => ['doprun' => 1]]),
+				false	=> $timesheet->orders()->syncWithoutDetaching($orderId),
+			};
 			if (!count($sync['attached'])) return response()->json(false);
 		}
 		
@@ -590,9 +604,7 @@ class OrdersController extends Controller {
 		# менять статус на новый
 		if (is_array($orderId)) {
 			$response = Order::whereIn('id', $orderId)->update(['status' => OrderStatus::new]);
-			
 			if (!$response) return response()->json(false);
-			
 			eventLog()->ordersAttach($orderId, $timesheetId);
 		
 		} else {
@@ -600,7 +612,6 @@ class OrdersController extends Controller {
 			$order->fill(['status' => OrderStatus::new]);
 			eventLog()->orderAttach($order, $timesheetId);
 			$res = $order->save();
-			
 			if (!$res) return response()->json(false);	
 		}
 		
@@ -1047,6 +1058,11 @@ class OrdersController extends Controller {
 		
 		$orderStatusesSettings = $this->getSettingsCollect('order_statuses')->sortBy('sort')->where('show', 1);
 		
+		# Если статс допран - то убираем из списка статусов "новый", так как нельзя допран венуть в новый
+		if ($status == 'doprun') {
+			$orderStatusesSettings->forget(['new']);
+		}
+		
 		$currentStatusName = $orderId ? ($status ?? 'new') : null;
 		
 		$showType = $this->getSettings('order_statuses_showtype', 'color');
@@ -1066,21 +1082,23 @@ class OrdersController extends Controller {
 	 */
 	public function set_status(Request $request, AddOrderCommentAction $addOrderComment) {
 		[
-			'order_id'		=> $orderId,
-			'timesheet_id'	=> $timesheetId,
-			'status'		=> $status,
-			'message'		=> $message,
+			'order_id'			=> $orderId,
+			'timesheet_id'		=> $timesheetId,
+			'status'			=> $status,
+			'current_status'	=> $currentStatus,
+			'message'			=> $message,
 		] = $request->validate([
-			'order_id'		=> 'required',
-			'timesheet_id'	=> 'required|numeric',
-			'status'		=> 'required|string',
-			'group_id'		=> 'sometimes|nullable|numeric',
-			'message'		=> 'string|nullable',
+			'order_id'			=> 'required',
+			'timesheet_id'		=> 'required|numeric',
+			'status'			=> 'required|string',
+			'current_status'	=> 'required|string',
+			'group_id'			=> 'sometimes|nullable|numeric',
+			'message'			=> 'string|nullable',
 		]);
 		
 		$groupId = $request->input('group_id');
 		
-		if (!$setStatRes = $this->orderService->setStatus($orderId, $timesheetId, $status, $groupId)) return response()->json(false);
+		if (!$setStatRes = $this->orderService->setStatus($orderId, $timesheetId, $status, $groupId, currentStatus: $currentStatus)) return response()->json(false);
 		
 		// отправить коммент
 		if ($message) {
