@@ -309,16 +309,17 @@ export async function buildOrdersTable(row = null, timesheetId = null, cb = null
 	
 	
 	
-	
-	
+		
 	
 	
 	
 	
 	$.detachTimesheetOrder = async (btn, orderId = null, timesheetId = null, orderNumber = null) => {
-		const row = $(btn).closest('[ddrtabletr]');
-		const notRows = $(row).siblings('[ddrtabletr]').length == 0;
-		const {
+		let ordersArr = _tsOrdersByArg(orderId, 'doprun');
+		
+		const popupTitle = orderNumber ? `Отвязать заказ ${orderNumber}` : 'Отвязать заказ',
+			notifyTitle = count => orderNumber ? `Заказ ${orderNumber} успешно отвязан!` : `Заказы (${count} шт.) успешно отвязаны!`,
+			{
 			popper,
 			wait,
 			close,
@@ -326,40 +327,68 @@ export async function buildOrdersTable(row = null, timesheetId = null, cb = null
 			url: 'crud/orders/detach',
 			method: 'get',
 			params: {views: 'admin.section.system.render.orders'},
-			title: `Отвязать заказ ${orderNumber}`, // заголовок
+			title: popupTitle, // заголовок
 			width: 500, // ширина окна
 			//html: `<p class="color-green fz16px">Отвязать заказ ${orderNumber} и перенести в лист ожидания?</p>`, // контент
 			buttons: ['ui.close', {action: 'detachTimesheetOrderAction', title: 'Перенести'}], // массив кнопок
 			centerMode: true, // контент по центру
 		});
 		
+		let listType = null;
+		$.detachOrderChangeListType = (select) => {
+			listType = $(select).val();
+			if (listType == -1) $('#detachWaitGroupBlock').removeAttrib('hidden');
+			else {
+				$('#detachWaitGroupBlock').setAttrib('hidden');
+				$('#waitGroupSelect').ddrInputs('selected', false);
+			}
+		}
+		
 		
 		$.detachTimesheetOrderAction = async (__) => {
 			wait();
 			
-			const status = $(popper).find('#listType').val();
+			const status = $(popper).find('#listType').val(), // В какой список отправить заказ
+				dTCObject = decrementTimesheetCount(btn, true);
 			
-			const {data, error, headers} = await ddrQuery.post('crud/orders/detach', {order_id: orderId, timesheet_id: timesheetId, status});
+			let successCount = 0,
+				totalOrders = ordersArr.length,
+				waitGroup = listType == -1 ? $('#waitGroupSelect').val() : null;
 			
-			if (error) {
-				console.log(error);
-				$.notify(error?.message, 'error');
-				wait(false);
-				return;
-			}
-			
-			if (data) {
-				decrementTimesheetCount(btn);
-				$.notify(`Заказ ${orderNumber} успешно отвязан!`);
-				if (notRows) {
-					$(row).closest('[ddrtable]').replaceWith('<p class="color-gray-400 text-center mt2rem fz14px">Нет заказов</p>');
-				} else {
-					$(row).remove();
+			for await (const [index, orderId] of Object.entries(ordersArr)) {
+				const {data, error, headers} = await ddrQuery.post('crud/orders/detach', {order_id: orderId, timesheet_id: timesheetId, status, wait_group: waitGroup}),
+					isEnd = Number(index) + 1 == totalOrders,
+					row = $(btn).closest('[timesheetorders]').find(`[tsorder="${orderId}"]`),
+					notRows = $(row).closest('[timesheetorders]').find('[tsorder]').length == ordersArr.length;
+				
+				if (error) {
+					console.log(error);
+					$.notify(error?.message, 'error');
+					wait(false);
+					return;
 				}
-				close();
-			}
+				
+				if (data) {
+					successCount += 1;
+					if (notRows) {
+						$(row).closest('[ddrtable]').replaceWith('<p class="color-gray-400 text-center mt2rem fz14px">Нет заказов</p>');
+					} else {
+						$(row).remove();
+					}
+				}
+				
+				if (isEnd) {
+					if (successCount == totalOrders) $.notify(notifyTitle(totalOrders));
+					else {
+						if (orderNumber) $.notify(`Заказ ${orderNumber} не был отвязан!`, 'error');
+						else $.notify(`Не все заказы не были отвязаны! ${successCount} из ${ordersArr.length}!`, 'error');
+					}
+					
+					dTCObject.run(successCount);
+					close();	
+				}
+			} // for\of	
 		}
-		
 		
 	}
 	
@@ -599,12 +628,14 @@ export async function showStatusesTooltip(btn = null, orderId = null, timesheetI
 	$.setOrderStatus = async (li, status, isActive) => {
 		if (isActive) return false;
 		
-		let ordersIds = _buildOrdersIds(orderId, status);
-		if (!ordersIds.length) {
+		let ordersIds = _buildOrdersIds(orderId, status),
+			countChoosedOrders = ordersIds.length;
+		if (!countChoosedOrders) {
 			statusesTooltip.destroy();
 			$.notify('Нет подходящих для выполнения заказов', 'info');
 			return;
 		}
+		
 		
 		$(li).closest('[orderstatusestooltip]').find('[ordertatus]').removeClass('statusitem-active');	
 		$(li).addClass('statusitem-active');
@@ -650,8 +681,6 @@ export async function showStatusesTooltip(btn = null, orderId = null, timesheetI
 				message = $(popper).find('#comment').val();
 				groupId = $(popper).find('#groupId').val();
 				
-				let ordersIds = _buildOrdersIds(orderId, status);
-				
 				if (_.isEmpty(ordersIds)) {
 					$.notify('Нет подходящих для выполнения заказов', 'info');
 					return;
@@ -663,10 +692,11 @@ export async function showStatusesTooltip(btn = null, orderId = null, timesheetI
 						else close();
 					}, popper, (index + 1 == ordersIds.length));
 				});
+				
+				decrementTimesheetCount(btn, ordersIds.length);
 			};
-		} else {
-			let ordersIds = _buildOrdersIds(orderId, status);
 			
+		} else {
 			if (_.isEmpty(ordersIds)) {
 				$.notify('Нет подходящих для выполнения заказов', 'info');
 				return;
@@ -675,10 +705,11 @@ export async function showStatusesTooltip(btn = null, orderId = null, timesheetI
 			ordersIds.forEach(function(ordrId) {
 				setStatusFunc(ordrId);
 			});
+			decrementTimesheetCount(btn, ordersIds.length);
 		}
 			
 		
-		
+		// обрабатывает один заказ
 		async function setStatusFunc(orderId = null, cb = null, popper = null, end = true) {
 			const {data, error, headers} = await ddrQuery.post('crud/orders/set_status', {
 				order_id: orderId,
@@ -706,7 +737,6 @@ export async function showStatusesTooltip(btn = null, orderId = null, timesheetI
 					let hasRows = !!$(ref).closest('[ddrtabletr]').siblings('[ddrtabletr]').length;
 					
 					if (rowStat != 'doprun') {
-						decrementTimesheetCount(btn);
 						if (hasRows) $(ref).closest('[ddrtabletr]').remove();
 						else $(ref).closest('[ddrtable]').replaceWith('<p class="color-gray-400 text-center mt2rem fz14px">Нет заказов</p>');
 					}
@@ -716,16 +746,16 @@ export async function showStatusesTooltip(btn = null, orderId = null, timesheetI
 						cancel: 'отмененные',
 					};
 					
-					$.notify(`Заказ успешно отвязан и перенесен в ${listNames[status]}`);
+					$.notify(`Заказ успешно${rowStat != 'doprun' ? ' отвязан и' : ''} перенесен в ${listNames[status]}`);
 					
 				} else if (status == 'ready') {
 					if (isMultiple) {
 						if (data?.isHash) {
 							$('#timesheetContainer').find(`[orderstatusblock="${orderId}"]`).replaceWith('<i class="fa-regular fa-fw fa-circle-check color-green fz18px" title="Подтвержден"></i>');
-							$.notify(`Заказы успешно подтверждены!`);
+							$.notify(`Заказ успешно подтвержден!`);
 						} else {
 							$('#timesheetContainer').find(`[orderstatusblock="${orderId}"]`).replaceWith('<i class="fa-regular fa-fw fa-clock color-gray fz18px" title="На подтверждении"></i>');
-							$.notify(`Заказы отправлены на подтверждение!`);
+							$.notify(`Заказ отправлен на подтверждение!`);
 						}
 						
 					} else {
@@ -761,28 +791,21 @@ export async function showStatusesTooltip(btn = null, orderId = null, timesheetI
 				if (end) callFunc(cb, true);
 			}
 		}
-		
-		
-		
-		function _buildOrdersIds(ordersData = null, setStatus = null) {
-			if (_.isNull(ordersData)) return false;
-			
-			if (!_.isPlainObject(ordersData)) return [ordersData];
-			
-			const ordersIds = [];
-			for (const [status, orders] of Object.entries(ordersData)) {
-				if (status == 'ready' || status == setStatus || (status == 'doprun' && ['new', 'wait'].includes(setStatus))) continue;
-				ordersIds.push(...orders);
-			}
-			
-			return ordersIds;
-		}
-		
-		
 	}
 	
 }
 
+
+
+
+
+
+
+function _tsOrdersByArg(orderId = null, filter = true) {
+	if (!_.isNull(orderId)) return [orderId];
+	let choosedTsOrders = chooseTsOrders(true);
+	return _buildOrdersIds(choosedTsOrders, filter);
+}
 
 
 
@@ -867,11 +890,21 @@ function _getChoosedTsOrders() {
 
 
 
-function decrementTimesheetCount(btn = null) {
+function decrementTimesheetCount(btn = null, removeCount = 1) {
 	if (_.isNull(btn)) console.error('decrementTimesheetCount ошибка -> не передан btn');
+	
 	const tsRow = $(btn).closest('[timesheetorders]').prev('[ddrtabletr]').find('[orderscount]');
-	let count = Number($(tsRow).text());
-	$(tsRow).text(count - 1);
+	
+	const obj = {
+		run(rCount = 1) {
+			let count = Number($(tsRow).text());
+			$(tsRow).text(count - rCount);
+		}
+	};
+	
+	if (removeCount === true) return obj;
+	
+	obj.run(removeCount);
 }
 
 
@@ -911,4 +944,24 @@ function addNewCommentToRow(btn = null, message = null) {
 		$(commentSelector).children('p[date]').html(day.zero+'.'+month.zero+'.'+year.full+' '+hours.zero+':'+minutes.zero+' от <span class="color-green">меня</span>');
 	}
 	
+}
+
+
+
+function _buildOrdersIds(ordersData = null, setStatus = null) {
+	if (_.isNull(ordersData)) return false;
+	
+	if (!_.isPlainObject(ordersData)) return [ordersData];
+	
+	const ordersIds = [];
+	for (const [status, orders] of Object.entries(ordersData)) {
+		if (setStatus === true) {
+			ordersIds.push(...orders);
+			continue;
+		}
+		if (!_.isNull(setStatus) && (status == 'ready' || status == setStatus || (status == 'doprun' && ['new'].includes(setStatus)))) continue;
+		ordersIds.push(...orders);
+	}
+	
+	return ordersIds;
 }

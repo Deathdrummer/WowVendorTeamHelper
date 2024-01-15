@@ -5,7 +5,7 @@
 		- направление
 		- шаг
 */
-window.Counter = function(start, order, step) {
+window.Counter = function(start, order, step = 1) {
 	var count = start || 0;
 	return function(num) {
 		count = num != undefined ? num : count;

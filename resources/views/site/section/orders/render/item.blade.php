@@ -135,7 +135,7 @@
 		</div>
 	</div>
 	
-	@if($is_doprun)
+	@if($is_doprun ?? false)
 		<div class="col-auto">
 			<div class="order__block w10rem">
 				<div class="d-inline-flex align-items-center">

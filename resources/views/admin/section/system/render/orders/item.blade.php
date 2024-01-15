@@ -1,4 +1,4 @@
-<x-table.tr class="h4rem">
+<x-table.tr class="h4rem" tsorder="{{$id}}">
 	<x-table.td class="h-center">
 		<x-checkbox
 			size="small"

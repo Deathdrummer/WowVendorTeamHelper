@@ -237,7 +237,7 @@
 	
 	
 	$.openStatusesTooltip = (btn, orderId, timesheetId, status) => {
-		if (_.isNull(orderId)) orderId = chooseTsOrders(true);
+		if (_.isNull(orderId)) orderId = chooseTsOrders(true); // orderId - массив заказов
 		showStatusesTooltip(btn, orderId, timesheetId, status);
 	}
 	

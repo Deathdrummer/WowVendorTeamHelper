@@ -48,10 +48,8 @@ class OrdersController extends Controller {
 		];
 		
 		$timezones = $this->getSettings('timezones', 'id');
-		$doprunStatus = $this->getSettingsCollect('order_statuses')->filter(fn($val, $key) => $key == 'doprun')['doprun'] ?? null;
+		$doprunStatus = $this->getSettingsCollect('order_statuses')->filter(fn($val, $key) => $key == 'doprun')['doprun'] ?? null; # данные статуса допран
 		$status = $request->input('status', 'new');
-		
-		toLog($doprunStatus);
 		
 		$itemView = $this->renderPath.'.item';
 		return $this->renderWithHeaders('list', compact('orders', 'itemView', 'timezones', 'status', 'doprunStatus'), $headers);
@@ -268,7 +266,7 @@ class OrdersController extends Controller {
 			'views'		=> $viewPath,
 		] = $request->validate([
 			'views'		=> 'required|string',
-			'multiple'	=> 'sometimes|numeric',
+			'multiple'	=> 'sometimes|nullable|numeric',
 		]);
 		
 		$multiple = $request->input('multiple');
@@ -332,7 +330,7 @@ class OrdersController extends Controller {
 			'views'		=> $viewPath,
 		] = $request->validate([
 			'views'		=> 'required|string',
-			'multiple'	=> 'sometimes|numeric',
+			'multiple'	=> 'sometimes|nullable|numeric',
 		]);
 		
 		$multiple = $request->input('multiple');
@@ -394,7 +392,7 @@ class OrdersController extends Controller {
 			'views'		=> $viewPath,
 		] = $request->validate([
 			'views'		=> 'required|string',
-			'multiple'	=> 'sometimes|numeric',
+			'multiple'	=> 'sometimes|nullable|numeric',
 		]);
 		
 		$multiple = $request->input('multiple');
@@ -1048,8 +1046,8 @@ class OrdersController extends Controller {
 	public function statuses(Request $request) {
 		$validated = $request->validate([
 			'views'		=> 'required|string',
-			'order_id'	=> 'sometimes|numeric',
-			'status'	=> 'sometimes|string',
+			'order_id'	=> 'sometimes|nullable|numeric',
+			'status'	=> 'sometimes|nullable|string',
 		]);
 		
 		$viewPath = $validated['views'];
@@ -1085,18 +1083,17 @@ class OrdersController extends Controller {
 			'order_id'			=> $orderId,
 			'timesheet_id'		=> $timesheetId,
 			'status'			=> $status,
-			'current_status'	=> $currentStatus,
 			'message'			=> $message,
 		] = $request->validate([
 			'order_id'			=> 'required',
 			'timesheet_id'		=> 'required|numeric',
 			'status'			=> 'required|string',
-			'current_status'	=> 'required|string',
 			'group_id'			=> 'sometimes|nullable|numeric',
 			'message'			=> 'string|nullable',
 		]);
 		
 		$groupId = $request->input('group_id');
+		$currentStatus = $request->input('current_status');
 		
 		if (!$setStatRes = $this->orderService->setStatus($orderId, $timesheetId, $status, $groupId, currentStatus: $currentStatus)) return response()->json(false);
 		
@@ -1260,7 +1257,7 @@ class OrdersController extends Controller {
 	* @param 
 	* @return 
 	*/
-	public function detach_form(Request $request) {
+	public function detach_form(Request $request, Settings $setings) {
 		[
 			'views'			=> $viewPath,
 		] = $request->validate([
@@ -1273,7 +1270,9 @@ class OrdersController extends Controller {
 			OrderStatus::cancel 	=> 'Отмененные',
 		];
 		
-		return response()->view($viewPath.'.unlink_order', compact('lists'));
+		$waitListGroups = $setings->get('wait_list_groups')->pluck('title', 'id')->toArray();
+		
+		return response()->view($viewPath.'.unlink_order', compact('lists', 'waitListGroups'));
 	}
 	
 	
@@ -1292,7 +1291,10 @@ class OrdersController extends Controller {
 			'order_id'		=> 'required|numeric',
 			'timesheet_id'	=> 'required|numeric',
 			'status'		=> 'required|numeric',
+			'wait_group'	=> 'sometimes|nullable|numeric',
 		]);
+		
+		$waitGroup = $request->input('wait_group');
 		
 		$timesheet = Timesheet::find($timesheetId);
 		
@@ -1300,7 +1302,7 @@ class OrdersController extends Controller {
 		
 		ConfirmedOrder::where('order_id', $orderId)->delete();
 		
-		$order = $updateAction(Order::class, $orderId, ['status' => $status], function($order) use($timesheetId, $status) {
+		$order = $updateAction(Order::class, $orderId, ['status' => $status, 'wait_group' => $waitGroup], function($order) use($timesheetId, $status) {
 			eventLog()->orderDetach($order, $timesheetId, OrderStatus::fromValue((int)$status)?->key ?? 'new');
 		});
 		

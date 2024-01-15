@@ -327,6 +327,7 @@ class OrderService {
 		if (is_null($orderId) || is_null($status)) return false;
 		
 		$isHashOrder = false;
+		$isDoprunStat = $currentStatus == 'doprun' || $this->isDoprunOrder($orderId);
 		
 		$stat = OrderStatus::fromKey($status);
 		
@@ -336,7 +337,7 @@ class OrderService {
 		$timesheet = Timesheet::find($timesheetId);
 		
 		if (in_array($status, ['cancel', 'wait'])) {
-			if ($currentStatus == 'doprun') {
+			if ($isDoprunStat) {
 				
 			} else {
 				$timesheet->orders()->detach($orderId);
