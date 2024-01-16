@@ -1126,15 +1126,18 @@ class OrdersController extends Controller {
 			'type'			=> $type,
 		] = $request->validate([
 			'views'			=> 'required|string',
-			'order_id'		=> 'required|numeric',
+			'order_id'		=> 'required|array',
 			//'timesheet_id'	=> 'required|numeric',
 			'type'			=> 'required|string',
 		]);
 		
-		
 		$order = Order::find($orderId);
 		
-		$rawData = $order?->raw_data;
+		$rawData = match(true) {
+			count($orderId) > 1		=> $order->pluck('order')?->join(', '),
+			count($orderId) == 1	=> $order[0]['raw_data'],
+			default					=> null,
+		};
 		
 		$regionId = null;
 		$timezone = $this->_parseTimezone($rawData);
@@ -1158,6 +1161,10 @@ class OrdersController extends Controller {
 	 * @return 
 	 */
 	public function get_relocate_timesheets(Request $request) {
+		
+		toLog($request->all());
+		
+		
 		[
 			'views'			=> $viewPath,
 			'date'			=> $date,
@@ -1215,30 +1222,32 @@ class OrdersController extends Controller {
 	 */
 	public function set_relocate(Request $request, AddOrderCommentAction $addOrderComment) {
 		[
-			'comment'				=> $comment,
-			'order_id'				=> $orderId,
+			'comment'				=> $message,
+			'order_id'				=> $ordersArr,
 			'timesheet_id'			=> $timesheetId,
 			'choosed_timesheet_id'	=> $choosedTimesheetId,
 			'type'					=> $type,
 		] = $request->validate([
 			'comment'				=> 'nullable|string',
-			'order_id'				=> 'required|numeric',
+			'order_id'				=> 'required',
 			'timesheet_id'			=> 'required|numeric',
 			'choosed_timesheet_id'	=> 'required|numeric',
 			'type'					=> 'required|string',
 		]);
 		
+		$ordersArr = isJson($ordersArr) ? json_decode($ordersArr, true) : $ordersArr;
+		
 		$stat = match($type) {
-			'move'	=> $this->_moveOrder($orderId, $timesheetId, $choosedTimesheetId),
-			'clone'	=> $this->_cloneOrder($orderId, $timesheetId, $choosedTimesheetId),
+			'move'	=> $this->_moveOrder($ordersArr, $timesheetId, $choosedTimesheetId),
+			'clone'	=> $this->_cloneOrder($ordersArr, $timesheetId, $choosedTimesheetId),
+			default => false,
 		};
 		
 		if (!$stat) return response()->json(false);
 		
+		
 		// отправить коммент
-		if ($comment) {
-			$addOrderComment($orderId, $comment);
-		}
+		if ($message) foreach ($ordersArr as $rdrId) $addOrderComment($rdrId, $message);
 		
 		return response()->json(['stat' => $stat]);
 	}
@@ -1342,25 +1351,28 @@ class OrdersController extends Controller {
 	
 	/** Переместить заказ
 	 * @param 
-	 * @return 
+	 * @return [orderId => stat, ...]
 	 */
-	private function _moveOrder($orderId = null, $timesheetId = null, $choosedTimesheetId = null) {
-		$timesheet = Timesheet::find($timesheetId);
-		$timesheet->orders()->detach([$orderId]);
-		
-		$choosedTimesheet = Timesheet::find($choosedTimesheetId);
-		$sync = $choosedTimesheet->orders()->syncWithoutDetaching($orderId);
-		//$timesheet->orders()->updateExistingPivot($orderId, ['doprun' => 1]);
-		
-		// менять статус на новый
-		$order = Order::find($orderId);
-		$order->fill(['status' => OrderStatus::new]);
-		$oldStatus = $order?->status;
-		$res = $order->save();
-		
-		$movedStat = (!!count($sync['attached']) && $res) ? 'moved' : false;
-		
-		if ($movedStat) eventLog()->orderMove($order, $oldStatus, $timesheetId, $choosedTimesheetId);
+	private function _moveOrder(array $ordersArr = null, $timesheetId = null, $choosedTimesheetId = null) {
+		$movedStat = [];
+		foreach ($ordersArr as $orderId) {
+			$timesheet = Timesheet::find($timesheetId);
+			$timesheet->orders()->detach([$orderId]);
+			
+			$choosedTimesheet = Timesheet::find($choosedTimesheetId);
+			$sync = $choosedTimesheet->orders()->syncWithoutDetaching($orderId);
+			//$timesheet->orders()->updateExistingPivot($orderId, ['doprun' => 1]);
+			
+			// менять статус на новый
+			$order = Order::find($orderId);
+			$order->fill(['status' => OrderStatus::new]);
+			$oldStatus = $order?->status;
+			$res = $order->save();
+			
+			$movedStat[$orderId] = (!!count($sync['attached']) && $res) ? 'moved' : false;
+			
+			if ($movedStat[$orderId]) eventLog()->orderMove($order, $oldStatus, $timesheetId, $choosedTimesheetId);
+		}
 		
 		return $movedStat;
 	}
@@ -1369,26 +1381,29 @@ class OrdersController extends Controller {
 	
 	/** Клонировать заказ (допран)
 	 * @param 
-	 * @return 
+	 * @return [orderId => stat, ...]
 	 */
-	private function _cloneOrder($orderId = null, $timesheetId = null, $choosedTimesheetId = null) {
-		$choosedTimesheet = Timesheet::find($choosedTimesheetId);
-		$choosedSync = $choosedTimesheet->orders()->syncWithoutDetaching([$orderId => ['doprun' => 1, 'cloned' => 1]]);
-		
-		if ($choosedSync['attached']) {
-			$timesheet = Timesheet::find($timesheetId);
-			$timesheet->orders()->syncWithoutDetaching([$orderId => ['doprun' => 1]]);
+	private function _cloneOrder(array $ordersArr = null, $timesheetId = null, $choosedTimesheetId = null) {
+		$clonedStat = [];
+		foreach ($ordersArr as $orderId) {
+			$choosedTimesheet = Timesheet::find($choosedTimesheetId);
+			$choosedSync = $choosedTimesheet->orders()->syncWithoutDetaching([$orderId => ['doprun' => 1, 'cloned' => 1]]);
+			
+			if ($choosedSync['attached']) {
+				$timesheet = Timesheet::find($timesheetId);
+				$timesheet->orders()->syncWithoutDetaching([$orderId => ['doprun' => 1]]);
+			}
+			
+			$clonedStat[$orderId] = match(true) {
+				!!count($choosedSync['attached'] ?? [])	=> 'cloned',
+				!!count($choosedSync['updated'] ?? [])	=> 'updated',
+				default									=> false,
+			};
+			
+			if ($clonedStat[$orderId]) eventLog()->orderDoprun($orderId, $timesheetId, $choosedTimesheetId);
 		}
 		
-		$res = match(true) {
-			!!count($choosedSync['attached'] ?? [])	=> 'cloned',
-			!!count($choosedSync['updated'] ?? [])	=> 'updated',
-			default									=> false,
-		};
-		
-		if ($res) eventLog()->orderDoprun($orderId, $timesheetId, $choosedTimesheetId);
-		
-		return $res;
+		return $clonedStat;
 	}
 	
 	

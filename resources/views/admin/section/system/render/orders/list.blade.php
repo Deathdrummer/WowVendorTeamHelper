@@ -65,8 +65,8 @@
 						<strong choosetslabel>Действия</strong>
 						<x-buttons-group group="verysmall" w="2rem-5px" gx="4" inline choosetsbuttons hidden>
 							<x-button variant="gray" action="detachTimesheetOrder:null,{{$timesheetId}}" title="Отвязать от события"><i class="fa-solid fa-fw fa-link-slash"></i></x-button>
-							<x-button variant="yellow" action="relocateTimesheetOrder:null,{{$timesheetId}},move" title="Переместить выбранные заказы"><i class="fa-solid fa-fw fa-angles-right"></i></x-button>
-							<x-button variant="yellow" action="relocateTimesheetOrder:null,{{$timesheetId}},clone" title="Клонировать выбранные заказы"><i class="fa-regular fa-fw fa-clone"></i></x-button>
+							<x-button variant="yellow" action="relocateTimesheetOrder:null,{{$timesheetId}},null,move" title="Переместить выбранные заказы"><i class="fa-solid fa-fw fa-angles-right"></i></x-button>
+							<x-button variant="yellow" action="relocateTimesheetOrder:null,{{$timesheetId}},null,clone" title="Клонировать выбранные заказы"><i class="fa-regular fa-fw fa-clone"></i></x-button>
 						</x-buttons-group>
 					</x-table.td>
 				@endcando

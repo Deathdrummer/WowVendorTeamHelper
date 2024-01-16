@@ -197,8 +197,8 @@
 	<x-table.td class="h-center">
 		<x-buttons-group group="verysmall" w="2rem-5px" gx="4" inline>
 			{{-- <x-button variant="green" title=""><i class="fa-solid fa-info"></i></x-button> --}}
-			<x-button variant="gray" action="detachTimesheetOrder:{{$id}},{{$timesheet_id}},{{$order}}" title="Отвязать от события"><i class="fa-solid fa-fw fa-link-slash"></i></x-button>
-			<x-button variant="yellow" action="relocateTimesheetOrder:{{$id}},{{$timesheet_id}},{{$order}},move" title="Переместить заказ"><i class="fa-solid fa-fw fa-angles-right"></i></x-button>
+			<x-button variant="gray" action="detachTimesheetOrder:{{$id}},{{$timesheet_id}},{{$order}}" title="Отвязать от события" disabled="{{$status == 'doprun'}}"><i class="fa-solid fa-fw fa-link-slash"></i></x-button>
+			<x-button variant="yellow" action="relocateTimesheetOrder:{{$id}},{{$timesheet_id}},{{$order}},move" title="Переместить заказ" disabled="{{$status == 'doprun'}}"><i class="fa-solid fa-fw fa-angles-right"></i></x-button>
 			<x-button variant="yellow" action="relocateTimesheetOrder:{{$id}},{{$timesheet_id}},{{$order}},clone" title="Клонировать заказ"><i class="fa-regular fa-fw fa-clone"></i></x-button>
 			<x-button variant="blue" action="editTimesheetOrder:{{$id}},{{$order}},{{$timesheet_id}}" title="Редактировать заказ"><i class="fa-solid fa-fw fa-pen-to-square"></i></x-button>
 		</x-buttons-group>

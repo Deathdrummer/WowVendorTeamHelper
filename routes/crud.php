@@ -54,24 +54,33 @@ Route::resource('timesheet', TimesheetController::class)->except(['show']);
 
 // Заказы
 Route::get('orders/timesheet_list', [OrdersController::class, 'timesheet_list']);
+
 Route::get('orders/form', [OrdersController::class, 'form']);
 Route::post('orders/form', [OrdersController::class, 'save_form']);
 Route::put('orders/form', [OrdersController::class, 'update_form']);
+
 Route::put('orders/update_order', [OrdersController::class, 'update_order']);
+
 Route::get('orders/comments', [OrdersController::class, 'comments']);
 Route::post('orders/send_comment', [OrdersController::class, 'send_comment']);
+
 Route::get('orders/rawdatahistory', [OrdersController::class, 'rawdatahistory']);
+
 Route::get('orders/statuses', [OrdersController::class, 'statuses']);
 Route::post('orders/set_status', [OrdersController::class, 'set_status']);
+
 Route::get('orders/relocate', [OrdersController::class, 'relocate']);
 Route::get('orders/relocate/get_timesheets', [OrdersController::class, 'get_relocate_timesheets']);
 Route::post('orders/relocate', [OrdersController::class, 'set_relocate']);
+
 Route::get('orders/detach', [OrdersController::class, 'detach_form']);
 Route::post('orders/detach', [OrdersController::class, 'detach']);
+
 Route::get('orders/confirmed', [OrdersController::class, 'confirmed_orders']);
 Route::put('orders/confirm', [OrdersController::class, 'confirm_order']);
 Route::put('orders/confirm_all', [OrdersController::class, 'confirm_all_orders']);
 Route::delete('orders/confirm', [OrdersController::class, 'remove_order_from_confirmed']);
+
 
 
 

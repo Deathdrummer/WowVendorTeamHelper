@@ -113,24 +113,32 @@ export async function buildOrdersTable(row = null, timesheetId = null, cb = null
 	
 	
 	
+	
+	
+	
+	
 	$.relocateTimesheetOrder = async (btn, orderId = null, timesheetId = null, orderNumber = null, type = 'move') => {
-		if (_.isNull(orderId) || _.isNull(timesheetId)) return false;
+		if (_.isNull(timesheetId)) return false;
+		const ordersArr = _tsOrdersByArg(orderId, (type == 'move' ? 'doprun' : null));
+		
+		console.log(ordersArr);
 		
 		let action;
 		switch(type) {
 			case 'move':  // if (x === 'value1')
-				action = 'Перенести заказ';
+				action = 'Перенести';
 				break;
 
 			case 'clone':  // if (x === 'value2')
-				action = 'Допран заказа';
+				action = 'Допран';
 				break;
 
 			default:
 				action = '...';
 				break;
 		}	
-		const views = 'admin.section.system.render.orders.relocate';
+		const views = 'admin.section.system.render.orders.relocate',
+			popupTitle = count => `${action} ${count > 1 ? 'заказы' : 'заказ <span class="color-gray">'+orderNumber+'</span>'}`;
 		
 		let calendarObj;
 		let abortContr;
@@ -145,8 +153,8 @@ export async function buildOrdersTable(row = null, timesheetId = null, cb = null
 		} = await ddrPopup({
 			url: 'crud/orders/relocate',
 			method: 'get',
-			params: {timesheet_id: timesheetId, order_id: orderId, type, views},
-			title: `${action} <span class="color-gray">${orderNumber}</span>`, // заголовок
+			params: {timesheet_id: timesheetId, order_id: ordersArr, type, views},
+			title: popupTitle(ordersArr.length), // заголовок
 			width: 700, // ширина окна
 			disabledButtons: true,
 			buttons: ['ui.close', {action: 'relocateOrderAction', title: action}],
@@ -274,7 +282,8 @@ export async function buildOrdersTable(row = null, timesheetId = null, cb = null
 		
 		$.relocateOrderAction = async () => {
 			wait();
-			const formData = $(popper).ddrForm({order_id: orderId, timesheet_id: timesheetId, choosed_timesheet_id: choosedTimesheetId});
+			
+			const formData = $(popper).ddrForm({order_id: ordersArr, timesheet_id: timesheetId, choosed_timesheet_id: choosedTimesheetId});
 			
 			const {data, error, status, headers} = await ddrQuery.post('crud/orders/relocate', formData);
 			
@@ -285,18 +294,55 @@ export async function buildOrdersTable(row = null, timesheetId = null, cb = null
 				return;
 			}
 			
-			const on = orderNumber.replace('&amp;', '&');
-			
-			if (data?.stat == 'moved') {
-				$.notify(`Заказ «${on}» успешно перенесен!`);
-				_buildOrdersTable();
-			} else if (data?.stat == 'cloned') {
-				$.notify(`Заказ «${on}» успешно склонирован с новым статусом «Доп. ран»!`);
-				_buildOrdersTable();
-			} else if (data?.stat == 'updated') {
-				$.notify(`Заказ «${on}» уже существует в выбранном событии! Обновился только статус!`, 'gray');
+			if (!_.isNull(orderNumber)) {
+				const on = orderNumber.replace('&amp;', '&'),
+					status = data?.stat[ordersArr[0]];
+				
+				if (status == 'moved') {
+					$.notify(`Заказ «${on}» успешно перенесен!`);
+					_buildOrdersTable();
+				} else if (status == 'cloned') {
+					$.notify(`Заказ «${on}» успешно склонирован с новым статусом «Доп. ран»!`);
+					_buildOrdersTable();
+				} else if (status == 'updated') {
+					$.notify(`Заказ «${on}» уже существует в выбранном событии! Обновился только статус!`, 'gray');
+				} else {
+					$.notify(`Заказ «${on}» со статусом «Доп. ран» уже существует в выбранном событии!`, 'gray');
+				}
+				
 			} else {
-				$.notify(`Заказ «${on}» со статусом «Доп. ран» уже существует в выбранном событии!`, 'gray');
+				const statuses = data?.stat;
+				let movedCounter = 0,
+					clonedCounter = 0,
+					updatedCounter = 0;
+				
+				ordersArr.forEach((oId) => {
+					if (statuses[oId] == 'moved') {
+						movedCounter += 1;
+					} else if (statuses[oId] == 'cloned') {
+						clonedCounter += 1;
+					} else if (statuses[oId] == 'updated') {
+						updatedCounter += 1;
+					}
+				});
+				
+				if (movedCounter > 0) {
+					$.notify(`Заказы (${movedCounter} шт.) успешно перенесены!`);
+					_buildOrdersTable();
+				}
+				
+				if (clonedCounter > 0) {
+					$.notify(`Заказы (${clonedCounter} шт.) успешно склонированы с новым статусом «Доп. ран»!`);
+					_buildOrdersTable();
+				}
+				
+				if (updatedCounter > 0) {
+					$.notify(`Заказы (${updatedCounter} шт.) уже существуют в выбранном событии! Обновился только статус!`, 'gray');
+				}
+				
+				if (movedCounter == 0 && clonedCounter == 0 && updatedCounter == 0) {
+					$.notify(`Заказы со статусом «Доп. ран» уже существуют в выбранном событии!`, 'gray');
+				}
 			}
 			
 			close();
@@ -801,11 +847,7 @@ export async function showStatusesTooltip(btn = null, orderId = null, timesheetI
 
 
 
-function _tsOrdersByArg(orderId = null, filter = true) {
-	if (!_.isNull(orderId)) return [orderId];
-	let choosedTsOrders = chooseTsOrders(true);
-	return _buildOrdersIds(choosedTsOrders, filter);
-}
+
 
 
 
@@ -964,4 +1006,12 @@ function _buildOrdersIds(ordersData = null, setStatus = null) {
 	}
 	
 	return ordersIds;
+}
+
+
+
+function _tsOrdersByArg(orderId = null, filter = true) {
+	if (!_.isNull(orderId)) return [orderId];
+	let choosedTsOrders = chooseTsOrders(true);
+	return _buildOrdersIds(choosedTsOrders, filter);
 }
