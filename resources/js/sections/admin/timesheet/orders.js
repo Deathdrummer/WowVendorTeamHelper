@@ -121,8 +121,6 @@ export async function buildOrdersTable(row = null, timesheetId = null, cb = null
 		if (_.isNull(timesheetId)) return false;
 		const ordersArr = _tsOrdersByArg(orderId, (type == 'move' ? 'doprun' : null));
 		
-		console.log(ordersArr);
-		
 		let action;
 		switch(type) {
 			case 'move':  // if (x === 'value1')
@@ -138,7 +136,7 @@ export async function buildOrdersTable(row = null, timesheetId = null, cb = null
 				break;
 		}	
 		const views = 'admin.section.system.render.orders.relocate',
-			popupTitle = count => `${action} ${count > 1 ? 'заказы' : 'заказ <span class="color-gray">'+orderNumber+'</span>'}`;
+			popupTitle = count => `${action} ${count > 1 ? (type == 'move' ? 'заказы' : 'заказов') : 'заказ <span class="color-gray">'+orderNumber+'</span>'}`;
 		
 		let calendarObj;
 		let abortContr;
@@ -363,7 +361,7 @@ export async function buildOrdersTable(row = null, timesheetId = null, cb = null
 	$.detachTimesheetOrder = async (btn, orderId = null, timesheetId = null, orderNumber = null) => {
 		let ordersArr = _tsOrdersByArg(orderId, 'doprun');
 		
-		const popupTitle = orderNumber ? `Отвязать заказ ${orderNumber}` : 'Отвязать заказ',
+		const popupTitle = orderNumber ? `Отвязать заказ ${orderNumber}` : 'Отвязать заказы',
 			notifyTitle = count => orderNumber ? `Заказ ${orderNumber} успешно отвязан!` : `Заказы (${count} шт.) успешно отвязаны!`,
 			{
 			popper,
@@ -374,7 +372,7 @@ export async function buildOrdersTable(row = null, timesheetId = null, cb = null
 			method: 'get',
 			params: {views: 'admin.section.system.render.orders'},
 			title: popupTitle, // заголовок
-			width: 500, // ширина окна
+			width: 400, // ширина окна
 			//html: `<p class="color-green fz16px">Отвязать заказ ${orderNumber} и перенести в лист ожидания?</p>`, // контент
 			buttons: ['ui.close', {action: 'detachTimesheetOrderAction', title: 'Перенести'}], // массив кнопок
 			centerMode: true, // контент по центру

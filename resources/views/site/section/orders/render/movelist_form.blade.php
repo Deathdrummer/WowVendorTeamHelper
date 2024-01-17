@@ -10,8 +10,7 @@
 				id="groupId"
 				:options="$waitListGroups"
 				empty="Нет данных!"
-				choose="Не выбран"
-				choose-empty
+				choose="Не выбрана"
 				empty-has-value 
 				group="small"
 				class="w50"
