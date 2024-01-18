@@ -69,7 +69,9 @@
 	</div>
 	<div class="col">
 		<div class="order__block">
-			<p class="order__content">{{$raw_data ?? 'нет данных'}}</p>
+			<div class="scrollblock scrollblock-light h-4rem-6px w100 d-flex align-items-center">
+				<p class="fz12px lh90 preline breakword">{{$raw_data ?? 'нет данных'}}</p>
+			</div>
 		</div>
 	</div>
 	<div class="col-auto">
