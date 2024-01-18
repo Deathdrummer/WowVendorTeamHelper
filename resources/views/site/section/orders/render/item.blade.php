@@ -69,9 +69,13 @@
 	</div>
 	<div class="col">
 		<div class="order__block">
-			<div class="scrollblock scrollblock-light h-4rem-6px w100">
-				<p class="fz12px lh90 minh-4rem-6px d-flex align-items-center preline breakword">{{$raw_data ?? 'нет данных'}}</p>
-			</div>
+			<x-scrollblock
+				scrollType="light"
+				height="46px"
+				vertical="center"
+				>
+				<p class="fz12px lh90 preline breakword">{{$raw_data ?? 'нет данных'}}</p>
+			</x-scrollblock>
 		</div>
 	</div>
 	<div class="col-auto">
