@@ -22,6 +22,7 @@ use App\View\Components\Inputs\Localebar;
 use App\View\Components\Inputs\Textarea;
 use App\View\Components\Inputs\Radio;
 use App\View\Components\Inputs\Select;
+use App\View\Components\ScrollBlock;
 use App\View\Components\Settings;
 use App\View\Components\Simplelist;
 use App\View\Components\Tabs;
@@ -68,6 +69,7 @@ class AppServiceProvider extends ServiceProvider {
 		Blade::component('localebar', Localebar::class);
 		Blade::component('card', Card::class);
 		Blade::component('tabs', Tabs::class);
+		Blade::component('scrollblock', ScrollBlock::class);
 		
 		Blade::component('simplelist', Simplelist::class);
 		
