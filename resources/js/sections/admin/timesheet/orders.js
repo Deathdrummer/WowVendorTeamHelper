@@ -121,6 +121,11 @@ export async function buildOrdersTable(row = null, timesheetId = null, cb = null
 		if (_.isNull(timesheetId)) return false;
 		const ordersArr = _tsOrdersByArg(orderId, (type == 'move' ? 'doprun' : null));
 		
+		if (ordersArr.length == 0) {
+			$.notify('Нет ни одного заказа, удовлетворяющего условию', 'info');
+			return;
+		}
+		
 		let action;
 		switch(type) {
 			case 'move':  // if (x === 'value1')
@@ -361,6 +366,11 @@ export async function buildOrdersTable(row = null, timesheetId = null, cb = null
 	$.detachTimesheetOrder = async (btn, orderId = null, timesheetId = null, orderNumber = null) => {
 		let ordersArr = _tsOrdersByArg(orderId, 'doprun');
 		
+		if (ordersArr.length == 0) {
+			$.notify('Нет ни одного заказа, удовлетворяющего условию', 'info');
+			return;
+		}
+		
 		const popupTitle = orderNumber ? `Отвязать заказ ${orderNumber}` : 'Отвязать заказы',
 			notifyTitle = count => orderNumber ? `Заказ ${orderNumber} успешно отвязан!` : `Заказы (${count} шт.) успешно отвязаны!`,
 			{
@@ -392,12 +402,12 @@ export async function buildOrdersTable(row = null, timesheetId = null, cb = null
 		$.detachTimesheetOrderAction = async (__) => {
 			wait();
 			
-			const status = $(popper).find('#listType').val(), // В какой список отправить заказ
-				dTCObject = decrementTimesheetCount(btn, true);
-			
 			let successCount = 0,
 				totalOrders = ordersArr.length,
 				waitGroup = listType == -1 ? $('#waitGroupSelect').val() : null;
+			
+			const status = $(popper).find('#listType').val(), // В какой список отправить заказ
+				dTCObject = decrementTimesheetCount(btn, true);
 			
 			for await (const [index, orderId] of Object.entries(ordersArr)) {
 				const {data, error, headers} = await ddrQuery.post('crud/orders/detach', {order_id: orderId, timesheet_id: timesheetId, status, wait_group: waitGroup}),
