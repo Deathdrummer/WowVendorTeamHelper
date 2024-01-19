@@ -735,6 +735,14 @@ export async function showStatusesTooltip(btn = null, orderId = null, timesheetI
 				message = $(popper).find('#comment').val();
 				groupId = $(popper).find('#groupId').val();
 				
+				
+				if (_.isNull(groupId)) {
+					$(popper).find('#groupId').ddrInputs('error', 'Необходимо выбрать группу!');
+					wait(false);
+					return;
+				}
+				
+				
 				if (_.isEmpty(ordersIds)) {
 					$.notify('Нет подходящих для выполнения заказов', 'info');
 					return;

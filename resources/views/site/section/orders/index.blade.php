@@ -43,13 +43,20 @@
 						{{-- hidden --}}
 						/>
 				</div>
-				<div class="col mt-2px">
+				<div class="col-auto mt-2px">
 					<div class="row">
 						<div class="col-auto">
 							<x-button w="50px" variant="yellow" size="small" action="chooseAllOrders" title="Выделить все"><i class="fa-solid fa-fw fa-check-double"></i></x-button>
 						</div>
 						<div class="col-auto">
 							<p id="chooseGroupCounter" class="nowrap mt5px">Выбрано: <strong counter>0</strong></p>
+						</div>
+					</div>
+				</div>
+				<div class="col-auto mt-2px mr-auto">
+					<div class="row">
+						<div class="col">
+							<x-button w="50px" variant="red" size="small" action="toCancelListBtn" title="В отмененные"><i class="fa-solid fa-fw fa-ban"></i></x-button>
 						</div>
 					</div>
 				</div>

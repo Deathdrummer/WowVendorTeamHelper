@@ -25,7 +25,6 @@ use App\View\Components\Inputs\Select;
 use App\View\Components\ScrollBlock;
 use App\View\Components\Settings;
 use App\View\Components\Simplelist;
-use App\View\Components\Tabs;
 use BenSampo\Enum\Enum;
 use Illuminate\Support\Collection as SupportCollection;
 use Illuminate\Support\Facades\App;
@@ -68,7 +67,6 @@ class AppServiceProvider extends ServiceProvider {
 		Blade::component('datepicker', Datepicker::class);
 		Blade::component('localebar', Localebar::class);
 		Blade::component('card', Card::class);
-		Blade::component('tabs', Tabs::class);
 		Blade::component('scrollblock', ScrollBlock::class);
 		
 		Blade::component('simplelist', Simplelist::class);
