@@ -973,16 +973,20 @@ class OrdersController extends Controller {
 		[
 			'views'		=> $viewPath,
 			'order_id'	=> $orderId,
+			'multiple'	=> $multiple,
 		] = $request->validate([
 			'views'		=> 'required|string',
-			'order_id'	=> 'required|numeric',
+			'order_id'	=> 'required',
+			'multiple'	=> 'required',
 		]);
 		
-		$comments = $this->orderService->getComments($orderId);
+		$multiple = bringTypes($multiple);
+		
+		$comments = !$multiple ? $this->orderService->getComments($orderId[0]) : null;
 		
 		$itemView = $viewPath.'.chat.item';
 		
-		return response()->view($viewPath.'.chat.list', compact('comments', 'itemView', 'orderId'));
+		return response()->view($viewPath.'.chat.list', compact('comments', 'itemView', 'orderId', 'multiple'));
 	}
 	
 	
@@ -1006,6 +1010,31 @@ class OrdersController extends Controller {
 		$comment = $addOrderComment($orderId, $message);
 		
 		return response()->view($viewPath.'.chat.item', [...$comment]);
+	}
+	
+	
+	
+	/** Отправить комментарий
+	 * @param 
+	 * @return 
+	 */
+	public function send_comments(Request $request, AddOrderCommentAction $addOrderComment) {
+		[
+			'orders_ids'	=> $ordersIds,
+			'message'		=> $comment,
+		] = $request->validate([
+			'orders_ids'	=> 'required|array',
+			'message'		=> 'required|string',
+		]);
+		
+		// отправить коммент
+		if ($comment) {
+			foreach ($ordersIds as $rdrId) {
+				$addOrderComment($rdrId, $comment);
+			}
+		}
+		
+		return response()->json(true);
 	}
 	
 	
@@ -1161,10 +1190,6 @@ class OrdersController extends Controller {
 	 * @return 
 	 */
 	public function get_relocate_timesheets(Request $request) {
-		
-		toLog($request->all());
-		
-		
 		[
 			'views'			=> $viewPath,
 			'date'			=> $date,

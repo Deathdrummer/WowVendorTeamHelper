@@ -511,6 +511,9 @@ export async function orderCommentsChat(orderId = null, orderName = null, rowBtn
 		return;
 	}
 	
+	const title = orderName ? `Комментарии к заказу <span class="color-gray-60">«${orderName}»</span>` : 'Комментарий к выбранным заказам',
+		buttons = !orderName ? ['Отмена', {action: 'ordersSendMesageBtn', title: 'Отправить'}] : null;
+	
 	const {
 		popper,
 		wait,
@@ -518,12 +521,11 @@ export async function orderCommentsChat(orderId = null, orderName = null, rowBtn
 	} = await ddrPopup({
 		url: 'crud/orders/comments',
 		method: 'get',
-		params: {views: viewsPath, order_id: orderId},
-		title: `Комментарии к заказу <span class="color-gray-60">«${orderName}»</span>`,
+		params: {views: viewsPath, order_id: orderId, multiple: !orderName},
+		title,
 		width: 700, // ширина окна
+		buttons
 	});
-	
-	callFunc(cb);
 	
 	
 	let chatVisibleHeight = $('#chatMessageList').outerHeight(),
@@ -597,7 +599,31 @@ export async function orderCommentsChat(orderId = null, orderName = null, rowBtn
 			addNewCommentToRow(rowBtn, message);
 			stat = 0;
 		}
+	}
+	
+	
+	$.ordersSendMesageBtn = async () => {
+		wait();
+		const messageField = $(popper).find('#ordersCommentField');
+		
+		if (messageField.val() == '') {
+			messageField.ddrInputs('error', 'Поле необходимо заполнить!');
+			wait(false);
+			return;
+		}
+		
+		const {data, error, status, headers} = await ddrQuery.post('crud/orders/send_comments', {orders_ids: orderId, message: messageField.val()});
 	 	
+	 	if (error) {
+			console.log(error);
+			$.notify(error?.message, 'error');
+			wait(false);
+			return;
+		}
+		
+		if (data) {
+			callFunc(cb, close);
+		}
 	}
 	
 }
@@ -983,9 +1009,9 @@ function addNewCommentToRow(btn = null, message = null) {
 	if (_.isNull(btn) || _.isNull(message)) return false;
 	
 	const commentSelector = $(btn).closest('[ordercommentblock]').find('[rowcomment]');
-	
-	if ($(commentSelector).children('p:not([date])').length == 0) $(commentSelector).append(`<p class="fz12px lh900 format wodrbreak color-gray-500">${message}</p>`);
-	else $(commentSelector).children('p:not([date])').replaceWith(`<p class="fz12px lh900 format wodrbreak color-gray-500">${message}</p>`);
+	console.log('sdsdfsdfd');
+	if ($(commentSelector).children('p:not([date])').length == 0) $(commentSelector).append(`<p class="fz12px lh900">${message}</p>`);
+	else $(commentSelector).children('p:not([date])').replaceWith(`<p class="fz12px lh900">${message}</p>`);
 	
 	
 	if ($(commentSelector).children('p[date]').length == 1) {
@@ -1003,6 +1029,9 @@ function addNewCommentToRow(btn = null, message = null) {
 	}
 	
 }
+
+
+
 
 
 

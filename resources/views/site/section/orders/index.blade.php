@@ -2,7 +2,7 @@
 	
 	<div class="row flex-column justify-conetent-between h100">
 		<div class="col-auto">
-			<div class="row gx-30">
+			<div class="row gx-30 flex-nowrap">
 				<div class="col-auto">
 					<x-chooser
 						variant="neutral"
@@ -53,10 +53,11 @@
 						</div>
 					</div>
 				</div>
-				<div class="col-auto mt-2px mr-auto">
+				<div class="col-auto" style="width: calc(100vw - 1611px);"></div>
+				<div class="col mt-2px mr-auto" hidden has groupaction ltnew ltwait ltnecro ltcancel>
 					<div class="row">
 						<div class="col">
-							<x-button w="50px" variant="red" size="small" action="toCancelListBtn" title="В отмененные"><i class="fa-solid fa-fw fa-ban"></i></x-button>
+							<x-button w="50px" variant="gray" size="small" action="openCommentsWin:null" title="Открыть комментарии"><i class="fa-regular fa-fw fa-comments"></i></x-button>
 						</div>
 					</div>
 				</div>
@@ -145,6 +146,34 @@
 	
 	$('#contractsCard').card('ready');
 	$('#ordersTypesChuser').removeAttrib('disabled');
+	
+	
+	
+	
+	
+	// получить выбранные заказы для дальнейших манипуляций с ними
+	const {chooseAllOrders} = getChoosedOrders(({list, hasChoosed, listType}) => {
+		if (listType) {
+			$('[groupaction]').setAttrib('hidden');
+			$('[groupaction]').removeAttrib('has');
+			$(`[lt${listType}]`).setAttrib('has');
+		}
+		
+		if (hasChoosed) {
+			$('[groupaction][has]').removeAttrib('hidden');
+			//$('#chooseGroupCounter').removeAttrib('hidden');
+			$('#chooseGroupCounter [counter]').text(list.length);
+		} else {
+			$('[groupaction][has]').setAttrib('hidden');
+			//$('#chooseGroupCounter').setAttrib('hidden');
+			$('#chooseGroupCounter [counter]').text('0');
+		}
+	});
+	
+	// Выделить все заказы
+	$.chooseAllOrders = () => {
+		const {choosedOrders} = chooseAllOrders();
+	}
 	
 	
 	
@@ -709,35 +738,36 @@
 		
 	
 	
-	$.openCommentsWin = (btn, orderId, orderName) => {
-		orderCommentsChat(orderId, orderName, btn);
+	$.openCommentsWin = (btn, orderId, orderName = null) => {
+		orderId = _.isNull(orderId) ? getChoosedOrders() : [orderId];
+		orderCommentsChat(orderId, orderName, btn, async (close) => {
+			await getOrders({init: true});
+			$.notify('Комментарии успешно размещены!');
+			chooseAllOrders(false);
+			close();
+		});
 	}
 	
 	
 	
-	// получить выбранные заказы для дальнейших манипуляций с ними
-	const {chooseAllOrders} = getChoosedOrders(({list, hasChoosed, listType}) => {
-		if (listType) {
-			$('[groupaction]').setAttrib('hidden');
-			$('[groupaction]').removeAttrib('has');
-			$(`[lt${listType}]`).setAttrib('has');
-		}
-		
-		if (hasChoosed) {
-			$('[groupaction][has]').removeAttrib('hidden');
-			//$('#chooseGroupCounter').removeAttrib('hidden');
-			$('#chooseGroupCounter [counter]').text(list.length);
-		} else {
-			$('[groupaction][has]').setAttrib('hidden');
-			//$('#chooseGroupCounter').setAttrib('hidden');
-			$('#chooseGroupCounter [counter]').text('0');
-		}
-	});
 	
 	
-	$.chooseAllOrders = () => {
-		const {choosedOrders} = chooseAllOrders();
-	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	//------------------------------------------------------------------------------------------------
+	
+	
+	
+	
+	
+	
 	
 	
 	

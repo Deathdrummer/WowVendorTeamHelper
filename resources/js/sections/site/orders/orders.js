@@ -165,14 +165,14 @@ function getChoosedOrders(cb = null) {
 		getChoosedOrdersCB = cb;
 		
 		return {
-			chooseAllOrders() {
+			chooseAllOrders(check = null) {
 				const ordersRowsCount = $('#ordersList').find('[choosedorder]').length,
 					choosedCount = $('#ordersList').find('[choosedorder]:checked').length;
 				
-				if (ordersRowsCount > choosedCount) {
+				if (check === true || (_.isNull(check) && ordersRowsCount > choosedCount)) {
 					$('#ordersList').find('[choosedorder]').ddrInputs('checked', true);
-				} else if (ordersRowsCount == choosedCount) {
-					$('#ordersList').find('[choosedorder]').ddrInputs('checked', false);
+				} else if (check === false || (_.isNull(check) && ordersRowsCount == choosedCount)) {
+					$('#ordersList').find('[choosedorder]:checked').ddrInputs('checked', false);
 				}
 				
 				const choosedOrders = _getChoosedOrders();

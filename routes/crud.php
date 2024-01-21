@@ -63,6 +63,7 @@ Route::put('orders/update_order', [OrdersController::class, 'update_order']);
 
 Route::get('orders/comments', [OrdersController::class, 'comments']);
 Route::post('orders/send_comment', [OrdersController::class, 'send_comment']);
+Route::post('orders/send_comments', [OrdersController::class, 'send_comments']);
 
 Route::get('orders/rawdatahistory', [OrdersController::class, 'rawdatahistory']);
 
