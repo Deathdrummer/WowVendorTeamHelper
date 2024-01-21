@@ -43,7 +43,7 @@
 						{{-- hidden --}}
 						/>
 				</div>
-				<div class="col-auto mt-2px">
+				<div class="col-auto mt-2px w17rem">
 					<div class="row">
 						<div class="col-auto">
 							<x-button w="50px" variant="yellow" size="small" action="chooseAllOrders" title="Выделить все"><i class="fa-solid fa-fw fa-check-double"></i></x-button>
@@ -53,7 +53,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="col-auto" style="width: calc(100vw - 1611px);"></div>
+				<div class="col-auto" style="width: calc(100vw - 1636px);"></div>
 				<div class="col mt-2px mr-auto" hidden has groupaction ltnew ltwait ltnecro ltcancel>
 					<div class="row">
 						<div class="col">
