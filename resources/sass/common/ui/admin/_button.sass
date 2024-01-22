@@ -261,6 +261,30 @@
 	
 	
 	
+	&-darkgray	
+		button
+			background-color: #a5a5a5
+			border: 1px solid #a5a5a5
+			color: #fff
+			box-shadow: none
+			transition: background-color 0.16s, border-color 0.16s, box-shadow 0.16s
+			
+			i
+				color: #fff
+		
+		&:not(:disabled):not(.disabled):hover
+			button
+				background-color: #9b9a9a
+				border-color: #9b9a9a
+		
+		&:not(:disabled):not(.disabled).active, &:not(:disabled):not(.disabled):active
+			button
+				box-shadow: 0 0 0 0.2rem rgb(189 189 190 / 50%)
+				background-color: #858585
+				border-color: #858585
+	
+	
+	
 	
 	
 	&-neutral	

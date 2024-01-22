@@ -100,6 +100,7 @@
 	}
 	
 	$.openCommentsWin = (btn, orderId, orderName) => {
+		console.log('site 123');
 		orderCommentsChat(orderId, orderName, btn);
 	}
 	

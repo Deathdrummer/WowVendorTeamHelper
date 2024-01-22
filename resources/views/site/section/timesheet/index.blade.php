@@ -232,7 +232,15 @@
 	
 	
 	$.openCommentsWin = (btn, orderId, orderName) => {
-		orderCommentsChat(orderId, orderName, btn);
+		orderId = orderName ? [orderId] : chooseTsOrders(true, true); // orderId - массив заказов
+		
+		const tsRow = $(btn).closest('[timesheetorders]').prev('[tsevent]'),
+			timesheetId = $(tsRow).attr('tsevent');
+		
+		orderCommentsChat(orderId, orderName, btn, async (close) => {
+			await buildOrdersTable(tsRow, timesheetId);
+			close();
+		});
 	}
 	
 	

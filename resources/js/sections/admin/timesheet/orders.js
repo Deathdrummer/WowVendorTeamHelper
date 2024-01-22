@@ -897,7 +897,7 @@ export async function showStatusesTooltip(btn = null, orderId = null, timesheetI
 
 
 let chooseTsOrdersCB;
-export function chooseTsOrders(cb = null) {
+export function chooseTsOrders(cb = null, all = false) {
 	chooseTsOrdersCB = cb;
 	
 	if (_.isFunction(cb)) {
@@ -907,6 +907,7 @@ export function chooseTsOrders(cb = null) {
 			callFunc(cb, {container, ids, status_ids, hasChoosed: !!ids.length});
 		});
 	} else if (cb === true) {
+		if (all) return _getChoosedTsOrders()['ids'];
 		return _getChoosedTsOrders()['status_ids'];
 	}
 	
@@ -1009,13 +1010,12 @@ function addNewCommentToRow(btn = null, message = null) {
 	if (_.isNull(btn) || _.isNull(message)) return false;
 	
 	const commentSelector = $(btn).closest('[ordercommentblock]').find('[rowcomment]');
-	console.log('sdsdfsdfd');
+	
 	if ($(commentSelector).children('p:not([date])').length == 0) $(commentSelector).append(`<p class="fz12px lh900">${message}</p>`);
 	else $(commentSelector).children('p:not([date])').replaceWith(`<p class="fz12px lh900">${message}</p>`);
 	
 	
 	if ($(commentSelector).children('p[date]').length == 1) {
-		
 		const {
 			year,
 			month,

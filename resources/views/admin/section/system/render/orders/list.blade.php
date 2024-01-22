@@ -15,7 +15,28 @@
 				@cando('tip-zakaza-(klient):site')<x-table.td class="w14rem"><strong>Тип заказа</strong></x-table.td> @endcando
 				@cando('dannye-(klient):site')<x-table.td class="w-auto"><strong>Данные</strong></x-table.td> @endcando
 				@cando('invayt-(klient):site')<x-table.td class="w16rem pointer color-neutral-hovered" onclick="$.copyInviteColumn(this)"><strong>Инвайт</strong></x-table.td> @endcando
-				@cando('kommentariy-(klient):site')<x-table.td class="w-30rem"><strong>Комментарий</strong></x-table.td> @endcando
+				
+				@cando('kommentariy-(klient):site')
+					<x-table.td class="w-30rem">
+						<div class="row align-items-center">
+							<div class="col">
+								<strong>Комментарий</strong>
+							</div>
+							<div class="col-auto">
+								<x-button
+									variant="darkgray"
+									size="verysmall"
+									action="openCommentsWin:null,null,{{$timesheetId}}"
+									title="Отправить комментарий"
+									choosetsbuttons
+									hidden
+									><i class="fa-regular fa-fw fa-comments"></i>
+								</x-button>
+							</div>
+						</div>
+					</x-table.td>
+				@endcando
+				
 				@cando('stoimost-(klient):site')<x-table.td class="w-7rem h-end" title="Стоимость"><strong>$</strong></x-table.td> @endcando
 				
 				@cando('dannye-(klient):site')
