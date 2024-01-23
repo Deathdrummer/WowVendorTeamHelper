@@ -78,7 +78,7 @@ class AppServiceProvider extends ServiceProvider {
 		
 		
 		if (Str::contains(url()->current(), '/admin')) {
-				// Глобальные переменные для путей admin/*
+			// Глобальные переменные для путей admin/*
 			View::composer('admin/*', function($view) {
 				$view->with([
 					'authView' 				=> session('admin-auth-view', 'admin.auth.auth'),

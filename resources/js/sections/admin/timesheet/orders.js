@@ -463,11 +463,9 @@ export async function buildOrdersTable(row = null, timesheetId = null, cb = null
 		const ordersWait = $(row).siblings('[timesheetorders]').ddrWait({
 			iconHeight: '4rem',
 			bgColor: '#ecf3f5',
-		});
-		
-		
-		const search = $('#searchOrdersField').val() || null;
-		
+		}),
+			search = $('#searchOrdersField').val() || null;
+			
 		const {data, error, status, headers} = await ddrQuery.get('crud/orders/timesheet_list', {timesheet_id: timesheetId, views: viewsPath, search});
 		
 		ordersWait.destroy();

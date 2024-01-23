@@ -98,13 +98,15 @@ axios.interceptors.response.use(function (response) {
 });
 
 
-/*axios.interceptors.request.use(function (request) {
-	console.log('request', request);
+axios.interceptors.request.use(function (config) {
+	// Добавление поля isAdmin в заголовки запроса
+	config.headers["isAdmin"] = location.pathname.includes('/admin');
+	//
 	
-	return request;
+	return config;
 }, function (error) {
 	return Promise.reject(error);
-});*/
+});
 
 
 

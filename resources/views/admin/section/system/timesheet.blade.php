@@ -225,7 +225,6 @@
 	
 	
 	$.openCommentsWin = (btn, orderId, orderName) => {
-		console.log(123);
 		orderCommentsChat(orderId, orderName, btn);
 	}
 	

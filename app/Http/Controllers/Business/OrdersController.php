@@ -728,6 +728,7 @@ class OrdersController extends Controller {
 		]);
 		
 		$search = $request->input('search');
+		$isAdmin = $request->header('isAdmin', false);
 		
 		$list = $this->orderService->getToTimesheetList($timesheetId, $search);
 		
@@ -742,8 +743,7 @@ class OrdersController extends Controller {
 		$timezones = $this->getSettings('timezones', 'id');
 		$itemView = $viewPath.'.item';
 		
-		
-		return response()->view($viewPath.'.list', compact('list', 'itemView', 'timezones', 'statusesSettings', 'showType', 'notifyButtons', 'canAnySetStat', 'timesheetId'));
+		return response()->view($viewPath.'.list', compact('list', 'itemView', 'timezones', 'statusesSettings', 'showType', 'notifyButtons', 'canAnySetStat', 'timesheetId', 'isAdmin'));
 	}
 	
 	

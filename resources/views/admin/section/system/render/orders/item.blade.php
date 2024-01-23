@@ -1,10 +1,12 @@
 <x-table.tr class="h4rem" tsorder="{{$id}}">
-	<x-table.td class="h-center">
-		<x-checkbox
-			size="small"
-			tag="choosetsdorder:{{$id}}|{{$status}}"
-			/>
-	</x-table.td>
+	@unless($isAdmin ?? true)
+		<x-table.td class="h-center">
+			<x-checkbox
+				size="small"
+				tag="choosetsdorder:{{$id}}|{{$status}}"
+				/>
+		</x-table.td>
+	@endunless
 	<x-table.td class="h-center"><strong class="fz12px">{{$loop->index + 1}}</strong></x-table.td>
 	@cando('nomer-zakaza-(klient):site')
 		<x-table.td>
