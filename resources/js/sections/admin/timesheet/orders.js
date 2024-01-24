@@ -668,7 +668,10 @@ export async function rawDataHistory(orderId = null, orderName = null, rowBtn = 
 
 
 export async function showStatusesTooltip(btn = null, orderId = null, timesheetId = null, rowStat = null, cb = null) {
-	let ref, ttip, isMultiple = btn.localName == 'button';
+	let ref,
+		ttip,
+		isMultiple = btn.localName == 'button';
+		
 	$(btn).addClass('notouch');
 	const statusesTooltip = $(btn).ddrTooltip({
 		cls: 'noselect',
@@ -727,6 +730,7 @@ export async function showStatusesTooltip(btn = null, orderId = null, timesheetI
 		
 		let title;
 		let message = null;
+		let actionType = null;
 		let groupId = null;
 		if (status == 'wait') title = 'В лист ожидания';
 		else if (status == 'cancel')  title = 'В отмененные';
@@ -747,17 +751,22 @@ export async function showStatusesTooltip(btn = null, orderId = null, timesheetI
 				method: 'get',
 				title,
 				width: 400, // ширина окна
-				buttons: ['ui.cancel', {title: 'Перенести', variant: 'green', action: 'setStatusAction'}],
+				buttons: [
+					'ui.cancel',
+					{title: 'Клонировать', variant: 'blue', action: 'setStatusAction:clone'},
+					{title: 'Перенести', variant: 'green', action: 'setStatusAction:relocate'}
+				],
 				centerMode: true, // контент по центру
 			});
 			
 			ttWait.destroy();
 			
-			$.setStatusAction = async (__) => {
+			$.setStatusAction = async (__, actype = null) => {
 				wait();
 				
 				message = $(popper).find('#comment').val();
 				groupId = $(popper).find('#groupId').val();
+				actionType = actype;
 				
 				
 				if (_.isNull(groupId)) {
@@ -791,6 +800,7 @@ export async function showStatusesTooltip(btn = null, orderId = null, timesheetI
 			ordersIds.forEach(function(ordrId) {
 				setStatusFunc(ordrId);
 			});
+			
 			decrementTimesheetCount(btn, ordersIds.length);
 		}
 			
@@ -803,8 +813,10 @@ export async function showStatusesTooltip(btn = null, orderId = null, timesheetI
 				message,
 				group_id: groupId,
 				status,
-				current_status: rowStat
-			});
+				current_status: rowStat,
+				action_type: actionType,
+			}),
+				statBlock = isMultiple ? $(btn).closest('[timesheetorders]').find(`[orderstatusblock="${orderId}"]`) : $(btn);
 			
 		 	if (error) {
 		 		console.log(error);
@@ -818,8 +830,16 @@ export async function showStatusesTooltip(btn = null, orderId = null, timesheetI
 				return;
 			}
 			
+				
 			if (data) {
-				if (['wait', 'cancel'].includes(status)) {
+				if (status == 'wait' && actionType == 'clone') {
+					const {name, icon, color} = data?.doprun;
+					
+					$(statBlock).html(`<div class="w2rem h2rem border-rounded-circle" style="background-color: ${color};" title="${name}" rowstatuscolor=""></div><p class="fz12px ml5px" rowstatustext="">${name}</p>`);
+					
+					$.notify(`Заказ успешно${rowStat != 'doprun' ? ' склонирован' : ' отправлен'} в лист ожидания`);
+					
+				} else if (['wait', 'cancel'].includes(status)) {
 					let hasRows = !!$(ref).closest('[ddrtabletr]').siblings('[ddrtabletr]').length;
 					
 					if (rowStat != 'doprun') {
@@ -837,10 +857,10 @@ export async function showStatusesTooltip(btn = null, orderId = null, timesheetI
 				} else if (status == 'ready') {
 					if (isMultiple) {
 						if (data?.isHash) {
-							$('#timesheetContainer').find(`[orderstatusblock="${orderId}"]`).replaceWith('<i class="fa-regular fa-fw fa-circle-check color-green fz18px" title="Подтвержден"></i>');
+							$(statBlock).replaceWith('<i class="fa-regular fa-fw fa-circle-check color-green fz18px" title="Подтвержден"></i>');
 							$.notify(`Заказ успешно подтвержден!`);
 						} else {
-							$('#timesheetContainer').find(`[orderstatusblock="${orderId}"]`).replaceWith('<i class="fa-regular fa-fw fa-clock color-gray fz18px" title="На подтверждении"></i>');
+							$(statBlock).replaceWith('<i class="fa-regular fa-fw fa-clock color-gray fz18px" title="На подтверждении"></i>');
 							$.notify(`Заказ отправлен на подтверждение!`);
 						}
 						
@@ -855,8 +875,7 @@ export async function showStatusesTooltip(btn = null, orderId = null, timesheetI
 					}
 						
 				} else {
-					const {name, icon, color} = data;
-					const statBlock = $(btn);
+					const {name, icon, color} = data[status];
 					
 					if (name) {
 						$(statBlock).find('[rowstatustext]').text(name);

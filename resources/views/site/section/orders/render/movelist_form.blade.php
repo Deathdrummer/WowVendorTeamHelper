@@ -8,6 +8,7 @@
 			<p class="color-gray-500 fz14px mb3px text-start">Группа:</p>
 			<x-select
 				id="groupId"
+				size="small"
 				:options="$waitListGroups"
 				empty="Нет данных!"
 				choose="Не выбрана"
@@ -17,6 +18,13 @@
 				/>
 		</div>
 	@endif
+	
+	{{-- <div class="col text-start">
+		<x-checkbox
+			size="small"
+			label="dfsdfsd"
+			/>
+	</div> --}}
 	
 	<div class="col">
 		<p class="color-gray-500 fz14px mb3px text-start">Комментарий:</p>

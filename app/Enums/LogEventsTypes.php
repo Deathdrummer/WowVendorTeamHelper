@@ -27,6 +27,9 @@ final class LogEventsTypes extends Enum {
 	#[Description('{"ru": "Заказ отправлен в лист ожидания","en":""}')]
 	const orderToWaitlList = 6;
 	
+	#[Description('{"ru": "Заказ склонирован в лист ожидания","en":""}')]
+	const orderCloneToWaitlList = 22;
+	
 	#[Description('{"ru": "Заказы отправлены в лист ожидания","en":""}')]
 	const ordersToWaitlList = 17;
 	

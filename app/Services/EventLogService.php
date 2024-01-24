@@ -268,7 +268,7 @@ class EventLogService {
 	* @param 
 	* @return 
 	*/
-	public function orderToWaitlList(Order $order) {
+	public function orderToWaitlList(Order $order, $doprun = false) {
 		$timezone = $this->getTimezone($order?->timezone_id);
 		$dateMsc = $timezone ? DdrDateTime::shift($order?->date, (-1 * $timezone['shift'])) : null;
 		$oldData = $order?->getRawOriginal() ?? null;
@@ -291,7 +291,9 @@ class EventLogService {
 			'old_status' => ['data' => $oldStatus, 'title' => 'Предыдущий статус'],
 		];
 		
-		$this->sendToEventLog(LogEventsGroups::orders, LogEventsTypes::orderToWaitlList, $info);
+		$eventType = $doprun ? LogEventsTypes::orderCloneToWaitlList : LogEventsTypes::orderToWaitlList;
+		
+		$this->sendToEventLog(LogEventsGroups::orders, $eventType, $info);
 	}
 	
 	

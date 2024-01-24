@@ -262,6 +262,7 @@ class OrdersController extends Controller {
 	 * @return 
 	 */
 	public function to_wait_list_form(Request $request, Settings $setings) {
+		
 		[
 			'views'		=> $viewPath,
 		] = $request->validate([
@@ -1113,25 +1114,25 @@ class OrdersController extends Controller {
 			'timesheet_id'		=> $timesheetId,
 			'status'			=> $status,
 			'message'			=> $message,
+			'action_type'		=> $actionType,
 		] = $request->validate([
 			'order_id'			=> 'required',
 			'timesheet_id'		=> 'required|numeric',
 			'status'			=> 'required|string',
 			'group_id'			=> 'sometimes|nullable|numeric',
 			'message'			=> 'string|nullable',
+			'action_type'		=> 'required|string',
 		]);
 		
 		$groupId = $request->input('group_id');
 		$currentStatus = $request->input('current_status');
 		
-		if (!$setStatRes = $this->orderService->setStatus($orderId, $timesheetId, $status, $groupId, currentStatus: $currentStatus)) return response()->json(false);
+		if (!$setStatRes = $this->orderService->setStatus($orderId, $timesheetId, $status, $groupId, currentStatus: $currentStatus, actionType: $actionType)) return response()->json(false);
 		
 		// отправить коммент
-		if ($message) {
-			$addOrderComment($orderId, $message);
-		}
+		if ($message) $addOrderComment($orderId, $message);
 		
-		$orderStatusesSettings = $this->getSettingsCollect("order_statuses.{$status}");
+		$orderStatusesSettings = $this->getSettingsCollect("order_statuses")->filter(fn($item, $key) => in_array($key, [$status, 'doprun']));
 		
 		return response()->json([...$orderStatusesSettings, 'isHash' => ($setStatRes === 'hash')]);
 	}

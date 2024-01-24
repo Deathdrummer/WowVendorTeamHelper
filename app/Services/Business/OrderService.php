@@ -323,7 +323,7 @@ class OrderService {
 	 * @param 
 	 * @return 
 	 */
-	public function setStatus($orderId = null, $timesheetId = null, $status = null, $waitGroupId = null, $currentStatus = null) {
+	public function setStatus($orderId = null, $timesheetId = null, $status = null, $waitGroupId = null, $currentStatus = null, $actionType = null) {
 		if (is_null($orderId) || is_null($status)) return false;
 		
 		$isHashOrder = false;
@@ -336,13 +336,15 @@ class OrderService {
 		
 		$timesheet = Timesheet::find($timesheetId);
 		
-		if (in_array($status, ['cancel', 'wait'])) {
-			if ($isDoprunStat) {
-				
-			} else {
-				$timesheet->orders()->detach($orderId);
-				eventLog()->orderDetach($order, $timesheetId, $status);	
-			}
+		# Если отправляется в ожидание и не нужно отвязывать, а присвоить статус допран
+		if ($status == 'wait' && $actionType == 'clone') {
+			$timesheet->orders()->syncWithoutDetaching([$orderId => ['doprun' => true]]);
+			eventLog()->orderToWaitlList($order, true);	
+		
+		# Если заказ не допран и отправляется в отмененные или ожидание
+		} elseif (in_array($status, ['cancel', 'wait']) && !$isDoprunStat) {
+			$timesheet->orders()->detach($orderId);
+			eventLog()->orderDetach($order, $timesheetId, $status);	
 			
 		} else {
 			//$timesheet->orders()->updateExistingPivot($orderId, ['doprun' => null]);
