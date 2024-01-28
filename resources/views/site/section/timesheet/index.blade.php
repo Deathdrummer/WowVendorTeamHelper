@@ -433,47 +433,6 @@
 			$('#tsCommentsImg').one(tapEvent, function() {
 				$(this).remove();
 			});
-			
-			
-			
-			
-
-			
-			/*const {
-				state,
-				popper,
-				wait,
-				setTitle,
-				setButtons,
-				loadData,
-				setHtml,
-				setLHtml,
-				dialog,
-				close,
-				onClose,
-				onScroll,
-				disableButtons,
-				enableButtons,
-				setWidth,
-			} = await ddrPopup({
-				url,
-				method,
-				params,
-				title, // заголовок
-				width, // ширина окна
-				frameOnly, // Загрузить только каркас
-				html, // контент
-				lhtml, // контент из языковых файлов
-				buttons, // массив кнопок
-				buttonsAlign, // выравнивание вправо
-				disabledButtons, // при старте все кнопки кроме закрытия будут disabled
-				closeByBackdrop, // Закрывать окно только по кнопкам [ddrpopupclose]
-				changeWidthAnimationDuration, // ms
-				buttonsGroup, // группа для кнопок
-				winClass, // добавить класс к модальному окну
-				centerMode, // контент по центру
-				topClose // верхняя кнопка закрыть
-			});*/
 		});
 		
 		

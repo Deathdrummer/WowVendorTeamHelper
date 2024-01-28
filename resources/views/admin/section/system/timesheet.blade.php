@@ -270,6 +270,26 @@
 		
 		
 		
+		$(popper).on(tapEvent, '[openttscommentimg]', async function() {
+			const src = $(this).attr('openttscommentimg');
+			
+			
+			$('body').append(`<div class="ddrpopup ddrpopup_opening" id="tsCommentsImg"><div class="ddrpopup__wrap" ddrpopupwrap="">\
+				<div class="ddrpopup__container">\
+					<div class="ddrpopup__win noselect ddrpopup__win_opening w100" ddrpopupwin="">\
+						<img src="${src}" class="w100 h-auto" />\
+					</div>\
+				</div>\
+			</div>`);
+			
+			
+			$('#tsCommentsImg').one(tapEvent, function() {
+				$(this).remove();
+			});
+		});
+		
+		
+		
 		
 		$.timesheetComentSave = async () => {
 			wait();
