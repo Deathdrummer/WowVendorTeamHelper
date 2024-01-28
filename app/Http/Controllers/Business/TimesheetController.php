@@ -476,7 +476,25 @@ class TimesheetController extends Controller {
 		
 		$timesheeet = Timesheet::find($id);
 		
-		return response(view($viewPath.'.comment', ['comment' => $timesheeet?->comment]));
+		$rawComment = $timesheeet?->comment;
+		
+		$buildComment = $rawComment? preg_replace_callback('/(https?:\/\/\S+)/', function($screens) {
+			
+			if (!$screens) return false;
+			
+			foreach ($screens as $screen) {
+				$content = @file_get_contents($screen);
+				preg_match("/<img.*id='screenshot' src='(.*)'>/U", $content, $match);
+				
+				$imgSrc = $match[1];
+				return '<img src="'.$imgSrc.'" class="w-30rem h-auto mt1rem mb1rem border-radius-3px pointer border-blue-hovered" openttscommentimg="'.$imgSrc.'" />';
+			}
+			
+			
+			//'<img src="$1" class="w-30rem h-auto mt1rem mb1rem border-radius-3px pointer border-blue-hovered" openttscommentimg="$1" />'
+		}, $rawComment) : '';
+		
+		return response(view($viewPath.'.comment', compact('buildComment', 'rawComment')));
 	}
 	
 	

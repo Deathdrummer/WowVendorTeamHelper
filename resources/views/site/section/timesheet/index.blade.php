@@ -397,7 +397,7 @@
 			method: 'get',
 			params: {id: timesheetId, views: 'admin.section.system.render.timesheet'},
 			title: 'Комментарий события', // заголовок
-			width: '500', // ширина окна
+			width: 900, // ширина окна
 			buttons: ['ui.close', {action: 'timesheetComentSave', title: 'Обновить'}],
 			disabledButtons: true, // при старте все кнопки кроме закрытия будут disabled
 		});
@@ -415,6 +415,66 @@
 			commentStr = e?.target?.value || null;
 		});
 		
+		
+		
+		$(popper).on(tapEvent, '[openttscommentimg]', async function() {
+			const src = $(this).attr('openttscommentimg');
+			
+			
+			$('body').append(`<div class="ddrpopup ddrpopup_opening" id="tsCommentsImg"><div class="ddrpopup__wrap" ddrpopupwrap="">\
+				<div class="ddrpopup__container">\
+					<div class="ddrpopup__win noselect ddrpopup__win_opening w100" ddrpopupwin="">\
+						<img src="${src}" class="w100 h-auto" />\
+					</div>\
+				</div>\
+			</div>`);
+			
+			
+			$('#tsCommentsImg').one(tapEvent, function() {
+				$(this).remove();
+			});
+			
+			
+			
+			
+
+			
+			/*const {
+				state,
+				popper,
+				wait,
+				setTitle,
+				setButtons,
+				loadData,
+				setHtml,
+				setLHtml,
+				dialog,
+				close,
+				onClose,
+				onScroll,
+				disableButtons,
+				enableButtons,
+				setWidth,
+			} = await ddrPopup({
+				url,
+				method,
+				params,
+				title, // заголовок
+				width, // ширина окна
+				frameOnly, // Загрузить только каркас
+				html, // контент
+				lhtml, // контент из языковых файлов
+				buttons, // массив кнопок
+				buttonsAlign, // выравнивание вправо
+				disabledButtons, // при старте все кнопки кроме закрытия будут disabled
+				closeByBackdrop, // Закрывать окно только по кнопкам [ddrpopupclose]
+				changeWidthAnimationDuration, // ms
+				buttonsGroup, // группа для кнопок
+				winClass, // добавить класс к модальному окну
+				centerMode, // контент по центру
+				topClose // верхняя кнопка закрыть
+			});*/
+		});
 		
 		
 		

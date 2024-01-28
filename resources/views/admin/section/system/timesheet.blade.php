@@ -250,7 +250,7 @@
 			method: 'get',
 			params: {id: timesheetId, views: 'admin.section.system.render.timesheet'},
 			title: 'Комментарий события', // заголовок
-			width: '500', // ширина окна
+			width: 900, // ширина окна
 			buttons: ['ui.close', {action: 'timesheetComentSave', title: 'Обновить'}],
 			disabledButtons: true, // при старте все кнопки кроме закрытия будут disabled
 		});
