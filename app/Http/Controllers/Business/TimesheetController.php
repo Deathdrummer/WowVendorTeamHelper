@@ -510,7 +510,7 @@ class TimesheetController extends Controller {
 			'comment'	=> $comment,
 		] = $request->validate([
 			'id'		=> 'required|numeric',
-			'comment'	=> 'required|string|nullable',
+			'comment'	=> 'nullable|string',
 		]);
 		
 		$res = $update(Timesheet::class, $id, ['comment' => $comment]);
