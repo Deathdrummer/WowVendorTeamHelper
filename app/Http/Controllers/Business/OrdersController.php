@@ -1114,17 +1114,17 @@ class OrdersController extends Controller {
 			'timesheet_id'		=> $timesheetId,
 			'status'			=> $status,
 			'message'			=> $message,
-			'action_type'		=> $actionType,
 		] = $request->validate([
 			'order_id'			=> 'required',
 			'timesheet_id'		=> 'required|numeric',
 			'status'			=> 'required|string',
-			'group_id'			=> 'sometimes|nullable|numeric',
+			'group_id'			=> 'sometimes|exclude|nullable|numeric',
 			'message'			=> 'string|nullable',
-			'action_type'		=> 'required|string',
+			'action_type'		=> 'sometimes|exclude|nullable|string',
 		]);
 		
 		$groupId = $request->input('group_id');
+		$actionType = $request->input('action_type');
 		$currentStatus = $request->input('current_status');
 		
 		if (!$setStatRes = $this->orderService->setStatus($orderId, $timesheetId, $status, $groupId, currentStatus: $currentStatus, actionType: $actionType)) return response()->json(false);
