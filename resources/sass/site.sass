@@ -90,7 +90,6 @@ input, textarea, [contenteditable]
 	&__logo
 		display: flex
 		align-items: center
-		justify-content: center
 		margin-right: 5px
 		
 		> div
@@ -98,7 +97,7 @@ input, textarea, [contenteditable]
 			margin-left: 10px
 			
 			img
-				+resp(height, (xs: 42px, sm: 48px, md: 50px, lg: 52px, xl: 54px, xxl: 56px))
+				+resp(height, (xs: 38px, sm: 40px, md: 44px, lg: 46px, xl: 48px, xxl: 50px))
 				width: auto
 				object-fit: contain
 				
@@ -107,6 +106,20 @@ input, textarea, [contenteditable]
 			line-height: 18px
 			+fontWeight(400)
 			color: #181824
+	
+	
+	&__menu
+		i
+			cursor: pointer
+			font-size: 30px
+			color: #8181b3
+			
+			&:hover
+				color: #7575a5
+			
+			&:active
+				color: #53537c
+				
 	
 	
 	
@@ -337,12 +350,24 @@ input, textarea, [contenteditable]
 		border: 1px solid #f1f3f7
 		background-color: #fff
 		border-radius: 5px
+		position: absolute
+		transform: translateX(25px)
+		z-index: 100
+		opacity: 0
+		box-shadow: 0px 2px 20px -4px #77777742
+		pointer-events: none
+		transition: opacity 0.18s
+		
+		&_visible
+			opacity: 1
+			pointer-events: auto
 		
 		ul
 			padding: 15px
 			
 			li
 				padding-left: 6px
+				padding-right: 6px
 				height: 50px
 				display: flex
 				align-items: center

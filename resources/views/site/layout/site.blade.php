@@ -14,6 +14,10 @@
 							</div>
 							{{-- <p>{{$company_name}}</p> --}}
 						</div>
+						
+						<div class="header__menu">
+							<i class="fa-solid fa-fw fa-bars" id="mainNavHendler" onclick="$.mainNavHendler(event)"></i>
+						</div>
 					</div>
 				</div>
 				
@@ -133,7 +137,7 @@
 		</aside> --}}
 		
 		<main class="main">
-			<nav class="main__nav">
+			<nav class="main__nav w25rem" id="mainNav">
 				@isset($nav)
 					{{-- <p>sectionTitle</p> --}}
 					<ul class="noselect">
@@ -147,6 +151,7 @@
 									'opened' => isset($item['active']),
 								])
 								loadsection="{{$item['section']}}"
+								onclick="$.clickToNavItem(event)" 
 								><span>{{$item['title']}}</span></li>	
 								
 						@endforeach
@@ -212,6 +217,31 @@
 	
 	
 	
+	
+	$.mainNavHendler = (event) => {
+		event.stopPropagation();
+		if (!$('#mainNav').hasClass('main__nav_visible')) {
+			$('#mainNav').addClass('main__nav_visible');
+			$('body').addClass('main__nav_opened');
+		} else {
+			$('#mainNav').removeClass('main__nav_visible');
+		}
+	}
+	
+	
+	$(document).on(tapEvent, 'body.main__nav_opened', function() {
+		$('#mainNav').removeClass('main__nav_visible');
+		$('body.main__nav_opened').removeClass('main__nav_opened');
+	});
+	
+	
+	
+	$.clickToNavItem = (event) => {
+		event.stopPropagation();
+		setTimeout(() => {
+			$('#mainNav').removeClass('main__nav_visible');
+		}, 100);
+	}
 	
 	
 	
