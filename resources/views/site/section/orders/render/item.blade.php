@@ -142,11 +142,11 @@
 	</div>
 	
 	<div class="col-auto">
-		<div class="order__block w10rem">
+		<div class="order__block w4rem">
 			@if($is_doprun ?? false)
-				<div class="d-inline-flex align-items-center">
+				<div class="d-inline-flex align-items-center justify-content-center">
 					<div class="w2rem h2rem border-rounded-circle" style="background-color: {{$doprunStatus['color'] ?? null}};" title="{{$doprunStatus['name'] ?? null}}"></div>
-					<p class="fz12px ml5px" rowstatustext="">{{$doprunStatus['name'] ?? null}}</p>
+					{{-- <p class="fz12px ml5px" rowstatustext="">{{$doprunStatus['name'] ?? null}}</p> --}}
 				</div>
 			@endif
 		</div>
