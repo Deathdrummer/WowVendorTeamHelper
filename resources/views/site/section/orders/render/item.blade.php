@@ -142,7 +142,7 @@
 	</div>
 	
 	<div class="col-auto">
-		<div class="order__block w4rem">
+		<div class="order__block w3rem-8px">
 			@if($is_doprun ?? false)
 				<div class="d-inline-flex align-items-center justify-content-center">
 					<div class="w2rem h2rem border-rounded-circle" style="background-color: {{$doprunStatus['color'] ?? null}};" title="{{$doprunStatus['name'] ?? null}}"></div>
