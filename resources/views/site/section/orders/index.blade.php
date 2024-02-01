@@ -274,11 +274,11 @@
 		currentPage.value = 1;
 		
 		if (stat == 'wait') {
-			$('#contractsCard').card('scrolled', 'calc(100vh - 254px)');
+			$('#contractsCard').card('scrolled', 'calc(100vh - 215px)');
 			$('#ordersWaitTypes').removeAttrib('hidden');
 			$('#ordersWaitTypes').setAttrib('disabled');
 		} else {
-			$('#contractsCard').card('scrolled', 'calc(100vh - 216px)');
+			$('#contractsCard').card('scrolled', 'calc(100vh - 180px)');
 			$('#ordersWaitTypes').setAttrib('hidden');
 		}
 		
