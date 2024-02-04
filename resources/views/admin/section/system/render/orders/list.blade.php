@@ -3,7 +3,7 @@
 		<x-table.head>
 			<x-table.tr class="h3rem">
 				@unless($isAdmin ?? true)
-					<x-table.td class="w4rem h-center">
+					<x-table.td class="w3rem-8px h-center">
 						<x-button
 							size="verysmall"
 							variant="yellow"
@@ -12,15 +12,15 @@
 						</x-button>
 					</x-table.td>
 				@endunless
-				<x-table.td class="w4rem h-center"><strong>№</strong></x-table.td>
-				@cando('nomer-zakaza-(klient):site')<x-table.td class="w8rem-4px pointer color-neutral-hovered" onclick="$.copyOrdersColumn(this)"><strong>№ заказа</strong></x-table.td> @endcando
-				@cando('data-(klient):site')<x-table.td class="w19rem"><strong>Дата</strong></x-table.td> @endcando
-				@cando('tip-zakaza-(klient):site')<x-table.td class="w14rem"><strong>Тип заказа</strong></x-table.td> @endcando
+				<x-table.td class="w3rem-4px h-center"><strong>№</strong></x-table.td>
+				@cando('nomer-zakaza-(klient):site')<x-table.td class="w8rem pointer color-neutral-hovered" onclick="$.copyOrdersColumn(this)"><strong>№ заказа</strong></x-table.td> @endcando
+				@cando('data-(klient):site')<x-table.td class="w17rem"><strong>Дата</strong></x-table.td> @endcando
+				@cando('tip-zakaza-(klient):site')<x-table.td class="w10rem"><strong>Тип заказа</strong></x-table.td> @endcando
 				@cando('dannye-(klient):site')<x-table.td class="w-auto"><strong>Данные</strong></x-table.td> @endcando
 				@cando('invayt-(klient):site')<x-table.td class="w16rem pointer color-neutral-hovered" onclick="$.copyInviteColumn(this)"><strong>Инвайт</strong></x-table.td> @endcando
 				
 				@cando('kommentariy-(klient):site')
-					<x-table.td class="w-30rem">
+					<x-table.td class="w-20rem">
 						<div class="row align-items-center">
 							<div class="col">
 								<strong>Комментарий</strong>
