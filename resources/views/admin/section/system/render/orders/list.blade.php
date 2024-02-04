@@ -50,7 +50,7 @@
 				
 				@cando('uvedomleniya-(klient):site')
 					@if(isset($notifyButtons) && $notifyButtons)
-						<x-table.td class="h-center" style="width: {{31 * count($notifyButtons ?? 1) + 10}}px;">
+						<x-table.td class="h-center" style="width: {{32 * count($notifyButtons ?? 1) + 10}}px;">
 							@if(count($notifyButtons ?? 1) == 3)
 								<strong title="Уведомления">Уведомл.</strong>
 							@elseif(count($notifyButtons ?? 1) > 3)
