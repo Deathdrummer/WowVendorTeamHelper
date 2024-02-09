@@ -19,8 +19,9 @@ if (! function_exists('ddrIf')) {
 	* @return mixed
 	*/
 	function ddrIf($rules = [], $default = null):mixed {
-		foreach ($rules as $rule => $result) {
-			if ($rule) return $result;
+		toLog($rules);
+		foreach ($rules as $returnData => $rule) {
+			if ($rule) return $returnData;
 		}
 		return $default;
 	}

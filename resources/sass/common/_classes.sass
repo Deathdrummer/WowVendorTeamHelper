@@ -1722,10 +1722,14 @@ $tableColor: #efefef
 		
 		&.w-auto
 			//min-width: max-content
-			display: inline-table
+			display: inline-grid
 			height: 100%
 			flex: 1 1 auto
 			word-break: break-word
+			
+			> *
+				margin-top: auto
+				margin-bottom: auto
 			
 		&.w-spacer
 			//min-width: max-content
