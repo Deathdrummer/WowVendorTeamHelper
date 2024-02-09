@@ -20,7 +20,7 @@
 			</x-table.td>
 			<x-table.td class="w30rem" noborder><strong>Комментарий</strong></x-table.td>
 			<x-table.td class="w7rem" noborder><strong>Кол-во заказов</strong></x-table.td>
-			<x-table.td class="w12rem" noborder><strong>Действия</strong></x-table.td>
+			<x-table.td class="w13rem" noborder><strong>Действия</strong></x-table.td>
 		</x-table.tr>
 	</x-table.head>
 	<x-table.body id="timesheetList" class="minh-4rem" emptytext="Нет записей"></x-table.body>

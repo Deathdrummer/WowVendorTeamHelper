@@ -20,7 +20,7 @@
 				@forelse($orderColums as ['key' => $column, 'value' => $colKey, 'desc' => $colName])
 					@if(Auth::guard('site')->user()->can($column.'-(client):site') && ($orderColsSettings['show'][$colKey] ?? false))
 						<x-table.td
-							style="width:{{ddrIf([($orderColsSettings['width'][$colKey] ?? '').'px' => ($orderColsSettings['width'][$colKey] ?? false) && !in_array($column, ['data', 'notifies']), (32 * count($notifyButtons ?? 1) + 10).'px' => $column == 'notifies' && isset($notifyButtons), '150px' => !in_array($column, ['data'])])}};"
+							style="width:{{ddrIf([($orderColsSettings['width'][$colKey] ?? '').'px' => ($orderColsSettings['width'][$colKey] ?? false) && !in_array($column, ['data', 'notifies']), (31 * count($notifyButtons ?? 1) + 16).'px' => $column == 'notifies' && isset($notifyButtons), '150px' => !in_array($column, ['data'])])}};"
 							@class([
 								/*'w'.($orderColsSettings[$colKey]['width'] ?? '') => ($orderColsSettings[$colKey]['width'] ?? false) && !in_array($column, ['data', 'status']),*/
 								'w-auto' => $column == 'data',
