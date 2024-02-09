@@ -23,7 +23,7 @@ import '@plugins/jquery.ui';
 import '@plugins/ddrCalc';
 import '@plugins/ddrQuery';
 import '@plugins/ddrPagination';
-
+import '@plugins/ddrBuildInputsData';
 
 
 
@@ -66,6 +66,46 @@ $(function() {
 		webhook: 'https://hooks.slack.com/services/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',
 		text: 'этот текст передан через аргумент'
 	});*/
+	
+	
+	
+	
+	
+	$.openClientSettingsWin = async () => {
+		const {
+			popper,
+			enableButtons,
+		} = await ddrPopup({
+			url: 'client/settings' ,
+			method: 'get',
+			title: 'Мои настройки', // заголовок
+			width: 800, // ширина окна
+			buttons: ['ui.close'/*, {title: 'Сохранить', action: 'userSettingsSaveBtn', disabled: 1}*/]
+		});
+		
+		
+		$(popper).ddrInputs('change:one', function() {
+			enableButtons(true);
+		});
+		
+		
+		$(popper).find('[name]').ddrBuildInputsData({
+			//onBefore(inp, e) {},
+			async onChange({setting, value, type, remove, inp, done}) {
+				const {data, error, status, headers, abort} = await ddrQuery.put('client/settings', {setting, value, type, remove}/*, {abortContr}*/);
+				
+				done();
+				
+				if (error) {
+					console.log(error);
+					$.notify(error?.message, 'error');
+					return;
+				}
+			},
+		});
+	}
+	
+	
 
 	
 	

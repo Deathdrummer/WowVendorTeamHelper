@@ -393,6 +393,9 @@ Route::prefix('client')->middleware(['lang', 'isajax:site'])->group(function() {
 	Route::get('orders/relocate', [OrdersController::class, 'relocate_client']);
 	Route::get('orders/relocate/get_timesheets', [OrdersController::class, 'get_relocate_timesheets_client']);
 	Route::post('orders/relocate', [OrdersController::class, 'set_relocate_client']);
+	
+	Route::get('settings', [UserController::class, 'get_settings']);
+	Route::put('settings', [UserController::class, 'set_setting']);
 });
 
 

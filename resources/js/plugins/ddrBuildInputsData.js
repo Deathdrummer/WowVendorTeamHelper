@@ -32,8 +32,8 @@ $.fn.ddrBuildInputsData = function(params = []) {
 	let executed = false;
 	$(selector).ddrInputs('change', function(inp, e) {
 		callFunc(onBefore, inp, e);
-		
-		const noTextTypes = ['checkbox', 'radio', 'select-one'].includes(e?.target?.type);
+		const type = e?.target?.type,
+			noTextTypes = ['checkbox', 'radio', 'select-one'].includes(type);
 		
 		
 		//console.log(executed);
@@ -47,31 +47,44 @@ $.fn.ddrBuildInputsData = function(params = []) {
 		}
 		
 		
-		let type = e?.target?.type;
-		
-		let isChecked = e?.target?.checked;
-		let tOut = noTextTypes ? 0 : timeout;
-		
 		const done = () => {
 			if (noTextTypes) {
 				$(inp).ddrInputs('touch');
 			}
 		}
 		
+		let value = null;
 		
 		saveUserDataTOut = setTimeout(() => {
 			let sd = $(inp).attr(attr).split(':'),
 				setting = sd[0] || null,
-				sType = ['checkbox'].includes(e?.target?.type) ? 'arr' : 'single'; // arr arrassoc single
+				sType = ['checkbox'].includes(type) ? (sd[1] || 'arr') : 'single'; // arr arrassoc single
 			
-			const value = $(inp).val();
-			const remove = type == 'checkbox' && !isChecked;
+			
+			let val = $(inp).val(),
+				remove = false;
+			
+			if (['checkbox'].includes(type)) {
+				let isChecked = e?.target?.checked;
+				val = val.split(':');
+				
+				let valTrue = val[0],
+					valFalse = val[1] || null;
+				
+				value = isChecked ? valTrue : valFalse;
+				
+				remove = _.isNull(valFalse) && !isChecked;
+				console.log(remove, value);
+			} else {
+				value = $(inp).val();
+				remove = !value;
+			}
 			
 			if (noTextTypes) {
 				$(inp).ddrInputs('notouch');
 			}
 			
 			callFunc(onChange, {setting, value, type: sType, remove, inp, done});
-		}, tOut);
+		}, noTextTypes ? 0 : timeout);
 	});
 }

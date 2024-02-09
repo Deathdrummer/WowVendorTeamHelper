@@ -2,7 +2,7 @@
 	<x-table class="w100" scrolled="300px">
 		<x-table.head>
 			<x-table.tr class="h3rem">
-				@unless($isAdmin ?? true)
+				@if(($orderColsSettings['show'][-1] ?? false) && (!($isAdmin ?? true)))
 					<x-table.td class="w3rem-8px h-center">
 						<x-button
 							size="verysmall"
@@ -11,80 +11,98 @@
 							><i class="fa-solid fa-fw fa-check-double"></i>
 						</x-button>
 					</x-table.td>
-				@endunless
-				<x-table.td class="w3rem-4px h-center"><strong>№</strong></x-table.td>
-				@cando('nomer-zakaza-(klient):site')<x-table.td class="w8rem pointer color-neutral-hovered" onclick="$.copyOrdersColumn(this)"><strong>№ заказа</strong></x-table.td> @endcando
-				@cando('data-(klient):site')<x-table.td class="w17rem"><strong>Дата</strong></x-table.td> @endcando
-				@cando('tip-zakaza-(klient):site')<x-table.td class="w10rem"><strong>Тип заказа</strong></x-table.td> @endcando
-				@cando('dannye-(klient):site')<x-table.td class="w-auto"><strong>Данные</strong></x-table.td> @endcando
-				@cando('invayt-(klient):site')<x-table.td class="w16rem pointer color-neutral-hovered" onclick="$.copyInviteColumn(this)"><strong>Инвайт</strong></x-table.td> @endcando
+				@endif
 				
-				@cando('kommentariy-(klient):site')
-					<x-table.td class="w-20rem">
-						<div class="row align-items-center">
-							<div class="col">
-								<strong>Комментарий</strong>
-							</div>
-							<div class="col-auto">
-								<x-button
-									variant="darkgray"
-									size="verysmall"
-									action="openCommentsWin:null,null,{{$timesheetId}}"
-									title="Отправить комментарий"
-									choosetsbuttons
-									hidden
-									><i class="fa-regular fa-fw fa-comments"></i>
-								</x-button>
-							</div>
-						</div>
-					</x-table.td>
-				@endcando
+				@if(($orderColsSettings['show'][-2] ?? false))
+					<x-table.td class="w3rem-4px h-center"><strong>№</strong></x-table.td>
+				@endif
 				
-				@cando('stoimost-(klient):site')<x-table.td class="w-7rem h-end" title="Стоимость"><strong>$</strong></x-table.td> @endcando
+				@forelse($orderColums as ['key' => $column, 'value' => $colKey, 'desc' => $colName])
+					@if(Auth::guard('site')->user()->can($column.'-(client):site') && ($orderColsSettings['show'][$colKey] ?? false))
+						<x-table.td
+							style="width:{{ddrIf([($orderColsSettings['width'][$colKey] ?? false) && !in_array($column, ['data', 'notifies']) => ($orderColsSettings['width'][$colKey] ?? '').'px', $column == 'notifies' && isset($notifyButtons) => (32 * count($notifyButtons ?? 1) + 10).'px'], '150px')}};"
+							@class([
+								/*'w'.($orderColsSettings[$colKey]['width'] ?? '') => ($orderColsSettings[$colKey]['width'] ?? false) && !in_array($column, ['data', 'status']),*/
+								'w-auto' => $column == 'data',
+								'pointer color-neutral-hovered' => in_array($column, ['order', 'invite']),
+								'h-end' => in_array($column, ['price']),
+								'h-center' => in_array($column, ['notifies']),
+							])
+							onclick="{{ddrIf([$column == 'order' => '$.copyOrdersColumn(this)', $column == 'invite' => '$.copyInviteColumn(this)'], 'return false');}}"
+							title="{{$colName ?? null}}"
+							>
+							
+							@if($column == 'comment')
+								<div class="row align-items-center">
+									<div class="col">
+										<strong>{{$colName ?? '-'}}</strong>
+									</div>
+									<div class="col-auto">
+										<x-button
+											variant="darkgray"
+											size="verysmall"
+											action="openCommentsWin:null,null,{{$timesheetId}}"
+											title="Отправить комментарий"
+											choosetsbuttons
+											hidden
+											><i class="fa-regular fa-fw fa-comments"></i>
+										</x-button>
+									</div>
+								</div>
+							@elseif($column == 'notifies')
+								@if(isset($notifyButtons) && $notifyButtons)
+									@if(count($notifyButtons ?? 1) == 3)
+										<strong title="Уведомления">Уведомл.</strong>
+									@elseif(count($notifyButtons ?? 1) > 3)
+										<strong>Уведомления</strong>
+									@else
+										<i class="fa-brands fa-fw fa-slack" title="Уведомления в Слак"></i>
+									@endif
+								@endif
+							@else
+								<strong>{{$colName ?? '-'}}</strong>
+							@endif
+							
+						</x-table.td>
+					@endif
+				@empty
+					<x-table.td class="w-auto"></x-table.td>
+				@endforelse
 				
-				@cando('dannye-(klient):site')
+				
+				@if(Auth::guard('site')->user()->can('data-(client):site') && ($orderColsSettings['show'][4] ?? false))
 					<x-table.td class="w-spacer p-0"></x-table.td>
 				@else
 					<x-table.td class="w-auto p-0"></x-table.td>
-				@endcando
+				@endif
 				
-				@cando('uvedomleniya-(klient):site')
-					@if(isset($notifyButtons) && $notifyButtons)
-						<x-table.td class="h-center" style="width: {{32 * count($notifyButtons ?? 1) + 10}}px;">
-							@if(count($notifyButtons ?? 1) == 3)
-								<strong title="Уведомления">Уведомл.</strong>
-							@elseif(count($notifyButtons ?? 1) > 3)
-								<strong>Уведомления</strong>
-							@else
-								<i class="fa-brands fa-fw fa-slack" title="Уведомления в Слак"></i>
-							@endif
-						</x-table.td>
-					@endif	
-				@endcando
 				
-				@cando('status-(klient):site')
+				@if(Auth::guard('site')->user()->can('status-(client):site') && ($orderColsSettings['show'][-3] ?? false))
 					<x-table.td
 						@class([
 							'w-10rem' => $showType['text'] ?: false,
-							'w-5rem' => ($showType['color'] || $showType['icon']) ?: false,
+							'w-5rem' => (($showType['color'] || $showType['icon']) ?: false),
 						])
-						>
-						<strong choosetslabel>{{$showType['text'] ? 'Статус' : 'Стат'}}</strong>
-						<x-button
-							variant="green"
-							group="verysmall"
-							choosetsbuttons
-							hidden
-							action="openStatusesTooltip:null,{{$timesheetId}}"
-							title="Изменить статус выбранных заказов"
-							><i class="fa-solid fa-fw fa-circle-half-stroke"></i></i>
-						</x-button>	
-					</x-table.td>
-				@endcando
+					 	>
+				 		<strong choosetslabel>{{$showType['text'] ? 'Статус' : 'Стат'}}</strong>
+							<x-button
+								variant="green"
+								group="verysmall"
+								choosetsbuttons
+								hidden
+								action="openStatusesTooltip:null,{{$timesheetId}}"
+								title="Изменить статус выбранных заказов"
+								><i class="fa-solid fa-fw fa-circle-half-stroke"></i></i>
+							</x-button>
+					 	</x-table.td>
+				@endif
 				
-				@cando('ssylka-(klient):site')<x-table.td class="w4rem h-center" title="Ссылка"><i class="fa-solid fa-fw fa-link"></i></x-table.td> @endcando
+				@if(Auth::guard('site')->user()->can('link-(client):site') && ($orderColsSettings['show'][-4] ?? false))
+					<x-table.td class="w4rem h-center"><i class="fa-solid fa-fw fa-link"></i></x-table.td>
+				@endif
 				
-				@cando('deystviya-(klient):site')
+				
+				@if(Auth::guard('site')->user()->can('deystviya-(klient):site') && ($orderColsSettings['show'][-5] ?? false))
 					<x-table.td class="w-13rem pl9px">
 						<strong choosetslabel>Действия</strong>
 						<x-buttons-group group="verysmall" w="2rem-5px" gx="4" inline choosetsbuttons hidden>
@@ -93,7 +111,7 @@
 							<x-button variant="yellow" action="relocateTimesheetOrder:null,{{$timesheetId}},null,clone" title="Клонировать выбранные заказы"><i class="fa-regular fa-fw fa-clone"></i></x-button>
 						</x-buttons-group>
 					</x-table.td>
-				@endcando
+				@endif
 			</x-table.tr>
 		</x-table.head>
 		<x-table.body>

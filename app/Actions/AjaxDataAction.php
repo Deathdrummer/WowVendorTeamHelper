@@ -13,22 +13,19 @@ class AjaxDataAction {
 	public function __invoke($data, $params = []):mixed {
 		extract($params);
 		
-		// 'setting' 	
-		// 'val' 		
-		// 'type'  // arr single
+		// setting 	
+		// value		
+		// type  [arr, single]
 		// remove
 		
-		$value = bringTypes($value);
-		
+		$value = bringTypes($value, false);
+
 		$data = $data ?: ($type == 'arr' ? [] : null);
-		
-		
-		
 		
 		if ($type == 'arr') {
 			$currentData = $data ? data_get($data, $setting) : [];
 			
-			if ($remove) {
+			if ($remove ?? false) {
 				if (($searched = array_search($value, $currentData)) === false) return $data ?: null;
 				unset($currentData[$searched]);
 				$currentData = array_values($currentData) ?: false;
@@ -40,10 +37,10 @@ class AjaxDataAction {
 			else Arr::forget($data, $setting);
 			
 		} elseif ($type == 'single') {
-			if ($remove) {
+			if ($remove ?? false) {
 				Arr::forget($data, $setting);
 			} else {
-				if ($value) data_set($data, $setting, $value);
+				if ($value !== null) data_set($data, $setting, $value);
 				else Arr::forget($data, $setting);
 			}
 		}

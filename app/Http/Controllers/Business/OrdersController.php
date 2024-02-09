@@ -3,6 +3,7 @@
 use App\Actions\AddOrderCommentAction;
 use App\Actions\SendSlackMessageAction;
 use App\Actions\UpdateModelAction;
+use App\Enums\OrderColums;
 use App\Enums\OrderStatus;
 use App\Helpers\DdrDateTime;
 use App\Http\Controllers\Controller;
@@ -19,6 +20,7 @@ use App\Traits\HasPaginator;
 use App\Traits\Renderable;
 use App\Traits\Settingable;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class OrdersController extends Controller {
     use Renderable, HasPaginator, Settingable;
@@ -740,11 +742,20 @@ class OrdersController extends Controller {
 		$orderStatusesSettings = $this->getSettingsCollect('order_statuses');
 		$canAnySetStat = auth('site')->user()->canany([...array_values($orderStatusesSettings->map(fn($stat, $statName) => $statName.'-status:site')->toArray())]);
 		
+		
+		$orderColums = OrderColums::asFullArray();
+		$orderColsSettings = getUserSettings('site', 'order_colums');
+		if (isset($orderColsSettings['sort'])) {
+			asort($orderColsSettings['sort']);
+			sortByArray($orderColums, array_keys($orderColsSettings['sort']), 'value');
+		}
+		
+		
 		$statusesSettings = $this->getSettings('order_statuses');
 		$timezones = $this->getSettings('timezones', 'id');
 		$itemView = $viewPath.'.item';
 		
-		return response()->view($viewPath.'.list', compact('list', 'itemView', 'timezones', 'statusesSettings', 'showType', 'notifyButtons', 'canAnySetStat', 'timesheetId', 'isAdmin'));
+		return response()->view($viewPath.'.list', compact('list', 'itemView', 'timezones', 'statusesSettings', 'showType', 'notifyButtons', 'canAnySetStat', 'timesheetId', 'isAdmin', 'orderColums', 'orderColsSettings'));
 	}
 	
 	

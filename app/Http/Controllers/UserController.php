@@ -1,5 +1,7 @@
 <?php namespace App\Http\Controllers;
 
+use App\Actions\AjaxDataAction;
+use App\Enums\OrderColums;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
@@ -42,6 +44,53 @@ class UserController extends Controller {
 		session(['site-login' => __('auth.auth_success')]);
 		return response()->json(['redirect' => $redirect]);
 	}
+	
+	
+	
+	
+	/**
+	* 
+	* @param 
+	* @return 
+	*/
+	public function get_settings() {
+		if(!$user = Auth::guard('site')->user()) return response()->json(false);
+		
+		$userColumsSettings = data_get($user->settings, 'order_colums');
+		
+		$orderColums = OrderColums::asFullArray();
+		
+		return view('site.render.settings', compact('orderColums', 'userColumsSettings'));
+	}
+	
+	
+	
+	/**
+	* 
+	* @param 
+	* @return 
+	*/
+	public function set_setting(Request $request, AjaxDataAction $ajaxAction) {
+		$fields = $request->validate([
+			'setting'	=> 'required|string',
+			'value'		=> 'nullable',
+			'type'		=> 'required|string', // single arr
+			'remove'	=> 'boolean',
+		]);
+		
+		if(!$user = Auth::guard('site')->user()) return response()->json(false);
+		
+		$mutated = $ajaxAction($user->settings, $fields);
+		
+		$user->settings = $mutated;
+		$saveRes = $user->save();
+		return response()->json($saveRes);
+	}
+	
+	
+	
+	
+	
 	
 	
 	

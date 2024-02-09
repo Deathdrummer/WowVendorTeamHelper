@@ -9,6 +9,55 @@ use Illuminate\Support\Str;
 use Symfony\Component\Mime\Encoder\IdnAddressEncoder;
 
 
+if (! function_exists('ddrIf')) {
+	/**
+	* ddrIf - множественные условия в blade шаблонах
+	* пример: ddrIf([1+2 == 3 => 'что-то вернуть'], по-умолчанию)
+	*
+	* @param  mixed  $rules массив правил [условие => значение, ...]
+	* @param  array  $default значение по-умолчанию
+	* @return mixed
+	*/
+	function ddrIf($rules = [], $default = null):mixed {
+		foreach ($rules as $rule => $result) {
+			if ($rule) return $result;
+		}
+		return $default;
+	}
+}
+
+
+
+
+if (! function_exists('getUserSettings')) {
+	/**
+	* getUserSettings - Получить настройки пользователя (из столбца "settings")
+	*
+	* @param  mixed  $guard гард
+	* @param  array  $setting вернуть конкретную настройку
+	* @return mixed
+	*/
+	function getUserSettings($guard = null, $setting = null) {
+		if (is_null($guard)) return report("getUserSettings -> не передан гард!");
+		if (!$userSettings = auth($guard)->user()?->settings) return report("getUserSettings -> у текущего пользователя не найдены настройки!");
+		if ($setting) return data_get($userSettings, $setting);
+		return $userSettings;
+	}	
+}
+
+
+if (! function_exists('getUserSettingsCollect')) {
+	/**
+	* getUserSettings - Получить настройки пользователя (из столбца "settings")
+	*
+	* @param  mixed  $params массив параметров для функции getUserSettings
+	* @return mixed
+	*/
+	function getUserSettingsCollect(...$params) {
+		return collect(getUserSettings(...$params));
+	}	
+}
+
 
 
 
@@ -74,6 +123,25 @@ if (!function_exists('arrayWalkRecursive')) {
 
 
 
+
+if (! function_exists('sortByArray')) {
+	function sortByArray(&$array, $sortArray, $fieldName) {
+		// Создаем временный массив, где ключами будут значения поля 'sortArray', а значениями - сами элементы массива $array
+		$columnValues = array_column($array, $fieldName);
+		
+		$tempArray = array_combine($columnValues, $array);
+		
+		$unsortedKeys = array_diff($columnValues, $sortArray);
+		
+		// Формируем отсортированный массив согласно порядку значений в массиве $sortArray
+		$sortedArray = array_map(function($value) use ($tempArray) {
+			return $tempArray[$value] ?? null;
+		}, [...$sortArray, ...$unsortedKeys]);
+		
+		// Перезаписываем исходный массив
+		$array = array_filter($sortedArray);
+	}
+}
 
 
 
@@ -171,7 +239,7 @@ if (! function_exists('eventLog')) {
 
 
 
-if (! function_exists('diffStrings')) {
+if (! function_exists('diff')) {
 	/**
      * Сравнивает двве строки и возвращает разницу
      *
@@ -336,8 +404,8 @@ if (! function_exists('bringTypes')) {
 	 * @param mixed $inpData 
 	 * @return mixed
 	*/
-	function bringTypes($inpData = false):mixed {
-		if(empty($inpData)) return false;
+	function bringTypes($inpData = false, $checkEmpty = true):mixed {
+		if($checkEmpty && empty($inpData)) return false;
 		if (is_array($inpData)) {
 			$resData = [];
 			foreach($inpData as $key => $val) {
@@ -351,7 +419,7 @@ if (! function_exists('bringTypes')) {
 					elseif(is_int($val) || preg_match('/^-?\d+$/', $val)) $resData[$key] = (int)$val;
 					else $resData[$key] = (string)$val;
 				} 
-				else $resData[$key] = arrBringTypes($val);
+				else $resData[$key] = bringTypes($val);
 			}
 		} else {
 			if((is_bool($inpData) && $inpData === false) || $inpData === 'false' || $inpData === 'FALSE') $resData = false;

@@ -121,6 +121,10 @@
 						</div>
 						@endif
 						
+						<div class="header__settings ml4px noselect" onclick="$.openClientSettingsWin();">
+							<i class="fa-solid fa-fw fa-gear"></i>
+						</div>
+						
 						<div class="header__logout ml4px noselect" logout>
 							<i class="fa-solid fa-fw fa-arrow-right-from-bracket"></i>
 							{{-- <span>{{__('auth.logout')}}</span> --}}

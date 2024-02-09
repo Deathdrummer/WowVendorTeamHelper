@@ -255,6 +255,33 @@ class AppServiceProvider extends ServiceProvider {
 		
 		
 		
+		/**
+		* Вернуть данные вместе с описанием [[key => ..., value => ..., desc => ...]]
+		* @param $lang  язык
+		* @return array
+		*/
+		Enum::macro('asFullArray', function($lang = null) {
+			$data = self::asArray();
+			$descData = self::asSelectArray();
+			$lang = $lang ?? App::getLocale();
+			
+			$buildedData = [];
+			foreach ($data as $key => $val) {
+				$desc = json_decode($descData[$val], true);
+				
+				$buildedData[] = [
+					'key' 	=> $key,
+					'value'	=> $val,
+					'desc' 	=> $desc[$lang] ?? null,
+				];
+			}
+			
+			return $buildedData;
+		});
+		
+		
+		
+		
 		
 		/**
 		 * Очень интересный макрос

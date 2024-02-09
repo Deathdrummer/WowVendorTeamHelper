@@ -315,6 +315,45 @@ input, textarea, [contenteditable]
 			
 			i
 				color: #9595a9
+	
+	
+	&__settings
+		display: flex
+		align-items: center
+		border: 1px solid transparent
+		border-radius: $borderRadius
+		cursor: pointer
+		height: 36px
+		padding-left: 6px
+		padding-right: 6px
+		//+resp(padding-left, $inputPaddingX, (padding-right: 0))
+		transition: background-color 0.16s, border-color 0.16s, box-shadow 0.16s
+		
+		span
+			+fontWeight(400)
+			font-size: 14px
+			line-height: 14px
+			//margin-top: 2px
+			color: $colorBlack
+		
+		i
+			font-size: 20px
+			color: #9ec9c4
+		
+		
+		&:hover
+			background-color: #e5f3f2
+			
+			i
+				color: #84b7b1
+		
+		&:active
+			//box-shadow: 0 0 0 0.2rem rgb(28 192 197 / 50%)
+			background-color: #d9efed
+			//border-color: #93e3e5
+			
+			i
+				color: #67a19a
 		
 		
 	
@@ -834,11 +873,11 @@ section
 		flex: 1 0 250px
 		
 		li
-			word-break: break-all
+			word-break: break-word
 	
 	&__content
 		flex: 0 1 100%
-		word-break: break-all
+		word-break: break-word
 
 
 

@@ -224,6 +224,7 @@ window.ddrPopup = function(settings = {}, callback = false) {
 	
 	
 	//if ((!html && !lhtml) && !url) return Promise.reject('-1');
+	if (!url && !html && !lhtml && !title && !buttons && !frameOnly) throw new Error('ddrPopup ошибка - не переданы необходимые данные!');
 	
 	ddrCssVar('popup-animate-duration', changeWidthAnimationDuration);
 	
@@ -324,8 +325,9 @@ window.ddrPopup = function(settings = {}, callback = false) {
 	
 	
 	function _insertData({url = null, params = {}, html = null, lhtml = null, title = null, buttons = null}, callback = false, init = false) {
-		//if (!url && !html && !lhtml && !title && !buttons) throw new Error('ddrPopup -> _insertData ошибка - не переданы необходимые данные!');
+		if (!url && !html && !lhtml && !title && !buttons && !frameOnly) throw new Error('ddrPopup -> _insertData ошибка - не переданы необходимые данные!');
 		_showWait();
+		
 		
 		if ((url || html || lhtml) && (title || buttons)) {
 			Promise.all([_getLayout({title, buttons}), _getData(url, params, html, lhtml)])
