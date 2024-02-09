@@ -103,7 +103,7 @@
 				
 				
 				@if(Auth::guard('site')->user()->can('deystviya-(klient):site') && ($orderColsSettings['show'][-5] ?? false))
-					<x-table.td class="w-13rem pl9px">
+					<x-table.td class="w-14rem pl9px">
 						<strong choosetslabel>Действия</strong>
 						<x-buttons-group group="verysmall" w="2rem-5px" gx="4" inline choosetsbuttons hidden>
 							<x-button variant="gray" action="detachTimesheetOrder:null,{{$timesheetId}}" title="Отвязать от события"><i class="fa-solid fa-fw fa-link-slash"></i></x-button>
