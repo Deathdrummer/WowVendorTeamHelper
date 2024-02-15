@@ -1,4 +1,6 @@
 const viewsPath = 'admin.section.system.render.orders';
+
+export const sortField = ref('type');
 	
 export async function timesheetOrders(row = null, timesheetId = null, scroll = false) {
 	if (!timesheetId) throw new Error('Ошибка! timesheetOrders -> не передан timesheetId');
@@ -466,7 +468,7 @@ export async function buildOrdersTable(row = null, timesheetId = null, cb = null
 		}),
 			search = $('#searchOrdersField').val() || null;
 			
-		const {data, error, status, headers} = await ddrQuery.get('crud/orders/timesheet_list', {timesheet_id: timesheetId, views: viewsPath, search});
+		const {data, error, status, headers} = await ddrQuery.get('crud/orders/timesheet_list', {timesheet_id: timesheetId, views: viewsPath, search, sort_field: sortField.value});
 		
 		ordersWait.destroy();
 		

@@ -52,6 +52,8 @@ class Order extends Model {
 		'ot_changed',
 		'manually',
 		'server_name',
+		'fraction',
+		'battle_tag',
 		'link',
 		'price',
 		'timezone_id',

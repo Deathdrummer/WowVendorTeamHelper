@@ -12,8 +12,17 @@ final class OrderColums extends Enum {
 	#[Description('{"ru":"Дата","en":""}')]
 	const date		= 2;
 	
+	#[Description('{"ru":"Добавл. в соб.","en":""}')]
+	const date_add	= 11;
+	
 	#[Description('{"ru":"Тип заказа","en":""}')]
 	const type		= 3;
+	
+	#[Description('{"ru":"Фракция","en":""}')]
+	const fraction	= 9;
+	
+	#[Description('{"ru":"Б. таг","en":""}')]
+	const battle_tag	= 10;
 	
 	#[Description('{"ru":"Данные","en":""}')]
 	const data		= 4;
@@ -29,6 +38,5 @@ final class OrderColums extends Enum {
 	
 	#[Description('{"ru":"Уведомления","en":""}')]
 	const notifies	= 8;
-
 	
 }

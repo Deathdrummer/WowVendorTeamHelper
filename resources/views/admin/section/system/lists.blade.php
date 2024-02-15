@@ -11,6 +11,7 @@
 					<li class="ddrtabsnav__item" ddrtabsitem="sectionsTab4">Типы заказов</li>
 					<li class="ddrtabsnav__item" ddrtabsitem="sectionsTab5">Группы листа ожидания</li>
 					<li class="ddrtabsnav__item" ddrtabsitem="sectionsTab6">Уведомеления Slack</li>
+					<li class="ddrtabsnav__item" ddrtabsitem="sectionsTab7">Фракции</li>
 				</ul>
 			</div>
 			
@@ -251,6 +252,19 @@
 						{{-- onRemove="removeCustomerAction" --}}
 						group="small"
 					 />
+				</div>
+				
+				<div class="ddrtabscontent__item" ddrtabscontentitem="sectionsTab7">
+					<div class="row g-10">
+						<div class="col-5">
+							<x-simplelist
+								setting="fractions"
+								fieldset="ID:w6rem|number|id|1,Фракция:w20rem|text|name,Иконка:w20rem|text|icon,Цвет иконки:w8rem|color|color,Подсказка:w50rem|text|tooltip"
+								{{-- onRemove="removeCustomerAction" --}}
+								group="small"
+							 />
+						</div>
+					</div>	
 				</div>
 				
 			</div>

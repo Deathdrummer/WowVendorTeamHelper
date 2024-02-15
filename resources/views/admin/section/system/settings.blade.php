@@ -10,6 +10,7 @@
 						<li class="ddrtabsnav__item ddrtabsnav__item_active" ddrtabsitem="systemTab1">Общие настройки</li>
 						<li class="ddrtabsnav__item" ddrtabsitem="systemTab2">Заголовки и названия</li>
 						<li class="ddrtabsnav__item" ddrtabsitem="systemTab3">Настройки отображения элементов</li>
+						<li class="ddrtabsnav__item" ddrtabsitem="systemTab4">Тестирование парсера заказов</li>
 					</ul>
 				</div>
 				
@@ -122,10 +123,30 @@
 							<div class="col">
 								
 							</div>
-						</div>
-						
-								
+						</div>	
 					</div>
+					
+					<div class="ddrtabscontent__item" ddrtabscontentitem="systemTab4">
+						<x-textarea
+							class="w50"
+							size="normal"
+							placeholder="Вставить тело заказа"
+							oninput="$.parseOrderData(event, this)"
+						></x-textarea>
+						
+						<div class="mt4rem minh26rem" id="parseResContainer">
+							<ul id="ordersParserResult" class="ddrlist format fz12px"></ul>
+						</div>
+					</div>
+					
+					
+					
+					<x-button size="normal" variant="blue" ddrrool-target="test">MENU</x-button>
+					
+					<div ddrrool-element="test" class="bg-red">sfsd gsd gsdgsd gsdgs dgsdg </div>
+					
+					
+					
 				</div>
 				{{--  --}}
 			</div>
@@ -139,6 +160,56 @@
 
 
 <script type="module">
+	
+	
+	$(document).on(tapEvent, '[ddrrool-target]', function(e) {
+		const element = $(e.target).attr('ddrrool-target');
+		
+		$(`[ddrrool-element="${element}"]`).toggleClass('bg-red');
+		
+		
+		$(document).on(tapEvent, function(e) {
+			console.log(e.currentTarget);
+		});
+	});
+	
+	
+	
+	
+	
+	
+	
+	let parserTOut;
+	$.parseOrderData = (e, textarea) => {
+		clearTimeout(parserTOut);
+		parserTOut = setTimeout(async () => {
+			const ddrWait = $('#parseResContainer').ddrWait({iconHeight: '40px', backgroundColor: '#fffa', iconColor: 'hue-rotate(170deg)'});
+			
+			const value = e.target.value;
+			const {data, error, status, headers} = await ddrQuery.post('admin/test_parser', {order_data: value});
+			
+			if (data?.error || !data.length) {
+				$('#ordersParserResult').text('Не удалось спарсить данные...');
+				ddrWait.destroy();
+				return false;
+			}
+			
+			$('#ordersParserResult').empty();
+			
+			for (let row of data) {
+				for (const [field, value] of Object.entries(row)) {
+					$('#ordersParserResult').append(`<li class="code ddrlist__item mt1rem"><div class="row"><div class="col-auto"><strong>${field}:</strong></div><div class="col"><p class="fz12px color-gray-600">${value || '-'}</p></div></div></li>`);
+				}
+				
+				$('#ordersParserResult').append('<hr class="hr hr-light mt2rem mb2rem">');
+			}
+			
+			ddrWait.destroy();
+		}, 500);	
+	}
+	
+	
+	
 	
 	$.openPopupWin = () => {
 		ddrPopup({

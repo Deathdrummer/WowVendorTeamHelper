@@ -1,6 +1,6 @@
 @if($list)
 	<x-table class="w100" scrolled="300px">
-		<x-table.head>
+		<x-table.head noselect>
 			<x-table.tr class="h3rem">
 				@if(($orderColsSettings['show'][-1] ?? false) && (!($isAdmin ?? true)))
 					<x-table.td class="w3rem-8px h-center">
@@ -24,11 +24,10 @@
 							@class([
 								/*'w'.($orderColsSettings[$colKey]['width'] ?? '') => ($orderColsSettings[$colKey]['width'] ?? false) && !in_array($column, ['data', 'status']),*/
 								'w-auto' => $column == 'data',
-								'pointer color-neutral-hovered' => in_array($column, ['order', 'invite']),
 								'h-end' => in_array($column, ['price']),
 								'h-center' => in_array($column, ['notifies']),
 							])
-							onclick="{{ddrIf(['$.copyOrdersColumn(this)' => $column == 'order', '$.copyInviteColumn(this)' => $column == 'invite'], 'return false');}}"
+							onclick="{{ddrIf(['$.copyOrdersColumn(this)' => $column == 'order'], '');}}"
 							title="{{$colName ?? null}}"
 							>
 							
@@ -59,8 +58,41 @@
 										<i class="fa-brands fa-fw fa-slack" title="Уведомления в Слак"></i>
 									@endif
 								@endif
+							@elseif($column == 'invite')
+								<div class="row justify-content-between align-items-center">
+									<div class="col"><strong>{{$colName ?? '-'}}</strong></div>
+									<div class="col-auto">
+										@forelse($copyInviteButtons as $btn)
+											<i
+												class="fz10px fa-solid w1rem-8px text-center pointer pt2px pb2px border-all border-rounded-3px border-gray-400 border-blue-hovered fa-{{$btn['icon']}}"
+												onclick="$.copyInviteColumn(this, '{{$btn['name'] ?? '-'}}')"
+												style="color:{{$btn['color'] ?? '#000000'}}; background-color: {{$btn['color'] ?? '#000000'}}1c;"
+												title="{{$btn['tooltip'] ?? $btn['name']}}"></i>
+										@empty
+											<i
+												class="fz10px fa-solid w1rem-8px text-center pointer pt2px pb2px border-all border-rounded-3px border-gray-400 border-blue-hovered fa-copy"
+												onclick="$.copyInviteColumn(this, '-')"
+												style="color: #000; background-color: #0001;"
+												title="Скопировать все записи"></i>
+										@endforelse
+									</div>
+								</div>	
+							@elseif($column == 'type')
+								<strong
+									class="pointer color-black color-blue-active" 
+									onclick="$.timesheetSortOrders(this, 'type')"
+									>{{$colName ?? '-'}}</strong>
+							@elseif($column == 'date_add')
+								<strong
+									class="pointer color-black color-blue-active" 
+									onclick="$.timesheetSortOrders(this, 'date_add')"
+									>{{$colName ?? '-'}}</strong>
 							@else
-								<strong>{{$colName ?? '-'}}</strong>
+								<strong
+									@class([
+										'pointer color-black color-blue-active' => in_array($column, ['order']),
+									])
+									>{{$colName ?? '-'}}</strong>
 							@endif
 							
 						</x-table.td>

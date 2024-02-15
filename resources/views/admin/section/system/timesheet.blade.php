@@ -326,10 +326,11 @@
 	
 	
 	
-	$.copyInviteColumn = (cell) => {
-		const rowIndex = $(cell).index();
-		const data = [];
-		$(cell).closest('[ddrtablehead]').siblings('[ddrtablebody]').find('[ddrtabletr]').each(function(k, row) {
+	$.copyInviteColumn = (btn, fraction = '-') => {
+		const cell = $(btn).closest('[ddrtabletd]'),
+			rowIndex = $(cell).index(),
+			data = [];
+		$(cell).closest('[ddrtablehead]').siblings('[ddrtablebody]').find(`[ddrtabletr][fraction="${fraction}"]`).each(function(k, row) {
 			let cell = $(row).find(`[ddrtabletd]:eq(${rowIndex})`);
 			let cellValue = $(cell).text().trim();
 			if (cellValue) data.push(cellValue);

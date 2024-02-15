@@ -4,6 +4,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Requests\Auth\AdminEmailVerificationRequest;
 use App\Models\AdminSection;
 use App\Models\AdminUser;
+use App\Services\Business\OrderService;
 use App\Services\Settings;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\Request;
@@ -14,6 +15,15 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Str;
+
+
+
+# тестирование парсера
+Route::post('test_parser', function(Request $request, OrderService $orderService) {
+	if (!$message = $request->input('order_data')) return response()->json(['error' => 1]);
+	$data = $orderService->parse($message);
+	return response()->json($data);
+});
 
 
 

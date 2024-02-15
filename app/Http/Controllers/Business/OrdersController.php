@@ -728,13 +728,15 @@ class OrdersController extends Controller {
 			'views'			=> 'required|string',
 			'timesheet_id'	=> 'required|numeric',
 			'search'		=> 'exclude|nullable|string',
+			'sort_field'	=> 'exclude|nullable|string',
 		]);
 		
 		$search = $request->input('search');
+		$sortField = $request->input('sort_field');
 		$isAdmin = $request->header('isAdmin', false);
 		
-		$list = $this->orderService->getToTimesheetList($timesheetId, $search);
-		
+		$list = $this->orderService->getToTimesheetList($timesheetId, $search, $sortField);
+				
 		$showType = $this->getSettings('order_statuses_showtype_list');
 		
 		$notifyButtons = $this->getSettings('slack_notifies');
@@ -750,12 +752,13 @@ class OrdersController extends Controller {
 			sortByArray($orderColums, array_keys($orderColsSettings['sort']), 'value');
 		}
 		
+		$copyInviteButtons = $this->getSettings('fractions');
 		
 		$statusesSettings = $this->getSettings('order_statuses');
 		$timezones = $this->getSettings('timezones', 'id');
 		$itemView = $viewPath.'.item';
 		
-		return response()->view($viewPath.'.list', compact('list', 'itemView', 'timezones', 'statusesSettings', 'showType', 'notifyButtons', 'canAnySetStat', 'timesheetId', 'isAdmin', 'orderColums', 'orderColsSettings'));
+		return response()->view($viewPath.'.list', compact('list', 'itemView', 'timezones', 'statusesSettings', 'showType', 'notifyButtons', 'canAnySetStat', 'timesheetId', 'isAdmin', 'orderColums', 'orderColsSettings', 'copyInviteButtons'));
 	}
 	
 	

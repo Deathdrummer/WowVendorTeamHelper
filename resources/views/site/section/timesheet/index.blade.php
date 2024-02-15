@@ -105,23 +105,23 @@
 
 <script type="module">
 	
-	const sectionName = location.pathname.replace('/', '');
-	const listType = ref(ddrStore('listType') || 'actual');
-	const regionId = ref(ddrStore('eventsRegion') || Number($('#regionChooser').find('[regionchooser]').attr('regionchooser')));
-	const timesheetCrudList = ref(null);
-	const choosedPeriod = ref(ddrStore(`${sectionName}-choosedPeriod`));
-	
-	const {
-		timesheetCrud,
-		timesheetPeriodsCrud,
-		getLastTimesheetPeriods,
-		timesheetOrders,
-		buildOrdersTable,
-		orderCommentsChat,
-		rawDataHistory,
-		showStatusesTooltip,
-		chooseTsOrders,
-	} = await loadSectionScripts({section: 'timesheet', guard: 'admin'});
+	const sectionName = location.pathname.replace('/', ''),
+		listType = ref(ddrStore('listType') || 'actual'),
+		regionId = ref(ddrStore('eventsRegion') || Number($('#regionChooser').find('[regionchooser]').attr('regionchooser'))),
+		timesheetCrudList = ref(null),
+		choosedPeriod = ref(ddrStore(`${sectionName}-choosedPeriod`)),
+		{
+			timesheetCrud,
+			timesheetPeriodsCrud,
+			getLastTimesheetPeriods,
+			timesheetOrders,
+			sortField,
+			buildOrdersTable,
+			orderCommentsChat,
+			rawDataHistory,
+			showStatusesTooltip,
+			chooseTsOrders,
+		} = await loadSectionScripts({section: 'timesheet', guard: 'admin'});
 	
 	
 	
@@ -166,7 +166,17 @@
 	
 	$.timesheetGetOrders = (row, timesheetId) => {
 		if (event instanceof PointerEvent && $(event.target).closest('[timesheetrulesblock]').length) return false;
+		sortField.value = 'type';
 		timesheetOrders(row, timesheetId, event instanceof ProgressEvent);
+	}
+	
+	let sorted = 'type';
+	$.timesheetSortOrders = (selector, sField = 'type') => {
+		if (sorted == sField) return false;
+		sorted = sField;
+		const {row, currentTsId} = getCurrentTsId();
+		sortField.value = sField;
+		buildOrdersTable(row, currentTsId);
 	}
 	
 	
@@ -251,10 +261,11 @@
 	
 	
 	
-	$.copyInviteColumn = (cell) => {
-		const rowIndex = $(cell).index();
-		const data = [];
-		$(cell).closest('[ddrtablehead]').siblings('[ddrtablebody]').find('[ddrtabletr]').each(function(k, row) {
+	$.copyInviteColumn = (btn, fraction = '-') => {
+		const cell = $(btn).closest('[ddrtabletd]'),
+			rowIndex = $(cell).index(),
+			data = [];
+		$(cell).closest('[ddrtablehead]').siblings('[ddrtablebody]').find(`[ddrtabletr][fraction="${fraction}"]`).each(function(k, row) {
 			let cell = $(row).find(`[ddrtabletd]:eq(${rowIndex})`);
 			let cellValue = $(cell).text().trim();
 			if (cellValue) data.push(cellValue);
@@ -545,6 +556,13 @@
 	}
 	
 	
+	
+	
+	function getCurrentTsId() {
+		const openedTsRow = $('#timesheetList').find('[tsevent][opened]'),
+			currentTsEvent = $(openedTsRow).attr('tsevent');
+		return {row: openedTsRow, currentTsId: currentTsEvent};
+	}
 	
 	
 	

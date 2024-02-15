@@ -85,7 +85,7 @@ class OrderService {
 	 * @param integer $timesheetId
 	 * @return Collection|null
 	 */
-	public function getToTimesheetList($timesheetId = null, $search = null):Collection|null {
+	public function getToTimesheetList($timesheetId = null, $search = null, $sortField = 'type'):Collection|null {
 		$ordersTypesSorts = $this->getSettings('orders_types', 'sort', 'id');
 		
 		$getToTimesheetListQuery = Timesheet::find($timesheetId)?->orders();
@@ -108,18 +108,15 @@ class OrderService {
 			->when($search, function ($query) use ($search) {
 				return $query->where('order', 'LIKE', '%'.$search.'%');
 			})
-			->get()
-			->sortBy(function (Order $order) use($ordersTypesSorts) {
-				return $ordersTypesSorts[$order['order_type']] ?? 0;
-			});
-		
+			->get();
 		
 		$doprunOrders = $this->_getOrdersDopruns($timesheetId);
 		$statuses = OrderStatus::asFlippedArray();
 
-		return $list->map(function($row) use($statuses, $doprunOrders) {
-			$row['status'] = $row->pivot->doprun ? $statuses[OrderStatus::doprun] : ($statuses[$row['status']] ?? 0);
-			$row['timesheet_id'] = $row->pivot->timesheet_id;
+		$list = $list->map(function($row) use($statuses, $doprunOrders) {
+			$row['status'] = $row->pivot?->doprun ? $statuses[OrderStatus::doprun] : ($statuses[$row['status']] ?? 0);
+			$row['timesheet_id'] = $row->pivot?->timesheet_id;
+			$row['date_add'] = $row->pivot?->date_add;
 			
 			$row['is_hash_order'] = strpos($row?->order, '#') !== false;
 			
@@ -129,6 +126,15 @@ class OrderService {
 			
 			return $row;
 		});
+		
+		# отсортировать массив по указанному полю
+		return match($sortField) {
+			'type'	=> $list->sortBy(function (Order $order) use($ordersTypesSorts) {
+				return $ordersTypesSorts[$order['order_type']] ?? 0;
+			}),
+			'date_add'	=>  $list->sortByDesc('date_add'),
+			default	=> $list,
+		};
 	}
 	
 	
@@ -473,11 +479,15 @@ class OrderService {
 			[$date, $tzId, $tzFormat] = $this->_parseDateTime($order);
 			$price = $this->_persePrice($order);
 			$serverName = $this->_perseServerName($order);
+			$fraction = $this->_perseFraction($order);
+			$battleTag = $this->_perseBattleTag($order);
 			
 			$data[] = [
 				'raw_data'		=> $this->_clearString($order),
 				'order' 		=> $orderNumber ?? null,
 				'server_name' 	=> $serverName ?? null,
+				'fraction' 		=> $fraction ?? null,
+				'battle_tag' 	=> $battleTag ?? null,
 				'link' 			=> $link ?? null,
 				'price' 		=> $price ?? null,
 				'date' 			=> $date,
@@ -605,11 +615,12 @@ class OrderService {
 	
 	
 	/**
-	 * Получить имя сервера
+	 * Спарсить имя сервера
 	 * @param 
 	 * @return 
 	 */
 	private function _perseServerName(?string $order):string|null {
+		if (!$order) return null;
 		preg_match('/\/inv\s.+-[^,]+/m', $order, $matches);
 		if (!$matches) return null;
 		return $matches[0] ? $matches[0] : null;
@@ -622,11 +633,12 @@ class OrderService {
 	
 	
 	/**
-	 * Получить ссылку
+	 * Спарсить ссылку
 	 * @param 
 	 * @return 
 	 */
 	private function _perseLink(?array $array):string|null {
+		if (!$array) return null;
 		$link = array_filter($array, fn($item) => preg_match('/https?:\/\/.+/m', $item, $mathes) === 1);
 		
 		if (!$link = (count($link) > 0 ? reset($link) : null)) return null;
@@ -642,11 +654,12 @@ class OrderService {
 	
 	
 	/**
-	 * Получить стоимость
+	 * Спарсить стоимость
 	 * @param 
 	 * @return 
 	 */
 	private function _persePrice(?string $order):string|null {
+		if (!$order) return null;
 		preg_match('/(\d{1,}.\d{1,2})\$/m', $order, $matches);
 		if (!$matches) return null;
 		return $matches[1] ? (float)$matches[1] : null;
@@ -660,10 +673,12 @@ class OrderService {
 	
 	
 	/**
+	 * Спарсить дату и время
 	 * @param 
 	 * @return 
 	 */
 	private function _parseDateTime(?string $order):array|null {
+		if (!$order) return null;
 		preg_match('/\B\(\w{2,3} (\d{1,2}) (\w{2,3}) @ (\d{1,2}:\d{1,2}) (\w{0,2}?)\s*(\w{2,4})\)\B/', $order, $matches);
 		
 		if (!$matches) return null;
@@ -679,6 +694,49 @@ class OrderService {
 		
 		return [$dt, $tzId, $tzFormat];
 	}
+	
+	
+	
+	
+	/**
+	 * Спарсить фракцию
+	 * @param ?string $order
+	 * @return ?string
+	 */
+	private function _perseFraction(?string $order):string|null {
+		if (!$order) return null;
+		if (!$fractions = $this->getSettings('fractions', 'id', 'name')) return null;
+		$pattern = implode('|', array_values($fractions));
+		preg_match('/('.$pattern.'),/m', $order, $matches);
+		if (!$matches) return null;
+		return $matches[1] ?? null;
+	}
+	
+	
+	
+	
+	
+	/**
+	 * Спарсить баттл таг
+	 * @param ?string $order
+	 * @return ?string
+	 */
+	private function _perseBattleTag(?string $order):string|null {
+		if (!$order) return null;
+		preg_match('/(\w+#\d+),/m', $order, $matches);
+		if (!$matches) return null;
+		return $matches[1] ?? null;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	

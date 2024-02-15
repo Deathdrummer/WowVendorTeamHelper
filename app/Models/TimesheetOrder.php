@@ -1,5 +1,6 @@
 <?php namespace App\Models;
 
+use App\Helpers\DdrDateTime;
 use App\Models\Traits\Collectionable;
 use App\Models\Traits\Dateable;
 use App\Models\Traits\Filterable;
@@ -9,6 +10,24 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
 
 class TimesheetOrder extends Pivot {
     use HasFactory, Collectionable, Dateable, Settingable, Filterable;
+	
+	
+	/**
+     * Обработка события перед созданием записи.
+     *
+     * @return void
+     */
+    protected static function boot() {
+        parent::boot();
+
+        static::creating(function ($TimesheetOrder) {
+            $TimesheetOrder->date_add = DdrDateTime::now();
+        });
+    }
+	
+	
+	
+	
 	
 	
 	/**
