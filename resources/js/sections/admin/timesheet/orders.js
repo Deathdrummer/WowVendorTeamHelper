@@ -85,7 +85,7 @@ export async function buildOrdersTable(row = null, timesheetId = null, cb = null
 			}
 			
 			if (data) {
-				$.notify('Заказ успешно обновлен!')
+				$.notify('Заказ успешно обновлен!');
 				
 				const {order, price, server_name, raw_data, link, rawDataHistory} = data;
 				
