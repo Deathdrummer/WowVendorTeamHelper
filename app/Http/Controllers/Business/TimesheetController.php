@@ -68,7 +68,7 @@ class TimesheetController extends Controller {
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request, GetUserSetting $getUserSetting) {
+    public function index(Request $request, GetUserSetting $getUserSetting, Settings $settings) {
 		[
 			'views'			=> $viewPath,
 			'period_id'		=> $tsPeriodId,
@@ -104,7 +104,10 @@ class TimesheetController extends Controller {
 		
 		$commandsIds = Command::whereIn('region_id', $timezonesRegions)->get()->pluck('id');
 		
+		# Получить отсортированные типы заказов для статистики [id => title]
+		$sortedOrdersTypes = $settings->get('orders_types')->where('show_in_stat', 1)->sortBy('sort')->pluck('title_short', 'id')->toArray();
 		
+
 		$list = Timesheet::withCount(['orders AS orders_count' => function($query) use($search) {
 				$query->where('order', 'LIKE', '%'.$search.'%');
 			}])
@@ -153,9 +156,12 @@ class TimesheetController extends Controller {
 			$timesheets = Timesheet::where('timesheet_period_id', $tsPeriodId)->get()->pluck('id');
 			foreach ($timesheets as $ts) $doprunOrders[$ts] = OrderService::getOrdersDopruns($ts);
 			
-			$list = $list->each(function(&$tsRow) use($doprunOrders) {
+			$list = $list->each(function(&$tsRow) use($doprunOrders, $sortedOrdersTypes) {
 				$tsRow->orders_sum_price = 0;
-				if ($tsRow->orders) {
+				$orderstypesStat = [];
+				
+				if (!$tsRow->orders->isEmpty()) {
+					# общая сумма заказов с учетом допранов (их не считаем)
 					$tsRow->orders->each(function(&$oRow) use($doprunOrders, $tsRow) {
 						if (isset($doprunOrders[$tsRow->id][$oRow->id])) {
 							$tsRow->orders_sum_price += round($oRow->price / $doprunOrders[$tsRow->id][$oRow->id] ?? 1, 2);
@@ -163,14 +169,33 @@ class TimesheetController extends Controller {
 							$tsRow->orders_sum_price += $oRow->price;
 						}
 					});
-					unset($tsRow->orders);
 				}
+				
+				if (!$tsRow->ordersTypes->isEmpty()) {
+					foreach ($tsRow->ordersTypes as $oRow) {
+						# Статитика типов заказов
+						if (!isset($orderstypesStat[$oRow->order_type])) $orderstypesStat[$oRow->order_type] = 0;
+						$orderstypesStat[$oRow->order_type] += 1;
+					}
+				}
+				
+				$ordersTypesStatData = [];
+				if ($sortedOrdersTypes) {
+					foreach ($sortedOrdersTypes as $id => $titleShort) {
+						if (isset($orderstypesStat[$id])) $ordersTypesStatData[$titleShort ?? '-'] = $orderstypesStat[$id];
+					}
+				}
+				
+				$tsRow->orders_types_stat = $ordersTypesStatData;
+				
+				unset($tsRow->orders);
+				unset($tsRow->ordersTypes);
 			});
 		}
 		
 		
 		$this->_buildDataFromSettings();
-		
+
 		$itemView = $viewPath.'.item';
 		
 		return $this->viewWithLastSortIndex(Timesheet::class, $viewPath.'.list', compact('list', 'itemView'), '_sort', ['x-region-commands' => $regionCommands, 'x-eventstypes' => $eventsTypes]);
@@ -829,6 +854,7 @@ class TimesheetController extends Controller {
 			'key'		=> 'id',
 		]]);
 		
+		
 		$difficulties = $this->settings->get('difficulties')?->mapWithKeys(function ($item, $key) {
     		return [$item['id'] => $item['title']];
 		})->toArray();
@@ -838,6 +864,7 @@ class TimesheetController extends Controller {
 		})->toArray();
 		
 		$this->data['events_types'] = $eventsTypes;
+		
 		
 		$timezones = $this->data['timezones'];
 		$commands = Command::get()?->mapWithKeys(function ($item, $key) use($timezones) {

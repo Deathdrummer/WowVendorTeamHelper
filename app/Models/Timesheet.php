@@ -65,7 +65,20 @@ class Timesheet extends Model {
 	
 	
 	
-	
+	/**
+	 * @param 
+	 * @return 
+	 */
+	public function ordersTypes():BelongsToMany {
+		return $this->belongsToMany(
+			Order::class,
+			'timesheet_order',
+			'timesheet_id',
+			'order_id',
+			'id',
+			'id')
+			->select('order_type');
+	}
 	
 	
 	

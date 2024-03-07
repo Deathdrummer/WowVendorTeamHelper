@@ -9,6 +9,9 @@
 					<div class="col"><div tscommandschooser></div></div>
 				</div>
 			</x-table.td>
+			<x-table.td class="w30rem" noborder>
+				<strong title="Название команды">Статистика</strong>
+			</x-table.td>
 			@if(getGuard() == 'admin' || (getGuard() == 'site' && auth('site')->user()->can('events-show-price:site')))
 				<x-table.td class="w8rem" noborder><strong>Сумма</strong></x-table.td>
 			@endif

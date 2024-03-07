@@ -25,6 +25,20 @@
 	<x-table.td>
 		<p>{{$data['commands'][$command_id]['title'] ?? '-'}}</p>
 	</x-table.td>
+	<x-table.td>
+		<div class="row gx-4">
+			@forelse($orders_types_stat as $orderType => $count)
+				<div class="col-auto">
+					<div class="minw3rem h3rem p2px border-all border-gray-70 border-radius-3px bg-white text-center">
+						<p class="fz12px lh100"><strong>{{$orderType ?? '-'}}</strong></p>
+						<p class="fz12px lh100">{{$count}}</p>
+					</div>
+				</div>
+			@empty
+				<span>-</span>
+			@endforelse
+		</div>
+	</x-table.td>
 	@if(getGuard() == 'admin' || (getGuard() == 'site' && auth('site')->user()->can('events-show-price:site')))
 		<x-table.td class="h-center">
 			@if($orders_sum_price)

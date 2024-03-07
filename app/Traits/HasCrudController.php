@@ -145,7 +145,7 @@ trait HasCrudController {
 		$filterValue = $f[1] ?? null;
 		
 		$data = $data->filter(function ($value) use($filterKey, $filterValue) {
-			if (is_array($value) && $value[$filterKey] == $filterValue) return true;
+			if (is_array($value) && isset($value[$filterKey]) && $value[$filterKey] == $filterValue) return true;
 			elseif (!is_array($value) && $value == $filterKey) return true;
 			return false;
 		});
