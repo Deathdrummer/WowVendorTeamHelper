@@ -752,7 +752,7 @@ class OrdersController extends Controller {
 			sortByArray($orderColums, array_keys($orderColsSettings['sort']), 'value');
 		}
 		
-		$copyInviteButtons = $this->getSettings('fractions');
+		$copyInviteButtons = $this->getSettings('fractions') ?: [];
 		
 		$statusesSettings = $this->getSettings('order_statuses');
 		$timezones = $this->getSettings('timezones', 'id');
