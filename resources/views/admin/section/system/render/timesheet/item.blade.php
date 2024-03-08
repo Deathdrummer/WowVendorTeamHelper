@@ -23,7 +23,7 @@
 		</p>
 	</x-table.td>
 	<x-table.td style="background-color: {{$commandsColors[$command_id] ?? ''}};">
-		<p>{{$data['commands'][$command_id]['title'] ?? '-'}}</p>
+		<p class="inverse ignore">{{$data['commands'][$command_id]['title'] ?? '-'}}</p>
 	</x-table.td>
 	<x-table.td>
 		<div class="row gx-4">

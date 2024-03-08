@@ -339,6 +339,11 @@
 			rows = $(cell).closest('[ddrtablehead]').siblings('[ddrtablebody]').find(`[ddrtabletr][fraction]`);
 		}
 		
+		if (!rows) {
+			$.notify('Нечего копировать', 'info');
+			return;
+		}
+		
 		$(rows).each(function(k, row) {
 			let cell = $(row).find(`[ddrtabletd]:eq(${rowIndex})`);
 			let cellValue = $(cell).text().trim();
