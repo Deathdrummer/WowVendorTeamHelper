@@ -62,7 +62,7 @@
 								<div class="row justify-content-between align-items-center">
 									<div class="col"><strong>{{$colName ?? '-'}}</strong></div>
 									<div class="col-auto">
-										@forelse($copyInviteButtons as $btn)
+										{{-- @forelse($copyInviteButtons as $btn)
 											<i
 												class="fz10px fa-solid w1rem-8px text-center pointer pt2px pb2px border-all border-rounded-3px border-gray-400 border-blue-hovered fa-{{$btn['icon']}}"
 												onclick="$.copyInviteColumn(this, '{{$btn['name'] ?? '-'}}')"
@@ -74,7 +74,7 @@
 												onclick="$.copyInviteColumn(this, '-')"
 												style="color: #000; background-color: #0001;"
 												title="Скопировать все записи"></i>
-										@endforelse
+										@endforelse --}}
 									</div>
 								</div>	
 							@elseif($column == 'type')
