@@ -1,4 +1,4 @@
-<x-table.tr class="h4rem pointer noselect bg-light-hovered" onclick="$.timesheetGetOrders(this, {{$id}})" tsevent="{{$id}}">
+<x-table.tr class="h4rem pointer noselect bg-light-hovered{{$isPast ? ' fulfilled' : ''}}" onclick="$.timesheetGetOrders(this, {{$id}})" tsevent="{{$id}}">
 	<x-table.td>
 		<p>{{DdrDateTime::date($datetime)}}</p>
 	</x-table.td>
@@ -22,7 +22,7 @@
 			@endif
 		</p>
 	</x-table.td>
-	<x-table.td>
+	<x-table.td style="background-color: {{$commandsColors[$command_id] ?? ''}};">
 		<p>{{$data['commands'][$command_id]['title'] ?? '-'}}</p>
 	</x-table.td>
 	<x-table.td>

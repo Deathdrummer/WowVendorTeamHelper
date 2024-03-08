@@ -1664,6 +1664,32 @@ $tableColor: #efefef
 				width: 100%
 				height: 100%
 				background-color: #ffffffcf
+				
+		
+		&.fulfilled
+			position: relative
+		
+			&::after
+				content: ''
+				position: absolute
+				left: 0
+				top: 0
+				width: 100%
+				height: 100%
+				background-color: rgb(244 245 247 / 30%)
+				pointer-events: none
+			
+			p, span, small, strong, i
+				opacity: 0.4
+			
+			i
+				opacity: 0.8
+			
+			p p, p span, span p, span span, p i, span i, p strong, strong strong, strong p 
+				opacity: 1
+			
+			
+				
 		
 		
 		.icon

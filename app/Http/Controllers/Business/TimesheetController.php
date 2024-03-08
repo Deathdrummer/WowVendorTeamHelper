@@ -188,17 +188,21 @@ class TimesheetController extends Controller {
 				
 				$tsRow->orders_types_stat = $ordersTypesStatData;
 				
+				# Актуальность события
+				$tsRow->isPast = DdrDateTime::now()?->timestamp > DdrDateTime::buildTimestamp($tsRow->datetime, null, ['shift' => '-'])?->timestamp;
+				
 				unset($tsRow->orders);
 				unset($tsRow->ordersTypes);
 			});
 		}
 		
+		$commandsColors = Command::all()->pluck('color', 'id');
 		
 		$this->_buildDataFromSettings();
 
 		$itemView = $viewPath.'.item';
 		
-		return $this->viewWithLastSortIndex(Timesheet::class, $viewPath.'.list', compact('list', 'itemView'), '_sort', ['x-region-commands' => $regionCommands, 'x-eventstypes' => $eventsTypes]);
+		return $this->viewWithLastSortIndex(Timesheet::class, $viewPath.'.list', compact('list', 'commandsColors', 'itemView'), '_sort', ['x-region-commands' => $regionCommands, 'x-eventstypes' => $eventsTypes]);
     }
 	
 	
