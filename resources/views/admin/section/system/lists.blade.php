@@ -256,10 +256,10 @@
 				
 				<div class="ddrtabscontent__item" ddrtabscontentitem="sectionsTab7">
 					<div class="row g-10">
-						<div class="col-5">
+						<div class="col-6">
 							<x-simplelist
 								setting="fractions"
-								fieldset="ID:w6rem|number|id|1,Фракция:w20rem|text|name,Иконка:w20rem|text|icon,Цвет иконки:w8rem|color|color,Подсказка:w50rem|text|tooltip"
+								fieldset="ID:w8rem|number|id|1,Фракция:w20rem|text|name,Иконка:w20rem|text|icon,Цвет иконки:w8rem|color|color,Подсказка:w40rem|text|tooltip"
 								{{-- onRemove="removeCustomerAction" --}}
 								group="small"
 							 />
