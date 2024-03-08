@@ -147,9 +147,11 @@
 			</x-table.tr>
 		</x-table.head>
 		<x-table.body>
-			@foreach ($list as $item)
+			
+			@forelse($list as $item)
 				@include($itemView, $item)
-			@endforeach
+			@empty
+			@endforelse
 		</x-table.body>
 	</x-table>
 @else
