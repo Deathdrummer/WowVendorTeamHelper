@@ -62,19 +62,21 @@
 								<div class="row justify-content-between align-items-center">
 									<div class="col"><strong>{{$colName ?? '-'}}</strong></div>
 									<div class="col-auto">
-										@forelse($copyInviteButtons as $btn)
-											<i
-												class="fz10px fa-solid w1rem-8px text-center pointer pt2px pb2px border-all border-rounded-3px border-gray-400 border-blue-hovered fa-{{$btn['icon']}}"
-												onclick="$.copyInviteColumn(this, '{{$btn['name'] ?? '-'}}')"
-												style="color:{{$btn['color'] ?? '#000000'}}; background-color: {{$btn['color'] ?? '#000000'}}1c;"
-												title="{{$btn['tooltip'] ?? $btn['name']}}"></i>
-										@empty
-											<i
-												class="fz10px fa-solid w1rem-8px text-center pointer pt2px pb2px border-all border-rounded-3px border-gray-400 border-blue-hovered fa-copy"
-												onclick="$.copyInviteColumn(this)"
-												style="color: #000; background-color: #0001;"
-												title="Скопировать все записи"></i>
-										@endforelse
+										@if($copyInviteButtons)
+											@foreach($copyInviteButtons as $btn)
+												<i
+													class="fz10px fa-solid w1rem-8px text-center pointer pt2px pb2px border-all border-rounded-3px border-gray-400 border-blue-hovered fa-{{$btn['icon']}}"
+													onclick="$.copyInviteColumn(this, '{{$btn['name'] ?? '-'}}')"
+													style="color:{{$btn['color'] ?? '#000000'}}; background-color: {{$btn['color'] ?? '#000000'}}1c;"
+													title="{{$btn['tooltip'] ?? $btn['name']}}"></i>
+											@endforeach
+										@endif
+
+										<i
+											class="fz10px fa-solid w1rem-8px text-center pointer pt2px pb2px border-all border-rounded-3px border-gray-400 border-blue-hovered fa-copy"
+											onclick="$.copyInviteColumn(this)"
+											style="color: #000; background-color: #0001;"
+											title="Скопировать все записи"></i>
 									</div>
 								</div>	
 							@elseif($column == 'type')

@@ -27,7 +27,7 @@ final class OrderColums extends Enum {
 	#[Description('{"ru":"Данные","en":""}')]
 	const data		= 4;
 	
-	#[Description('{"ru":"Инвайт","en":""}')]
+	#[Description('{"ru":"Инв","en":""}')]
 	const invite	= 5;
 	
 	#[Description('{"ru":"Комментарий","en":""}')]
