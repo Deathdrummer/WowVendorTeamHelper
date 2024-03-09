@@ -54,11 +54,11 @@
 				@elseif($column == 'date_add')	
 					<p class="fz12px">{{DdrDateTime::date($date_add, ['locale' => 'en', 'format' => 'DD.MM.YY HH:mm', 'shift' => '+'])}} МСК</p>
 				@elseif($column == 'type')
-					<p class="fz12px preline"><span ordertype>{{$order_type_title ?? '-'}}</p>
+					<p class="fz12px preline" ordertype>{{$order_type_title ?? '-'}}</p>
 				@elseif($column == 'fraction')
-					<p class="fz12px"><span>{{$fraction ?? '-'}}</p>
+					<p class="fz12px">{{$fraction ?? '-'}}</p>
 				@elseif($column == 'battle_tag')
-					<p class="fz12px preline"><span>{{$battle_tag ?? '-'}}</p>
+					<p class="fz12px">{{$battle_tag ?? '-'}}</p>
 				@elseif($column == 'data')
 					<div class="d-flex justify-content-between align-items-center">
 						<div class="scrollblock scrollblock-light minh-1rem-4px maxh3rem-1px w100">

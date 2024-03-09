@@ -356,19 +356,53 @@
 	}
 	
 	
-	$.copyOrdersColumn = (cell) => {
-		const rowIndex = $(cell).index();
-		const data = [];
+	$.copyOrdersColumn = (elem) => {
+		const cell = $(elem).closest('[ddrtabletd]'),
+			rowIndex = $(cell).index(),
+			data = [];
+			
 		$(cell).closest('[ddrtablehead]').siblings('[ddrtablebody]').find('[ddrtabletr]').each(function(k, row) {
 			let cell = $(row).find(`[ddrtabletd]:eq(${rowIndex})`);
 			let cellValue = $(cell).text().trim();
-			if (cellValue) data.push(cellValue);
+			if (cellValue && cellValue != '-') data.push(cellValue);
 		});
+		
+		if (!data.length) {
+			$.notify('Нечего копировать', 'info');
+			return;
+		}
 		
 		const resultStr = data.join("\n");
 		
 		if (resultStr) $.copyToClipboard(event, resultStr);
 	}
+	
+	
+	
+	
+	$.copyBattleTagColumn = (elem) => {
+		const cell = $(elem).closest('[ddrtabletd]'),
+			rowIndex = $(cell).index(),
+			data = [];
+			
+		$(cell).closest('[ddrtablehead]').siblings('[ddrtablebody]').find('[ddrtabletr]').each(function(k, row) {
+			let cell = $(row).find(`[ddrtabletd]:eq(${rowIndex})`);
+			let cellValue = $(cell).text().trim();
+			if (cellValue && cellValue != '-') data.push(cellValue);
+		});
+		
+		if (!data.length) {
+			$.notify('Нечего копировать', 'info');
+			return;
+		}
+		
+		const resultStr = data.join("\n");
+		
+		if (resultStr) $.copyToClipboard(event, resultStr);
+	}
+	
+	
+	
 	
 	
 	

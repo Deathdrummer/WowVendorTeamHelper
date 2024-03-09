@@ -89,6 +89,11 @@
 									class="pointer color-black color-blue-active" 
 									onclick="$.timesheetSortOrders(this, 'date_add')"
 									>{{$colName ?? '-'}}</strong>
+							@elseif($column == 'battle_tag')
+								<strong
+									class="pointer color-black color-blue-active" 
+									onclick="$.copyBattleTagColumn(this)"
+									>{{$colName ?? '-'}}</strong>
 							@else
 								<strong
 									@class([
