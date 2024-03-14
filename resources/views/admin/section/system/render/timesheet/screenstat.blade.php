@@ -38,7 +38,7 @@
 				
 				<div class="ddrlist__item mb15px">
 					<p class="color-gray-600 mb4px fz12px">Статистика и заказы:</p>
-					<div class="row gx-6" id="ssStatOrdersForm">
+					<div class="row gx-6" id="ssStatOrdersForm" emptytext="Нет данных">
 						
 						@foreach($sortedOrdersTypes as $otId => $otTitle)
 							@if(!isset($ordersTypesCounts[$otId]))
