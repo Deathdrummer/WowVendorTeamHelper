@@ -694,7 +694,7 @@ class TimesheetController extends Controller {
 		
 		$usersIds = [];
 		
-		$history = ScreenshotsHistory::timesheet($timesheetId)->get()->each(function($item) use($getThumb) {
+		$history = ScreenshotsHistory::timesheet($timesheetId)->orderBy('date_add', 'desc')->get()->each(function($item) use($getThumb) {
 			$item->thumb = $getThumb($item['screenshot'], 300, 300);
 		});
 		
