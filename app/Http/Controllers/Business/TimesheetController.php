@@ -614,10 +614,12 @@ class TimesheetController extends Controller {
 	*/
 	public function screenstat_send(Request $request, Settings $settings, SendMessageToSlackAction $sendMessage, GetScreenshotFromFhotoScreenAction $getScreen) {
 		[
+			'timesheet_id'	=> $timesheetId,
 			'eventtype_id'	=> $eventTypeId,
 			'stat'			=> $stat,
 			'screenshot'	=> $screenshot,
 		] = $request->validate([
+			'timesheet_id'	=> 'required|numeric',
 			'eventtype_id'	=> 'required|numeric',
 			'stat'			=> 'nullable|array',
 			'screenshot'	=> 'nullable|string',
@@ -647,6 +649,7 @@ class TimesheetController extends Controller {
 		
 		
 		$created = ScreenshotsHistory::create([
+			'timesheet_id'	=> $timesheetId,
 			'from_id'		=> auth('site')->user()->id,
 			'user_type'		=> 'client',
 			'screenshot'	=> $imgSrc,

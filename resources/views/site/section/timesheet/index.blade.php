@@ -625,7 +625,7 @@
 			});
 			
 			
-			const {data, error, status, headers} = await ddrQuery.post('crud/timesheet/screenstat', {stat, screenshot, eventtype_id: ssEventTypeId});
+			const {data, error, status, headers} = await ddrQuery.post('crud/timesheet/screenstat', {timesheet_id: timesheetId, stat, screenshot, eventtype_id: ssEventTypeId});
 			
 			if (error) {
 				console.log(error);
@@ -687,8 +687,6 @@
 			
 			$('body').append(imgHtml);
 		}
-		
-		
 	}
 	
 	
