@@ -39,11 +39,8 @@
 				<div class="ddrlist__item mb15px">
 					<p class="color-gray-600 mb4px fz12px">Статистика и заказы:</p>
 					<div class="row gx-6" id="ssStatOrdersForm" emptytext="Нет данных">
-						
 						@foreach($sortedOrdersTypes as $otId => $otTitle)
-							@if(!isset($ordersTypesCounts[$otId]))
-								@continue
-							@endif
+							@if(!isset($ordersTypesCounts[$otId])) @continue @endif
 							<div class="col-auto">
 								
 								<x-checklabel
@@ -86,32 +83,13 @@
 													{{-- <label for="chooseOtOrder{{$otId}}_{{$key}}">
 														<p class="pointer mt1px fz12px">{{$order ?? '-'}}</p>
 													</label> --}}
-												</div>
-													
+												</div>	
 											</div>
 										@empty
 											<p class="color-gray-500">-</p>
 										@endforelse
 									</div>
 								</x-checklabel>
-								
-								{{-- <div class="w-10rem">
-									<input
-										hidden
-										type="checkbox"
-										checked="true"
-										id="chooseOt{{$otId}}"
-										>	
-									<div style="position:relative;">
-										<label for="chooseOt{{$otId}}" style="position: absolute; left:0; top:0; width:100%; height:100%;"></label>
-										<p class="text-center mb2px">{{$otTitle ?? '-'}}</p>
-										
-										
-									</div>
-									
-										
-								</div> --}}
-									
 							</div>
 						@endforeach
 					</div>
