@@ -10,19 +10,21 @@
 		<div class="ddrtabscontent__item ddrtabscontent__item_visible" ddrtabscontentitem="tabScreenstatForm">
 			<div class="ddrlist">
 				<div class="ddrlist__item mb15px">
-					<p class="color-gray-600 mb3px fz12px">Тип события:</p>
+					<p class="color-gray-600 mb3px fz12px">Статус:</p>
 					
-					<x-chooser variant="neutral" size="small" px="20" py="5" class="mb1rem" id="screenstatEvent">
-						@forelse($eventTypes as $seTypeId => $seTypeTitle)
-							<x-chooser.item
-								action="chooseScreenStatEvebtType:{{$seTypeId}}"
-								{{-- active="{{$loop->first}}" --}}
-								screenstatevent="{{$seTypeId}}"
-								>{{$seTypeTitle ?? '-'}}</x-chooser.item>
-						@empty
-							<p class="color-red">Необходимо добавить типы событий</p>
-						@endforelse
-					</x-chooser>
+					@if($eventTypes)
+						<x-chooser variant="neutral" size="small" px="20" py="5" class="mb1rem" id="screenstatEvent">
+							@foreach($eventTypes as $seTypeId => $seTypeTitle)
+								<x-chooser.item
+									action="chooseScreenStatEvebtType:{{$seTypeId}}"
+									{{-- active="{{$loop->first}}" --}}
+									screenstatevent="{{$seTypeId}}"
+									>{{$seTypeTitle ?? '-'}}</x-chooser.item>
+							@endforeach
+						</x-chooser>
+					@else
+						<p class="color-gray-500">Нет статусов</p>
+					@endif
 				</div>
 				
 				<div class="ddrlist__item mb15px">

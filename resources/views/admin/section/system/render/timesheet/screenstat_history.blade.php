@@ -52,6 +52,6 @@
 			@endif
 		</div>
 	@empty
-		<p class="color-gray-500">Нет данных</p>
+		<p class="color-gray-500 text-center">Нет данных</p>
 	@endforelse
 </div>
