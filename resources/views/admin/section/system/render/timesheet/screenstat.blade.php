@@ -23,7 +23,7 @@
 							@endforeach
 						</x-chooser>
 					@else
-						<p class="color-gray-500">Нет статусов</p>
+						<p class="color-gray-500 fz12px">Нет статусов</p>
 					@endif
 				</div>
 				
