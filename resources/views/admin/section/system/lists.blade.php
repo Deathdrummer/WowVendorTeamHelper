@@ -278,6 +278,15 @@
 								group="small"
 							 />
 						</div>
+						
+						<div class="col-6">
+							<x-input
+								class="w100"
+								label="Вебхук отправки статусов событии"
+								group="large"
+								setting="screenstat_webhook"
+								/>
+						</div>
 					</div>	
 				</div>
 				

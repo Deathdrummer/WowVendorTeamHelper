@@ -626,8 +626,6 @@ class TimesheetController extends Controller {
 		]);
 		
 		
-		
-		
 		# Получить статусы событий для отправки
 		$eventTypes = $settings->get('screenstat_eventtypes')->pluck('status', 'id')->toArray();
 		
@@ -659,7 +657,7 @@ class TimesheetController extends Controller {
 
 		
 		$resp = $sendMessage([
-			'webhook' 		=> 'https://hooks.slack.com/services/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',
+			'webhook' 		=> $settings->get('screenstat_webhook'),
 			'message' 		=> $message,
 			'attachments' 	=> [$imgSrc],
 		]);
