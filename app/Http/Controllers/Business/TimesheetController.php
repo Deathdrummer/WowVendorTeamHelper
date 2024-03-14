@@ -1,23 +1,29 @@
 <?php namespace App\Http\Controllers\Business;
 
 use App\Actions\ExportToExcelAction;
+use App\Actions\GetImageThumbFromUrlAction;
+use App\Actions\GetScreenshotFromFhotoScreenAction;
 use App\Actions\GetUserSetting;
+use App\Actions\SendMessageToSlackAction;
 use App\Actions\UpdateModelAction;
 use App\Enums\OrderStatus;
 use App\Exports\EventsExport;
-use App\Exports\Sheets\CountsStatSheet;
 use App\Helpers\DdrDateTime;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ImportTimesheetEventsRequest;
 use App\Models\Command;
 use App\Models\EventType;
+use App\Models\ScreenshotsHistory;
 use App\Models\Timesheet;
 use App\Models\TimesheetPeriod;
+use App\Models\User;
 use App\Services\Business\OrderService;
 use App\Services\Settings;
 use App\Traits\HasCrudController;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
+
 
 class TimesheetController extends Controller {
 	use HasCrudController;
@@ -507,23 +513,7 @@ class TimesheetController extends Controller {
 		
 		$rawComment = $timesheeet?->comment;
 		
-		$buildComment = $rawComment? preg_replace_callback('/(https?:\/\/\S+)/', function($screens) {
-			
-			if (!$screens) return false;
-			
-			foreach ($screens as $screen) {
-				$content = @file_get_contents($screen);
-				preg_match("/<img.*id='screenshot' src='(.*)'>/U", $content, $match);
-				
-				$imgSrc = $match[1];
-				return '<img src="'.$imgSrc.'" class="w-30rem h-auto mt1rem mb1rem border-radius-3px pointer border-blue-hovered" openttscommentimg="'.$imgSrc.'" />';
-			}
-			
-			
-			//'<img src="$1" class="w-30rem h-auto mt1rem mb1rem border-radius-3px pointer border-blue-hovered" openttscommentimg="$1" />'
-		}, $rawComment) : '';
-		
-		return response(view($viewPath.'.comment', compact('buildComment', 'rawComment')));
+		return response(view($viewPath.'.comment', compact('rawComment')));
 	}
 	
 	
@@ -546,6 +536,180 @@ class TimesheetController extends Controller {
 		
 		return response()->json($res);
 	}
+	
+	
+	
+	
+	
+	/**
+	* 
+	* @param 
+	* @return 
+	*/
+	public function screenstat_form(Request $request, Settings $settings, UpdateModelAction $update) {
+		[
+			'timesheet_id'	=> $timesheetId,
+			'views'			=> $viewPath,
+		] = $request->validate([
+			'timesheet_id'	=> 'required|numeric',
+			'views'			=> 'required|string',
+		]);
+		
+		//$res = $update(Timesheet::class, $id, ['comment' => $comment]);
+		
+		
+		
+		/*$buildComment = $rawComment ? preg_replace_callback('~([a-z]+://\S+)~ ', function($screens) {
+			
+			toLog($screens);
+			
+			if (!$screens) return false;
+			
+			foreach ($screens as $screen) {
+				$content = @file_get_contents($screen);
+				preg_match("/<img.*id='screenshot' src='(.*)'>/U", $content, $match);
+				
+				$imgSrc = $match[1];
+				return '<img src="'.$imgSrc.'" class="w-30rem h-auto mt1rem mb1rem border-radius-3px pointer border-blue-hovered" openttscommentimg="'.$imgSrc.'" />';
+			}
+			
+			
+			//'<img src="$1" class="w-30rem h-auto mt1rem mb1rem border-radius-3px pointer border-blue-hovered" openttscommentimg="$1" />'
+		}, $rawComment) : ''; */
+		
+		
+		# Получить отсортированные типы заказов для статистики [id => title]
+		$sortedOrdersTypes = $settings->get('orders_types')->sortBy('sort')->pluck('title_short', 'id')->toArray();
+		
+		# Сформировать массив [тип заказа => количество]
+		$tsOrderdQuery = Timesheet::find($timesheetId)
+			?->orders()
+			->without('last_comment')
+			->get();
+		
+		# количества типов заказов [ID типа заказа => количество]
+		$ordersTypesCounts = $tsOrderdQuery->countBy(fn (Model $item) => $item['order_type']);
+		
+		
+		# Получить номера заказов, сгруппированные по типу заказа [тип заказа => [номер заказа 1, номер заказа 2, ...]]
+		$otOrders = $tsOrderdQuery->mapToGroups(fn ($item) => [$item['order_type'] => $item['order']]);
+		
+		# Получить статусы событий для отправки
+		$eventTypes = $settings->get('screenstat_eventtypes')->pluck('status', 'id')->toArray();
+		
+		
+		return response(view($viewPath.'.screenstat', compact('sortedOrdersTypes', 'ordersTypesCounts', 'eventTypes', 'otOrders')));
+	}
+	
+	
+	
+	
+	
+	
+	
+	/**
+	* 
+	* @param 
+	* @return 
+	*/
+	public function screenstat_send(Request $request, Settings $settings, SendMessageToSlackAction $sendMessage, GetScreenshotFromFhotoScreenAction $getScreen) {
+		[
+			'eventtype_id'	=> $eventTypeId,
+			'stat'			=> $stat,
+			'screenshot'	=> $screenshot,
+		] = $request->validate([
+			'eventtype_id'	=> 'required|numeric',
+			'stat'			=> 'nullable|array',
+			'screenshot'	=> 'nullable|string',
+		]);
+		
+		
+		
+		
+		# Получить статусы событий для отправки
+		$eventTypes = $settings->get('screenstat_eventtypes')->pluck('status', 'id')->toArray();
+		
+		# Получить типы заказов
+		$sortedOrdersTypes = $settings->get('orders_types')->sortBy('sort')->pluck(null, 'id')->toArray();
+		
+		$imgSrc = $getScreen($screenshot);
+		
+		$message = '*'.$eventTypes[$eventTypeId]."*\n\n";
+		
+		foreach ($stat as $orderTypeId => ['count' => $count, 'items' => $orders]) {
+			$message .= ($sortedOrdersTypes[$orderTypeId]['title'] ?? '-')."\n";
+			$message .= '_клиентов:_ '.$count."\n";
+			foreach ($orders as $order) {
+				$message .= '`'.$order."`\n";
+			}
+			$message .= "\n\n";
+		}
+		
+		
+		$created = ScreenshotsHistory::create([
+			'from_id'		=> auth('site')->user()->id,
+			'user_type'		=> 'client',
+			'screenshot'	=> $imgSrc,
+			'stat'			=> $stat,
+		]);
+		
+
+		
+		$resp = $sendMessage([
+			'webhook' 		=> 'https://hooks.slack.com/services/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',
+			'message' 		=> $message,
+			'attachments' 	=> [$imgSrc],
+		]);
+		
+		
+		if ($resp) {
+			$created->send_to_slack = true;
+			$created->save();
+		}
+		
+
+		return response()->json($resp);
+	}
+	
+	
+	
+	
+	
+	
+	
+	/**
+	* 
+	* @param 
+	* @return 
+	*/
+	public function screenstat_history(Request $request, Settings $settings, GetImageThumbFromUrlAction $getThumb) {
+		[
+			'timesheet_id'	=> $timesheetId,
+			'views'			=> $viewPath,
+		] = $request->validate([
+			'timesheet_id'	=> 'required|numeric',
+			'views'			=> 'required|string',
+		]);
+		
+		$usersIds = [];
+		
+		$history = ScreenshotsHistory::timesheet($timesheetId)->get()->each(function($item) use($getThumb) {
+			$item->thumb = $getThumb($item['screenshot'], 300, 300);
+		});
+		
+		$sortedOrdersTypes = $settings->get('orders_types')->sortBy('sort')->pluck('title', 'id')->toArray();
+		
+		$users = User::whereIn('id', $history->pluck('from_id'))->select(['id', 'name', 'pseudoname'])->get()->pluck(null, 'id');
+		
+		return response(view($viewPath.'.screenstat_history', compact('history', 'users', 'sortedOrdersTypes')));
+	}
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	

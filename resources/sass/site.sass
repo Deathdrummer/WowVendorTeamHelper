@@ -1684,3 +1684,75 @@ section
 		margin-left: 4px
 
 
+
+
+
+
+
+
+
+
+.screenstathistory
+	max-height: calc(100vh - 200px)
+	min-height: 500px
+	overflow-y: scroll
+	+scrollbar(#e6eaed, #bfcfdb, 4px, 2px, 2px)
+	padding-right: 6px
+	
+	&__item
+		border: 1px solid #f1f1f1
+		background-color: #fafafb
+		border-radius: 5px
+		padding: 10px
+		
+		
+	&__date
+		font-size: 12px
+		color: #787878
+	
+	&__sendstatus
+		transform: translateY(-2px)
+	
+	
+	&__statitem
+		border: 1px solid #e5e5e5
+		border-radius: 3px
+		padding: 5px
+		width: 120px
+		
+		ul
+			font-size: 12px
+	
+	&__title
+		font-size: 14px
+		font-weight: bold
+		text-align: center
+	
+	&__count
+		color: #777
+		font-style: italic
+		font-size: 12px
+		text-align: center
+		
+		span
+			font-style: normal
+	
+	
+	&__list
+		margin-top: 5px
+		margin-bottom: 5px
+		
+		li
+			font-size: 12px
+	
+	
+	&__screenshot
+		margin-top: 10px
+		
+		img
+			max-width: 100%
+			border-radius: 3px
+			transition: filter 0.16s
+			
+			&:hover
+				filter: brightness(120%)

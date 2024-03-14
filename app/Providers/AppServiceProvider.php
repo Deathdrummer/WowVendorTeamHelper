@@ -14,6 +14,7 @@ use App\View\Components\Data;
 use App\View\Components\Inputs\Button;
 use App\View\Components\Inputs\ButtonsGroup;
 use App\View\Components\Inputs\Checkbox;
+use App\View\Components\inputs\CheckLabel;
 use App\View\Components\Inputs\Datepicker;
 use App\View\Components\Inputs\File;
 use App\View\Components\Inputs\Input;
@@ -68,6 +69,7 @@ class AppServiceProvider extends ServiceProvider {
 		Blade::component('localebar', Localebar::class);
 		Blade::component('card', Card::class);
 		Blade::component('scrollblock', ScrollBlock::class);
+		Blade::component('checklabel', CheckLabel::class);
 		
 		Blade::component('simplelist', Simplelist::class);
 		

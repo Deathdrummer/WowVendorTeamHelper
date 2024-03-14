@@ -131,7 +131,7 @@ class SendSlackMessageAction {
 	
 	/**
 	* 
-	* @param 
+	* @param array $params ['endpoint', 'message']
 	* @return 
 	*/
 	private function send($params = []) {

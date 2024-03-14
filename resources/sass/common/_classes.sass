@@ -1979,3 +1979,136 @@ $tableColor: #efefef
 	
 	&-dark
 		+hr(10%, 90%, #8a9ba7)
+
+
+
+
+
+
+
+
+
+.outline
+	outline-offset: 0px
+	outline-style: solid
+	outline-color: transparent
+	
+	&-solid
+		outline-style: solid
+		
+	&-dotted
+		outline-style: dotted
+		
+	&-dashed
+		outline-style: dashed
+		
+	&-double
+		outline-style: double
+		
+	&_width
+		@for $i from 1 through 20
+			&-#{$i}px 
+				outline-width: #{$i}px !important
+	
+	
+	&_offset
+		@for $i from 20 through 1
+			&-n#{$i}px 
+				outline-offset: -#{$i}px !important
+		
+		
+		@for $i from 1 through 20
+			&-#{$i}px 
+				outline-offset: #{$i}px !important
+	
+	&_color
+		&-light
+			outline-color: #f1f5f5
+			&-hovered:hover
+				outline-color: #f1f5f5
+				transition: outline-color 0.16s
+		
+		&-gray
+			outline-color: #e0eced
+			&-hovered:hover
+				outline-color: #e0eced
+				transition: outline-color 0.16s
+		
+		&-gray-100
+			outline-color: #f8f9fa
+			&-hovered:hover
+				outline-color: #f8f9fa
+				transition: outline-color 0.16s
+		
+		&-gray-200
+			outline-color: #e9ecef
+			&-hovered:hover
+				outline-color: #e9ecef
+				transition: outline-color 0.16s
+			
+		&-gray-300
+			outline-color: #dee2e6
+			&-hovered:hover
+				outline-color: #dee2e6
+				transition: outline-color 0.16s
+		
+		&-gray-400
+			outline-color: #ced4da
+			&-hovered:hover
+				outline-color: #ced4da
+				transition: outline-color 0.16s
+		
+		&-gray-500
+			outline-color: #adb5bd
+			&-hovered:hover
+				outline-color: #adb5bd
+				transition: outline-color 0.16s
+		
+		&-gray-600
+			outline-color: #6c757d
+			&-hovered:hover
+				outline-color: #6c757d
+				transition: outline-color 0.16s
+			
+		&-gray-700
+			outline-color: #495057
+			&-hovered:hover
+				outline-color: #495057
+				transition: outline-color 0.16s
+			
+		&-gray-800
+			outline-color: #343a40
+			&-hovered:hover
+				outline-color: #343a40
+				transition: outline-color 0.16s
+			
+		&-gray-900
+			outline-color: #212529
+			&-hovered:hover
+				outline-color: #212529
+				transition: outline-color 0.16s
+			
+		&-dark
+			outline-color: #a5b5b5
+			&-hovered:hover
+				outline-color: #a5b5b5
+				transition: outline-color 0.16s
+		
+		&-white
+			outline-color: #fff
+			&-hovered:hover
+				outline-color: #fff 
+				transition: outline-color 0.16s
+		
+		&-green
+			outline-color: #00e94a
+			&-hovered:hover
+				outline-color: #00e94a 
+				transition: outline-color 0.16s
+		
+		&-blue
+			outline-color: #00abff !important
+			
+			&-hovered:hover
+				outline-color: #00abff !important
+				transition: outline-color 0.16s

@@ -12,6 +12,7 @@
 					<li class="ddrtabsnav__item" ddrtabsitem="sectionsTab5">Группы листа ожидания</li>
 					<li class="ddrtabsnav__item" ddrtabsitem="sectionsTab6">Уведомеления Slack</li>
 					<li class="ddrtabsnav__item" ddrtabsitem="sectionsTab7">Фракции</li>
+					<li class="ddrtabsnav__item" ddrtabsitem="sectionsTab8">Статусы отправки скришотов</li>
 				</ul>
 			</div>
 			
@@ -266,6 +267,20 @@
 						</div>
 					</div>	
 				</div>
+				
+				<div class="ddrtabscontent__item" ddrtabscontentitem="sectionsTab8">
+					<div class="row g-10">
+						<div class="col-6">
+							<x-simplelist
+								setting="screenstat_eventtypes"
+								fieldset="ID:w8rem|number|id|1,Статус:w30rem|text|status"
+								{{-- onRemove="removeCustomerAction" --}}
+								group="small"
+							 />
+						</div>
+					</div>	
+				</div>
+				
 				
 			</div>
 			{{--  --}}

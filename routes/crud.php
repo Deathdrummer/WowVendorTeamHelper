@@ -36,14 +36,25 @@ Route::resource('timesheet_periods', TimesheetPeriodsController::class)->only(['
 Route::get('timesheet/init', [TimesheetController::class, 'init']);
 Route::get('timesheet/orders', [TimesheetController::class, 'orders']);
 Route::post('timesheet/store_show', [TimesheetController::class, 'store_show']);
+
 Route::get('timesheet/import_form', [TimesheetController::class, 'get_import_form']);
 Route::post('timesheet/import', [TimesheetController::class, 'import_events']);
+
 Route::get('timesheet/export', [TimesheetController::class, 'export_orders_form']);
 Route::post('timesheet/export', [TimesheetController::class, 'export_orders']);
+
 Route::get('timesheet/comment', [TimesheetController::class, 'comment_form']);
 Route::post('timesheet/comment', [TimesheetController::class, 'comment_save']);
+
+Route::get('timesheet/screenstat', [TimesheetController::class, 'screenstat_form']);
+Route::post('timesheet/screenstat', [TimesheetController::class, 'screenstat_send']);
+Route::get('timesheet/screenstat_history', [TimesheetController::class, 'screenstat_history']);
+
+
+
 Route::get('timesheet/orders_counts_stat', [TimesheetController::class, 'orders_counts_stat']);
 Route::get('timesheet/orders_counts_stat_export', [TimesheetController::class, 'orders_counts_stat_export']);
+
 Route::resource('timesheet', TimesheetController::class)->except(['show']);
 
 

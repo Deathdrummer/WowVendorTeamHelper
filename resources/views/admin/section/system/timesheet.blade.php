@@ -250,7 +250,7 @@
 			method: 'get',
 			params: {id: timesheetId, views: 'admin.section.system.render.timesheet'},
 			title: 'Комментарий события', // заголовок
-			width: 900, // ширина окна
+			width: 700, // ширина окна
 			buttons: ['ui.close', {action: 'timesheetComentSave', title: 'Обновить'}],
 			disabledButtons: true, // при старте все кнопки кроме закрытия будут disabled
 		});
@@ -435,6 +435,32 @@
 				btnWait.destroy();
 			}, (data?.timeout || 0) * 1000);
 		}
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	$.timesheetScreenStat = (btn, timesheetId) => {
+		event.stopPropagation();
+		
+		const {
+			popper,
+			wait,
+			close,
+			enableButtons,
+		} = await ddrPopup({
+			url: 'crud/timesheet/screenstat',
+			method: 'get',
+			params: {id: timesheetId, views: 'admin.section.system.render.timesheet'},
+			title: 'Скриншты и статистика', // заголовок
+			width: 700, // ширина окна
+			buttons: ['ui.close', {action: 'timesheetComentSave', title: 'Обновить'}],
+			disabledButtons: true, // при старте все кнопки кроме закрытия будут disabled
+		});
 	}
 	
 	

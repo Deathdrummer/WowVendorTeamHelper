@@ -453,7 +453,7 @@
 			method: 'get',
 			params: {id: timesheetId, views: 'admin.section.system.render.timesheet'},
 			title: 'Комментарий события', // заголовок
-			width: 900, // ширина окна
+			width: 700, // ширина окна
 			buttons: ['ui.close', {action: 'timesheetComentSave', title: 'Обновить'}],
 			disabledButtons: true, // при старте все кнопки кроме закрытия будут disabled
 		});
@@ -557,6 +557,144 @@
 			}, (data?.timeout || 0) * 1000);
 		}
 	}
+	
+	
+	
+	
+	
+	
+	
+	$.timesheetScreenStat = async (btn, timesheetId) => {
+		event.stopPropagation();
+		
+		const {
+			popper,
+			wait,
+			close,
+			enableButtons,
+		} = await ddrPopup({
+			url: 'crud/timesheet/screenstat',
+			method: 'get',
+			params: {timesheet_id: timesheetId, views: 'admin.section.system.render.timesheet'},
+			title: 'Скриншты и статистика', // заголовок
+			width: 830, // ширина окна
+			buttons: ['ui.close', {action: 'screenStatSend', title: 'Отправить'}],
+			disabledButtons: true, // при старте все кнопки кроме закрытия будут disabled
+		});
+		
+		enableButtons('close');
+		
+		
+		let ssEventTypeId, screenshot;
+		
+		$.chooseScreenStatEvebtType = (btn, isActive, etId) => {
+			if (isActive) return;
+			
+			if (!ssEventTypeId) enableButtons(true);
+				
+			ssEventTypeId = etId;
+		};
+		
+		
+		$.setScreenshot = (input) => {
+			screenshot = $(input).val();
+		} 
+		
+		
+		$.ssChooseOrderNumber = (check) => {
+			const checkBlock = $(check).closest(`#ssOrdersNumbers`),
+				countChoosedOrders = $(checkBlock).find('[ordertypeorder]:checked').length;
+			$(check).closest(`#checklabelwrapper`).find('[ssorderscout]').val(countChoosedOrders);
+		}
+		
+		
+		$.screenStatSend = async () => {
+			wait();
+			const stat = {};
+			$('#ssStatOrdersForm').find('[ordertypeid]:checked').each((k, item) => {
+				const orderTypeId = Number($(item).attr('ordertypeid')),
+					ordersCount = $(`#checklabel${orderTypeId}block`).find('[ssorderscout]')?.val();
+				stat[orderTypeId] = {count: Number(ordersCount), items: []}
+				
+				$(`#checklabel${orderTypeId}block`).find('[ordertypeorder]:checked').each((k, item) => {
+					const orderNumber = $(item).attr('ordertypeorder');
+					stat[orderTypeId]['items'].push(orderNumber);
+				});
+				
+				
+			});
+			
+			
+			const {data, error, status, headers} = await ddrQuery.post('crud/timesheet/screenstat', {stat, screenshot, eventtype_id: ssEventTypeId});
+			
+			if (error) {
+				console.log(error);
+				$.notify(error?.message, 'error');
+				wait(false);
+				return;
+			}
+			
+			if (data) {
+				$.notify('Готово!');
+			}
+			
+			wait(false);
+		}
+		
+		
+		
+		
+		// Получить историю отправки статистики
+		$.getScreenstatHistory = async (btn, isActive) => {
+			if (isActive) return;
+			
+			$('#creenStatHistory').html('');
+			
+			const waitHistory = $('#creenStatHistory').ddrWait({
+				iconHeight: '35px',
+				bgColor: '#fdfdfdb5',
+			});
+			
+			
+			const {data, error, status, headers} = await ddrQuery.get('crud/timesheet/screenstat_history', {timesheet_id: timesheetId, views: 'admin.section.system.render.timesheet'});
+			
+			waitHistory.destroy();
+			
+			if (error) {
+				console.log(error);
+				$.notify(error?.message, 'error');
+				wait(false);
+				return;
+			}
+			
+			$('#creenStatHistory').html(data);
+		}
+		
+		
+		
+		
+		$.openOrigScreenshot = (href) => {
+			let imgHtml = '';
+			imgHtml += '<div class="ddrpopup ddrpopup_opening" onclick="this.remove()">';
+			imgHtml += 	'<div class="ddrpopup__wrap" ddrpopupwrap="">';
+			imgHtml += 		'<div class="ddrpopup__container">';
+			imgHtml += 			'<div class="ddrpopup__win noselect ddrpopup__win_opening w100" ddrpopupwin="">';
+			imgHtml += 				`<img src="${href}" class="w100 h-auto">`;
+			imgHtml += 			'</div>';
+			imgHtml += 		'</div>';
+			imgHtml += 	'</div>';
+			imgHtml += '</div>';
+			
+			$('body').append(imgHtml);
+		}
+		
+		
+	}
+	
+	
+	
+	
+	
 	
 	
 	
