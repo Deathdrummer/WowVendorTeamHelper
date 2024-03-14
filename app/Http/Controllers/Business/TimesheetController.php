@@ -595,7 +595,7 @@ class TimesheetController extends Controller {
 		$otOrders = $tsOrderdQuery->mapToGroups(fn ($item) => [$item['order_type'] => $item['order']]);
 		
 		# Получить статусы событий для отправки
-		$eventTypes = $settings->get('screenstat_eventtypes')?->pluck('status', 'id')->toArray() || [];
+		$eventTypes = $settings->get('screenstat_eventtypes')?->pluck('status', 'id')->toArray() ?: [];
 		
 		
 		return response(view($viewPath.'.screenstat', compact('sortedOrdersTypes', 'ordersTypesCounts', 'eventTypes', 'otOrders')));
