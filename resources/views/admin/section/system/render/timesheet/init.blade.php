@@ -22,7 +22,11 @@
 				</div>
 			</x-table.td>
 			<x-table.td class="w30rem" noborder><strong>Комментарий</strong></x-table.td>
-			<x-table.td class="w4rem h-center" noborder title="Отправка скриншотов и статистики"><i class="fa-solid fa-fw fa-receipt"></i></x-table.td>
+			@if(getGuard() == 'admin' || (getGuard() == 'site' && auth('site')->user()->can('screenstat:site')))
+				<x-table.td class="w4rem h-center" noborder title="Отправка скриншотов и статистики">
+					<i class="fa-solid fa-fw fa-receipt"></i>
+				</x-table.td>
+			@endif
 			<x-table.td class="w7rem" noborder><strong>Кол-во заказов</strong></x-table.td>
 			<x-table.td class="w13rem" noborder><strong>Действия</strong></x-table.td>
 		</x-table.tr>

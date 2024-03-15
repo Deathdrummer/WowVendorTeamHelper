@@ -3,7 +3,29 @@
 		<div class="screenstathistory__item ddrlist__item mt10px">
 			
 			<div class="row align-items-start mb1rem">
-				<div class="col"><p>{{(($users[$hItem['id']]['pseudoname'] ?? null) ?: ($users[$hItem['id']]['name'] ?? null)) ?: 'Неизвестный пользователь'}}</p></div>
+				<div class="col">
+					<p
+						@class([
+							'color-red'	=> $hItem['user_type'] == 'admin',
+							'color-green'	=> $hItem['user_type'] == 'site'
+						])
+						title="{{$hItem['user_type'] == 'admin' ? 'Администратор' : 'Пользователь'}}"
+					>
+					@if($hItem['user_type'] == 'admin')
+						@if($myAdminId == $hItem['from_id'])
+							Я
+						@else
+							{{$adminUsers[$hItem['from_id']] ?? 'Неизвестный админ'}}
+						@endif
+					@elseif($hItem['user_type'] == 'site')
+						@if($mySiteId == $hItem['from_id'])
+							Я
+						@else
+							{{$siteUsers[$hItem['from_id']] ?? 'Неизвестный пользователь'}}
+						@endif
+					@endif
+					</p>
+				</div>
 				<div class="col-auto">
 					<p class="screenstathistory__date">{{DdrDateTime::date($hItem['date_add'], ['shift' => '+'])}} в {{DdrDateTime::time($hItem['date_add'], ['shift' => '+'])}}</p>
 				</div>
@@ -18,13 +40,12 @@
 			
 			{{-- <p>{{$hItem['id']}}</p> --}}
 			
-			<x-horisontal space="2rem" ignore="[noscroll], select, input, textarea" ignoremovekeys="alt, ctrl, shift" style="max-width: 606px;">
+			<x-horisontal space="1rem" ignore="[noscroll], select, input, textarea" track="3px" ignoremovekeys="alt, ctrl, shift" style="max-width: 606px;">
 				@forelse($sortedOrdersTypes as $otId => $otTitle)
 					@if(!isset($hItem['stat'][$otId]))
 						@continue
 					@endif
-					
-					<x-horisontal.item class="h100">
+					<x-horisontal.item stretch="false" class="h100">
 						<div class="screenstathistory__statitem">
 							<p class="screenstathistory__title">{{$otTitle}}</p>
 							<p class="screenstathistory__count">клиетов: <span>{{$hItem['stat'][$otId]['count']}}</span></p>
@@ -32,9 +53,9 @@
 							<hr class="hr-light mt5px mb5px">
 							
 							<p class="fz12px color-gray-500">Список заказов:</p>
-							<ul class="screenstathistory__list">
+							<ul class="screenstathistory__list" noscroll >
 								@forelse($hItem['stat'][$otId]['items'] as $order)
-									<li>{{$order}}</li>
+									<li select-text>{{$order}}</li>
 								@empty
 									<li class="color-gray-500">-</li>
 								@endforelse

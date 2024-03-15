@@ -11,6 +11,7 @@ use App\Exports\EventsExport;
 use App\Helpers\DdrDateTime;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ImportTimesheetEventsRequest;
+use App\Models\AdminUser;
 use App\Models\Command;
 use App\Models\EventType;
 use App\Models\ScreenshotsHistory;
@@ -618,11 +619,13 @@ class TimesheetController extends Controller {
 			'eventtype_id'	=> $eventTypeId,
 			'stat'			=> $stat,
 			'screenshot'	=> $screenshot,
+			'user_type'		=> $userType,
 		] = $request->validate([
 			'timesheet_id'	=> 'required|numeric',
 			'eventtype_id'	=> 'required|numeric',
 			'stat'			=> 'nullable|array',
 			'screenshot'	=> 'nullable|string',
+			'user_type'		=> 'required|string',
 		]);
 		
 		
@@ -646,15 +649,17 @@ class TimesheetController extends Controller {
 		}
 		
 		
+		$response = [];
+		
 		$created = ScreenshotsHistory::create([
 			'timesheet_id'	=> $timesheetId,
 			'from_id'		=> auth('site')->user()->id,
-			'user_type'		=> 'client',
+			'user_type'		=> $userType,
 			'screenshot'	=> $imgSrc,
 			'stat'			=> $stat,
 		]);
 		
-
+		$response['created'] = $created;
 		
 		$resp = $sendMessage([
 			'webhook' 		=> $settings->get('screenstat_webhook'),
@@ -662,6 +667,7 @@ class TimesheetController extends Controller {
 			'attachments' 	=> [$imgSrc],
 		]);
 		
+		$response['send'] = $resp;
 		
 		if ($resp) {
 			$created->send_to_slack = true;
@@ -669,7 +675,7 @@ class TimesheetController extends Controller {
 		}
 		
 
-		return response()->json($resp);
+		return response()->json($response);
 	}
 	
 	
@@ -692,17 +698,26 @@ class TimesheetController extends Controller {
 			'views'			=> 'required|string',
 		]);
 		
-		$usersIds = [];
+		$usersSiteIds = [];
+		$usersAdminIds = [];
 		
-		$history = ScreenshotsHistory::timesheet($timesheetId)->orderBy('date_add', 'desc')->get()->each(function($item) use($getThumb) {
+		$history = ScreenshotsHistory::timesheet($timesheetId)->orderBy('date_add', 'desc')->get()->each(function($item) use($getThumb, &$usersSiteIds, &$usersAdminIds) {
+			if ($item['user_type'] == 'site') $usersSiteIds[] = $item['from_id'];
+			elseif ($item['user_type'] == 'admin') $usersAdminIds[] = $item['from_id'];
+			
 			$item->thumb = $getThumb($item['screenshot'], 300, 300);
 		});
 		
+		
 		$sortedOrdersTypes = $settings->get('orders_types')->sortBy('sort')->pluck('title', 'id')->toArray();
 		
-		$users = User::whereIn('id', $history->pluck('from_id'))->select(['id', 'name', 'pseudoname'])->get()->pluck(null, 'id');
+		$siteUsers = User::whereIn('id', $history->pluck('from_id'))->select(['id', 'name'])->get()->pluck('name', 'id');
+		$adminUsers = AdminUser::whereIn('id', $history->pluck('from_id'))->select(['id', 'name'])->get()->pluck('name', 'id');
 		
-		return response(view($viewPath.'.screenstat_history', compact('history', 'users', 'sortedOrdersTypes')));
+		$myAdminId = auth('admin')->user()->id;
+		$mySiteId = auth('site')->user()->id;
+		
+		return response(view($viewPath.'.screenstat_history', compact('history', 'siteUsers', 'adminUsers', 'sortedOrdersTypes', 'myAdminId', 'mySiteId')));
 	}
 	
 	

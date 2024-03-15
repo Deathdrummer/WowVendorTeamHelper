@@ -1473,11 +1473,14 @@ $bPoints: map-remove($grid-breakpoints, xs)
 	overflow-x: scroll
 	padding-bottom: 10px
 	
-	&:not(.horisontal_hidescroll)
-		+scrollbar(#f9fbfd, #d6dbe0, 6px, 2px, 2px)
+	&_track
+		&-hide
+			+scrollbar(transparent, transparent, 0px)
+		
+		@for $i from 0 through 10
+			&-#{$i}px
+				+scrollbar(#f9fbfd, #d6dbe0, #{$i}px, 2px, 2px)
 	
-	&_hidescroll
-		+scrollbar(transparent, transparent, 0px)
 	
 	&__track
 		display: inline-flex
@@ -1486,11 +1489,16 @@ $bPoints: map-remove($grid-breakpoints, xs)
 		flex-wrap: nowrap
 	
 	&__item
-		flex: 1 0 100%
 		display: inline-block
+		
+		&:not(.horisontal__item_stretch)
+			flex: 0 0 auto
 		
 		&:first-of-type
 			margin-left: 0 !important
+		
+		&_stretch
+			flex: 1 0 100%
 
 
 

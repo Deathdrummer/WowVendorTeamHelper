@@ -563,7 +563,7 @@
 	
 	
 	
-	
+	//-------------------------------------------------------------------------- Скриншоты и статистика 
 	$.timesheetScreenStat = async (btn, timesheetId) => {
 		event.stopPropagation();
 		
@@ -583,6 +583,8 @@
 		});
 		
 		enableButtons('close');
+		
+		if ($('#tabScreenstatHistory').hasAttr('onlyhistory')) await getScreenstatHistory();
 		
 		
 		let ssEventTypeId, screenshot;
@@ -625,7 +627,12 @@
 			});
 			
 			
-			const {data, error, status, headers} = await ddrQuery.post('crud/timesheet/screenstat', {timesheet_id: timesheetId, stat, screenshot, eventtype_id: ssEventTypeId});
+			const {data, error, status, headers} = await ddrQuery.post('crud/timesheet/screenstat', {
+				timesheet_id: timesheetId,
+				stat, screenshot,
+				eventtype_id: ssEventTypeId,
+				user_type: 'site'
+			});
 			
 			if (error) {
 				console.log(error);
@@ -634,11 +641,13 @@
 				return;
 			}
 			
-			if (data) {
-				$.notify('Готово!');
+			if (data?.created && !data?.send) {
+				$.notify('Статистика успешно сохранена но не отправлена!', 'info');
+			} else if (data?.created && data?.send) {
+				$.notify('Статистика успешно сохранена и отправлена!');
 			}
 			
-			wait(false);
+			close();
 		}
 		
 		
@@ -647,7 +656,11 @@
 		// Получить историю отправки статистики
 		$.getScreenstatHistory = async (btn, isActive) => {
 			if (isActive) return;
-			
+			getScreenstatHistory();
+		}
+		
+		
+		async function getScreenstatHistory() {
 			$('#creenStatHistory').html('');
 			
 			const waitHistory = $('#creenStatHistory').ddrWait({
@@ -669,7 +682,6 @@
 			
 			$('#creenStatHistory').html(data);
 		}
-		
 		
 		
 		

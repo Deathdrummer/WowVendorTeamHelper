@@ -70,15 +70,17 @@
 			</div>
 		</div>
 	</x-table.td>
-	<x-table.td class="h-center">
-		<x-button
-			size="verysmall"
-			w="2rem-5px"
-			variant="orange"
-			action="timesheetScreenStat:{{$id}}"
-			title="Отправить скриншот со статистикой"
-			><i class="fa-solid fa-fw fa-plus"></i></x-button>
-	</x-table.td>
+	@if(getGuard() == 'admin' || (getGuard() == 'site' && auth('site')->user()->can('screenstat:site')))
+		<x-table.td class="h-center">
+			<x-button
+				size="verysmall"
+				w="2rem-5px"
+				variant="orange"
+				action="timesheetScreenStat:{{$id}}"
+				title="Отправить скриншот со статистикой"
+				><i class="fa-solid fa-fw fa-plus"></i></x-button>
+		</x-table.td>
+	@endif
 	<x-table.td class="h-center">
 		<p orderscount>{{$orders_count}}</p>
 	</x-table.td>

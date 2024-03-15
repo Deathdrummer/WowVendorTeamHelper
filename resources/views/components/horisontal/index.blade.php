@@ -3,6 +3,7 @@
 	'speed'				=> 100,
 	'step'				=> 100,
 	'scroll'			=> true,
+	'track'				=> false,
 	'ignore'			=> '[noscroll]',
 	'addict'			=> false,
 	'hidescroll'		=> false,
@@ -14,7 +15,8 @@
 <div
 	{{$attributes->class([
 		'horisontal',
-		'horisontal_hidescroll' => $hidescroll
+		'horisontal_track-hide' => !$track || $track == 'false',
+		'horisontal_track-'.$track => $track,
 	])}}
 	id="{{$id}}"
 	>
