@@ -1,8 +1,8 @@
 <x-table class="w100" id="timesheetTable" noborder scrolled="{{$scrolled ?? '68vh'}}">
 	<x-table.head>
 		<x-table.tr noborder>
-			<x-table.td class="w20rem" noborder><strong>Дата (МСК)</strong></x-table.td>
-			<x-table.td class="w20rem" noborder><strong>Время (МСК / ОРИГ)</strong></x-table.td>
+			<x-table.td class="w14rem" noborder><strong>Дата (МСК)</strong></x-table.td>
+			<x-table.td class="w16rem" noborder><strong>Время (МСК / ОРИГ)</strong></x-table.td>
 			<x-table.td class="w-auto" noborder>
 				<div class="row g-5 align-items-center">
 					<div class="col-auto"><strong title="Название команды">Команда</strong></div>
