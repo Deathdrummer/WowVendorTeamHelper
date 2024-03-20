@@ -43,13 +43,28 @@
 					</div>
 					
 					<div class="ddrlist__item mb15px">
-						<p class="color-gray-600 mb4px fz12px">Скриншот:</p>
-						<x-input
-							action="setScreenshot"
-							class="w100"
-							size="normal"
-						 	/>
+						<div class="row gx-4">
+							<div class="col-5">
+								<p class="color-gray-600 mb4px fz12px">Скриншот:</p>
+								<x-input
+									action="setScreenshot"
+									class="w100"
+									size="normal"
+								 	/>
+							</div>
+							<div class="col-7">
+								<p class="color-gray-600 mb4px fz12px">Комментарий:</p>
+								<x-textarea
+									action="setComment"
+									class="w100"
+									size="normal"
+									rows="3"
+								 	></x-textarea>
+							</div>
+						</div>
 					</div>
+					
+					<hr class="hr-light mt1rem mb1rem">
 					
 					<div class="ddrlist__item mb15px">
 						<p class="color-gray-600 mb4px fz12px">Статистика и заказы:</p>

@@ -619,12 +619,14 @@ class TimesheetController extends Controller {
 			'eventtype_id'	=> $eventTypeId,
 			'stat'			=> $stat,
 			'screenshot'	=> $screenshot,
+			'comment'		=> $comment,
 			'user_type'		=> $userType,
 		] = $request->validate([
 			'timesheet_id'	=> 'required|numeric',
 			'eventtype_id'	=> 'required|numeric',
 			'stat'			=> 'nullable|array',
 			'screenshot'	=> 'nullable|string',
+			'comment'		=> 'nullable|string',
 			'user_type'		=> 'required|string',
 		]);
 		
@@ -637,10 +639,12 @@ class TimesheetController extends Controller {
 		
 		$imgSrc = $getScreen($screenshot);
 		
-		$message = '*'.$eventTypes[$eventTypeId]."*\n\n";
+		$message = '*'.($eventTypes[$eventTypeId] ?? 'Нет статуса')."*\n\n";
+		
+		$message .= preg_replace_callback("/\n?(.+)/", fn($item) => "_".$item[1]."_\n", $comment)."\n";
 		
 		foreach ($stat as $orderTypeId => ['count' => $count, 'items' => $orders]) {
-			$message .= ($sortedOrdersTypes[$orderTypeId]['title'] ?? '-')."\n";
+			$message .= '>'.($sortedOrdersTypes[$orderTypeId]['title'] ?? '-')."\n";
 			$message .= '_клиентов:_ '.$count."\n";
 			foreach ($orders as $order) {
 				$message .= '`'.$order."`\n";
@@ -656,6 +660,7 @@ class TimesheetController extends Controller {
 			'from_id'		=> auth('site')->user()->id,
 			'user_type'		=> $userType,
 			'screenshot'	=> $imgSrc,
+			'comment'		=> $comment,
 			'stat'			=> $stat,
 		]);
 		

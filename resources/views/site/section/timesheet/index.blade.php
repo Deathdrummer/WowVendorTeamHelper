@@ -587,7 +587,7 @@
 		if ($('#tabScreenstatHistory').hasAttr('onlyhistory')) await getScreenstatHistory();
 		
 		
-		let ssEventTypeId, screenshot;
+		let ssEventTypeId, screenshot, comment;
 		
 		$.chooseScreenStatEvebtType = (btn, isActive, etId) => {
 			if (isActive) return;
@@ -601,6 +601,10 @@
 		$.setScreenshot = (input) => {
 			screenshot = $(input).val();
 		} 
+		
+		$.setComment = (input) => {
+			comment = $(input).val();
+		}
 		
 		
 		$.ssChooseOrderNumber = (check) => {
@@ -629,7 +633,9 @@
 			
 			const {data, error, status, headers} = await ddrQuery.post('crud/timesheet/screenstat', {
 				timesheet_id: timesheetId,
-				stat, screenshot,
+				stat,
+				screenshot,
+				comment,
 				eventtype_id: ssEventTypeId,
 				user_type: 'site'
 			});

@@ -16,6 +16,7 @@ return new class extends Migration {
 			$table->enum('user_type', ['admin','client'])->comment('Тип пользователя админ или клиент');
 			
 			$table->string('screenshot')->nullable()->comment('Скриншот');
+			$table->text('comment')->nullable()->comment('Комментарий');
 			$table->json('stat')->nullable()->comment('Типы заказов со списком заказов');
 			$table->boolean('send_to_slack')->comment('Отправлено ли в слак');
 			
