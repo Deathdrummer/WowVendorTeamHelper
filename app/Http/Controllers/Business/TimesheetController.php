@@ -210,7 +210,7 @@ class TimesheetController extends Controller {
 
 		$itemView = $viewPath.'.item';
 		
-		return $this->viewWithLastSortIndex(Timesheet::class, $viewPath.'.list', compact('list', 'commandsColors', 'showPastOrdersInActual', 'itemView'), '_sort', ['x-region-commands' => $regionCommands, 'x-eventstypes' => $eventsTypes]);
+		return $this->viewWithLastSortIndex(Timesheet::class, $viewPath.'.list', compact('list', 'listType', 'commandsColors', 'showPastOrdersInActual', 'itemView'), '_sort', ['x-region-commands' => $regionCommands, 'x-eventstypes' => $eventsTypes]);
     }
 	
 	
