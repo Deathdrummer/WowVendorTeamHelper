@@ -114,6 +114,7 @@ class TimesheetController extends Controller {
 		# Получить отсортированные типы заказов для статистики [id => title]
 		$sortedOrdersTypes = $settings->get('orders_types')->where('show_in_stat', 1)->sortBy('sort')->pluck('title_short', 'id')->toArray();
 		
+		$showPastOrdersInActual = $getUserSetting('show_past_orders_in_actual') ?? false;
 
 		$list = Timesheet::withCount(['orders AS orders_count' => function($query) use($search) {
 				$query->where('order', 'LIKE', '%'.$search.'%');
@@ -163,7 +164,7 @@ class TimesheetController extends Controller {
 			$timesheets = Timesheet::where('timesheet_period_id', $tsPeriodId)->get()->pluck('id');
 			foreach ($timesheets as $ts) $doprunOrders[$ts] = OrderService::getOrdersDopruns($ts);
 			
-			$list = $list->each(function(&$tsRow) use($doprunOrders, $sortedOrdersTypes) {
+			$list = $list->each(function(&$tsRow) use($doprunOrders, $sortedOrdersTypes, $getUserSetting) {
 				$tsRow->orders_sum_price = 0;
 				$orderstypesStat = [];
 				
@@ -209,7 +210,7 @@ class TimesheetController extends Controller {
 
 		$itemView = $viewPath.'.item';
 		
-		return $this->viewWithLastSortIndex(Timesheet::class, $viewPath.'.list', compact('list', 'commandsColors', 'itemView'), '_sort', ['x-region-commands' => $regionCommands, 'x-eventstypes' => $eventsTypes]);
+		return $this->viewWithLastSortIndex(Timesheet::class, $viewPath.'.list', compact('list', 'commandsColors', 'showPastOrdersInActual', 'itemView'), '_sort', ['x-region-commands' => $regionCommands, 'x-eventstypes' => $eventsTypes]);
     }
 	
 	

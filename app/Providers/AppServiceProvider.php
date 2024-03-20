@@ -182,9 +182,6 @@ class AppServiceProvider extends ServiceProvider {
 			if (is_null($setting)) return false;
 			$getUserSetting = app()->make(GetUserSetting::class);
 			$userSetting = $getUserSetting($setting);
-			
-			toLog(gettype($expectedValue));
-			
 			if ($expectedValue) return $strict ? $userSetting === $expectedValue : $userSetting == $expectedValue;
 			return !!$userSetting;
 		});
