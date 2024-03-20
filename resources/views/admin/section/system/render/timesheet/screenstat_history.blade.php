@@ -38,7 +38,11 @@
 				</div>
 			</div>
 			
-			{{-- <p>{{$hItem['id']}}</p> --}}
+			@if($hItem['comment'] ?? false)
+				<div class="mb2rem">
+					<p class="color-gray-500 fz12px">{{$hItem['comment'] ?? ''}}</p>
+				</div>
+			@endif
 			
 			<x-horisontal space="1rem" ignore="[noscroll], select, input, textarea" track="3px" ignoremovekeys="alt, ctrl, shift" style="max-width: 606px;">
 				@forelse($sortedOrdersTypes as $otId => $otTitle)
