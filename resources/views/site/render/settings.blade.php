@@ -2,12 +2,12 @@
 	<div class="ddrtabs__nav fb20rem">
 		<ul class="ddrtabsnav fz14px" ddrtabsnav>
 			<li class="ddrtabsnav__item ddrtabsnav__item_active" ddrtabsitem="userSettingsTabOrderFields">Настройки полей заказа в событии</li>
+			<li class="ddrtabsnav__item" ddrtabsitem="userSettingsTabOrdersSettings">Отображение заказов</li>
 		</ul>
 	</div>
 				
 	<div class="ddrtabs__content ddrtabscontent" ddrtabscontent="">
 		<div class="ddrtabscontent__item ddrtabscontent__item_visible" ddrtabscontentitem="userSettingsTabOrderFields">
-			
 			<x-table class="w100">
 				<x-table.head>
 					<x-table.tr>
@@ -127,6 +127,16 @@
 					</x-table.tr>
 				</x-table.body>
 			</x-table>
+		</div>
+		
+		<div class="ddrtabscontent__item" ddrtabscontentitem="userSettingsTabOrdersSettings">
+			<x-checkbox
+				size="normal"
+				name="show_past_orders_in_actual:single"
+				:checked="$showPastOrdersInActual ?: false"
+				value="1"
+				label="Отобразить прошедшие заказы во вкладке «Актуальные»"
+				/>
 		</div>
 	</div>
 </div>

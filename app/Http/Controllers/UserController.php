@@ -1,6 +1,7 @@
 <?php namespace App\Http\Controllers;
 
 use App\Actions\AjaxDataAction;
+use App\Actions\GetUserSetting;
 use App\Enums\OrderColums;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -53,14 +54,17 @@ class UserController extends Controller {
 	* @param 
 	* @return 
 	*/
-	public function get_settings() {
+	public function get_settings(GetUserSetting $getUserSetting) {
 		if(!$user = Auth::guard('site')->user()) return response()->json(false);
 		
-		$userColumsSettings = data_get($user->settings, 'order_colums');
+		$userSettingsData = $getUserSetting(['order_colums', 'show_past_orders_in_actual']);
+		
+		$userColumsSettings = $userSettingsData['order_colums'];
+		$showPastOrdersInActual = $userSettingsData['show_past_orders_in_actual'];
 		
 		$orderColums = OrderColums::asFullArray();
 		
-		return view('site.render.settings', compact('orderColums', 'userColumsSettings'));
+		return view('site.render.settings', compact('orderColums', 'userColumsSettings', 'showPastOrdersInActual'));
 	}
 	
 	

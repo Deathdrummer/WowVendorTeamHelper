@@ -1,5 +1,6 @@
 <?php namespace App\Providers;
 
+use App\Actions\GetUserSetting;
 use App\Services\Settings as SettingsService;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
@@ -170,6 +171,35 @@ class AppServiceProvider extends ServiceProvider {
 		
 		
 		
+		/**
+		* Проверка настройки пользователя
+		* @param string|null  $setting
+		* @param bool|null  $expectedValue
+		* @param bool  $strict
+		* @return bool
+		*/
+		Blade::if('setting', function ($setting = null, $expectedValue = null, $strict = false, ):bool {
+			if (is_null($setting)) return false;
+			$getUserSetting = app()->make(GetUserSetting::class);
+			$userSetting = $getUserSetting($setting);
+			
+			toLog(gettype($expectedValue));
+			
+			if ($expectedValue) return $strict ? $userSetting === $expectedValue : $userSetting == $expectedValue;
+			return !!$userSetting;
+		});
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		
 		
 		
@@ -210,6 +240,10 @@ class AppServiceProvider extends ServiceProvider {
 			
             return "<?php echo isset({$d[1]}) && $d[1] !== false ? {$d[0]}.'='.\"{$d[1]}\" : ''; ?>";
 		});
+		
+		
+		
+		
 		
 		
 		

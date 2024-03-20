@@ -3,15 +3,20 @@
 class GetUserSetting {
 	/**
 	* 
-	* @param 
-	* @return 
+	* @param string|array $key  ключ массива данных
+	* @return mixed
 	*/
-	public function __invoke($key = null) {
+	public function __invoke($key = null):mixed {
 		
 		$userSettings = auth('site')->user()->settings;
 		
-		$current = data_get($userSettings, $key);
+		if (!is_array($key)) return data_get($userSettings, $key);
 		
-		return $current;
+		$data = [];
+		foreach ($key as $k) {
+			$data[$k] = data_get($userSettings, $k);
+		}
+		
+		return $data;
 	}
 }

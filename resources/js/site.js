@@ -93,7 +93,7 @@ $(function() {
 			//onBefore(inp, e) {},
 			async onChange({setting, value, type, remove, inp, done}) {
 				const {data, error, status, headers, abort} = await ddrQuery.put('client/settings', {setting, value, type, remove}/*, {abortContr}*/);
-				
+			
 				done();
 				
 				if (error) {

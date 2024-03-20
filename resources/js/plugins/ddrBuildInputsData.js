@@ -74,7 +74,6 @@ $.fn.ddrBuildInputsData = function(params = []) {
 				value = isChecked ? valTrue : valFalse;
 				
 				remove = _.isNull(valFalse) && !isChecked;
-				console.log(remove, value);
 			} else {
 				value = $(inp).val();
 				remove = !value;
