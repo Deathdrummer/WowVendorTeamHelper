@@ -155,8 +155,8 @@
 									'opened' => isset($item['active']),
 								])
 								loadsection="{{$item['section']}}"
-								onclick="$.clickToNavItem(event)" 
-								><span>{{$item['title']}}</span></li>	
+								onclick="$.clickToNavItem(event, '{{$item['section']}}')" 
+								><span>{{$item['title']}} <small>{{$item['keycode']}}</small></span></li>	
 								
 						@endforeach
 						
@@ -205,6 +205,40 @@
 	
 	
 	
+	let canSwitchByKeys = true;
+	const keysMap = [{
+		code: 49,
+		section: 'orders'
+	}, {
+		code: 50,
+		section: 'timesheet'
+	}, {
+		code: 51,
+		section: 'confirm-orders'
+	}, {
+		code: 52,
+		section: 'counts-stat'
+	}];
+	
+	$(document).on('keydown', function(e) {
+		if (!canSwitchByKeys) return;
+		
+		const {isShiftKey, isCtrlKey, isCommandKey, isAltKey, isOptionKey, noKeys, isActiveKey} = metaKeys(e);
+		
+		if (isShiftKey && isCtrlKey && isAltKey) {
+			const objIndex = searchInObject(keysMap, 'code', e.keyCode)
+			if (objIndex >= 0 && location.pathname != '/'+keysMap[objIndex]['section']) {
+				canSwitchByKeys = false;
+				loadSection(keysMap[objIndex]['section'], function(stat) {
+					canSwitchByKeys = true;
+					
+					$('#mainNav').find(`[loadsection]`).removeClass('active');
+					$('#mainNav').find(`[loadsection="${keysMap[objIndex]['section']}"]`).addClass('active');
+				});
+			}
+		}
+	});
+	
 	
 	
 	$('body').on(tapEvent, '[logout]', function() {
@@ -240,8 +274,9 @@
 	
 	
 	
-	$.clickToNavItem = (event) => {
+	$.clickToNavItem = (event, section) => {
 		event.stopPropagation();
+		if (location.pathname == '/'+section) return;
 		setTimeout(() => {
 			$('#mainNav').removeClass('main__nav_visible');
 		}, 100);
@@ -294,7 +329,7 @@
 	
 	
 	
-	function loadSection(section = null) {
+	function loadSection(section = null, cb = null) {
 		$('#sectionPlace.main__content_visible').removeClass('main__content_visible');
 		//$('#sectionTitle.header__pagetitle_visible').removeClass('header__pagetitle_visible');
 		
@@ -338,6 +373,7 @@
 			$('#sectionPlace:not(.main__content_visible)').addClass('main__content_visible');
 			loadSectionWait.destroy();
 			
+			callFunc(cb, true);
 			
 		}).catch(err => {
 			closeNav();
@@ -349,6 +385,8 @@
 			}
 			
 			loadSectionWait.destroy();
+			
+			callFunc(cb, false);
 		});
 		
 		

@@ -7,7 +7,7 @@
 */
 window.searchInObject = function(arrObj, field, value) {
 	let objIndex = arrObj.findIndex(function(element, index) {
-		if (element[field] == value) return index;
+		if (element[field] == value) return true;
 	});
 	return objIndex;
 }
