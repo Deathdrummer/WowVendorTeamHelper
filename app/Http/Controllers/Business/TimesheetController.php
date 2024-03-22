@@ -92,6 +92,7 @@ class TimesheetController extends Controller {
 			'event_type'	=> 'exclude|nullable|numeric',
 		]);
 		
+		
 		$timezones = $this->settings->get('timezones')->where('region', $regionId)->pluck('id')->toArray();
 		$regionCommands = Command::whereIn('region_id', $timezones)->get()->pluck('title', 'id');
 		$eventsTypes = EventType::all()->pluck('title', 'id');
@@ -99,8 +100,6 @@ class TimesheetController extends Controller {
 		$search = $request->input('search');
 		$commandId = $request->input('command_id');
 		$eventType = $request->input('event_type');
-		
-		//toLog($regionId.' '.$commandId);
 		
 		if (!$viewPath) return response()->json(['no_view' => true]);
 		
@@ -112,10 +111,14 @@ class TimesheetController extends Controller {
 		
 		$commandsIds = Command::whereIn('region_id', $timezonesRegions)->get()->pluck('id');
 		
+		
+		
 		# Получить отсортированные типы заказов для статистики [id => title]
 		$sortedOrdersTypes = $settings->get('orders_types')->where('show_in_stat', 1)->sortBy('sort')->pluck('title_short', 'id')->toArray();
 		
-		$showPastOrdersInActual = $getUserSetting('show_past_orders_in_actual') ?? false;
+		$showPastOrdersInActual = $getUserSetting('show_past_orders_in_actual') ?: false;
+		$searchInPeriod = $getUserSetting('events_search_orders_in_period') ?: false;
+		
 
 		$list = Timesheet::withCount(['orders AS orders_count' => function($query) use($search) {
 				$query->where('order', 'LIKE', '%'.$search.'%');
@@ -133,7 +136,9 @@ class TimesheetController extends Controller {
 							});
 					});
 			}])
-			->where('timesheet_period_id', $tsPeriodId)
+			->when(!$search || ($search && $searchInPeriod), function($query) use($tsPeriodId) { # здесть поиск производится по всем периодам, в не зависимости от того, какой период выбратн
+				$query->where('timesheet_period_id', $tsPeriodId);
+			})
 			->where(function($query) use($listType, $timesheetToPastHours) {
 				if ($listType == 'actual') {
 					$query->where('datetime', '>=', now()->addHours(-1 * $timesheetToPastHours));

@@ -150,13 +150,13 @@
 		$('#lastTimesheetPeriodsBlock').find('li').removeClass('active');
 		choosedPeriod.value = periodId;
 		ddrStore(`${sectionName}-choosedPeriod`, periodId);
-		$('#searchOrdersField').ddrInputs('disable');
+		$('#searchOrdersField').ddrInputs('disable'); //--------------------------------------------
 		
 		timesheetCrud(periodId, listType, regionId, buildOrdersTable, (list) => {
 			timesheetCrudList.value = list;
 			isBuildesPeriod = false;
 			//periodsBlockWait.destroy();
-			if (hasEvents) $('#searchOrdersField').ddrInputs('enable');
+			if (hasEvents) $('#searchOrdersField').ddrInputs('enable'); //--------------------------------------------
 		});
 		$(btn).addClass('active');
 	}
@@ -342,9 +342,9 @@
 	
 	getLastTimesheetPeriods((periodsCounts) => {
 		if (periodsCounts[choosedPeriod.value]) {
-			$('#searchOrdersField').ddrInputs('enable');
+			//$('#searchOrdersField').ddrInputs('enable'); //--------------------------------------------
 		} else if (!$('#searchOrdersField').val()) {
-			$('#searchOrdersField').ddrInputs('disable');
+			//$('#searchOrdersField').ddrInputs('disable'); //--------------------------------------------
 		}
 		
 		lastTimesheetPeriodsWaitBlock.off();
@@ -378,7 +378,7 @@
 		} else {
 			$(icon).removeClass('fa-close');
 			$(icon).addClass('fa-search');
-			$('#searchOrdersField').ddrInputs('state', 'clear');
+			$('#searchOrdersField').ddrInputs('state', 'clear'); //--------------------------------------------
 		}
 		
 		
@@ -390,9 +390,9 @@
 			$(inp).focus();
 			getLastTimesheetPeriods((periodsCounts) => {
 				if (periodsCounts[choosedPeriod.value]) {
-					$('#searchOrdersField').ddrInputs('enable');
+					$('#searchOrdersField').ddrInputs('enable'); //--------------------------------------------
 				} else if (!$('#searchOrdersField').val()) {
-					$('#searchOrdersField').ddrInputs('disable');
+					$('#searchOrdersField').ddrInputs('disable'); //--------------------------------------------
 				}
 				lastTimesheetPeriodsWaitBlock.off();
 				//if (choosedPeriod.value) $('#lastTimesheetPeriodsBlock').find(`[timesheetperiod="${choosedPeriod.value}"]`).addClass('active');
@@ -403,21 +403,21 @@
 	
 	$.searchAction = (icon) => {
 		if (searchStr) {
-			$('#searchOrdersField').ddrInputs('disable');
+			$('#searchOrdersField').ddrInputs('disable'); //--------------------------------------------
 			$(icon).find('i').removeClass('fa-close');
 			$(icon).find('i').addClass('fa-search');
 			
-			$('#searchOrdersField').ddrInputs('value', false);
+			$('#searchOrdersField').ddrInputs('value', false); //--------------------------------------------
 			searchStr = '';
 			lastTimesheetPeriodsWaitBlock.on();
 			buildTimesheet(() => {
-				$('#searchOrdersField').ddrInputs('enable');
-				$('#searchOrdersField').ddrInputs('state', 'clear');
+				$('#searchOrdersField').ddrInputs('enable'); //--------------------------------------------
+				$('#searchOrdersField').ddrInputs('state', 'clear'); //--------------------------------------------
 				getLastTimesheetPeriods((periodsCounts) => {
 					if (periodsCounts[choosedPeriod.value]) {
-						$('#searchOrdersField').ddrInputs('enable');
+						//('#searchOrdersField').ddrInputs('enable'); //--------------------------------------------
 					} else if (!$('#searchOrdersField').val()) {
-						$('#searchOrdersField').ddrInputs('disable');
+						//$('#searchOrdersField').ddrInputs('disable'); //--------------------------------------------
 					}
 					lastTimesheetPeriodsWaitBlock.off();
 					//if (choosedPeriod.value) $('#lastTimesheetPeriodsBlock').find(`[timesheetperiod="${choosedPeriod.value}"]`).addClass('active');

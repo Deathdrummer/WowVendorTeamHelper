@@ -75,7 +75,7 @@ export async function timesheetPeriodsCrud(getLastTimesheetPeriods = null, times
 			$('#newTimesheetEventBtn, #importTimesheetEventsBtn, #exportOrdersBtn').setAttrib('hidden');
 			choosedPeriod.value = periodId;
 			ddrStore(`${sectionName}-choosedPeriod`, periodId);
-			$('#searchOrdersField').ddrInputs('disable');
+			$('#searchOrdersField').ddrInputs('disable'); //--------------------------------------------
 			
 			if (_.isFunction(timesheetCrud)) {
 				//timesheetCrud(periodId, listType);
@@ -83,7 +83,7 @@ export async function timesheetPeriodsCrud(getLastTimesheetPeriods = null, times
 				timesheetCrud(periodId, listType, regionId, buildOrdersTable, (list) => {
 					timesheetCrudList.value = list;
 					lastTimesheetPeriodsWaitBlock.off();
-					if (hasEvents) $('#searchOrdersField').ddrInputs('enable');
+					if (hasEvents) $('#searchOrdersField').ddrInputs('enable');  //--------------------------------------------
 				});
 			}
 			
@@ -142,9 +142,9 @@ export async function timesheetPeriodsCrud(getLastTimesheetPeriods = null, times
 					
 					getLastTimesheetPeriods((periodsCounts) => {
 						if (periodsCounts[choosedPeriod.value]) {
-							$('#searchOrdersField').ddrInputs('enable');
+							$('#searchOrdersField').ddrInputs('enable'); //--------------------------------------------
 						} else if (!$('#searchOrdersField').val()) {
-							$('#searchOrdersField').ddrInputs('disable');
+							$('#searchOrdersField').ddrInputs('disable'); //--------------------------------------------
 						}
 						lastTimesheetPeriodsWaitBlock.destroy();
 					}, choosedPeriod);
@@ -190,9 +190,9 @@ export async function timesheetPeriodsCrud(getLastTimesheetPeriods = null, times
 									
 									getLastTimesheetPeriods((periodsCounts) => {
 										if (periodsCounts[choosedPeriod.value]) {
-											$('#searchOrdersField').ddrInputs('enable');
+											// $('#searchOrdersField').ddrInputs('enable'); //--------------------------------------------
 										} else if (!$('#searchOrdersField').val()) {
-											$('#searchOrdersField').ddrInputs('disable');
+											// $('#searchOrdersField').ddrInputs('disable'); //--------------------------------------------
 										}
 										wait(false);
 									}, choosedPeriod);

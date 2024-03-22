@@ -2,7 +2,7 @@
 	<x-table.head>
 		<x-table.tr noborder>
 			@if(getGuard() == 'admin' || (getGuard() == 'site' && auth('site')->user()->can('events-date:site')))
-				<x-table.td class="w14rem" noborder><strong>Дата (МСК)</strong></x-table.td>
+				<x-table.td class="w15rem" noborder><strong>Дата (МСК)</strong></x-table.td>
 			@endif
 			
 			@if(getGuard() == 'admin' || (getGuard() == 'site' && auth('site')->user()->can('events-time:site')))

@@ -2,7 +2,7 @@
 	<div class="ddrtabs__nav fb20rem">
 		<ul class="ddrtabsnav fz14px" ddrtabsnav>
 			<li class="ddrtabsnav__item ddrtabsnav__item_active" ddrtabsitem="userSettingsTabOrderFields">Настройки полей заказа в событии</li>
-			<li class="ddrtabsnav__item" ddrtabsitem="userSettingsTabOrdersSettings">Отображение заказов</li>
+			<li class="ddrtabsnav__item" ddrtabsitem="userSettingsTabOrdersSettings">Настройки заказов</li>
 		</ul>
 	</div>
 				
@@ -138,5 +138,18 @@
 				label="Отобразить прошедшие заказы во вкладке «Актуальные»"
 				/>
 		</div>
+		
+		
+		<div class="ddrtabscontent__item" ddrtabscontentitem="userSettingsTabOrdersSettings">
+			<x-checkbox
+				size="normal"
+				name="events_search_orders_in_period:single"
+				:checked="$eventsSearchOrdersInPeriod ?: false"
+				value="1"
+				label="Поиск заказов в разделе «события» в рамках выбранного периода"
+				/>
+		</div>
+		
+		
 	</div>
 </div>

@@ -57,14 +57,19 @@ class UserController extends Controller {
 	public function get_settings(GetUserSetting $getUserSetting) {
 		if(!$user = Auth::guard('site')->user()) return response()->json(false);
 		
-		$userSettingsData = $getUserSetting(['order_colums', 'show_past_orders_in_actual']);
-		
-		$userColumsSettings = $userSettingsData['order_colums'];
-		$showPastOrdersInActual = $userSettingsData['show_past_orders_in_actual'];
+		[
+			'order_colums' => $userColumsSettings,
+			'show_past_orders_in_actual' => $showPastOrdersInActual,
+			'events_search_orders_in_period' => $eventsSearchOrdersInPeriod,
+		] = $getUserSetting([
+			'order_colums',
+			'show_past_orders_in_actual',
+			'events_search_orders_in_period',
+		]);
 		
 		$orderColums = OrderColums::asFullArray();
 		
-		return view('site.render.settings', compact('orderColums', 'userColumsSettings', 'showPastOrdersInActual'));
+		return view('site.render.settings', compact('orderColums', 'userColumsSettings', 'showPastOrdersInActual', 'eventsSearchOrdersInPeriod'));
 	}
 	
 	
