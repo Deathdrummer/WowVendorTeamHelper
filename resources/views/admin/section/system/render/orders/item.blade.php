@@ -58,7 +58,11 @@
 				@elseif($column == 'fraction')
 					<p class="fz12px">{{$fraction ?? '-'}}</p>
 				@elseif($column == 'battle_tag')
-					<p class="fz12px">{{$battle_tag ?? '-'}}</p>
+					@if($battle_tag ?? false)
+						<p class="fz12px" onclick="$.copyToClipboard(event)">{{$battle_tag}}</p>
+					@else
+						<p class="fz12px color-gray">-</p>
+					@endif
 				@elseif($column == 'data')
 					<div class="d-flex justify-content-between align-items-center">
 						<div class="scrollblock scrollblock-light minh-1rem-4px maxh3rem-1px w100">
