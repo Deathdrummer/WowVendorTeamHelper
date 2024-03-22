@@ -346,7 +346,7 @@ $.ddrCRUD = function(settings = false) {
 			});
 		}
 		
-		callFunc(getListHeadersFunc?.before);
+		callFunc(getListHeadersFunc?.before, init);
 		
 		abortCtrl = new AbortController();
 		axiosQuery('get', _route(), params, 'text', abortCtrl).then(({data, error, status, headers}) => {
@@ -366,7 +366,7 @@ $.ddrCRUD = function(settings = false) {
 					if (cb && typeof cb == 'function') cb(data, {error, status, headers});
 				}
 				
-				callFunc(getListHeadersFunc?.after, headers);
+				callFunc(getListHeadersFunc?.after, headers, init);
 			}
 			if (withoutWait && initWait) initWait?.destroy();
 		});
