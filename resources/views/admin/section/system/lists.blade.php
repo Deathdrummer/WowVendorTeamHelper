@@ -5,8 +5,9 @@
 		<div class="ddrtabs">
 			<div class="ddrtabs__nav">
 				<ul class="ddrtabsnav" ddrtabsnav>
-					<li class="ddrtabsnav__item ddrtabsnav__item_active" ddrtabsitem="sectionsTab1">Простые списки</li>
-					<li class="ddrtabsnav__item" ddrtabsitem="sectionsTab2">Составные списки</li>
+					<li class="ddrtabsnav__item ddrtabsnav__item_active" ddrtabsitem="sectionsTab1">Системные</li>
+					<li class="ddrtabsnav__item" ddrtabsitem="sectionsTab2.1">Команды (статики)</li>
+					<li class="ddrtabsnav__item" ddrtabsitem="sectionsTab2.2">Типы событий</li>
 					<li class="ddrtabsnav__item" ddrtabsitem="sectionsTab3">Статусы заказов</li>
 					<li class="ddrtabsnav__item" ddrtabsitem="sectionsTab4">Типы заказов</li>
 					<li class="ddrtabsnav__item" ddrtabsitem="sectionsTab5">Группы листа ожидания</li>
@@ -80,63 +81,63 @@
 				</div>
 				
 				
-				<div class="ddrtabscontent__item" ddrtabscontentitem="sectionsTab2">
-					<div class="row g-10">
-						<div class="col-6">
-							<x-card
-								loading
-								class="p10px"
-								id="staticsCard"
-								title="Команды (статики)"
-								desc="Список команд (статиков)"
-								button="Добавить команду"
-								buttonId="commandsAddBtn"
-								buttonSize="small"
-								action="commandsAddBtnAction"
-								buttonVariant="light"
-								>
-								<x-table class="w100" id="staticsTable" noborder>
-									<x-table.head>
-										<x-table.tr noborder>
-											<x-table.td class="w-auto" noborder><strong>Название</strong></x-table.td>
-											<x-table.td class="w5rem" noborder><strong>Цвет</strong></x-table.td>
-											<x-table.td class="w10rem" noborder><strong>Регион</strong></x-table.td>
-											<x-table.td class="w9rem" noborder><strong>Действия</strong></x-table.td>
-										</x-table.tr>
-									</x-table.head>
-									<x-table.body id="staticsList" class="minh-4rem" emptytext="Нет команд"></x-table.body>
-								</x-table>
-							</x-card>
-						</div>
-						
-						
-						<div class="col-6">
-							<x-card
-								loading
-								class="p10px"
-								id="eventsTypesCard"
-								title="Типы событий"
-								desc="Список типов событий"
-								button="Добавить тип события"
-								buttonId="eventsTypesAddBtn"
-								buttonSize="small"
-								action="eventsTypesAddBtnAction"
-								buttonVariant="light"
-								>
-								<x-table class="w100" id="eventsTypesTable" noborder>
-									<x-table.head>
-										<x-table.tr noborder>
-											<x-table.td class="w-auto" noborder><strong>Название</strong></x-table.td>
-											<x-table.td class="w12rem" noborder><strong>Сложность</strong></x-table.td>
-											<x-table.td class="w9rem" noborder><strong>Действия</strong></x-table.td>
-										</x-table.tr>
-									</x-table.head>
-									<x-table.body id="eventsTypesList" class="minh-4rem" emptytext="Нет типов событий"></x-table.body>
-								</x-table>
-							</x-card>
-						</div>
-					</div>
+				
+				
+				<div class="ddrtabscontent__item" ddrtabscontentitem="sectionsTab2.1">
+					<x-card
+						loading
+						class="p10px"
+						id="staticsCard"
+						title="Команды (статики)"
+						desc="Список команд (статиков)"
+						button="Добавить команду"
+						buttonId="commandsAddBtn"
+						buttonSize="small"
+						action="commandsAddBtnAction"
+						buttonVariant="light"
+						>
+						<x-table class="w100" id="staticsTable" noborder>
+							<x-table.head>
+								<x-table.tr noborder>
+									<x-table.td class="w-30" noborder><strong>Название</strong></x-table.td>
+									<x-table.td class="w-70" noborder><strong>Вебхук</strong></x-table.td>
+									<x-table.td class="w5rem" noborder><strong>Цвет</strong></x-table.td>
+									<x-table.td class="w10rem" noborder><strong>Регион</strong></x-table.td>
+									<x-table.td class="w9rem" noborder><strong>Действия</strong></x-table.td>
+								</x-table.tr>
+							</x-table.head>
+							<x-table.body id="staticsList" class="minh-4rem" emptytext="Нет команд"></x-table.body>
+						</x-table>
+					</x-card>
 				</div>
+				
+				
+				<div class="ddrtabscontent__item" ddrtabscontentitem="sectionsTab2.2">
+					<x-card
+						loading
+						class="p10px"
+						id="eventsTypesCard"
+						title="Типы событий"
+						desc="Список типов событий"
+						button="Добавить тип события"
+						buttonId="eventsTypesAddBtn"
+						buttonSize="small"
+						action="eventsTypesAddBtnAction"
+						buttonVariant="light"
+						>
+						<x-table class="w100" id="eventsTypesTable" noborder>
+							<x-table.head>
+								<x-table.tr noborder>
+									<x-table.td class="w-auto" noborder><strong>Название</strong></x-table.td>
+									<x-table.td class="w12rem" noborder><strong>Сложность</strong></x-table.td>
+									<x-table.td class="w9rem" noborder><strong>Действия</strong></x-table.td>
+								</x-table.tr>
+							</x-table.head>
+							<x-table.body id="eventsTypesList" class="minh-4rem" emptytext="Нет типов событий"></x-table.body>
+						</x-table>
+					</x-card>
+				</div>
+				
 				
 				<div class="ddrtabscontent__item" ddrtabscontentitem="sectionsTab3">
 					<x-table noborder class="w100">

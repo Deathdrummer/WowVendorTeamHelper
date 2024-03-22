@@ -43,6 +43,11 @@ $.notify.defaults({
 });
 
 
+ddrTargetClicker('ddrrool');
+
+
+
+
 // Configure time between final scroll event and
 // `scrollstop` event to 650ms (default is 250ms).
 $.event.special.scrollstop.latency = 650;

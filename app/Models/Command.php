@@ -36,6 +36,7 @@ class Command extends Model {
 	
 	protected $fillable = [
 		'title',
+		'webhook',
 		'color',
 		'region_id',
 		'_sort',

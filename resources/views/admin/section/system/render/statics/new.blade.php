@@ -1,7 +1,10 @@
 <x-input-group size="small">
 	<x-table.tr index="{{$index}}" class="h4rem">
 		<x-table.td>
-			<x-input name="title" class="w100"  placeholder="Название команды" />
+			<x-input name="title" class="w100" placeholder="Название команды" />
+		</x-table.td>
+		<x-table.td>
+			<x-input name="webhook" class="w100" placeholder="Вебхук" />
 		</x-table.td>
 		<x-table.td>
 			<x-input type="color" name="color" class="w100" />

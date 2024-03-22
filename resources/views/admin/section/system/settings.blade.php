@@ -141,11 +141,9 @@
 					
 					
 					
-					<x-button size="normal" variant="blue" ddrrool-target="test">MENU</x-button>
+					{{-- <x-button size="normal" variant="blue" class="mt2rem" ddrrool-element="test">MENU</x-button>
 					
-					<div ddrrool-element="test" class="bg-red">sfsd gsd gsdgsd gsdgs dgsdg </div>
-					
-					
+					<div ddrrool-target="test" ddrrool-class="bg-green"><span class="p10px d-block">sfsd gsd gsdgsd gsdgs dgsdg </span></div> --}}
 					
 				</div>
 				{{--  --}}
@@ -160,24 +158,6 @@
 
 
 <script type="module">
-	
-	
-	$(document).on(tapEvent, '[ddrrool-target]', function(e) {
-		const element = $(e.target).attr('ddrrool-target');
-		
-		$(`[ddrrool-element="${element}"]`).toggleClass('bg-red');
-		
-		
-		$(document).on(tapEvent, function(e) {
-			console.log(e.currentTarget);
-		});
-	});
-	
-	
-	
-	
-	
-	
 	
 	let parserTOut;
 	$.parseOrderData = (e, textarea) => {

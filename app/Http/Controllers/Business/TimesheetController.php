@@ -1,6 +1,7 @@
 <?php namespace App\Http\Controllers\Business;
 
 use App\Actions\ExportToExcelAction;
+use App\Actions\GetCommandByTimesheetId;
 use App\Actions\GetImageThumbFromUrlAction;
 use App\Actions\GetScreenshotFromFhotoScreenAction;
 use App\Actions\GetUserSetting;
@@ -614,7 +615,13 @@ class TimesheetController extends Controller {
 	* @param 
 	* @return 
 	*/
-	public function screenstat_send(Request $request, Settings $settings, SendMessageToSlackAction $sendMessage, GetScreenshotFromFhotoScreenAction $getScreen) {
+	public function screenstat_send(
+		Request $request,
+		Settings $settings,
+		SendMessageToSlackAction $sendMessage,
+		GetScreenshotFromFhotoScreenAction $getScreen,
+		GetCommandByTimesheetId $getCommandByTimesheetId
+		) {
 		[
 			'timesheet_id'	=> $timesheetId,
 			'eventtype_id'	=> $eventTypeId,
@@ -667,20 +674,24 @@ class TimesheetController extends Controller {
 		
 		$response['created'] = $created;
 		
-		$resp = $sendMessage([
-			'webhook' 		=> $settings->get('screenstat_webhook'),
-			'message' 		=> $message,
-			'attachments' 	=> [$imgSrc],
-		]);
+		$commandWebhook = $getCommandByTimesheetId($timesheetId, 'webhook');
 		
-		$response['send'] = $resp;
+		if ($commandWebhook) {
+			$resp = $sendMessage([
+				'webhook' 		=> $settings->get('screenstat_webhook'),
+				'message' 		=> $message,
+				'attachments' 	=> [$imgSrc],
+			]);
+			$response['send'] = $resp;
+		} else {
+			$response['send'] = false;
+		}
 		
 		if ($resp) {
 			$created->send_to_slack = true;
 			$created->save();
 		}
 		
-
 		return response()->json($response);
 	}
 	

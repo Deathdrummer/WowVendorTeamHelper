@@ -1,7 +1,7 @@
 import '@plugins/ringtone';
 
 window.isIos = /iPhone|iPad|iPod/i.test(navigator.userAgent);
-window.tapEvent = (('ontouchstart' in window) && !isIos) ? 'tap' : 'click';
+window.tapEvent = (('ontouchstart' in window) && !isIos) ? 'touchstart' : 'click';
 
 $.fn.ddrClick = function(callback = null, countClicks = 1) {
 	if (!_.isFunction(callback)) return;
@@ -519,3 +519,51 @@ window.getUrlArgs = function(arg) {
 
 
 
+
+
+
+
+
+
+
+
+
+window.ddrTargetClicker = function(id = null) {
+	if (!id) {
+		console.error('ddrTargetClicker -> Не переданы все необходимые аргументы!', {id});
+		return false;
+	}
+	
+	let actElems = [],
+		toggleClass;
+	
+	$(document).on(tapEvent, `[${id}-element]`, function(e) {
+		const el = $(e.currentTarget).attr(`${id}-element`);
+		
+		toggleClass = $(`[${id}-target="${el}"]`).attr(`${id}-class`);
+		
+		$(`[${id}-target="${el}"]`).toggleClass(toggleClass);
+		
+		actElems.push($(`[${id}-target="${el}"]`)[0]);
+	});
+	
+	
+	$(document).on(tapEvent, function(e) {
+		const currentElem = $(e.target),
+			targetParent = $(currentElem).closest(`[${id}-target]`)[0];
+		
+		if (targetParent && actElems.includes(targetParent)) {
+			e.stopPropagation();
+		}
+		
+		let objIndex = actElems.findIndex(function(elmnt, index) {
+			if (elmnt == targetParent) return true;
+		});
+		
+		if (objIndex >= 0) {
+			$(targetParent).removeClass(toggleClass);
+			actElems.splice(objIndex, 1);
+		}
+	});
+}
+	
