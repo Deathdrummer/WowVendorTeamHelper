@@ -43,6 +43,7 @@
 						@endif
 					</p>
 					
+					
 					<p class="fz12px pointer" title="Кликните для копирования">
 						<strong class="w3rem d-inline-block text-end">мск</strong>:
 						@if($date)
@@ -59,7 +60,7 @@
 					<p class="fz12px">{{$fraction ?? '-'}}</p>
 				@elseif($column == 'battle_tag')
 					@if($battle_tag ?? false)
-						<p class="fz12px" onclick="$.copyToClipboard(event)">{{$battle_tag}}</p>
+						<p class="fz12px pointer color-gray-500-hovered color-blue-active noselect" onclick="$.copyToClipboard(event, '{{$battle_tag}}, {{$order}}')" title="Кликните для копирования">{{$battle_tag}}</p>
 					@else
 						<p class="fz12px color-gray">-</p>
 					@endif

@@ -91,6 +91,8 @@ class SendSlackMessageAction {
 		$status = OrderStatus::fromValue($orderData->status)->key;
 		$order = $orderData?->order ?? '---';
 		$orderType = $ordersTypes[$orderData->order_type] ?? '---';
+		$fraction = $orderData?->fraction ?? '---';
+		$battleTag = $orderData?->battle_tag ?? '---';
 		$price = $orderData?->price ?? '---';
 		$serverName = $orderData?->server_name ?? '---';
 		$link = $orderData?->link ?? '---';
@@ -113,6 +115,8 @@ class SendSlackMessageAction {
 			'{{status}}' 			=> $statuses[$status] ?? '-',
 			'{{order}}' 			=> $order,
 			'{{order_type}}'		=> $orderType,
+			'{{fraction}}'			=> $fraction,
+			'{{battle_tag}}'		=> $battleTag,
 			'{{price}}' 			=> $price,
 			'{{server_name}}'		=> $serverName,
 			'{{link}}' 				=> $link,

@@ -103,6 +103,8 @@
 									<p class="color-gray-500 color-gray-600-hovered pointer color-green-active" onclick="$.copyToClipboard(event, '@{{status}}')" title="Скопировать">@{{status}}			- Статус заказа</p>
 									<p class="color-gray-500 color-gray-600-hovered pointer color-green-active" onclick="$.copyToClipboard(event, '@{{order}}')" title="Скопировать">@{{order}}				- Номер заказа</p>
 									<p class="color-gray-500 color-gray-600-hovered pointer color-green-active" onclick="$.copyToClipboard(event, '@{{order_type}}')" title="Скопировать">@{{order_type}}	- Тип заказа</p>
+									<p class="color-gray-500 color-gray-600-hovered pointer color-green-active" onclick="$.copyToClipboard(event, '@{{fraction}}')" title="Скопировать">@{{fraction}}		- Фракция</p>
+									<p class="color-gray-500 color-gray-600-hovered pointer color-green-active" onclick="$.copyToClipboard(event, '@{{battle_tag}}')" title="Скопировать">@{{battle_tag}}	- Баттл таг</p>
 									<p class="color-gray-500 color-gray-600-hovered pointer color-green-active" onclick="$.copyToClipboard(event, '@{{price}}')" title="Скопировать">@{{price}} 			- Стаомость</p>
 									<p class="color-gray-500 color-gray-600-hovered pointer color-green-active" onclick="$.copyToClipboard(event, '@{{server_name}}')" title="Скопировать">@{{server_name}}	- Инвайт</p>
 									<p class="color-gray-500 color-gray-600-hovered pointer color-green-active" onclick="$.copyToClipboard(event, '@{{link}}')" title="Скопировать">@{{link}} 				- Ссылка</p>
