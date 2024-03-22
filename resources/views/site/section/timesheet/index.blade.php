@@ -33,6 +33,7 @@
 					iconcolor="color-gray"
 					iconaction="searchAction"
 					hidden
+					enablecontextmenu
 					/>
 			</div>
 		</div>

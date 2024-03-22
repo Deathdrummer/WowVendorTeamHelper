@@ -40,6 +40,7 @@
 						icon="search"
 						iconcolor="color-gray"
 						iconaction="searchAction"
+						enablecontextmenu
 						{{-- hidden --}}
 						/>
 				</div>
