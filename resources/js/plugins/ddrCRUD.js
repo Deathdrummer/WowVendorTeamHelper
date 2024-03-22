@@ -76,7 +76,7 @@ $.ddrCRUD = function(settings = false) {
 		onGetList(funcs = {}) {
 			if (_.isEmpty(funcs)) throw new Error('ddrCRUD -> onGetList! Ошибка! Не переданы параметры!');
 			getListHeadersFunc = funcs;
-			callFunc(funcs?.after, getListHeaders, true);
+			//callFunc(funcs?.after, getListHeaders, true);
 		},
 		setParams(action = null, cb = null/* params = null, clear = false*/) {
 			if (_.isNull(action) || _.isNull(cb)) throw new Error('ddrCRUD -> setParams! Не переданы параметры!');
@@ -146,9 +146,9 @@ $.ddrCRUD = function(settings = false) {
 		},
 		
 		
-		list(data, cb = false) { // Вывод всех записей
+		list(data, cb = false, init = true) { // Вывод всех записей
 			if (_.isFunction(data)) cb = data;
-			_getList(cb, true, data, false);
+			_getList(cb, init, data, false);
 		},
 		create(cb = false) { // Показ формы создания
 			let params = _.assign({...globalParams}, {views: viewsPath, newItemIndex}, createParams);
@@ -356,7 +356,6 @@ $.ddrCRUD = function(settings = false) {
 			} else {
 				lastSortIndex = parseInt(headers['x-last-sort-index']);
 				getListHeaders = headers;
-				callFunc(getListHeadersFunc?.after, headers);
 				
 				if (init) {
 					if (data) $(container).html(data);
@@ -366,6 +365,8 @@ $.ddrCRUD = function(settings = false) {
 				} else {
 					if (cb && typeof cb == 'function') cb(data, {error, status, headers});
 				}
+				
+				callFunc(getListHeadersFunc?.after, headers);
 			}
 			if (withoutWait && initWait) initWait?.destroy();
 		});

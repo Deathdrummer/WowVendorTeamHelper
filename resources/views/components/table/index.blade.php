@@ -75,6 +75,10 @@
 	
 	// наблюдение за скроллом в начало или конец списка
 	let observer = new IntersectionObserver(function (entries) {
+		
+		
+		console.log(123123123);
+		
 		let target = entries[0];
 		
 		if (target?.isIntersecting) { // вход
@@ -94,7 +98,7 @@
 		
 	}, {
 		threshold: 0.5,
-		root: document.getElementById('contractsList'),
+		root: document.getElementById('timesheetList'),
 		rootMargin: '50px',
 	});
 	
@@ -106,6 +110,6 @@
 	} 
 	
 	if (scrollendObserver) observer.observe(document.querySelector('#intersectionBottom'));
-	if (scrollpartObserver) observer.observe(document.querySelector('[ddrtablepartend]'));
+	if (scrollpartObserver) observer.observe($('[ddrtablepartend]'));
 	
 </script>

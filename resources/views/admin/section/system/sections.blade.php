@@ -68,6 +68,17 @@
 									setting="timesheet.attach_order_events_offset_hours"
 								/>
 							</div>
+							
+							<div class="col">
+								<x-input
+									type="number"
+									class="w30rem"
+									label="Количество подгружаемых записей"
+									group="large"
+									setting="timesheet.count_events_per_part"
+									showrows
+									/>
+							</div>
 						</div>
 					</div>
 					

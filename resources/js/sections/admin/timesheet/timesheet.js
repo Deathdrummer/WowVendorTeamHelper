@@ -47,18 +47,53 @@ export async function timesheetCrud(periodId = null, listType = null, regionId =
 		viewsPath,
 	}).then(({error, list, changeInputs, create, store, storeWithShow, edit, update, destroy, query, getParams, abort, remove, onGetList, setParams}) => {
 		
+		
+		$('#timesheetTable').find('[tsevent]:last').after('<div id="ddrIntersect"></div>');
+		
+		let offset = 0;
+		
+		let observer = new IntersectionObserver(function(entries, observer) {
+			if (entries[0].isIntersecting) {
+				offset++;
+				list({offset: offset}, (data) => {
+					$('#timesheetList').find('#ddrIntersect').before(data);
+					$('#timesheetList').blockTable('buildTable');
+				}, false);
+			}
+		}, {
+			root: document.querySelector('#timesheetContainer'),
+			rootMargin: "0px",
+			threshold: 1.0,
+		});
+		
+		
+		let target = $('#timesheetList').find('#ddrIntersect')[0];
+		observer.observe(target);
+		
+		
+		
 		onGetList({
 			before() {
+				offset = 0;
 				setParams('list', (params) => {
 					params.region_id = regionId.value;
 					params.command_id = _.get(ddrStore('timesheet-filter'), regionId.value+'.command', null);
 					params.event_type = _.get(ddrStore('timesheet-filter'), regionId.value+'.eventtype', null);
+					params.offset = 0;
 					return params;
 				});
 			},
 			after(headers) {
 				buildColumnFilter('chooseTsCommand', 'command', '[tscommandschooser]', 'x-region-commands', 'ВСЕ КОМАНДЫ');
 				buildColumnFilter('chooseEventType', 'eventtype', '[eventstypesсhooser]', 'x-eventstypes', 'ВСЕ ТИПЫ');
+				
+				// это относится к подгрузке записей
+				if (!$('#timesheetList').find('#ddrIntersect').length) {
+					$('#timesheetList').append('<div id="ddrIntersect"></div>');
+					let target = $('#timesheetList').find('#ddrIntersect')[0];
+					observer.observe(target);
+					$('#timesheetList').scrollTop(0);
+				}
 				
 				function buildColumnFilter(action = null, field = null, selector = null, data = null, allName = 'ВСЕ ЗАПИСИ') {
 					if (!field || !selector || !data) throw new Error('buildColumnFilter Ошибка! Переданы не все аргументы!');

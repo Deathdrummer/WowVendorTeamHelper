@@ -90,6 +90,7 @@ class TimesheetController extends Controller {
 			'search'		=> 'exclude|nullable|string',
 			'command_id'	=> 'exclude|nullable|numeric',
 			'event_type'	=> 'exclude|nullable|numeric',
+			'offset'		=> 'exclude|numeric',
 		]);
 		
 		
@@ -98,6 +99,7 @@ class TimesheetController extends Controller {
 		$eventsTypes = EventType::all()->pluck('title', 'id');
 		
 		$search = $request->input('search');
+		$offset = $request->input('offset', 0);
 		$commandId = $request->input('command_id');
 		$eventType = $request->input('event_type');
 		
@@ -118,8 +120,8 @@ class TimesheetController extends Controller {
 		
 		$showPastOrdersInActual = $getUserSetting('show_past_orders_in_actual') ?: false;
 		$searchInPeriod = $getUserSetting('events_search_orders_in_period') ?: false;
+		$countEventsPerPart = $this->settings->get('timesheet.count_events_per_part', 50);
 		
-
 		$list = Timesheet::withCount(['orders AS orders_count' => function($query) use($search) {
 				$query->where('order', 'LIKE', '%'.$search.'%');
 			}])
@@ -162,6 +164,8 @@ class TimesheetController extends Controller {
 				return $query->whereIn('command_id', $getUserSetting('commands') ?? []);
 			})
 			->orderBy('datetime', $listType == 'actual' ? 'ASC' : 'DESC')
+			->offset($offset * $countEventsPerPart)
+			->limit($countEventsPerPart)
 			->get();
 		
 		
