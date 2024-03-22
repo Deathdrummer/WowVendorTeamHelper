@@ -50,6 +50,7 @@
 									action="setScreenshot"
 									class="w100"
 									size="normal"
+									enablecontextmenu
 								 	/>
 							</div>
 							<div class="col-7">
@@ -59,6 +60,7 @@
 									class="w100"
 									size="normal"
 									rows="3"
+									enablecontextmenu
 								 	></x-textarea>
 							</div>
 						</div>

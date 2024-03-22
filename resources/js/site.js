@@ -58,7 +58,8 @@ $.event.special.scrollstop.latency = 20;
 $(function() {
 	
 	$('body').on('contextmenu', function(e) {
-		if ($(e.target).hasAttrib('enablecontextmenu') == false) e.preventDefault();
+		const isEnable = !!$(e.target).closest('[enablecontextmenu]').length;
+		if (!isEnable) e.preventDefault();
 	});
 	
 	
