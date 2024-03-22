@@ -418,9 +418,11 @@ class Users extends Controller {
 		
 		$commands = Command::all();
 		
+		$userData = $user;
+		
 		$this->addSettingToGlobalData('timezones', 'id');
 		
-		return $this->view($view.'.settings', compact('commands', 'userCommands'));
+		return $this->view($view.'.settings', compact('commands', 'userCommands', 'userData'));
 	}
 	
 	
@@ -450,6 +452,38 @@ class Users extends Controller {
 		$saveRes = $user->save();
 		return response()->json($saveRes);
 	}
+	
+	
+	
+	/**
+	* 
+	* @param 
+	* @return 
+	*/
+	public function set_account_data(Request $request) {
+		[
+			'id' 		=> $userId,
+			'setting' 	=> $setting,
+			'value' 	=> $value,
+			
+		] = $request->validate([
+			'id'		=> 'required|numeric',
+			'setting'	=> 'required|string',
+			'value'		=> 'nullable',
+			'type'		=> 'required|string', // single arr
+			'remove'	=> 'boolean',
+		]);
+		
+		
+		if(!$user = User::find($userId)) return response()->json(false);
+		
+		
+		$user->{$setting} = $value;
+		$saveRes = $user->save();
+		return response()->json($saveRes);
+	}
+	
+	
 	
 	
 	

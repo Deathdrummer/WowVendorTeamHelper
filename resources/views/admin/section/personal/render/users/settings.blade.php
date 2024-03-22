@@ -1,7 +1,8 @@
 <div class="ddrtabs">
 	<div class="ddrtabs__nav b20rem">
 		<ul class="ddrtabsnav" ddrtabsnav>
-			<li class="ddrtabsnav__item fz14px ddrtabsnav__item_active" ddrtabsitem="testTabCommands">Доступ к командам</li>
+			<li class="ddrtabsnav__item fz14px ddrtabsnav__item_active" ddrtabsitem="userSettingsTabUserData">Данные пользователя</li>
+			<li class="ddrtabsnav__item fz14px" ddrtabsitem="userSettingsTabCommands">Доступ к командам</li>
 			{{-- <li class="ddrtabsnav__item" ddrtabsitem="testTab2">Название вкладки 2</li>
 			<li class="ddrtabsnav__item" ddrtabsitem="testTab3">Название вкладки 3</li>
 			<li class="ddrtabsnav__item" ddrtabsitem="testTab4">Название вкладки 4</li> --}}
@@ -9,7 +10,29 @@
 	</div>
 	
 	<div class="ddrtabs__content ddrtabscontent" ddrtabscontent>
-		<div class="ddrtabscontent__item ddrtabscontent__item_visible" ddrtabscontentitem="testTabCommands">
+		<div class="ddrtabscontent__item ddrtabscontent__item_visible" ddrtabscontentitem="userSettingsTabUserData">
+			<div class="ddrlist" id="usUserDataForm">
+				<div class="ddrlist__item mb2rem">
+					<p class="color-gray-600">Имя сотрудника</p>
+					<x-input
+						size="normal"
+						name="name"
+						:value="$userData['name']"
+						class=""
+						/>
+				</div>
+				<div class="ddrlist__item mb2rem">
+					<p class="color-gray-600">Имя сотрудника (только для админа)</p>
+					<x-input
+						size="normal"
+						name="pseudoname"
+						:value="$userData['pseudoname']"
+						/>
+				</div>
+			</div>
+		</div>
+		
+		<div class="ddrtabscontent__item" ddrtabscontentitem="userSettingsTabCommands" id="usCommandsAccess">
 			<x-table class="w100" noborder scrolled="70vh">
 				<x-table.head>
 					<x-table.tr class="h3rem" noborder>

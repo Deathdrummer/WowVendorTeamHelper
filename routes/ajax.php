@@ -128,6 +128,7 @@ Route::post('/users/permissions', [Users::class, 'permissions']);
 Route::put('/users/permissions', [Users::class, 'set_permissions']);
 Route::get('/users/settings', [Users::class, 'settings']);
 Route::put('/users/settings', [Users::class, 'set_setting']);
+Route::put('/users/settings/account', [Users::class, 'set_account_data']);
 Route::middleware('lang')->post('/users/send_email', [Users::class, 'send_email']);
 Route::post('/users/store_show', [Users::class, 'store_show']);
 Route::resource('users', Users::class);

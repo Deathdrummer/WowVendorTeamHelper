@@ -266,7 +266,7 @@
 			});
 			
 			
-			$(popper).find('[name]').ddrBuildInputsData({
+			$(popper).find('#usCommandsAccess').ddrBuildInputsData({
 				//onBefore(inp, e) {},
 				async onChange({setting, value, type, remove, inp, done}) {
 					//console.log('onChange');
@@ -283,6 +283,27 @@
 					}
 				},
 			});
+			
+			
+			
+			$(popper).find('#usUserDataForm').find('[name]').ddrBuildInputsData({
+				//onBefore(inp, e) {},
+				async onChange({setting, value, type, remove, inp, done}) {
+					//console.log('onChange');
+					//let abortContr = createAbortCtrl();
+					
+					const {data, error, status, headers, abort} = await ddrQuery.put('ajax/users/settings/account', {id: userId, setting, value, type, remove}/*, {abortContr}*/);
+					
+					done();
+					
+					if (error) {
+						console.log(error);
+						$.notify(error?.message, 'error');
+						return;
+					}
+				},
+			});
+			
 		}
 		
 		
