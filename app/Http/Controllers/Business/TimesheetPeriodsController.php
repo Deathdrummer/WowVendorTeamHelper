@@ -114,7 +114,7 @@ class TimesheetPeriodsController extends Controller {
 				$hasEventsQuery->whereHas('timesheet_items');
 			})
 			->orderBy('_sort', 'DESC')
-			->limit(5)
+			//->limit(5)
 			->get();
 		
 		$periodsTsCounts = $list->pluck('timesheet_items_count', 'id')->mapWithKeys(function($count, $id) {

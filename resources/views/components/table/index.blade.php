@@ -75,10 +75,6 @@
 	
 	// наблюдение за скроллом в начало или конец списка
 	let observer = new IntersectionObserver(function (entries) {
-		
-		
-		console.log(123123123);
-		
 		let target = entries[0];
 		
 		if (target?.isIntersecting) { // вход

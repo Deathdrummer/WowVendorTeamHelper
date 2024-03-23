@@ -67,7 +67,7 @@ export async function timesheetCrud(periodId = null, listType = null, regionId =
 		
 		
 		let target = $('#timesheetList').find('#ddrIntersect')[0];
-		observer.observe(target);
+		if (target) observer.observe(target);
 		
 		
 		

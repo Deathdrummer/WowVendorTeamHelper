@@ -1,5 +1,5 @@
 @if($list)
-	<ul class="d-flex flex-row-reverse timesheetperiods">
+	<ul class="d-flex flex-row-reverse timesheetperiods__track">
 		@foreach($list as $item)
 			<li
 				@class([

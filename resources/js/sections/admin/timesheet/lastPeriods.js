@@ -21,8 +21,21 @@ export async function getLastTimesheetPeriods(cb = null, choosedPeriod = null, s
 	if ($('#lastTimesheetPeriodsBlock').find('#lastTimesheetPeriodsPlacer').length) {
 		$('#lastTimesheetPeriodsPlacer').html(data);
 	} else {
-		$('#lastTimesheetPeriodsBlock').prepend(`<div id="lastTimesheetPeriodsPlacer">${data}</div>`);
+		$('#lastTimesheetPeriodsBlock').prepend(`<div id="lastTimesheetPeriodsPlacer" class="timesheetperiods">${data}</div>`);
 	}
+	
+	
+	$('#lastTimesheetPeriodsPlacer').ddrScrollX({
+		scrollStep: 100,
+		scrollSpeed: 100,
+		enableMouseScroll: true,
+		ignoreSelectors: false,
+		addict: false,
+		moveKey: false,
+		ignoreMoveKeys: null,
+		classWhenMoved: 'timesheetperiods_disabled',
+		scrollEnd: true
+	});
 	
 	callFunc(cb, periodsCounts);
 }

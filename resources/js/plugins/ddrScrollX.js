@@ -16,6 +16,8 @@ $.fn.ddrScrollX = function(params) {
 		addict,
 		moveKey,
 		ignoreMoveKeys,
+		classWhenMoved,
+		scrollEnd,
 	} = _.assign({
 		scrollStep: 50,
 		scrollSpeed: 100,
@@ -24,6 +26,8 @@ $.fn.ddrScrollX = function(params) {
 		addict: false,
 		moveKey: false, // alt shift ctrl
 		ignoreMoveKeys: [],
+		classWhenMoved: null,
+		scrollEnd: false
 	}, params);
 	
 	if (ignoreSelectors) ignoreSelectors = _.isArray(ignoreSelectors) ? ignoreSelectors.join(', ') : ignoreSelectors;
@@ -32,51 +36,101 @@ $.fn.ddrScrollX = function(params) {
 	
 	//console.log(ignoreMoveKeys);
 	
-	//if (enableMouseScroll == true) {
-		/*$(block).mousewheel(function(e) {
+	if (enableMouseScroll === true) {
+		$(block).mousewheel(function(e) {
 			let tag = e.target?.tagName?.toLowerCase();
 			if (!ignoreSelectors || isHover(ignoreSelectors)) {
 				e.preventDefault();
 				$(this).stop(false, true).animate({scrollLeft: ($(this).scrollLeft() + scrollStep * -e.deltaY)}, scrollSpeed);
 			}
-		});*/
-	//}
+		});
+	}
 	
 	
+	// Скролл в конец
+	if (scrollEnd) {
+		let trackWidth = $(block).children().outerWidth();
+		$(block).scrollLeft(trackWidth);
+	}
+	
+	
+	let mdEvent;
 	
 	$(block).mousedown(function(e) {
+		mdEvent = e;
 		const {isShiftKey, isCtrlKey, isCommandKey, isAltKey, isOptionKey, noKeys, isActiveKey} = metaKeys(e);
 		const {isLeftClick, isRightClick, isCenterClick} = mouseClick(e);
 		
 		
+		if (!isLeftClick) return;
+		if (moveKey && !isActiveKey(moveKey)) return;
+		if (ignoreMoveKeys && isActiveKey(ignoreMoveKeys)) return;
 		
-		if (isLeftClick && ((moveKey && isActiveKey(moveKey)) || ((ignoreMoveKeys && !isActiveKey(ignoreMoveKeys))))) {
-			if (!ignoreSelectors || isHover(ignoreSelectors) == false) {
-				let startX = this.scrollLeft + e.pageX;
-				$(block).mousemove(function (e) {
-					$(block).css('cursor', 'e-resize');
-					let pos = startX - e.pageX;
-					this.scrollLeft = pos;
-					if (addict) $(addict)[0].scrollLeft = pos;
-					return false;
+		if (!ignoreSelectors || isHover(ignoreSelectors) == false) {
+			let startX = this.scrollLeft + e.pageX;
+			$(block).mousemove(function (e) {
+				
+				mobeMouseDiff({
+					mdEvent,
+					mmEvent: e,
+					radius: 3,
+				}, () => {
+					if (classWhenMoved) $(block).addClass(classWhenMoved);
 				});
-			}
-			
-			$(block).one('mouseup', function (e) {
-				if (!ignoreSelectors || isHover(ignoreSelectors) == false) {
-					$(block).css('cursor', 'default');
-					$(block).off("mousemove");
-				}
+				
+				
+				pauseEvent(e);
+				$(block).css('cursor', 'e-resize');
+				let pos = startX - e.pageX;
+				this.scrollLeft = pos;
+				if (addict) $(addict)[0].scrollLeft = pos;
+				return false;
 			});
 		}
 		
 		
-		//if (!isLeftClick || (moveKey && !isActiveKey(moveKey)) || (ignoreMoveKeys && isActiveKey(ignoreMoveKeys))) return false;
-		
-		
-		
-		
-		
+		$(document).one('mouseup', function (e) {
+			if (classWhenMoved) $(block).removeClass(classWhenMoved);
+			if (!ignoreSelectors || isHover(ignoreSelectors) == false) {
+				$(block).css('cursor', 'default');
+				$(block).off("mousemove");
+			}
+		});
 		
 	});
 };
+
+
+
+
+
+
+
+
+function mobeMouseDiff(ops = {}, cb = null) {
+	const {
+		mdEvent,
+		mmEvent,
+		radius,
+	} = ops;
+	
+	const mdx = mdEvent.clientX,
+		mdy = mdEvent.clientY,
+		mmx = mmEvent.clientX,
+		mmy = mmEvent.clientY;
+	
+	
+	if ((mdx < mmx - radius || mdx > mmx + radius) || (mdy < mmy - radius || mdy > mmy + radius)) {
+		callFunc(cb);
+	}			
+}
+
+
+
+function pauseEvent(e){
+    if(e.stopPropagation) e.stopPropagation();
+    if(e.preventDefault) e.preventDefault();
+    e.cancelBubble=true;
+    e.returnValue=false;
+    return false;
+}

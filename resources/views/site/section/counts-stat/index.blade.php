@@ -19,7 +19,7 @@
 	
 	<div class="col-auto me-auto" teleport="#headerTeleport2">
 		<div class="header__block">
-			<div id="lastTimesheetPeriodsBlock" class="ml3rem minw-4rem maxw-35rem h6rem pt10px pb10px pr10px"></div>
+			<div id="lastTimesheetPeriodsBlock" class="ml3rem minw-4rem maxw-35rem h6rem pr10px"></div>
 		</div>
 	</div>
 	
@@ -62,6 +62,7 @@
 	
 	let isBuildesPeriod = false;
 	$.timesheetPeriodsBuild = async (btn, periodId) => {
+		console.log({periodId});
 		if ($(btn).hasClass('active') || isBuildesPeriod) return;
 		isBuildesPeriod = true;
 		$('#lastTimesheetPeriodsBlock').find('li').removeClass('active');

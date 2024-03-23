@@ -9,6 +9,7 @@
 	'hidescroll'		=> false,
 	'movekey'			=> null,
 	'ignoremovekeys'	=> null,
+	'classwhenmoved'	=> null,
 ])
 
 
@@ -33,7 +34,8 @@
 		step = '{{$step}}',
 		speed = '{{$speed}}',
 		moveKey = '{{$movekey}}',
-		ignoreMoveKeys = '{{$ignoremovekeys}}';
+		ignoreMoveKeys = '{{$ignoremovekeys}}',
+		classWhenMoved = '{{$classWhenMoved}}';
 	
 	
 	//Горизонтальная прокрутка блока мышью и колесиком
@@ -50,5 +52,6 @@
 		addict,
 		moveKey,
 		ignoreMoveKeys,
+		classWhenMoved,
 	});
 </script>
