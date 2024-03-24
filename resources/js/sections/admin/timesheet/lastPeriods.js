@@ -26,7 +26,7 @@ export async function getLastTimesheetPeriods(cb = null, choosedPeriod = null, s
 	
 	
 	$('#lastTimesheetPeriodsPlacer').ddrScrollX({
-		scrollStep: 100,
+		scrollStep: 65,
 		scrollSpeed: 100,
 		enableMouseScroll: true,
 		ignoreSelectors: false,

@@ -110,12 +110,20 @@ class TimesheetPeriodsController extends Controller {
 					});
 				});
 				
-			}])->when($onlyHasHvents, function($hasEventsQuery) {
+			}])
+			->when($onlyHasHvents, function($hasEventsQuery) {
 				$hasEventsQuery->whereHas('timesheet_items');
 			})
 			->orderBy('_sort', 'DESC')
 			//->limit(5)
 			->get();
+			
+		
+		if ($search) {
+			$list = $list->filter(fn($item) => $item['timesheet_items_count'] > 0);
+		}
+		
+		toLog($list->toArray());
 		
 		$periodsTsCounts = $list->pluck('timesheet_items_count', 'id')->mapWithKeys(function($count, $id) {
 			return [(int)$id => !!$count];
