@@ -119,17 +119,17 @@ class TimesheetPeriodsController extends Controller {
 			->get();
 			
 		
-		if ($search) {
-			$list = $list->filter(fn($item) => $item['timesheet_items_count'] > 0);
-		}
-		
-		toLog($list->toArray());
-		
 		$periodsTsCounts = $list->pluck('timesheet_items_count', 'id')->mapWithKeys(function($count, $id) {
 			return [(int)$id => !!$count];
 		});
 		
 		$choosedPeriod = $request->input('choosed_period');
+		
+		if ($search) {
+			# если раскомментировать - то в поиске всегда будет присутствовать текущий выбранный период
+			$list = $list->filter(fn($item) => $item['timesheet_items_count'] > 0/*  || $item['id'] == $choosedPeriod */);
+		}
+		
 		
 		return $this->view($viewPath.'.last_periods', compact('list', 'choosedPeriod', 'search'), [], ['periods_counts' => $periodsTsCounts]);
 	}

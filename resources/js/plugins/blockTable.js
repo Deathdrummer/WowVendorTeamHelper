@@ -1,14 +1,12 @@
 
 window.blockTable = function(method = null, ...params) {
 	const blockTableCls = new BlockTable;
-	
 	return blockTableCls[method](...params);
 }
 
 
 $.fn.blockTable = function(method = null, ...params) {
 	const blockTableCls = new BlockTable;
-	
 	return blockTableCls[method](this, ...params);
 }
 
@@ -117,13 +115,14 @@ class BlockTable {
 		} 
 		
 		const selector = $(listSelector).closest('[ddrtable]'),
-			headCells = $(selector).find('[ddrtablehead]').find('[ddrtabletr]').find('[ddrtabletdmain]').length
-				? $(selector).find('[ddrtablehead]').find('[ddrtabletr]').find('[ddrtabletdmain]')
-				: $(selector).find('[ddrtablehead]').find('[ddrtabletr]').find('[ddrtabletd]'),
-			bodyRows = $(selector).find('[ddrtablebody] [ddrtabletr]');
-		
+			hcSelector = $(selector).children('[ddrtablehead]'),
+			headCells = $(hcSelector).find('[ddrtabletr]').find('[ddrtabletdmain]').length
+				? $(hcSelector).find('[ddrtabletr]').find('[ddrtabletdmain]')
+				: $(hcSelector).find('[ddrtabletr]').find('[ddrtabletd]'),
+			bodyRows = $(selector).children('[ddrtablebody]').children('[ddrtabletr]');
+			
+
 		let cellsWidths = [];
-		
 		
 		_initHeadCellsWidths();
 		_buildBodyRows();

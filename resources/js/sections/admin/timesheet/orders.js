@@ -481,7 +481,7 @@ export async function buildOrdersTable(row = null, timesheetId = null, cb = null
 		
 		$(row).siblings('[timesheetorders]').html(data);
 		
-		$(row).siblings('[timesheetorders]').find('[ddrtable]').blockTable('buildTable');
+		//$(row).siblings('[timesheetorders]').find('[ddrtable]').blockTable('buildTable');
 		
 		const rowsCount = Number($(data).find('[ddrtablebody] [ddrtabletr]').length);
 		let count = $(row).find('[orderscount]').text(rowsCount);
