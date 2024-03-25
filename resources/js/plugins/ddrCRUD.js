@@ -76,7 +76,7 @@ $.ddrCRUD = function(settings = false) {
 		onGetList(funcs = {}) {
 			if (_.isEmpty(funcs)) throw new Error('ddrCRUD -> onGetList! Ошибка! Не переданы параметры!');
 			getListHeadersFunc = funcs;
-			//callFunc(funcs?.after, getListHeaders, true);
+			callFunc(funcs?.after, getListHeaders, true);
 		},
 		setParams(action = null, cb = null/* params = null, clear = false*/) {
 			if (_.isNull(action) || _.isNull(cb)) throw new Error('ddrCRUD -> setParams! Не переданы параметры!');

@@ -87,33 +87,34 @@ export async function timesheetCrud(periodId = null, listType = null, regionId =
 			},
 			after(headers, init) {
 				
-				if (init) {
-					buildColumnFilter('chooseTsCommand', 'command', '[tscommandschooser]', 'x-region-commands', 'ВСЕ КОМАНДЫ');
-					buildColumnFilter('chooseEventType', 'eventtype', '[eventstypesсhooser]', 'x-eventstypes', 'ВСЕ ТИПЫ');
+				buildColumnFilter('chooseTsCommand', 'command', '[tscommandschooser]', 'x-region-commands', 'ВСЕ КОМАНДЫ');
+				buildColumnFilter('chooseEventType', 'eventtype', '[eventstypesсhooser]', 'x-eventstypes', 'ВСЕ ТИПЫ');
+				
+				function buildColumnFilter(action = null, field = null, selector = null, data = null, allName = 'ВСЕ ЗАПИСИ') {
+					if (!field || !selector || !data) throw new Error('buildColumnFilter Ошибка! Переданы не все аргументы!');
+					let hData = JSON.parse(headers[data] || []);
+					let eTHtml = '<div class="select small-select maxw-20rem">';
+						eTHtml += `<select id="rooltest" oninput="$.${action}(this)">`;
+						let selectedAll = _.isNull(_.get(ddrStore('timesheet-filter'), regionId.value+'.'+field, null)) ? ' selected' : '';
+						eTHtml += `<option${selectedAll} value="">${allName}</option>`;
+						
+						for (const [cmdId, cmdTitle] of Object.entries(hData)) {
+							let selected = cmdId == _.get(ddrStore('timesheet-filter'), regionId.value+'.'+field, null) ? ' selected' : '';
+							eTHtml += `<option${selected} value="${cmdId}">${cmdTitle}</option>`;
+						}
+						eTHtml += '</select></div>';
 					
+					$(selector).html(eTHtml);
+				}
+				
+				
+				if (init) {					
 					// это относится к подгрузке записей
 					if (!$('#timesheetList').find('#ddrIntersect').length) {
 						$('#timesheetList').append('<div id="ddrIntersect"></div>');
 						let target = $('#timesheetList').find('#ddrIntersect')[0];
 						observer.observe(target);
 						$('#timesheetList').scrollTop(0);
-					}
-					
-					function buildColumnFilter(action = null, field = null, selector = null, data = null, allName = 'ВСЕ ЗАПИСИ') {
-						if (!field || !selector || !data) throw new Error('buildColumnFilter Ошибка! Переданы не все аргументы!');
-						let hData = JSON.parse(headers[data] || []);
-						let eTHtml = '<div class="select small-select maxw-20rem">';
-							eTHtml += `<select id="rooltest" oninput="$.${action}(this)">`;
-							let selectedAll = _.isNull(_.get(ddrStore('timesheet-filter'), regionId.value+'.'+field, null)) ? ' selected' : '';
-							eTHtml += `<option${selectedAll} value="">${allName}</option>`;
-							
-							for (const [cmdId, cmdTitle] of Object.entries(hData)) {
-								let selected = cmdId == _.get(ddrStore('timesheet-filter'), regionId.value+'.'+field, null) ? ' selected' : '';
-								eTHtml += `<option${selected} value="${cmdId}">${cmdTitle}</option>`;
-							}
-							eTHtml += '</select></div>';
-						
-						$(selector).html(eTHtml);
 					}
 				}	
 			},

@@ -1,6 +1,6 @@
 <x-table class="w100" id="timesheetTable" noborder scrolled="{{$scrolled ?? '68vh'}}">
 	<x-table.head>
-		<x-table.tr noborder>
+		<x-table.tr class="h5rem" noborder>
 			@if(getGuard() == 'admin' || (getGuard() == 'site' && auth('site')->user()->can('events-date:site')))
 				<x-table.td class="w15rem" noborder><strong>Дата (МСК)</strong></x-table.td>
 			@endif
@@ -11,7 +11,7 @@
 			
 			@if(getGuard() == 'admin' || (getGuard() == 'site' && auth('site')->user()->can('events-command:site')))
 				<x-table.td class="w-auto" noborder>
-					<div class="row g-5 align-items-center">
+					<div class="row gx-5 align-items-center">
 						<div class="col-auto"><strong title="Название команды">Команда</strong></div>
 						<div class="col"><div tscommandschooser></div></div>
 					</div>
@@ -20,7 +20,7 @@
 			
 			@if(getGuard() == 'admin' || (getGuard() == 'site' && auth('site')->user()->can('events-stat:site')))
 				<x-table.td class="w26rem" noborder>
-					<strong title="Название команды">Статистика</strong>
+					<strong title="Количество заказов по типам">Статистика</strong>
 				</x-table.td>
 			@endif
 			
