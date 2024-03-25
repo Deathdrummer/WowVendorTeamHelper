@@ -243,9 +243,9 @@ class TimesheetController extends Controller {
 		if (!$viewPath) return response()->json(['no_view' => true]);
 		
 		$scrolled = match(getGuard()) {
-			'admin'	=> 'calc(100vh - 238px)',
-			'site'	=> 'calc(100vh - 202px)',
-			default	=> 'calc(100vh - 238px)',
+			'admin'	=> 'calc(100vh - 250px)',
+			'site'	=> 'calc(100vh - 214px)',
+			default	=> 'calc(100vh - 250px)',
 		};
 		
 		return $this->view($viewPath.'.init', ['scrolled' => $scrolled]);
