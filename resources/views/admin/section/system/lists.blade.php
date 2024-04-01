@@ -101,9 +101,9 @@
 								<x-table.tr noborder>
 									<x-table.td class="w-30" noborder><strong>Название</strong></x-table.td>
 									<x-table.td class="w-70" noborder><strong>Вебхук</strong></x-table.td>
-									<x-table.td class="w5rem" noborder><strong>Цвет</strong></x-table.td>
+									<x-table.td class="w6rem" noborder><strong>Цвет</strong></x-table.td>
 									<x-table.td class="w10rem" noborder><strong>Регион</strong></x-table.td>
-									<x-table.td class="w9rem" noborder><strong>Действия</strong></x-table.td>
+									<x-table.td class="w12rem" noborder><strong>Действия</strong></x-table.td>
 								</x-table.tr>
 							</x-table.head>
 							<x-table.body id="staticsList" class="minh-4rem" emptytext="Нет команд"></x-table.body>

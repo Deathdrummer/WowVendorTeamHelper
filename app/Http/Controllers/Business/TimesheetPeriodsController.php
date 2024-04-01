@@ -131,6 +131,9 @@ class TimesheetPeriodsController extends Controller {
 		}
 		
 		
+		toLog($list);
+		
+		
 		return $this->view($viewPath.'.last_periods', compact('list', 'choosedPeriod', 'search'), [], ['periods_counts' => $periodsTsCounts]);
 	}
 	

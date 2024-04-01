@@ -135,9 +135,9 @@ class CommandsController extends Controller {
 		if (!$request) return false;
 		
 		$validFields = $request->validate([
-			'region_id'	=> 'required|numeric|nullable',
+			'region_id'	=> 'required|numeric',
 			'title'		=> 'required|string',
-			'webhook'	=> 'required|string',
+			'webhook'	=> 'nullable|string',
 			'color'		=> 'required|string',
 			'_sort'		=> 'exclude|regex:/[0-9]+/',
 		]);
@@ -199,9 +199,9 @@ class CommandsController extends Controller {
      */
     public function update(Request $request, $id) {
 		$validFields = $request->validate([
-			'region_id'	=> 'required|numeric|nullable',
+			'region_id'	=> 'required|numeric',
 			'title'		=> 'required|string',
-			'webhook'	=> 'required|string',
+			'webhook'	=> 'nullable|string',
 			'color'		=> 'required|string',
 			'views'		=> 'required|string|exclude'
 		]);
